@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="540" height="540" viewBox="0 0 540 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t7 d7">
+  <title id="t7">Shinier icon</title>
+  <desc id="d7">icon</desc>
+  <defs>
+    <mask id="star-mask">
+      <!-- Visible area (red stars) -->
+      <g fill="white">
+        <g transform="translate(-270,-270) rotate(20)">
+          <polygon points="0,-280 120,-120 280,0 120,120 0,280 -120,120 -280,0 -120,-120"/>
+        </g>
+      </g>
+      <!-- Transparent area (white stars) -->
+      <g fill="black">
+        <g transform="translate(-270,-270) rotate(65)">
+          <polygon points="0,-240 80,-80 240,0 80,80 0,240 -80,80 -240,0 -80,-80"/>
+        </g>
+      </g>
+    </mask>
+    <style>
+      .star-red{fill:#dd0000}
+    </style>
+  </defs>
+  <g id="wordmark" transform="translate(540,540)">
+    <g mask="url(#star-mask)">
+      <rect x="-540" y="-540" width="540" height="540" class="star-red"/>
+    </g>
+  </g>
+</svg>

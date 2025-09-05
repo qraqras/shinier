@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="200" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t7 d7">
+  <title id="t7">Shinier logo dark</title>
+  <desc id="d7">logo dark</desc>
+  <defs>
+    <mask id="star-mask">
+      <!-- Visible area (red stars) -->
+      <g fill="white">
+        <g transform="translate(-360,-45) rotate(20)">
+          <polygon points="0,-70 30,-30 70,0 30,30 0,70 -30,30 -70,0 -30,-30"/>
+        </g>
+        <g transform="translate(-44.5,-120.5) rotate(45)">
+          <polygon points="0,-24 8,-8 24,0 8,8 0,24 -8,8 -24,0 -8,-8"/>
+        </g>
+        <g transform="translate(110.5,-120.5) rotate(45)">
+          <polygon points="0,-24 8,-8 24,0 8,8 0,24 -8,8 -24,0 -8,-8"/>
+        </g>
+        <g transform="translate(140,-120) rotate(20)">
+          <polygon points="0,-12 4,-4 12,0 4,4 0,12 -4,4 -12,0 -4,-4"/>
+        </g>
+      </g>
+      <!-- Transparent area (white stars) -->
+      <g fill="black">
+        <g transform="translate(-360,-45) rotate(65)">
+          <polygon points="0,-60 20,-20 60,0 20,20 0,60 -20,20 -60,0 -20,-20"/>
+        </g>
+        <g transform="translate(-47,-117) rotate(20)">
+          <polygon points="0,-12 4,-4 12,0 4,4 0,12 -4,4 -12,0 -4,-4"/>
+        </g>
+        <g transform="translate(115,-122) rotate(20)">
+          <polygon points="0,-12 4,-4 12,0 4,4 0,12 -4,4 -12,0 -4,-4"/>
+        </g>
+      </g>
+    </mask>
+    <style>
+      .word{fill:#fff;font-family:"Noto Sans",Arial,sans-serif;font-weight:800;font-size:160px}
+      .sub{fill:#fff;opacity:.5;font-family:"Noto Sans",Arial,sans-serif;font-weight:400;font-size:40px}
+      .star-red{fill:#dd0000}
+    </style>
+  </defs>
+  <g id="wordmark" transform="translate(460,150)">
+    <!-- main text -->
+    <text x="20" y="-10" class="word" text-anchor="middle">Shınıer</text>
+    <!-- sub text -->
+    <text x="20" y="40" class="sub" text-anchor="middle" textLength="560" lengthAdjust="spacing">POLISH YOUR RUBY</text>
+    <!-- icon -->
+    <g mask="url(#star-mask)">
+      <rect x="-460" y="-150" width="800" height="200" class="star-red"/>
+    </g>
+  </g>
+</svg>
