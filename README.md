@@ -1,0 +1,2 @@
+# shinier
+A ruby formatter.
