@@ -1,0 +1,15 @@
+[package]
+name = "shinier"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ruby-prism = "1.4.0"
+bpaf = { version = "0.9.20", features = ["derive", "dull-color"] }
+
+[workspace.dependencies]
+shinier_cli = { path = "./creats/shinier_cli", version = "=0.1.0" }
+
+[[bin]]
+name = "shinier"
+path = "creats/shinier_cli/src/main.rs"
