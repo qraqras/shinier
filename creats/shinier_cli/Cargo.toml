@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 bpaf = { version = "0.9.20", features = ["derive", "dull-color"] }
+shinier_formatter = { workspace = true }
