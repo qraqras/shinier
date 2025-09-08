@@ -1,5 +1,5 @@
 use bpaf::*;
-use shinier_formatter::execute_formatting;
+use shinier_rb_formatter::execute_formatting;
 use std::path::PathBuf;
 
 #[derive(Debug, Clone, Bpaf)]

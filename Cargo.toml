@@ -4,4 +4,4 @@ members = ["creats/*"]
 [workspace.dependencies]
 shinier_cli = { path = "./creats/shinier_cli", version = "=0.1.0" }
 shinier_fs = { path = "./creats/shinier_fs", version = "=0.1.0" }
-shinier_formatter = { path = "./creats/shinier_formatter", version = "=0.1.0" }
+shinier_rb_formatter = { path = "./creats/shinier_rb_formatter", version = "=0.1.0" }
