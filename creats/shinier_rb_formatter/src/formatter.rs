@@ -1,12 +1,20 @@
-use ruby_prism::parse;
+use crate::printer::Printer;
 use shinier_fs::FsRoot;
 use std::ffi::OsStr;
 use std::fs;
 use std::path::PathBuf;
 
-pub fn execute_formatting(root_paths: Vec<PathBuf>) {
-    for root_path in root_paths.into_iter() {
-        let fs_root = FsRoot::new(root_path);
+pub struct Formatter {
+    pub path: PathBuf,
+    pub option: (),
+}
+
+impl Formatter {
+    pub fn new(path: PathBuf, option: ()) -> Self {
+        Self { path, option }
+    }
+    pub fn format(&self) {
+        let fs_root = FsRoot::new(self.path.clone());
         for file_path in fs_root
             .descendant_files()
             .filter_map(|r| r.ok())
@@ -14,15 +22,10 @@ pub fn execute_formatting(root_paths: Vec<PathBuf>) {
         {
             match fs::read_to_string(&file_path) {
                 Ok(contents) => {
-                    format_code(&file_path, &contents);
+                    Printer::new(contents, ()).print();
                 }
                 Err(e) => eprintln!("Error reading {:?}: {}", file_path, e),
             }
         }
     }
-}
-
-fn format_code(path: &PathBuf, src: &str) {
-    println!("Formatting file: {:?}", path);
-    println!("{:?}", parse(src.as_bytes()).node());
 }
