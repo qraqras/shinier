@@ -1,47 +1,30 @@
-pub type Docs = Vec<Box<dyn Doc>>;
+pub type Docs = Vec<Doc>;
 
-pub trait Doc {
-    fn content(&self) -> Option<String>;
-    fn children(&self) -> Option<&Docs>;
-}
-
-pub struct Raw {
-    pub content: String,
-}
-impl Doc for Raw {
-    fn content(&self) -> Option<String> {
-        Some(self.content.clone())
-    }
-    fn children(&self) -> Option<&Docs> {
-        None
-    }
-}
-pub struct Group {
-    pub children: Docs,
-}
-impl Doc for Group {
-    fn content(&self) -> Option<String> {
-        None
-    }
-    fn children(&self) -> Option<&Docs> {
-        Some(&self.children)
-    }
-}
-pub struct Indent {
-    pub content: Docs,
-}
-impl Doc for Indent {
-    fn content(&self) -> Option<String> {
-        None
-    }
-    fn children(&self) -> Option<&Docs> {
-        Some(&self.content)
-    }
+#[derive(Debug, Clone)]
+pub enum Doc {
+    Text(String),
+    SoftLine,
+    HardLine,
+    Sequence(Docs),
+    Group(Docs),
+    Indent(Docs),
 }
 
-pub fn raw(s: String) -> Box<dyn Doc> {
-    Box::new(Raw { content: s })
+pub fn text(s: String) -> Doc {
+    Doc::Text(s)
 }
-pub fn group(children: Docs) -> Box<dyn Doc> {
-    Box::new(Group { children })
+pub fn softline() -> Doc {
+    Doc::SoftLine
+}
+pub fn hardline() -> Doc {
+    Doc::HardLine
+}
+pub fn sequence(parts: Docs) -> Doc {
+    Doc::Sequence(parts)
+}
+pub fn group(contents: Docs) -> Doc {
+    Doc::Group(contents)
+}
+pub fn indent(contents: Docs) -> Doc {
+    Doc::Indent(contents)
 }
