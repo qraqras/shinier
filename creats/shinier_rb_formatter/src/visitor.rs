@@ -1,14 +1,25 @@
-// use std::io::Read;
-
 use crate::doc::*;
 use ruby_prism::*;
 
 pub struct Visitor {
     pub docs: Docs,
+    pub frame: Docs,
 }
 impl Visitor {
     pub fn new() -> Self {
-        Self { docs: vec![] }
+        Self {
+            docs: vec![],
+            frame: vec![],
+        }
+    }
+    fn pop_frame(&mut self) -> Doc {
+        self.frame.pop().unwrap_or_default()
+    }
+    fn push_frame(&mut self, doc: Doc) {
+        self.frame.push(doc);
+    }
+    fn clear_frame(&mut self) {
+        self.frame.clear();
     }
 }
 impl<'pr> Visit<'pr> for Visitor {
@@ -39,7 +50,14 @@ impl<'pr> Visit<'pr> for Visitor {
 
     /// Visits a `ArrayNode` node.
     fn visit_array_node(&mut self, node: &ArrayNode<'pr>) {
-        visit_array_node(self, node);
+        // visit_array_node(self, node);
+        let mut elements = vec![];
+        for node in node.elements().iter() {
+            self.visit(&node);
+            elements.push(self.pop_frame());
+            elements.push(text(", ".to_string()));
+        }
+        self.push_frame(sequence(elements));
     }
 
     /// Visits a `ArrayPatternNode` node.
@@ -104,7 +122,42 @@ impl<'pr> Visit<'pr> for Visitor {
 
     /// Visits a `CallNode` node.
     fn visit_call_node(&mut self, node: &CallNode<'pr>) {
-        visit_call_node(self, node);
+        /*
+        if let Some(node) = node.receiver() {
+            visitor.visit(&node);
+        }
+        if let Some(node) = node.arguments() {
+            visitor.visit_arguments_node(&node);
+        }
+        if let Some(node) = node.block() {
+            visitor.visit(&node);
+        }
+        */
+        self.frame.clear();
+        let recv = if let Some(node) = node.receiver() {
+            self.visit(&node);
+            self.frame.pop()
+        } else {
+            None
+        };
+        let args = if let Some(node) = node.arguments() {
+            self.visit_arguments_node(&node);
+            self.frame.pop()
+        } else {
+            None
+        };
+        let block = if let Some(node) = node.block() {
+            self.visit(&node);
+            self.frame.pop()
+        } else {
+            None
+        };
+        self.push_frame(sequence(vec![
+            recv.unwrap_or_default(),
+            text(String::from_utf8_lossy(node.name().as_slice()).to_string()),
+            args.unwrap_or_default(),
+            block.unwrap_or_default(),
+        ]));
     }
 
     /// Visits a `CallOperatorWriteNode` node.
@@ -431,7 +484,8 @@ impl<'pr> Visit<'pr> for Visitor {
 
     /// Visits a `IntegerNode` node.
     fn visit_integer_node(&mut self, node: &IntegerNode<'pr>) {
-        visit_integer_node(self, node);
+        let i: i32 = node.value().try_into().unwrap();
+        self.frame.push(text(i.to_string()));
     }
 
     /// Visits a `InterpolatedMatchLastLineNode` node.
@@ -730,7 +784,13 @@ impl<'pr> Visit<'pr> for Visitor {
 
     /// Visits a `StatementsNode` node.
     fn visit_statements_node(&mut self, node: &StatementsNode<'pr>) {
-        visit_statements_node(self, node);
+        // visit_statements_node(self, node);
+        for node in node.body().iter() {
+            self.clear_frame();
+            self.visit(&node);
+            let stmt = self.pop_frame();
+            self.docs.push(stmt);
+        }
     }
 
     /// Visits a `StringNode` node.

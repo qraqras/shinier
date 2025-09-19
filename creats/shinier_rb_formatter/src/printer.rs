@@ -27,18 +27,104 @@ impl Printer {
         visitor.docs
     }
     fn doc_to_src(&self, docs: Docs) {
-        fn print_docs(doc: &dyn Doc) {
-            if let Some(children) = doc.children() {
-                for child in children {
-                    print_docs(child.as_ref());
+        println!("----doc_to_src----");
+        const WIDTH: usize = 80;
+
+        struct State {
+            out: String,
+            indent: usize,
+            line_start: bool,
+            width: usize,
+        }
+
+        impl State {
+            fn write_indent(&mut self) {
+                if self.line_start && self.indent > 0 {
+                    self.out.push_str(&" ".repeat(self.indent));
+                    self.line_start = false;
                 }
-            } else {
-                println!("{:?}", doc.content().unwrap());
+            }
+            fn write_text(&mut self, s: &str) {
+                self.write_indent();
+                self.out.push_str(s);
+                self.line_start = false;
+            }
+            fn newline(&mut self) {
+                self.out.push('\n');
+                self.line_start = true;
             }
         }
-        println!("----doc_to_src----");
-        for doc in docs {
-            print_docs(doc.as_ref());
+
+        // Decide if a group fits on one line; naive measurement by concatenating leaf contents
+        fn measure_docs(children: &Docs, mut col: usize, width: usize) -> usize {
+            for ch in children {
+                col = measure(ch, col, width);
+                if col > width {
+                    return col;
+                }
+            }
+            col
         }
+
+        fn measure(doc: &Doc, current_col: usize, width: usize) -> usize {
+            match doc {
+                Doc::Text(s) => current_col + s.len(),
+                Doc::SoftLine => current_col + 1, // flatten時は空白
+                Doc::HardLine => width + 1,       // 強制的にはみ出させて折り返し
+                Doc::Group(children) => measure_docs(children, current_col, width),
+                Doc::Indent(children) => measure_docs(children, current_col, width),
+                Doc::Sequence(children) => measure_docs(children, current_col, width),
+            }
+        }
+
+        fn render(doc: &Doc, st: &mut State, flat: bool) {
+            match doc {
+                Doc::Group(children) => {
+                    let fits = measure_docs(children, 0, st.width) <= st.width;
+                    let next_flat = flat && fits;
+                    for ch in children {
+                        render(ch, st, next_flat);
+                    }
+                }
+                Doc::Indent(children) => {
+                    let prev = st.indent;
+                    st.indent += 2;
+                    for ch in children {
+                        render(ch, st, flat);
+                    }
+                    st.indent = prev;
+                }
+                Doc::SoftLine => {
+                    if flat {
+                        st.write_text(" ");
+                    } else {
+                        st.newline();
+                    }
+                }
+                Doc::HardLine => {
+                    st.newline();
+                }
+                Doc::Sequence(children) => {
+                    for ch in children {
+                        render(ch, st, flat);
+                    }
+                }
+                Doc::Text(s) => {
+                    st.write_text(s);
+                }
+            }
+        }
+
+        let mut st = State {
+            out: String::new(),
+            indent: 0,
+            line_start: true,
+            width: WIDTH,
+        };
+        for doc in docs.iter() {
+            render(doc, &mut st, true);
+            st.newline();
+        }
+        println!("{}", st.out);
     }
 }

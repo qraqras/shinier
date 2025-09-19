@@ -10,6 +10,12 @@ pub enum Doc {
     Indent(Docs),
 }
 
+impl Default for Doc {
+    fn default() -> Self {
+        Doc::Text(String::new())
+    }
+}
+
 pub fn text(s: String) -> Doc {
     Doc::Text(s)
 }
