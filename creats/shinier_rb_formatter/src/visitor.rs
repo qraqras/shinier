@@ -1,3 +1,4 @@
+use crate::builder::*;
 use crate::doc::*;
 use ruby_prism::*;
 
@@ -51,13 +52,10 @@ impl<'pr> Visit<'pr> for Visitor {
     /// Visits a `ArrayNode` node.
     fn visit_array_node(&mut self, node: &ArrayNode<'pr>) {
         // visit_array_node(self, node);
-        let mut elements = vec![];
         for node in node.elements().iter() {
             self.visit(&node);
-            elements.push(self.pop_frame());
-            elements.push(text(", ".to_string()));
         }
-        self.push_frame(sequence(elements));
+        self.push_frame(array(&self.frame));
     }
 
     /// Visits a `ArrayPatternNode` node.
@@ -140,12 +138,14 @@ impl<'pr> Visit<'pr> for Visitor {
         } else {
             None
         };
+        self.frame.clear();
         let args = if let Some(node) = node.arguments() {
             self.visit_arguments_node(&node);
             self.frame.pop()
         } else {
             None
         };
+        self.frame.clear();
         let block = if let Some(node) = node.block() {
             self.visit(&node);
             self.frame.pop()
@@ -155,7 +155,9 @@ impl<'pr> Visit<'pr> for Visitor {
         self.push_frame(sequence(vec![
             recv.unwrap_or_default(),
             text(String::from_utf8_lossy(node.name().as_slice()).to_string()),
+            text("(".to_string()),
             args.unwrap_or_default(),
+            text(")".to_string()),
             block.unwrap_or_default(),
         ]));
     }
