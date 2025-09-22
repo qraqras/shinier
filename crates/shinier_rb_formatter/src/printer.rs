@@ -12,12 +12,12 @@ impl Printer {
     }
     pub fn print(&self) {
         println!("----print----");
-        let parsed = self.src_to_ast();
+        let parsed = self.str_to_ast();
         let docs = self.ast_to_doc(&parsed);
-        self.doc_to_src(docs);
+        self.doc_to_str(docs);
     }
-    fn src_to_ast(&self) -> ParseResult<'_> {
-        println!("----src_to_ast----");
+    fn str_to_ast(&self) -> ParseResult<'_> {
+        println!("----str_to_ast----");
         parse(self.src.as_bytes())
     }
     fn ast_to_doc(&self, parsed: &ParseResult) -> Docs {
@@ -26,8 +26,8 @@ impl Printer {
         visitor.visit(&parsed.node());
         visitor.docs
     }
-    fn doc_to_src(&self, docs: Docs) {
-        println!("----doc_to_src----");
+    fn doc_to_str(&self, docs: Docs) {
+        println!("----doc_to_str----");
         const WIDTH: usize = 80;
 
         struct State {

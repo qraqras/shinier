@@ -1,7 +1,7 @@
 [workspace]
-members = ["creats/*"]
+members = ["crates/*"]
 
 [workspace.dependencies]
-shinier_cli = { path = "./creats/shinier_cli", version = "=0.1.0" }
-shinier_fs = { path = "./creats/shinier_fs", version = "=0.1.0" }
-shinier_rb_formatter = { path = "./creats/shinier_rb_formatter", version = "=0.1.0" }
+shinier_cli = { path = "./crates/shinier_cli", version = "=0.1.0" }
+shinier_fs = { path = "./crates/shinier_fs", version = "=0.1.0" }
+shinier_rb_formatter = { path = "./crates/shinier_rb_formatter", version = "=0.1.0" }

@@ -121,46 +121,7 @@ impl<'pr> Visit<'pr> for Visitor {
 
     /// Visits a `CallNode` node.
     fn visit_call_node(&mut self, node: &CallNode<'pr>) {
-        /*
-        if let Some(node) = node.receiver() {
-            visitor.visit(&node);
-        }
-        if let Some(node) = node.arguments() {
-            visitor.visit_arguments_node(&node);
-        }
-        if let Some(node) = node.block() {
-            visitor.visit(&node);
-        }
-        */
-        self.frame.clear();
-        let recv = if let Some(node) = node.receiver() {
-            self.visit(&node);
-            self.frame.pop()
-        } else {
-            None
-        };
-        self.frame.clear();
-        let args = if let Some(node) = node.arguments() {
-            self.visit_arguments_node(&node);
-            self.frame.pop()
-        } else {
-            None
-        };
-        self.frame.clear();
-        let block = if let Some(node) = node.block() {
-            self.visit(&node);
-            self.frame.pop()
-        } else {
-            None
-        };
-        self.push_frame(sequence(vec![
-            recv.unwrap_or_default(),
-            text(String::from_utf8_lossy(node.name().as_slice()).to_string()),
-            text("(".to_string()),
-            args.unwrap_or_default(),
-            text(")".to_string()),
-            block.unwrap_or_default(),
-        ]));
+        s_visit_call_node(self, node);
     }
 
     /// Visits a `CallOperatorWriteNode` node.
