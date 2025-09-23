@@ -1,5 +1,5 @@
+use crate::ast_to_doc::printer::*;
 use crate::doc::*;
-use crate::visitor::Visitor;
 use ruby_prism::*;
 
 pub struct Printer {
@@ -20,13 +20,11 @@ impl Printer {
         println!("----str_to_ast----");
         parse(self.src.as_bytes())
     }
-    fn ast_to_doc(&self, parsed: &ParseResult) -> Docs {
+    fn ast_to_doc(&self, parsed: &ParseResult) -> Doc {
         println!("----ast_to_doc----");
-        let mut visitor = Visitor::new();
-        visitor.visit(&parsed.node());
-        visitor.docs
+        print(&parsed.node())
     }
-    fn doc_to_str(&self, docs: Docs) {
+    fn doc_to_str(&self, docs: Doc) {
         println!("----doc_to_str----");
         const WIDTH: usize = 80;
 
@@ -121,10 +119,8 @@ impl Printer {
             line_start: true,
             width: WIDTH,
         };
-        for doc in docs.iter() {
-            render(doc, &mut st, true);
-            st.newline();
-        }
+        render(&docs, &mut st, true);
+        st.newline();
         println!("{}", st.out);
     }
 }

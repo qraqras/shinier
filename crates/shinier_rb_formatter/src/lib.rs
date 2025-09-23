@@ -1,13 +1,11 @@
-mod ast;
+mod ast_to_doc;
 mod doc;
 mod formatter;
 mod layout;
 mod printer;
-mod visitor;
 
-pub use ast::*;
+pub use ast_to_doc::*;
 pub use doc::*;
 pub use formatter::*;
 pub use layout::*;
 pub use printer::*;
-pub use visitor::*;
