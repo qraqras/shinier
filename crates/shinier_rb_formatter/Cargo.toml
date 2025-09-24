@@ -1,0 +1,8 @@
+[package]
+name = "shinier_rb_formatter"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ruby-prism = { version = "1.4.0" }
+shinier_fs = { workspace = true }
