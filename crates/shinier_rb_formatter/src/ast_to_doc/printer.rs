@@ -2,6 +2,7 @@ use crate::ast_to_doc::node::*;
 use crate::doc::*;
 use ruby_prism::*;
 
+#[rustfmt::skip]
 pub fn print(node: &Node) -> Doc {
     match node {
         Node::AliasGlobalVariableNode { .. } => {
@@ -13,38 +14,54 @@ pub fn print(node: &Node) -> Doc {
         Node::AlternationPatternNode { .. } => {
             alternation_pattern_node::print(&node.as_alternation_pattern_node().unwrap())
         }
-        Node::AndNode { .. } => and_node::print(&node.as_and_node().unwrap()),
-        Node::ArgumentsNode { .. } => arguments_node::print(&node.as_arguments_node().unwrap()),
-        Node::ArrayNode { .. } => array_node::print(&node.as_array_node().unwrap()),
+        Node::AndNode { .. } => {
+            and_node::print(&node.as_and_node().unwrap())
+        }
+        Node::ArgumentsNode { .. } => {
+            arguments_node::print(&node.as_arguments_node().unwrap())
+        }
+        Node::ArrayNode { .. } => {
+            array_node::print(&node.as_array_node().unwrap())
+        }
         Node::ArrayPatternNode { .. } => {
             array_pattern_node::print(&node.as_array_pattern_node().unwrap())
         }
-        Node::AssocNode { .. } => assoc_node::print(&node.as_assoc_node().unwrap()),
+        Node::AssocNode { .. } => {
+            assoc_node::print(&node.as_assoc_node().unwrap())
+        }
         Node::AssocSplatNode { .. } => {
             assoc_splat_node::print(&node.as_assoc_splat_node().unwrap())
         }
         Node::BackReferenceReadNode { .. } => {
             back_reference_read_node::print(&node.as_back_reference_read_node().unwrap())
         }
-        Node::BeginNode { .. } => begin_node::print(&node.as_begin_node().unwrap()),
+        Node::BeginNode { .. } => {
+            begin_node::print(&node.as_begin_node().unwrap())
+        }
         Node::BlockArgumentNode { .. } => {
             block_argument_node::print(&node.as_block_argument_node().unwrap())
         }
         Node::BlockLocalVariableNode { .. } => {
             block_local_variable_node::print(&node.as_block_local_variable_node().unwrap())
         }
-        Node::BlockNode { .. } => block_node::print(&node.as_block_node().unwrap()),
+        Node::BlockNode { .. } => {
+            block_node::print(&node.as_block_node().unwrap())
+        }
         Node::BlockParameterNode { .. } => {
             block_parameter_node::print(&node.as_block_parameter_node().unwrap())
         }
         Node::BlockParametersNode { .. } => {
             block_parameters_node::print(&node.as_block_parameters_node().unwrap())
         }
-        Node::BreakNode { .. } => break_node::print(&node.as_break_node().unwrap()),
+        Node::BreakNode { .. } => {
+            break_node::print(&node.as_break_node().unwrap())
+        }
         Node::CallAndWriteNode { .. } => {
             call_and_write_node::print(&node.as_call_and_write_node().unwrap())
         }
-        Node::CallNode { .. } => call_node::print(&node.as_call_node().unwrap()),
+        Node::CallNode { .. } => {
+            call_node::print(&node.as_call_node().unwrap())
+        }
         Node::CallOperatorWriteNode { .. } => {
             call_operator_write_node::print(&node.as_call_operator_write_node().unwrap())
         }
@@ -57,15 +74,21 @@ pub fn print(node: &Node) -> Doc {
         Node::CapturePatternNode { .. } => {
             capture_pattern_node::print(&node.as_capture_pattern_node().unwrap())
         }
-        Node::CaseMatchNode { .. } => case_match_node::print(&node.as_case_match_node().unwrap()),
-        Node::CaseNode { .. } => case_node::print(&node.as_case_node().unwrap()),
-        Node::ClassNode { .. } => class_node::print(&node.as_class_node().unwrap()),
+        Node::CaseMatchNode { .. } => {
+            case_match_node::print(&node.as_case_match_node().unwrap())
+        }
+        Node::CaseNode { .. } => {
+            case_node::print(&node.as_case_node().unwrap())
+        }
+        Node::ClassNode { .. } => {
+            class_node::print(&node.as_class_node().unwrap())
+        }
         Node::ClassVariableAndWriteNode { .. } => {
             class_variable_and_write_node::print(&node.as_class_variable_and_write_node().unwrap())
         }
-        Node::ClassVariableOperatorWriteNode { .. } => class_variable_operator_write_node::print(
-            &node.as_class_variable_operator_write_node().unwrap(),
-        ),
+        Node::ClassVariableOperatorWriteNode { .. } => {
+            class_variable_operator_write_node::print(&node.as_class_variable_operator_write_node().unwrap())
+        }
         Node::ClassVariableOrWriteNode { .. } => {
             class_variable_or_write_node::print(&node.as_class_variable_or_write_node().unwrap())
         }
@@ -93,9 +116,9 @@ pub fn print(node: &Node) -> Doc {
         Node::ConstantPathNode { .. } => {
             constant_path_node::print(&node.as_constant_path_node().unwrap())
         }
-        Node::ConstantPathOperatorWriteNode { .. } => constant_path_operator_write_node::print(
-            &node.as_constant_path_operator_write_node().unwrap(),
-        ),
+        Node::ConstantPathOperatorWriteNode { .. } => {
+            constant_path_operator_write_node::print(&node.as_constant_path_operator_write_node().unwrap())
+        }
         Node::ConstantPathOrWriteNode { .. } => {
             constant_path_or_write_node::print(&node.as_constant_path_or_write_node().unwrap())
         }
@@ -114,23 +137,39 @@ pub fn print(node: &Node) -> Doc {
         Node::ConstantWriteNode { .. } => {
             constant_write_node::print(&node.as_constant_write_node().unwrap())
         }
-        Node::DefNode { .. } => def_node::print(&node.as_def_node().unwrap()),
-        Node::DefinedNode { .. } => defined_node::print(&node.as_defined_node().unwrap()),
-        Node::ElseNode { .. } => else_node::print(&node.as_else_node().unwrap()),
+        Node::DefNode { .. } => {
+            def_node::print(&node.as_def_node().unwrap())
+        }
+        Node::DefinedNode { .. } => {
+            defined_node::print(&node.as_defined_node().unwrap())
+        }
+        Node::ElseNode { .. } => {
+            else_node::print(&node.as_else_node().unwrap())
+        }
         Node::EmbeddedStatementsNode { .. } => {
             embedded_statements_node::print(&node.as_embedded_statements_node().unwrap())
         }
         Node::EmbeddedVariableNode { .. } => {
             embedded_variable_node::print(&node.as_embedded_variable_node().unwrap())
         }
-        Node::EnsureNode { .. } => ensure_node::print(&node.as_ensure_node().unwrap()),
-        Node::FalseNode { .. } => false_node::print(&node.as_false_node().unwrap()),
+        Node::EnsureNode { .. } => {
+            ensure_node::print(&node.as_ensure_node().unwrap())
+        }
+        Node::FalseNode { .. } => {
+            false_node::print(&node.as_false_node().unwrap())
+        }
         Node::FindPatternNode { .. } => {
             find_pattern_node::print(&node.as_find_pattern_node().unwrap())
         }
-        Node::FlipFlopNode { .. } => flip_flop_node::print(&node.as_flip_flop_node().unwrap()),
-        Node::FloatNode { .. } => float_node::print(&node.as_float_node().unwrap()),
-        Node::ForNode { .. } => for_node::print(&node.as_for_node().unwrap()),
+        Node::FlipFlopNode { .. } => {
+            flip_flop_node::print(&node.as_flip_flop_node().unwrap())
+        }
+        Node::FloatNode { .. } => {
+            float_node::print(&node.as_float_node().unwrap())
+        }
+        Node::ForNode { .. } => {
+            for_node::print(&node.as_for_node().unwrap())
+        }
         Node::ForwardingArgumentsNode { .. } => {
             forwarding_arguments_node::print(&node.as_forwarding_arguments_node().unwrap())
         }
@@ -140,12 +179,12 @@ pub fn print(node: &Node) -> Doc {
         Node::ForwardingSuperNode { .. } => {
             forwarding_super_node::print(&node.as_forwarding_super_node().unwrap())
         }
-        Node::GlobalVariableAndWriteNode { .. } => global_variable_and_write_node::print(
-            &node.as_global_variable_and_write_node().unwrap(),
-        ),
-        Node::GlobalVariableOperatorWriteNode { .. } => global_variable_operator_write_node::print(
-            &node.as_global_variable_operator_write_node().unwrap(),
-        ),
+        Node::GlobalVariableAndWriteNode { .. } => {
+            global_variable_and_write_node::print(&node.as_global_variable_and_write_node().unwrap())
+        }
+        Node::GlobalVariableOperatorWriteNode { .. } => {
+            global_variable_operator_write_node::print(&node.as_global_variable_operator_write_node().unwrap())
+        }
         Node::GlobalVariableOrWriteNode { .. } => {
             global_variable_or_write_node::print(&node.as_global_variable_or_write_node().unwrap())
         }
@@ -158,17 +197,27 @@ pub fn print(node: &Node) -> Doc {
         Node::GlobalVariableWriteNode { .. } => {
             global_variable_write_node::print(&node.as_global_variable_write_node().unwrap())
         }
-        Node::HashNode { .. } => hash_node::print(&node.as_hash_node().unwrap()),
+        Node::HashNode { .. } => {
+            hash_node::print(&node.as_hash_node().unwrap())
+        }
         Node::HashPatternNode { .. } => {
             hash_pattern_node::print(&node.as_hash_pattern_node().unwrap())
         }
-        Node::IfNode { .. } => if_node::print(&node.as_if_node().unwrap()),
-        Node::ImaginaryNode { .. } => imaginary_node::print(&node.as_imaginary_node().unwrap()),
-        Node::ImplicitNode { .. } => implicit_node::print(&node.as_implicit_node().unwrap()),
+        Node::IfNode { .. } => {
+            if_node::print(&node.as_if_node().unwrap())
+        }
+        Node::ImaginaryNode { .. } => {
+            imaginary_node::print(&node.as_imaginary_node().unwrap())
+        }
+        Node::ImplicitNode { .. } => {
+            implicit_node::print(&node.as_implicit_node().unwrap())
+        }
         Node::ImplicitRestNode { .. } => {
             implicit_rest_node::print(&node.as_implicit_rest_node().unwrap())
         }
-        Node::InNode { .. } => in_node::print(&node.as_in_node().unwrap()),
+        Node::InNode { .. } => {
+            in_node::print(&node.as_in_node().unwrap())
+        }
         Node::IndexAndWriteNode { .. } => {
             index_and_write_node::print(&node.as_index_and_write_node().unwrap())
         }
@@ -181,17 +230,15 @@ pub fn print(node: &Node) -> Doc {
         Node::IndexTargetNode { .. } => {
             index_target_node::print(&node.as_index_target_node().unwrap())
         }
-        Node::InstanceVariableAndWriteNode { .. } => instance_variable_and_write_node::print(
-            &node.as_instance_variable_and_write_node().unwrap(),
-        ),
-        Node::InstanceVariableOperatorWriteNode { .. } => {
-            instance_variable_operator_write_node::print(
-                &node.as_instance_variable_operator_write_node().unwrap(),
-            )
+        Node::InstanceVariableAndWriteNode { .. } => {
+            instance_variable_and_write_node::print(&node.as_instance_variable_and_write_node().unwrap())
         }
-        Node::InstanceVariableOrWriteNode { .. } => instance_variable_or_write_node::print(
-            &node.as_instance_variable_or_write_node().unwrap(),
-        ),
+        Node::InstanceVariableOperatorWriteNode { .. } => {
+            instance_variable_operator_write_node::print(&node.as_instance_variable_operator_write_node().unwrap())
+        }
+        Node::InstanceVariableOrWriteNode { .. } => {
+            instance_variable_or_write_node::print(&node.as_instance_variable_or_write_node().unwrap())
+        }
         Node::InstanceVariableReadNode { .. } => {
             instance_variable_read_node::print(&node.as_instance_variable_read_node().unwrap())
         }
@@ -201,14 +248,14 @@ pub fn print(node: &Node) -> Doc {
         Node::InstanceVariableWriteNode { .. } => {
             instance_variable_write_node::print(&node.as_instance_variable_write_node().unwrap())
         }
-        Node::IntegerNode { .. } => integer_node::print(&node.as_integer_node().unwrap()),
-        Node::InterpolatedMatchLastLineNode { .. } => interpolated_match_last_line_node::print(
-            &node.as_interpolated_match_last_line_node().unwrap(),
-        ),
+        Node::IntegerNode { .. } => {
+            integer_node::print(&node.as_integer_node().unwrap())
+        }
+        Node::InterpolatedMatchLastLineNode { .. } => {
+            interpolated_match_last_line_node::print(&node.as_interpolated_match_last_line_node().unwrap())
+        }
         Node::InterpolatedRegularExpressionNode { .. } => {
-            interpolated_regular_expression_node::print(
-                &node.as_interpolated_regular_expression_node().unwrap(),
-            )
+            interpolated_regular_expression_node::print(&node.as_interpolated_regular_expression_node().unwrap())
         }
         Node::InterpolatedStringNode { .. } => {
             interpolated_string_node::print(&node.as_interpolated_string_node().unwrap())
@@ -231,13 +278,15 @@ pub fn print(node: &Node) -> Doc {
         Node::KeywordRestParameterNode { .. } => {
             keyword_rest_parameter_node::print(&node.as_keyword_rest_parameter_node().unwrap())
         }
-        Node::LambdaNode { .. } => lambda_node::print(&node.as_lambda_node().unwrap()),
+        Node::LambdaNode { .. } => {
+            lambda_node::print(&node.as_lambda_node().unwrap())
+        }
         Node::LocalVariableAndWriteNode { .. } => {
             local_variable_and_write_node::print(&node.as_local_variable_and_write_node().unwrap())
         }
-        Node::LocalVariableOperatorWriteNode { .. } => local_variable_operator_write_node::print(
-            &node.as_local_variable_operator_write_node().unwrap(),
-        ),
+        Node::LocalVariableOperatorWriteNode { .. } => {
+            local_variable_operator_write_node::print(&node.as_local_variable_operator_write_node().unwrap())
+        }
         Node::LocalVariableOrWriteNode { .. } => {
             local_variable_or_write_node::print(&node.as_local_variable_or_write_node().unwrap())
         }
@@ -262,16 +311,24 @@ pub fn print(node: &Node) -> Doc {
         Node::MatchWriteNode { .. } => {
             match_write_node::print(&node.as_match_write_node().unwrap())
         }
-        Node::MissingNode { .. } => missing_node::print(&node.as_missing_node().unwrap()),
-        Node::ModuleNode { .. } => module_node::print(&node.as_module_node().unwrap()),
+        Node::MissingNode { .. } => {
+            missing_node::print(&node.as_missing_node().unwrap())
+        }
+        Node::ModuleNode { .. } => {
+            module_node::print(&node.as_module_node().unwrap())
+        }
         Node::MultiTargetNode { .. } => {
             multi_target_node::print(&node.as_multi_target_node().unwrap())
         }
         Node::MultiWriteNode { .. } => {
             multi_write_node::print(&node.as_multi_write_node().unwrap())
         }
-        Node::NextNode { .. } => next_node::print(&node.as_next_node().unwrap()),
-        Node::NilNode { .. } => nil_node::print(&node.as_nil_node().unwrap()),
+        Node::NextNode { .. } => {
+            next_node::print(&node.as_next_node().unwrap())
+        }
+        Node::NilNode { .. } => {
+            nil_node::print(&node.as_nil_node().unwrap())
+        }
         Node::NoKeywordsParameterNode { .. } => {
             no_keywords_parameter_node::print(&node.as_no_keywords_parameter_node().unwrap())
         }
@@ -281,14 +338,18 @@ pub fn print(node: &Node) -> Doc {
         Node::NumberedReferenceReadNode { .. } => {
             numbered_reference_read_node::print(&node.as_numbered_reference_read_node().unwrap())
         }
-        Node::OptionalKeywordParameterNode { .. } => optional_keyword_parameter_node::print(
-            &node.as_optional_keyword_parameter_node().unwrap(),
-        ),
+        Node::OptionalKeywordParameterNode { .. } => {
+            optional_keyword_parameter_node::print(&node.as_optional_keyword_parameter_node().unwrap())
+        }
         Node::OptionalParameterNode { .. } => {
             optional_parameter_node::print(&node.as_optional_parameter_node().unwrap())
         }
-        Node::OrNode { .. } => or_node::print(&node.as_or_node().unwrap()),
-        Node::ParametersNode { .. } => parameters_node::print(&node.as_parameters_node().unwrap()),
+        Node::OrNode { .. } => {
+            or_node::print(&node.as_or_node().unwrap())
+        }
+        Node::ParametersNode { .. } => {
+            parameters_node::print(&node.as_parameters_node().unwrap())
+        }
         Node::ParenthesesNode { .. } => {
             parentheses_node::print(&node.as_parentheses_node().unwrap())
         }
@@ -304,29 +365,45 @@ pub fn print(node: &Node) -> Doc {
         Node::PreExecutionNode { .. } => {
             pre_execution_node::print(&node.as_pre_execution_node().unwrap())
         }
-        Node::ProgramNode { .. } => program_node::print(&node.as_program_node().unwrap()),
-        Node::RangeNode { .. } => range_node::print(&node.as_range_node().unwrap()),
-        Node::RationalNode { .. } => rational_node::print(&node.as_rational_node().unwrap()),
-        Node::RedoNode { .. } => redo_node::print(&node.as_redo_node().unwrap()),
+        Node::ProgramNode { .. } => {
+            program_node::print(&node.as_program_node().unwrap())
+        }
+        Node::RangeNode { .. } => {
+            range_node::print(&node.as_range_node().unwrap())
+        }
+        Node::RationalNode { .. } => {
+            rational_node::print(&node.as_rational_node().unwrap())
+        }
+        Node::RedoNode { .. } => {
+            redo_node::print(&node.as_redo_node().unwrap())
+        }
         Node::RegularExpressionNode { .. } => {
             regular_expression_node::print(&node.as_regular_expression_node().unwrap())
         }
-        Node::RequiredKeywordParameterNode { .. } => required_keyword_parameter_node::print(
-            &node.as_required_keyword_parameter_node().unwrap(),
-        ),
+        Node::RequiredKeywordParameterNode { .. } => {
+            required_keyword_parameter_node::print(&node.as_required_keyword_parameter_node().unwrap())
+        }
         Node::RequiredParameterNode { .. } => {
             required_parameter_node::print(&node.as_required_parameter_node().unwrap())
         }
         Node::RescueModifierNode { .. } => {
             rescue_modifier_node::print(&node.as_rescue_modifier_node().unwrap())
         }
-        Node::RescueNode { .. } => rescue_node::print(&node.as_rescue_node().unwrap()),
+        Node::RescueNode { .. } => {
+            rescue_node::print(&node.as_rescue_node().unwrap())
+        }
         Node::RestParameterNode { .. } => {
             rest_parameter_node::print(&node.as_rest_parameter_node().unwrap())
         }
-        Node::RetryNode { .. } => retry_node::print(&node.as_retry_node().unwrap()),
-        Node::ReturnNode { .. } => return_node::print(&node.as_return_node().unwrap()),
-        Node::SelfNode { .. } => self_node::print(&node.as_self_node().unwrap()),
+        Node::RetryNode { .. } => {
+            retry_node::print(&node.as_retry_node().unwrap())
+        }
+        Node::ReturnNode { .. } => {
+            return_node::print(&node.as_return_node().unwrap())
+        }
+        Node::SelfNode { .. } => {
+            self_node::print(&node.as_self_node().unwrap())
+        }
         Node::ShareableConstantNode { .. } => {
             shareable_constant_node::print(&node.as_shareable_constant_node().unwrap())
         }
@@ -342,18 +419,44 @@ pub fn print(node: &Node) -> Doc {
         Node::SourceLineNode { .. } => {
             source_line_node::print(&node.as_source_line_node().unwrap())
         }
-        Node::SplatNode { .. } => splat_node::print(&node.as_splat_node().unwrap()),
-        Node::StatementsNode { .. } => statements_node::print(&node.as_statements_node().unwrap()),
-        Node::StringNode { .. } => string_node::print(&node.as_string_node().unwrap()),
-        Node::SuperNode { .. } => super_node::print(&node.as_super_node().unwrap()),
-        Node::SymbolNode { .. } => symbol_node::print(&node.as_symbol_node().unwrap()),
-        Node::TrueNode { .. } => true_node::print(&node.as_true_node().unwrap()),
-        Node::UndefNode { .. } => undef_node::print(&node.as_undef_node().unwrap()),
-        Node::UnlessNode { .. } => unless_node::print(&node.as_unless_node().unwrap()),
-        Node::UntilNode { .. } => until_node::print(&node.as_until_node().unwrap()),
-        Node::WhenNode { .. } => when_node::print(&node.as_when_node().unwrap()),
-        Node::WhileNode { .. } => while_node::print(&node.as_while_node().unwrap()),
-        Node::XStringNode { .. } => x_string_node::print(&node.as_x_string_node().unwrap()),
-        Node::YieldNode { .. } => yield_node::print(&node.as_yield_node().unwrap()),
+        Node::SplatNode { .. } => {
+            splat_node::print(&node.as_splat_node().unwrap())
+        }
+        Node::StatementsNode { .. } => {
+            statements_node::print(&node.as_statements_node().unwrap())
+        }
+        Node::StringNode { .. } => {
+            string_node::print(&node.as_string_node().unwrap())
+        }
+        Node::SuperNode { .. } => {
+            super_node::print(&node.as_super_node().unwrap())
+        }
+        Node::SymbolNode { .. } => {
+            symbol_node::print(&node.as_symbol_node().unwrap())
+        }
+        Node::TrueNode { .. } => {
+            true_node::print(&node.as_true_node().unwrap())
+        }
+        Node::UndefNode { .. } => {
+            undef_node::print(&node.as_undef_node().unwrap())
+        }
+        Node::UnlessNode { .. } => {
+            unless_node::print(&node.as_unless_node().unwrap())
+        }
+        Node::UntilNode { .. } => {
+            until_node::print(&node.as_until_node().unwrap())
+        }
+        Node::WhenNode { .. } => {
+            when_node::print(&node.as_when_node().unwrap())
+        }
+        Node::WhileNode { .. } => {
+            while_node::print(&node.as_while_node().unwrap())
+        }
+        Node::XStringNode { .. } => {
+            x_string_node::print(&node.as_x_string_node().unwrap())
+        }
+        Node::YieldNode { .. } => {
+            yield_node::print(&node.as_yield_node().unwrap())
+        }
     }
 }
