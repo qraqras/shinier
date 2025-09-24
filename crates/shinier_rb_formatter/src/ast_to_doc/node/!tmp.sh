@@ -3,7 +3,7 @@ use crate::doc::*;
 use ruby_prism::*;
 
 pub fn print(node: &Node) -> Doc {
-        return text("not implemented".to_string());
+        return text("not implemented");
 }
 RUST
 
