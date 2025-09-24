@@ -1,6 +1,12 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::ast_to_doc::printer;
+use crate::doc::{Doc, hardline, sequence};
+use ruby_prism::StatementsNode;
 
 pub fn print(node: &StatementsNode) -> Doc {
-    return text("not implemented".to_string());
+    let mut statements = vec![];
+    for node in node.body().iter() {
+        statements.push(printer::print(&node));
+        statements.push(hardline());
+    }
+    sequence(statements)
 }

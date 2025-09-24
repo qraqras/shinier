@@ -1,6 +1,7 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, text};
+use ruby_prism::IntegerNode;
 
 pub fn print(node: &IntegerNode) -> Doc {
-    return text("not implemented".to_string());
+    let value: i32 = node.value().try_into().unwrap();
+    return text(value.to_string());
 }

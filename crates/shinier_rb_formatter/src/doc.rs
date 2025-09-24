@@ -16,8 +16,11 @@ impl Default for Doc {
     }
 }
 
-pub fn text(s: String) -> Doc {
-    Doc::Text(s)
+pub fn text<S: Into<String>>(s: S) -> Doc {
+    Doc::Text(s.into())
+}
+pub fn text_u8(s: &[u8]) -> Doc {
+    Doc::Text(String::from_utf8_lossy(s).to_string())
 }
 pub fn softline() -> Doc {
     Doc::SoftLine

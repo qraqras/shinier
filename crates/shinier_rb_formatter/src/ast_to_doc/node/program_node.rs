@@ -1,6 +1,7 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::ast_to_doc::node::statements_node;
+use crate::doc::Doc;
+use ruby_prism::ProgramNode;
 
 pub fn print(node: &ProgramNode) -> Doc {
-    return text("not implemented".to_string());
+    statements_node::print(&node.statements())
 }
