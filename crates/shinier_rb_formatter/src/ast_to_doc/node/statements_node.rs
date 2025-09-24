@@ -3,7 +3,7 @@ use crate::doc::{Doc, hardline, sequence};
 use ruby_prism::StatementsNode;
 
 pub fn print(node: &StatementsNode) -> Doc {
-    let mut statements = vec![];
+    let mut statements = Vec::new();
     for node in node.body().iter() {
         statements.push(printer::print(&node));
         statements.push(hardline());

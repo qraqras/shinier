@@ -67,8 +67,9 @@ impl Printer {
         fn measure(doc: &Doc, current_col: usize, width: usize) -> usize {
             match doc {
                 Doc::Text(s) => current_col + s.len(),
-                Doc::SoftLine => current_col + 1, // flatten時は空白
-                Doc::HardLine => width + 1,       // 強制的にはみ出させて折り返し
+                Doc::Line => current_col + 1,
+                Doc::SoftLine => current_col,
+                Doc::HardLine => width + 1,
                 Doc::Group(children) => measure_docs(children, current_col, width),
                 Doc::Indent(children) => measure_docs(children, current_col, width),
                 Doc::Sequence(children) => measure_docs(children, current_col, width),
@@ -92,10 +93,15 @@ impl Printer {
                     }
                     st.indent = prev;
                 }
-                Doc::SoftLine => {
+                Doc::Line => {
                     if flat {
                         st.write_text(" ");
                     } else {
+                        st.newline();
+                    }
+                }
+                Doc::SoftLine => {
+                    if !flat {
                         st.newline();
                     }
                 }

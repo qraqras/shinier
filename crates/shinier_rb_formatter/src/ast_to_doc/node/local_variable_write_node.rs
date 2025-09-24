@@ -4,6 +4,7 @@ use ruby_prism::*;
 
 pub fn print(node: &LocalVariableWriteNode) -> Doc {
     let name = text_u8(node.name().as_slice());
-    let op = text(" = ".to_string());
-    sequence(vec![name, op, printer::print(&node.value())])
+    let operator = text(" =");
+    let value = printer::print(&node.value());
+    sequence(vec![name, operator, line(), value])
 }
