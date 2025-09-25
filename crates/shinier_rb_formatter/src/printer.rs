@@ -70,28 +70,19 @@ impl Printer {
                 Doc::Line => current_col + 1,
                 Doc::SoftLine => current_col,
                 Doc::HardLine => width + 1,
-                Doc::Group(children) => measure_docs(children, current_col, width),
-                Doc::Indent(children) => measure_docs(children, current_col, width),
                 Doc::Sequence(children) => measure_docs(children, current_col, width),
+                Doc::Group(children) => measure_docs(children, current_col, width),
+                Doc::Indent(children) => width + 1,
+                Doc::IndentIfBreak(children) => width + 1,
+                Doc::Fill(children) => measure_docs(children, current_col, width),
+                Doc::IfBreak { r#break, flat } => current_col + 1,
             }
         }
 
         fn render(doc: &Doc, st: &mut State, flat: bool) {
             match doc {
-                Doc::Group(children) => {
-                    let fits = measure_docs(children, 0, st.width) <= st.width;
-                    let next_flat = flat && fits;
-                    for ch in children {
-                        render(ch, st, next_flat);
-                    }
-                }
-                Doc::Indent(children) => {
-                    let prev = st.indent;
-                    st.indent += 2;
-                    for ch in children {
-                        render(ch, st, flat);
-                    }
-                    st.indent = prev;
+                Doc::Text(s) => {
+                    st.write_text(s);
                 }
                 Doc::Line => {
                     if flat {
@@ -113,8 +104,48 @@ impl Printer {
                         render(ch, st, flat);
                     }
                 }
-                Doc::Text(s) => {
-                    st.write_text(s);
+                Doc::Group(children) => {
+                    let fits = measure_docs(children, 0, st.width) <= st.width;
+                    let next_flat = flat && fits;
+                    for ch in children {
+                        render(ch, st, next_flat);
+                    }
+                }
+                Doc::Indent(children) => {
+                    let prev = st.indent;
+                    st.indent += 2;
+                    render(children, st, flat);
+                    st.indent = prev;
+                }
+                Doc::IndentIfBreak(children) => {
+                    let prev = st.indent;
+                    if !flat {
+                        st.indent += 2;
+                    }
+                    render(children, st, flat);
+                    st.indent = prev;
+                }
+                Doc::Fill(children) => {
+                    let mut iter = children.iter().peekable();
+                    while let Some(ch) = iter.next() {
+                        let is_last = iter.peek().is_none();
+                        render(ch, st, flat);
+                        if !is_last {
+                            if !flat {
+                                st.newline();
+                            }
+                        }
+                    }
+                }
+                Doc::IfBreak {
+                    r#break,
+                    flat: flat_doc,
+                } => {
+                    if flat {
+                        render(flat_doc, st, flat);
+                    } else {
+                        render(r#break, st, flat);
+                    }
                 }
             }
         }

@@ -5,7 +5,7 @@ use ruby_prism::*;
 
 const OPEN_DELIMITER: &str = "[";
 const CLOSE_DELIMITER: &str = "]";
-const SEPARATOR: &str = ", ";
+const SEPARATOR: &str = ",";
 
 pub fn print(node: &ArrayNode) -> Doc {
     let mut elements = Vec::new();

@@ -8,7 +8,10 @@ pub enum Doc {
     HardLine,
     Sequence(Docs),
     Group(Docs),
-    Indent(Docs),
+    Indent(Box<Doc>),
+    IndentIfBreak(Box<Doc>),
+    Fill(Docs),
+    IfBreak { r#break: Box<Doc>, flat: Box<Doc> },
 }
 impl Default for Doc {
     fn default() -> Self {
@@ -49,6 +52,18 @@ pub fn sequence(docs: Docs) -> Doc {
 pub fn group(docs: Docs) -> Doc {
     Doc::Group(docs)
 }
-pub fn indent(contents: Docs) -> Doc {
-    Doc::Indent(contents)
+pub fn indent(doc: Doc) -> Doc {
+    Doc::Indent(Box::new(doc))
+}
+pub fn indent_if_break(doc: Doc) -> Doc {
+    Doc::IndentIfBreak(Box::new(doc))
+}
+pub fn fill(docs: Docs) -> Doc {
+    Doc::Fill(docs)
+}
+pub fn if_break(r#break: Doc, flat: Doc) -> Doc {
+    Doc::IfBreak {
+        r#break: Box::new(r#break),
+        flat: Box::new(flat),
+    }
 }
