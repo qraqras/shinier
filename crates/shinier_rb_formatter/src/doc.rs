@@ -1,28 +1,51 @@
+use std::sync::atomic::{AtomicUsize, Ordering};
+
 pub type Docs = Vec<Doc>;
 
 #[derive(Debug, Clone)]
 pub enum Doc {
+    None,
     Text(String),
     Line,
     SoftLine,
     HardLine,
     Sequence(Docs),
-    Group(Docs),
+    Group(Group),
     Indent(Box<Doc>),
     IndentIfBreak(Box<Doc>),
     Fill(Docs),
-    IfBreak { r#break: Box<Doc>, flat: Box<Doc> },
+    IfBreak(IfBreak),
 }
 impl Default for Doc {
     fn default() -> Self {
-        Doc::Text(String::new())
+        Doc::None
     }
 }
 
+static NEXT_GROUP_ID: AtomicUsize = AtomicUsize::new(0);
+
+#[derive(Debug, Clone)]
+pub struct Group {
+    pub id: usize,
+    pub docs: Docs,
+}
+#[derive(Debug, Clone)]
+pub struct IfBreak {
+    pub id: usize,
+    pub r#break: Box<Doc>,
+    pub flat: Box<Doc>,
+}
+
+pub fn next_group_id() -> usize {
+    NEXT_GROUP_ID.fetch_add(1, Ordering::Relaxed)
+}
+pub fn none() -> Doc {
+    Doc::None
+}
 pub fn text<S: Into<String>>(s: S) -> Doc {
     Doc::Text(s.into())
 }
-pub fn text_u8(s: &[u8]) -> Doc {
+pub fn text_from_u8(s: &[u8]) -> Doc {
     Doc::Text(String::from_utf8_lossy(s).to_string())
 }
 pub fn line() -> Doc {
@@ -49,8 +72,11 @@ pub fn sequence(docs: Docs) -> Doc {
     }
     Doc::Sequence(flat)
 }
-pub fn group(docs: Docs) -> Doc {
-    Doc::Group(docs)
+pub fn group(id: Option<usize>, docs: Docs) -> Doc {
+    Doc::Group(Group {
+        id: id.unwrap_or_else(next_group_id),
+        docs: docs,
+    })
 }
 pub fn indent(doc: Doc) -> Doc {
     Doc::Indent(Box::new(doc))
@@ -61,9 +87,10 @@ pub fn indent_if_break(doc: Doc) -> Doc {
 pub fn fill(docs: Docs) -> Doc {
     Doc::Fill(docs)
 }
-pub fn if_break(r#break: Doc, flat: Doc) -> Doc {
-    Doc::IfBreak {
+pub fn if_break(id: usize, r#break: Doc, flat: Doc) -> Doc {
+    Doc::IfBreak(IfBreak {
+        id,
         r#break: Box::new(r#break),
         flat: Box::new(flat),
-    }
+    })
 }

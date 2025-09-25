@@ -1,13 +1,18 @@
-use crate::doc::{Doc, Docs, fill, if_break, indent, line, sequence, softline, text};
+use crate::doc::{
+    Doc, Docs, fill, group, if_break, indent, line, next_group_id, none, sequence, softline, text,
+};
 
-pub fn bracketed_layout(doc: &Doc, open_delimiter: &str, close_delimiter: &str) -> Doc {
-    let mut layout = Vec::with_capacity(5);
-    layout.push(text(open_delimiter));
-    layout.push(softline());
-    layout.push(indent(doc.clone()));
-    layout.push(softline());
-    layout.push(text(close_delimiter));
-    sequence(layout)
+pub fn separate(docs: &Docs, separator: &str) -> Docs {
+    let len = docs.len();
+    let mut parts = Vec::with_capacity(len * 3);
+    for (i, doc) in docs.iter().enumerate() {
+        parts.push(doc.clone());
+        if i < (len - 1) {
+            parts.push(text(separator));
+            parts.push(line());
+        }
+    }
+    parts
 }
 
 pub fn list_layout(
@@ -16,16 +21,16 @@ pub fn list_layout(
     close_delimiter: &str,
     separator: &str,
 ) -> Doc {
-    let len = docs.len();
-    let mut separated = Vec::with_capacity(((len - 1) * 3) + 2);
-    separated.push(softline());
-    for (i, doc) in docs.iter().enumerate() {
-        separated.push(doc.clone());
-        if i < len - 1 {
-            separated.push(text(separator));
-            separated.push(line());
-        }
-        separated.push(if_break(text(","), text("")));
-    }
-    bracketed_layout(&fill(separated), open_delimiter, close_delimiter)
+    let group_id = next_group_id();
+    // elements
+    let mut elements = separate(docs, separator);
+    elements.push(if_break(group_id, text(","), none()));
+    // layout
+    let mut group_member = Vec::with_capacity(5);
+    group_member.push(text(open_delimiter));
+    group_member.push(softline());
+    group_member.push(indent(sequence(vec![softline(), fill(elements)])));
+    group_member.push(softline());
+    group_member.push(text(close_delimiter));
+    group(Some(group_id), group_member)
 }
