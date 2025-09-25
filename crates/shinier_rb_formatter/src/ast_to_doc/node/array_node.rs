@@ -24,9 +24,8 @@ pub fn print(node: &ArrayNode) -> Doc {
     let mut separated = separate(&elements, SEPARATOR);
     separated.push(if_break(group_id, text(SEPARATOR), none()));
     // グループを作成
-    let mut group_member = Vec::with_capacity(5);
+    let mut group_member = Vec::with_capacity(4);
     group_member.push(text(OPEN_DELIMITER));
-    group_member.push(softline());
     group_member.push(indent(sequence(vec![softline(), fill(separated)])));
     group_member.push(softline());
     group_member.push(text(CLOSE_DELIMITER));

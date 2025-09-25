@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::ast_to_doc::printer::*;
 use crate::doc::*;
 use ruby_prism::*;
@@ -26,57 +28,56 @@ impl Printer {
     }
     fn doc_to_str(&self, doc: Doc) {
         println!("----doc_to_str----");
-        const WIDTH: usize = 40;
+
+        const MAX_WIDTH: usize = 20;
+        const INDENT: &str = "  ";
 
         struct State {
             out: String,
+            col: usize,
             indent: usize,
-            line_start: bool,
-            width: usize,
+            print_width: usize,
+            group_stack: Vec<(usize, bool)>,
         }
 
         impl State {
             fn write_indent(&mut self) {
-                if self.line_start && self.indent > 0 {
-                    self.out.push_str(&" ".repeat(self.indent));
-                    self.line_start = false;
+                if self.col == 0 && self.indent > 0 {
+                    self.out.push_str(&INDENT.repeat(self.indent));
+                    self.col += INDENT.len() * self.indent;
                 }
             }
             fn write_text(&mut self, s: &str) {
                 self.write_indent();
                 self.out.push_str(s);
-                self.line_start = false;
+                self.col += s.len();
             }
             fn newline(&mut self) {
                 self.out.push('\n');
-                self.line_start = true;
+                self.col = 0;
             }
         }
 
-        // Decide if a group fits on one line; naive measurement by concatenating leaf contents
-        fn measure_docs(children: &Docs, mut col: usize, width: usize) -> usize {
-            for ch in children {
-                col = measure(ch, col, width);
-                if col > width {
-                    return col;
-                }
+        fn measure_docs(docs: &Docs, mut current_col: usize, width: usize) -> usize {
+            for doc in docs {
+                current_col = measure(doc, current_col, width);
             }
-            col
+            current_col
         }
 
         fn measure(doc: &Doc, current_col: usize, width: usize) -> usize {
             match doc {
                 Doc::None => current_col,
-                Doc::Text(s) => current_col + s.len(),
+                Doc::Text(text) => current_col + text.len(),
                 Doc::Line => current_col + 1,
                 Doc::SoftLine => current_col,
                 Doc::HardLine => width + 1,
-                Doc::Sequence(children) => measure_docs(children, current_col, width),
+                Doc::Sequence(docs) => measure_docs(docs, current_col, width),
                 Doc::Group(group) => measure_docs(&group.docs, current_col, width),
-                Doc::Indent(children) => measure(children, current_col, width),
-                Doc::IndentIfBreak(children) => measure(children, current_col, width),
-                Doc::Fill(children) => measure_docs(children, current_col, width),
-                Doc::IfBreak(ifbreak) => current_col + 1,
+                Doc::Indent(doc) => measure(doc, current_col, width),
+                Doc::IndentIfBreak(doc) => measure(doc, current_col, width),
+                Doc::Fill(docs) => measure_docs(docs, current_col, width),
+                Doc::IfBreak(ifbreak) => measure(&ifbreak.flat, current_col, width),
             }
         }
 
@@ -108,37 +109,33 @@ impl Printer {
                 }
                 Doc::Group(group) => {
                     let childlen = &group.docs;
-                    let fits = measure_docs(&childlen, 0, st.width) <= st.width;
+                    let fits = measure_docs(&childlen, st.col, st.print_width) <= st.print_width;
                     let next_flat = flat && fits;
+
+                    st.group_stack.push((group.id, next_flat));
                     for ch in childlen {
                         render(&ch, st, next_flat);
                     }
+                    st.group_stack.pop();
                 }
                 Doc::Indent(children) => {
                     let prev = st.indent;
-                    st.indent += 2;
+                    st.indent += 1;
                     render(children, st, flat);
                     st.indent = prev;
                 }
                 Doc::IndentIfBreak(children) => {
                     let prev = st.indent;
                     if !flat {
-                        st.indent += 2;
+                        st.indent += 1;
                     }
                     render(children, st, flat);
                     st.indent = prev;
                 }
-                Doc::Fill(children) => {
-                    let mut iter = children.iter().peekable();
-                    while let Some(ch) = iter.next() {
-                        let is_last = iter.peek().is_none();
-                        render(ch, st, flat);
-
-                        // if !is_last {
-                        //     if !flat {
-                        //         st.newline();
-                        //     }
-                        // }
+                Doc::Fill(docs) => {
+                    for doc in docs {
+                        let next_flat = measure(doc, st.col, st.print_width) <= st.print_width;
+                        render(doc, st, next_flat);
                     }
                 }
                 Doc::IfBreak(IfBreak {
@@ -146,10 +143,12 @@ impl Printer {
                     r#break,
                     flat: flat_doc,
                 }) => {
-                    if flat {
-                        render(flat_doc, st, flat);
-                    } else {
-                        render(r#break, st, flat);
+                    if let Some((_, g_flat)) = st.group_stack.last() {
+                        if *g_flat {
+                            render(flat_doc, st, flat);
+                        } else {
+                            render(r#break, st, flat);
+                        }
                     }
                 }
             }
@@ -157,9 +156,10 @@ impl Printer {
 
         let mut st = State {
             out: String::new(),
+            col: 0,
             indent: 0,
-            line_start: true,
-            width: WIDTH,
+            print_width: MAX_WIDTH,
+            group_stack: Vec::new(),
         };
         render(&doc, &mut st, true);
         st.newline();
