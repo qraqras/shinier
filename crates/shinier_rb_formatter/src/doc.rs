@@ -4,17 +4,17 @@ pub type Docs = Vec<Doc>;
 
 #[derive(Debug, Clone)]
 pub enum Doc {
-    None,
-    Text(String),
-    Line,
-    SoftLine,
-    HardLine,
-    Sequence(Docs),
+    Fill(Docs),
     Group(Group),
+    HardLine,
+    IfBreak(IfBreak),
     Indent(Box<Doc>),
     IndentIfBreak(Box<Doc>),
-    Fill(Docs),
-    IfBreak(IfBreak),
+    Line,
+    None,
+    Sequence(Docs),
+    SoftLine,
+    Text(String),
 }
 impl Default for Doc {
     fn default() -> Self {
