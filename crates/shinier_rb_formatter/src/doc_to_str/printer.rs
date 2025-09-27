@@ -49,7 +49,7 @@ impl STRPrinter {
         let column = self.column + self.measure(doc);
         // 改行がちょうど収まってはいけない(次が必ずはみ出てしまうため)
         match doc {
-            Doc::HardLine(_) | Doc::Line(_) | Doc::SoftLine(_) => column < self.column_max,
+            Doc::HardLine | Doc::Line | Doc::SoftLine => column < self.column_max,
             _ => column <= self.column_max,
         }
     }
@@ -57,14 +57,14 @@ impl STRPrinter {
         match doc {
             Doc::Fill(docs) => self.measure_docs(docs),
             Doc::Group(group) => self.measure_docs(&group.docs),
-            Doc::HardLine(_) => 0,
+            Doc::HardLine => 0,
             Doc::IfBreak(ifbreak) => self.measure(&ifbreak.flat),
             Doc::Indent(doc) => self.measure(doc),
             Doc::IndentIfBreak(doc) => self.measure(doc),
-            Doc::Line(_) => 1,
+            Doc::Line => 1,
             Doc::None => 0,
             Doc::Sequence(docs) => self.measure_docs(docs),
-            Doc::SoftLine(_) => 0,
+            Doc::SoftLine => 0,
             Doc::Text(text) => text.len(),
         }
     }
@@ -97,7 +97,7 @@ impl STRPrinter {
                 }
                 self.group_stack.pop();
             }
-            Doc::HardLine(_) => {
+            Doc::HardLine => {
                 self.write_newline();
             }
             Doc::IfBreak(ifbreak) => {
@@ -117,7 +117,7 @@ impl STRPrinter {
                     self.indent_print(*doc);
                 }
             }
-            Doc::Line(_) => {
+            Doc::Line => {
                 if self.flat {
                     self.write_text(" ");
                 } else {
@@ -131,7 +131,7 @@ impl STRPrinter {
                     self.print(doc);
                 }
             }
-            Doc::SoftLine(_) => {
+            Doc::SoftLine => {
                 if self.flat {
                     self.write_newline();
                 }

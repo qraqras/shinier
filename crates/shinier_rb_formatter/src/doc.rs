@@ -8,14 +8,14 @@ static NEXT_GROUP_ID: AtomicUsize = AtomicUsize::new(0);
 pub enum Doc {
     Fill(Docs),
     Group(Group),
-    HardLine(Line),
+    HardLine,
     IfBreak(IfBreak),
     Indent(Box<Doc>),
     IndentIfBreak(Box<Doc>),
-    Line(Line),
+    Line,
     None,
     Sequence(Docs),
-    SoftLine(Line),
+    SoftLine,
     Text(String),
 }
 impl Default for Doc {
@@ -23,9 +23,6 @@ impl Default for Doc {
         Doc::None
     }
 }
-
-#[derive(Debug, Clone)]
-pub struct Line {}
 
 pub trait AsDoc {
     fn as_doc(&self) -> Doc;
@@ -65,13 +62,13 @@ pub fn text_from_u8(s: &[u8]) -> Doc {
     Doc::Text(String::from_utf8_lossy(s).to_string())
 }
 pub fn line() -> Doc {
-    Doc::Line(Line {})
+    Doc::Line
 }
 pub fn softline() -> Doc {
-    Doc::SoftLine(Line {})
+    Doc::SoftLine
 }
 pub fn hardline() -> Doc {
-    Doc::HardLine(Line {})
+    Doc::HardLine
 }
 pub fn sequence(docs: Docs) -> Doc {
     let mut flat = Vec::new();
