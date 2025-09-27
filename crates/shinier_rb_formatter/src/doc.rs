@@ -2,18 +2,20 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 
 pub type Docs = Vec<Doc>;
 
+static NEXT_GROUP_ID: AtomicUsize = AtomicUsize::new(0);
+
 #[derive(Debug, Clone)]
 pub enum Doc {
     Fill(Docs),
     Group(Group),
-    HardLine,
+    HardLine(Line),
     IfBreak(IfBreak),
     Indent(Box<Doc>),
     IndentIfBreak(Box<Doc>),
-    Line,
+    Line(Line),
     None,
     Sequence(Docs),
-    SoftLine,
+    SoftLine(Line),
     Text(String),
 }
 impl Default for Doc {
@@ -22,18 +24,32 @@ impl Default for Doc {
     }
 }
 
-static NEXT_GROUP_ID: AtomicUsize = AtomicUsize::new(0);
+#[derive(Debug, Clone)]
+pub struct Line {}
 
+pub trait AsDoc {
+    fn as_doc(&self) -> Doc;
+}
 #[derive(Debug, Clone)]
 pub struct Group {
     pub id: usize,
     pub docs: Docs,
+}
+impl AsDoc for Group {
+    fn as_doc(&self) -> Doc {
+        Doc::Group(self.clone())
+    }
 }
 #[derive(Debug, Clone)]
 pub struct IfBreak {
     pub id: usize,
     pub r#break: Box<Doc>,
     pub flat: Box<Doc>,
+}
+impl AsDoc for IfBreak {
+    fn as_doc(&self) -> Doc {
+        Doc::IfBreak(self.clone())
+    }
 }
 
 pub fn next_group_id() -> usize {
@@ -49,13 +65,13 @@ pub fn text_from_u8(s: &[u8]) -> Doc {
     Doc::Text(String::from_utf8_lossy(s).to_string())
 }
 pub fn line() -> Doc {
-    Doc::Line
+    Doc::Line(Line {})
 }
 pub fn softline() -> Doc {
-    Doc::SoftLine
+    Doc::SoftLine(Line {})
 }
 pub fn hardline() -> Doc {
-    Doc::HardLine
+    Doc::HardLine(Line {})
 }
 pub fn sequence(docs: Docs) -> Doc {
     let mut flat = Vec::new();

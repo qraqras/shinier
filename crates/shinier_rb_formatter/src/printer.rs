@@ -1,7 +1,6 @@
-use std::collections::HashMap;
-
 use crate::ast_to_doc::printer::*;
 use crate::doc::*;
+use crate::doc_to_str::STRPrinter;
 use ruby_prism::*;
 
 pub struct Printer {
@@ -28,10 +27,14 @@ impl Printer {
     }
     fn doc_to_str(&self, doc: Doc) {
         println!("----doc_to_str----");
-
         const MAX_WIDTH: usize = 20;
         const INDENT: &str = "  ";
 
+        let mut p = STRPrinter::new(INDENT, MAX_WIDTH);
+        p.print(doc);
+        println!("{}", p.output);
+
+        /*
         struct State {
             out: String,
             col: usize,
@@ -164,5 +167,6 @@ impl Printer {
         render(&doc, &mut st, true);
         st.newline();
         println!("{}", st.out);
+        */
     }
 }
