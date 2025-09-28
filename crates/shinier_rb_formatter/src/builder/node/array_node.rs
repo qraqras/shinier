@@ -1,4 +1,4 @@
-use crate::ast_to_doc::printer;
+use crate::builder::builder;
 use crate::doc::{
     Doc, fill, group, if_break, indent, next_group_id, none, sequence, softline, text,
 };
@@ -12,7 +12,7 @@ const SEPARATOR: &str = ",";
 pub fn print(node: &ArrayNode) -> Doc {
     let mut elements = Vec::new();
     for node in node.elements().iter() {
-        elements.push(printer::print(&node));
+        elements.push(builder::build(&node));
     }
     // 空のとき
     if elements.is_empty() {

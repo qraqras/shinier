@@ -1,11 +1,12 @@
-use crate::ast_to_doc::printer;
-use crate::consts::ASSIGNMENT_OPERATOR;
+use crate::builder::builder;
 use crate::doc::*;
 use ruby_prism::*;
+
+const ASSIGNMENT_OPERATOR: &str = " =";
 
 pub fn print(node: &LocalVariableWriteNode) -> Doc {
     let name = text_from_u8(node.name().as_slice());
     let operator = text(ASSIGNMENT_OPERATOR);
-    let value = printer::print(&node.value());
+    let value = builder::build(&node.value());
     sequence(vec![name, operator, line(), value])
 }

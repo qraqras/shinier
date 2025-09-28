@@ -1,4 +1,4 @@
-use crate::ast_to_doc::node::statements_node;
+use crate::builder::node::statements_node;
 use crate::doc::Doc;
 use ruby_prism::ProgramNode;
 

@@ -1,9 +1,9 @@
-use crate::ast_to_doc::node::*;
+use crate::builder::node::*;
 use crate::doc::*;
 use ruby_prism::*;
 
 #[rustfmt::skip]
-pub fn print(node: &Node) -> Doc {
+pub fn build(node: &Node) -> Doc {
     match node {
         Node::AliasGlobalVariableNode { .. } => {
             alias_global_variable_node::print(&node.as_alias_global_variable_node().unwrap())
