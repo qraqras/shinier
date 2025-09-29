@@ -30,7 +30,7 @@ impl Printer {
         const COLUMN_MAX: usize = 20;
         const INDENT_UNIT: &str = "  ";
         let mut renderer = Renderer::new(INDENT_UNIT, COLUMN_MAX);
-        renderer.render(doc);
+        renderer.render(&doc);
         println!("{}", renderer.output);
     }
 }

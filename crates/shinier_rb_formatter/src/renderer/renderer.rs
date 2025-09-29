@@ -21,81 +21,84 @@ impl Renderer {
             column_max,
         }
     }
-    pub fn render(&mut self, doc: Doc) {
+    pub fn render(&mut self, doc: &Doc) {
+        let previous_is_flat = self.is_flat;
         match doc {
-            Doc::Fill(docs) => {
-                for doc in docs {
-                    self.is_flat = self.can_fit_in_line(&doc);
+            Doc::Fill(fill) => {
+                for ref doc in fill.docs.iter() {
+                    self.is_flat = self.can_fit_in_line_doc(doc);
                     self.render(doc);
                 }
             }
             Doc::Group(group) => {
-                let can_fit = self.can_fit_in_line(&group.as_doc());
+                let can_fit = self.can_fit_in_line_docs(&group.docs);
                 self.group_stack.push((group.id, can_fit));
                 self.is_flat = can_fit;
-                for doc in group.docs {
+                for ref doc in group.docs.iter() {
                     self.render(doc);
                 }
                 self.group_stack.pop();
             }
-            Doc::HardLine => {
+            Doc::HardLine(_hard_line) => {
                 self.write_newline();
             }
-            Doc::IfBreak(ifbreak) => {
+            Doc::IfBreak(if_break) => {
                 let groups: Vec<&(usize, bool)> = self
                     .group_stack
                     .iter()
-                    .filter(|(id, _)| *id == ifbreak.id)
+                    .filter(|(id, _)| *id == if_break.group_id)
                     .collect();
                 if let Some((_, flat)) = groups.last() {
                     if *flat {
-                        self.render(*ifbreak.flat);
+                        self.render(&*if_break.flat);
                     } else {
-                        self.render(*ifbreak.r#break);
+                        self.render(&*if_break.r#break);
                     }
                 } else {
-                    self.render(*ifbreak.flat);
+                    self.render(&*if_break.flat);
                 }
             }
-            Doc::Indent(doc) => {
-                return self.render_with_indent(*doc);
+            Doc::Indent(indent) => {
+                return self.render_with_indent(&*indent.doc);
             }
-            Doc::IndentIfBreak(doc) => {
+            Doc::IndentIfBreak(indent_if_break) => {
                 if self.is_flat {
-                    self.render(*doc);
+                    self.render(&*indent_if_break.doc);
                 } else {
-                    self.render_with_indent(*doc);
+                    self.render_with_indent(&*indent_if_break.doc);
                 }
             }
-            Doc::Line => {
+            Doc::Line(_line) => {
                 if self.is_flat {
                     self.write_text(" ");
                 } else {
                     self.write_newline();
                 }
             }
-            Doc::None => {}
-            Doc::Sequence(docs) => {
-                self.is_flat = true;
-                for doc in docs {
+            Doc::None(_none) => {}
+            Doc::Sequence(sequence) => {
+                for ref doc in sequence.docs.iter() {
                     self.render(doc);
                 }
             }
-            Doc::SoftLine => {
-                if self.is_flat {
+            Doc::SoftLine(_soft_line) => {
+                if !self.is_flat {
                     self.write_newline();
                 }
             }
             Doc::Text(text) => {
-                self.write_text(&text);
+                self.write_text(&text.text);
             }
         }
+        self.is_flat = previous_is_flat;
     }
-    fn render_with_indent(&mut self, doc: Doc) {
+    fn render_with_indent(&mut self, doc: &Doc) {
+        let previous_is_flat = self.is_flat;
         let previous_indent_level = self.indent_level;
         self.indent_level += 1;
         self.render(doc);
         self.indent_level = previous_indent_level;
+        self.is_flat = previous_is_flat;
     }
     fn write_text(&mut self, text: &str) {
         self.write_indent();
@@ -113,33 +116,44 @@ impl Renderer {
         self.output.push_str("\n");
         self.column = 0;
     }
-    fn can_fit_in_line(&self, doc: &Doc) -> bool {
-        let column = self.column + self.measure(doc);
+    fn can_fit_in_line_doc(&self, doc: &Doc) -> bool {
+        let column = self.column + self.measure_doc(doc);
         // 改行がちょうど収まってはいけない(次が必ずはみ出てしまうため)
         match doc {
-            Doc::HardLine | Doc::Line | Doc::SoftLine => column < self.column_max,
+            Doc::HardLine(_) => column < self.column_max,
+            Doc::Line(_) => column < self.column_max,
+            Doc::SoftLine(_) => column < self.column_max,
             _ => column <= self.column_max,
         }
     }
-    fn measure(&self, doc: &Doc) -> usize {
+    fn can_fit_in_line_docs(&self, docs: &Docs) -> bool {
+        let column = self.column + self.measure_docs(docs);
+        match docs.iter().last() {
+            Some(Doc::HardLine(_)) => column < self.column_max,
+            Some(Doc::Line(_)) => column < self.column_max,
+            Some(Doc::SoftLine(_)) => column < self.column_max,
+            _ => column <= self.column_max,
+        }
+    }
+    fn measure_doc(&self, doc: &Doc) -> usize {
         match doc {
-            Doc::Fill(docs) => self.measure_docs(docs),
+            Doc::Fill(fill) => self.measure_docs(&fill.docs),
             Doc::Group(group) => self.measure_docs(&group.docs),
-            Doc::HardLine => 0,
-            Doc::IfBreak(ifbreak) => self.measure(&ifbreak.flat),
-            Doc::Indent(doc) => self.measure(doc),
-            Doc::IndentIfBreak(doc) => self.measure(doc),
-            Doc::Line => 1,
-            Doc::None => 0,
-            Doc::Sequence(docs) => self.measure_docs(docs),
-            Doc::SoftLine => 0,
-            Doc::Text(text) => text.len(),
+            Doc::HardLine(_hard_line) => 0,
+            Doc::IfBreak(if_break) => self.measure_doc(&if_break.flat),
+            Doc::Indent(indent) => self.measure_doc(&indent.doc),
+            Doc::IndentIfBreak(indent_if_break) => self.measure_doc(&indent_if_break.doc),
+            Doc::Line(_line) => 1,
+            Doc::None(_none) => 0,
+            Doc::Sequence(sequence) => self.measure_docs(&sequence.docs),
+            Doc::SoftLine(_soft_line) => 0,
+            Doc::Text(text) => text.text.len(),
         }
     }
     fn measure_docs(&self, docs: &Docs) -> usize {
         let mut total = 0;
         for doc in docs {
-            total += self.measure(doc);
+            total += self.measure_doc(doc);
         }
         total
     }
