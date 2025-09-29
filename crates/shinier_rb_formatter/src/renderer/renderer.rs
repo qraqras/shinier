@@ -43,26 +43,19 @@ impl Renderer {
                 self.write_newline();
             }
             Doc::IfBreak(if_break) => {
-                let groups: Vec<&(usize, bool)> = self
-                    .group_stack
-                    .iter()
-                    .filter(|(id, _)| *id == if_break.group_id)
-                    .collect();
-                if let Some((_, flat)) = groups.last() {
-                    if *flat {
-                        self.render(&*if_break.flat);
-                    } else {
-                        self.render(&*if_break.r#break);
-                    }
-                } else {
+                let is_flat = self.is_flat_group(if_break.group_id);
+                if is_flat {
                     self.render(&*if_break.flat);
+                } else {
+                    self.render(&*if_break.r#break);
                 }
             }
             Doc::Indent(indent) => {
                 return self.render_with_indent(&*indent.doc);
             }
             Doc::IndentIfBreak(indent_if_break) => {
-                if self.is_flat {
+                let is_flat = self.is_flat_group(indent_if_break.group_id);
+                if is_flat {
                     self.render(&*indent_if_break.doc);
                 } else {
                     self.render_with_indent(&*indent_if_break.doc);
@@ -156,5 +149,24 @@ impl Renderer {
             total += self.measure_doc(doc);
         }
         total
+    }
+    fn is_flat_group(&self, group_id: Option<usize>) -> bool {
+        match group_id {
+            Some(group_id) => {
+                for group in self.group_stack.iter() {
+                    if group.0 == group_id {
+                        return group.1;
+                    }
+                }
+                true
+            }
+            None => {
+                if let Some((_, is_flat)) = self.group_stack.last() {
+                    *is_flat
+                } else {
+                    true
+                }
+            }
+        }
     }
 }

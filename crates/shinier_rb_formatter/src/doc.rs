@@ -37,7 +37,7 @@ pub struct GroupDoc {
 pub struct HardLineDoc {}
 #[derive(Debug, Clone)]
 pub struct IfBreakDoc {
-    pub group_id: usize,
+    pub group_id: Option<usize>,
     pub r#break: Box<Doc>,
     pub flat: Box<Doc>,
 }
@@ -47,7 +47,7 @@ pub struct IndentDoc {
 }
 #[derive(Debug, Clone)]
 pub struct IndentIfBreakDoc {
-    pub group_id: usize,
+    pub group_id: Option<usize>,
     pub doc: Box<Doc>,
 }
 #[derive(Debug, Clone)]
@@ -71,16 +71,19 @@ pub fn next_group_id() -> usize {
 pub fn fill(docs: Docs) -> Doc {
     Doc::Fill(FillDoc { docs })
 }
-pub fn group(id: Option<usize>, docs: Docs) -> Doc {
+pub fn group(docs: Docs) -> Doc {
     Doc::Group(GroupDoc {
-        id: id.unwrap_or_else(next_group_id),
+        id: next_group_id(),
         docs: docs,
     })
+}
+pub fn group_with_id(id: usize, docs: Docs) -> Doc {
+    Doc::Group(GroupDoc { id: id, docs: docs })
 }
 pub fn hardline() -> Doc {
     Doc::HardLine(HardLineDoc {})
 }
-pub fn if_break(group_id: usize, r#break: Doc, flat: Doc) -> Doc {
+pub fn if_break(group_id: Option<usize>, r#break: Doc, flat: Doc) -> Doc {
     Doc::IfBreak(IfBreakDoc {
         group_id: group_id,
         r#break: Box::new(r#break),
@@ -90,7 +93,7 @@ pub fn if_break(group_id: usize, r#break: Doc, flat: Doc) -> Doc {
 pub fn indent(doc: Doc) -> Doc {
     Doc::Indent(IndentDoc { doc: Box::new(doc) })
 }
-pub fn indent_if_break(group_id: usize, doc: Doc) -> Doc {
+pub fn indent_if_break(group_id: Option<usize>, doc: Doc) -> Doc {
     Doc::IndentIfBreak(IndentIfBreakDoc {
         group_id: group_id,
         doc: Box::new(doc),
