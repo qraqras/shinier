@@ -1,6 +1,9 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::layout::separate;
+use crate::doc::{Doc, group};
+use ruby_prism::KeywordHashNode;
 
-pub fn print(node: &KeywordHashNode) -> Doc {
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+const SEPARATER: &str = ",";
+
+pub fn build_node(node: &KeywordHashNode) -> Doc {
+    group(separate(&node.elements(), SEPARATER))
 }

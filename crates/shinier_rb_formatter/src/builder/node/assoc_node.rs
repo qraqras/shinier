@@ -1,6 +1,11 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::build;
+use crate::doc::{Doc, group, text};
+use ruby_prism::AssocNode;
 
-pub fn print(node: &AssocNode) -> Doc {
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+const SEPARATER: &str = ": ";
+
+pub fn build_node(node: &AssocNode) -> Doc {
+    let key = build(&node.key());
+    let value = build(&node.value());
+    return group(vec![key, text(SEPARATER), value]);
 }

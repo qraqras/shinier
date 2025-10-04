@@ -1,6 +1,6 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, text_from_u8};
+use ruby_prism::ConstantReadNode;
 
-pub fn print(node: &ConstantReadNode) -> Doc {
-        return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+pub fn build_node(node: &ConstantReadNode) -> Doc {
+    text_from_u8(node.name().as_slice())
 }

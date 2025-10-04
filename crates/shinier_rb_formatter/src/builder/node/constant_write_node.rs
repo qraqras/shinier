@@ -1,9 +1,12 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::builder::build;
+use crate::doc::{Doc, line, sequence, text, text_from_u8};
+use ruby_prism::ConstantWriteNode;
 
-pub fn print(node: &ConstantWriteNode) -> Doc {
-    return text(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+const ASSIGNMENT_OPERATOR: &str = " =";
+
+pub fn build_node(node: &ConstantWriteNode) -> Doc {
+    let name = text_from_u8(node.name().as_slice());
+    let operator = text(ASSIGNMENT_OPERATOR);
+    let value = build(&node.value());
+    sequence(vec![name, operator, line(), value])
 }

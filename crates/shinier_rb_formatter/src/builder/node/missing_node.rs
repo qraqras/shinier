@@ -1,9 +1,9 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, text};
+use ruby_prism::MissingNode;
 
-pub fn print(node: &MissingNode) -> Doc {
-    return text(format!(
+pub fn build_node(node: &MissingNode) -> Doc {
+    text(format!(
         "not implemented: {:?}",
         std::any::type_name_of_val(node)
-    ));
+    ))
 }

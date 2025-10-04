@@ -1,9 +1,9 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::layout::separate;
+use crate::doc::{Doc, group, indent, softline, text};
+use ruby_prism::ArgumentsNode;
 
-pub fn print(node: &ArgumentsNode) -> Doc {
-    return text(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+const SEPARATER: &str = ",";
+
+pub fn build_node(node: &ArgumentsNode) -> Doc {
+    group(separate(&node.arguments(), SEPARATER))
 }

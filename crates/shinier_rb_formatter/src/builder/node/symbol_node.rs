@@ -1,9 +1,6 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, text_from_u8};
+use ruby_prism::SymbolNode;
 
-pub fn print(node: &SymbolNode) -> Doc {
-    return text(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+pub fn build_node(node: &SymbolNode) -> Doc {
+    text_from_u8(node.unescaped())
 }

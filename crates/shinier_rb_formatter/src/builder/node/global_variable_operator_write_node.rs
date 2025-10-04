@@ -1,6 +1,6 @@
 use crate::doc::*;
 use ruby_prism::*;
 
-pub fn print(node: &GlobalVariableOperatorWriteNode) -> Doc {
+pub fn build_node(node: &GlobalVariableOperatorWriteNode) -> Doc {
     return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
 }
