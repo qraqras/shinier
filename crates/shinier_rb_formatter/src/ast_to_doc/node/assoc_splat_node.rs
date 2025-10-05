@@ -1,6 +1,0 @@
-use crate::doc::*;
-use ruby_prism::*;
-
-pub fn print(node: &AssocSplatNode) -> Doc {
-    return text("not implemented");
-}
