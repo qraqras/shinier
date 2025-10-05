@@ -1,6 +1,28 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::build;
+use crate::doc::{Doc, group, text};
+use crate::utility::constant_id_to_string;
+use ruby_prism::CallOrWriteNode;
+
+const OPERATOR: &str = "||=";
 
 pub fn build_node(node: &CallOrWriteNode) -> Doc {
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let receiver = node.receiver();
+    let read_name = constant_id_to_string(&node.read_name());
+    let value = &node.value();
+
+    let mut vec = Vec::new();
+    if let Some(receiver) = &receiver {
+        vec.push(build(receiver));
+        if node.is_safe_navigation() {
+            vec.push(text("&."));
+        } else {
+            vec.push(text("."));
+        };
+    };
+    vec.push(text(read_name));
+    vec.push(text(" "));
+    vec.push(text(OPERATOR));
+    vec.push(text(" "));
+    vec.push(build(&value));
+    group(vec)
 }

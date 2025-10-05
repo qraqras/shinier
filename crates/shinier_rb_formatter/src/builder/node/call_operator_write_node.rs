@@ -1,4 +1,4 @@
-use crate::builder::builder::build;
+use crate::builder::build;
 use crate::doc::{Doc, group, text};
 use crate::utility::constant_id_to_string;
 use ruby_prism::CallOperatorWriteNode;
