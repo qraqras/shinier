@@ -1,5 +1,5 @@
 use crate::builder::build;
-use crate::doc::{Doc, group, indent, line, text};
+use crate::doc::{Doc, group, indent, line, space, text};
 use ruby_prism::AliasGlobalVariableNode;
 
 const ALIAS_KEYWORD: &str = "alias";
@@ -10,6 +10,6 @@ pub fn build_node(node: &AliasGlobalVariableNode) -> Doc {
     group(&[
         text(ALIAS_KEYWORD),
         line(),
-        indent(&[build(&old_name), text(" "), build(&new_name)]),
+        indent(&[build(&old_name), space(), build(&new_name)]),
     ])
 }

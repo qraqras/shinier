@@ -69,7 +69,7 @@ impl Renderer {
             }
             Doc::Line(_line) => {
                 if self.is_flat {
-                    self.write_text(" ");
+                    self.write_space();
                 } else {
                     self.write_newline();
                 }
@@ -79,6 +79,9 @@ impl Renderer {
                 for ref doc in sequence.docs.iter() {
                     self.render(doc);
                 }
+            }
+            Doc::Space(_space) => {
+                self.write_space();
             }
             Doc::SoftLine(_soft_line) => {
                 if !self.is_flat {
@@ -103,6 +106,9 @@ impl Renderer {
         self.write_indent();
         self.output.push_str(text);
         self.column += text.len();
+    }
+    fn write_space(&mut self) {
+        self.write_text(" ");
     }
     fn write_indent(&mut self) {
         if self.column == 0 && self.indent_level > 0 {
@@ -136,6 +142,7 @@ impl Renderer {
             Doc::Line(_line) => 1,
             Doc::None(_none) => 0,
             Doc::Sequence(sequence) => self.measure_docs(&sequence.docs),
+            Doc::Space(_space) => 1,
             Doc::SoftLine(_soft_line) => 0,
             Doc::Text(text) => text.text.len(),
         }

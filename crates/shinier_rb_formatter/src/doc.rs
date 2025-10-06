@@ -13,6 +13,7 @@ pub enum Doc {
     Line(LineDoc),
     None(NoneDoc),
     Sequence(SequenceDoc),
+    Space(SpaceDoc),
     SoftLine(SoftLineDoc),
     Text(TextDoc),
 }
@@ -56,6 +57,8 @@ pub struct NoneDoc {}
 pub struct SequenceDoc {
     pub docs: Vec<Doc>,
 }
+#[derive(Debug, Clone)]
+pub struct SpaceDoc {}
 #[derive(Debug, Clone)]
 pub struct SoftLineDoc {}
 #[derive(Debug, Clone)]
@@ -125,6 +128,9 @@ pub fn sequence(docs: &[Doc]) -> Doc {
         }
     }
     Doc::Sequence(SequenceDoc { docs: flat_docs })
+}
+pub fn space() -> Doc {
+    Doc::Space(SpaceDoc {})
 }
 pub fn softline() -> Doc {
     Doc::SoftLine(SoftLineDoc {})

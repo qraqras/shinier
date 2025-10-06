@@ -1,5 +1,5 @@
 use crate::builder::build;
-use crate::doc::{Doc, group, text};
+use crate::doc::{Doc, group, space, text};
 use crate::utility::constant_id_to_string;
 use ruby_prism::CallOperatorWriteNode;
 
@@ -20,10 +20,10 @@ pub fn build_node(node: &CallOperatorWriteNode) -> Doc {
         }
     }
     vec.push(text(&read_name));
-    vec.push(text(" "));
+    vec.push(space());
     vec.push(text(&binary_operator));
     vec.push(text("="));
-    vec.push(text(" "));
+    vec.push(space());
     vec.push(build(&value));
     group(&vec)
 }

@@ -1,5 +1,5 @@
 use crate::builder::build;
-use crate::doc::{Doc, group, indent, softline, text};
+use crate::doc::{Doc, group, indent, softline, space, text};
 use crate::utility::constant_id_to_string;
 use ruby_prism::CallNode;
 
@@ -34,9 +34,9 @@ pub fn build_node(node: &CallNode) -> Doc {
         if let Some(arguments) = arguments {
             let (base_name, op) = split_var_and_op(&name);
             vec.push(text(base_name));
-            vec.push(text(" "));
+            vec.push(space());
             vec.push(text(op.unwrap_or("")));
-            vec.push(text(" "));
+            vec.push(space());
             vec.push(build(&arguments.as_node()));
         }
         return group(&vec);
