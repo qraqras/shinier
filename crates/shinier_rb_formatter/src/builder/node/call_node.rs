@@ -39,7 +39,7 @@ pub fn build_node(node: &CallNode) -> Doc {
             vec.push(text(" "));
             vec.push(build(&arguments.as_node()));
         }
-        return group(vec);
+        return group(&vec);
     }
 
     // 可視性の無視の場合
@@ -48,10 +48,10 @@ pub fn build_node(node: &CallNode) -> Doc {
     // その他の場合
     vec.push(text(name));
     if let Some(arguments) = arguments {
-        vec.push(group(vec![
+        vec.push(group(&[
             text(OPEN_PAREN),
             softline(),
-            indent(build(&arguments.as_node())),
+            indent(&[build(&arguments.as_node())]),
             softline(),
             text(CLOSE_PAREN),
         ]));
@@ -59,7 +59,7 @@ pub fn build_node(node: &CallNode) -> Doc {
     if let Some(block) = block {
         vec.push(build(&block));
     }
-    group(vec)
+    group(&vec)
 }
 
 // 演算子を末尾から検出して (base_name, Option<op>) を返す

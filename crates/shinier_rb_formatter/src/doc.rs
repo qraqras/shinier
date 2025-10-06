@@ -1,7 +1,5 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-pub type Docs = Vec<Doc>;
-
 static NEXT_GROUP_ID: AtomicUsize = AtomicUsize::new(0);
 
 #[derive(Debug, Clone)]
@@ -26,12 +24,12 @@ impl Default for Doc {
 
 #[derive(Debug, Clone)]
 pub struct FillDoc {
-    pub docs: Docs,
+    pub doc: Box<Doc>,
 }
 #[derive(Debug, Clone)]
 pub struct GroupDoc {
     pub id: usize,
-    pub docs: Docs,
+    pub doc: Box<Doc>,
 }
 #[derive(Debug, Clone)]
 pub struct HardLineDoc {}
@@ -56,7 +54,7 @@ pub struct LineDoc {}
 pub struct NoneDoc {}
 #[derive(Debug, Clone)]
 pub struct SequenceDoc {
-    pub docs: Docs,
+    pub docs: Vec<Doc>,
 }
 #[derive(Debug, Clone)]
 pub struct SoftLineDoc {}
@@ -68,17 +66,22 @@ pub fn next_group_id() -> usize {
     NEXT_GROUP_ID.fetch_add(1, Ordering::Relaxed)
 }
 
-pub fn fill(docs: Docs) -> Doc {
-    Doc::Fill(FillDoc { docs })
-}
-pub fn group(docs: Docs) -> Doc {
-    Doc::Group(GroupDoc {
-        id: next_group_id(),
-        docs: docs,
+pub fn fill(docs: &[Doc]) -> Doc {
+    Doc::Fill(FillDoc {
+        doc: Box::new(sequence(docs)),
     })
 }
-pub fn group_with_id(id: usize, docs: Docs) -> Doc {
-    Doc::Group(GroupDoc { id: id, docs: docs })
+pub fn group(docs: &[Doc]) -> Doc {
+    Doc::Group(GroupDoc {
+        id: next_group_id(),
+        doc: Box::new(sequence(docs)),
+    })
+}
+pub fn group_with_id(id: usize, docs: &[Doc]) -> Doc {
+    Doc::Group(GroupDoc {
+        id: id,
+        doc: Box::new(sequence(docs)),
+    })
 }
 pub fn hardline() -> Doc {
     Doc::HardLine(HardLineDoc {})
@@ -90,13 +93,15 @@ pub fn if_break(group_id: Option<usize>, r#break: Doc, flat: Doc) -> Doc {
         flat: Box::new(flat),
     })
 }
-pub fn indent(doc: Doc) -> Doc {
-    Doc::Indent(IndentDoc { doc: Box::new(doc) })
+pub fn indent(doc: &[Doc]) -> Doc {
+    Doc::Indent(IndentDoc {
+        doc: Box::new(sequence(doc)),
+    })
 }
-pub fn indent_if_break(group_id: Option<usize>, doc: Doc) -> Doc {
+pub fn indent_if_break(group_id: Option<usize>, doc: &[Doc]) -> Doc {
     Doc::IndentIfBreak(IndentIfBreakDoc {
         group_id: group_id,
-        doc: Box::new(doc),
+        doc: Box::new(sequence(doc)),
     })
 }
 pub fn line() -> Doc {
@@ -106,9 +111,9 @@ pub fn line() -> Doc {
 pub fn none() -> Doc {
     Doc::None(NoneDoc {})
 }
-pub fn sequence(docs: Docs) -> Doc {
+pub fn sequence(docs: &[Doc]) -> Doc {
     let mut flat_docs = Vec::new();
-    let mut deque: std::collections::VecDeque<Doc> = docs.into_iter().collect();
+    let mut deque: std::collections::VecDeque<Doc> = docs.to_vec().into();
     while let Some(doc) = deque.pop_front() {
         match doc {
             Doc::Sequence(inner) => {

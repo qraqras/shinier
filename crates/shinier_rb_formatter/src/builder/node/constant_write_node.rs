@@ -8,5 +8,5 @@ pub fn build_node(node: &ConstantWriteNode) -> Doc {
     let name = text_from_u8(node.name().as_slice());
     let operator = text(ASSIGNMENT_OPERATOR);
     let value = build(&node.value());
-    sequence(vec![name, operator, line(), value])
+    sequence(&[name, operator, line(), value])
 }

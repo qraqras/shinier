@@ -24,5 +24,5 @@ pub fn build_node(node: &CallAndWriteNode) -> Doc {
     vec.push(text(OPERATOR));
     vec.push(text(" "));
     vec.push(build(&value));
-    group(vec)
+    group(&vec)
 }
