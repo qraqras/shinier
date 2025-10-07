@@ -11,11 +11,11 @@ impl Printer {
     pub fn new(src: String, option: ()) -> Self {
         Self { src, option }
     }
-    pub fn print(&self) {
+    pub fn print(&self) -> String {
         println!("----print----");
         let parsed = self.str_to_ast();
         let docs = self.ast_to_doc(&parsed);
-        self.doc_to_str(docs);
+        self.doc_to_str(docs)
     }
     fn str_to_ast(&self) -> ParseResult<'_> {
         println!("----str_to_ast----");
@@ -25,12 +25,13 @@ impl Printer {
         println!("----ast_to_doc----");
         build(&parsed.node())
     }
-    fn doc_to_str(&self, doc: Doc) {
+    fn doc_to_str(&self, doc: Doc) -> String {
         println!("----doc_to_str----");
         const COLUMN_MAX: usize = 20;
         const INDENT_UNIT: &str = "  ";
         let mut renderer = Renderer::new(INDENT_UNIT, COLUMN_MAX);
         renderer.render(&doc);
         println!("{}", renderer.output);
+        renderer.output
     }
 }

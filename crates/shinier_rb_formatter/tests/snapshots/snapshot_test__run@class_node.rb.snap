@@ -1,0 +1,17 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/class_node.rb
+---
+FooError = Class.new(
+  StandardError
+)
+class FooError < StandardError
+end
+class FooError < StandardError
+end
+class FooError < StandardError
+  include(Bar)
+
+end

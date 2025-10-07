@@ -5,5 +5,5 @@ use ruby_prism::KeywordHashNode;
 const SEPARATER: &str = ",";
 
 pub fn build_node(node: &KeywordHashNode) -> Doc {
-    group(separate(&node.elements(), SEPARATER))
+    group(&separate(&node.elements(), SEPARATER))
 }

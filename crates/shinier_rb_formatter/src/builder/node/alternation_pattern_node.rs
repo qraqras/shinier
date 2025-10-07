@@ -1,6 +1,17 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::build;
+use crate::doc::{Doc, line, sequence, space, text};
+use ruby_prism::AlternationPatternNode;
+
+const ALTERNATION_OPERATOR: &str = "|";
 
 pub fn build_node(node: &AlternationPatternNode) -> Doc {
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let left = node.left();
+    let right = node.right();
+    sequence(&[
+        build(&left),
+        space(),
+        text(ALTERNATION_OPERATOR),
+        line(),
+        build(&right),
+    ])
 }

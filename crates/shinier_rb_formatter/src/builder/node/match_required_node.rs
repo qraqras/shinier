@@ -1,6 +1,17 @@
-use crate::doc::*;
+use crate::builder::build;
+use crate::doc::{Doc, group, indent, line, space, text};
 use ruby_prism::*;
 
+const MATCH_KEYWORD: &str = "=>";
+
 pub fn build_node(node: &MatchRequiredNode) -> Doc {
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let value = node.value();
+    let pattern = node.pattern();
+    group(&[
+        build(&value),
+        space(),
+        text(MATCH_KEYWORD),
+        line(),
+        indent(&[build(&pattern)]),
+    ])
 }

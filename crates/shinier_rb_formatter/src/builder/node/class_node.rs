@@ -13,8 +13,8 @@ pub fn build_node(node: &ClassNode) -> Doc {
     }
     seq.push(hardline());
     if let Some(body) = node.body() {
-        seq.push(indent(sequence(vec![build(&body), hardline()])));
+        seq.push(indent(&[build(&body), hardline()]));
     }
     seq.push(text("end"));
-    sequence(seq)
+    sequence(seq.as_slice())
 }

@@ -1,4 +1,4 @@
-use crate::doc::{Doc, fill, group, indent, sequence, softline, text};
+use crate::doc::{Doc, group, indent, softline, text};
 use crate::layout::separate;
 use ruby_prism::*;
 
@@ -7,13 +7,11 @@ const CLOSE_DELIMITER: &str = "]";
 const SEPARATOR: &str = ",";
 
 pub fn build_node(node: &ArrayNode) -> Doc {
-    // 要素をセパレータで分割
     let separated = separate(&node.elements(), SEPARATOR);
-    // グループを作成
-    let mut group_member = Vec::with_capacity(4);
-    group_member.push(text(OPEN_DELIMITER));
-    group_member.push(indent(sequence(vec![softline(), fill(separated)])));
-    group_member.push(softline());
-    group_member.push(text(CLOSE_DELIMITER));
-    group(group_member)
+    group(&[
+        text(OPEN_DELIMITER),
+        indent(&[softline(), group(&separated)]),
+        softline(),
+        text(CLOSE_DELIMITER),
+    ])
 }

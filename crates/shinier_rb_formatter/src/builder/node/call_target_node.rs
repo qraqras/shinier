@@ -15,5 +15,5 @@ pub fn build_node(node: &CallTargetNode) -> Doc {
         vec.push(text("."));
     }
     vec.push(text(name));
-    group(vec)
+    group(&vec)
 }

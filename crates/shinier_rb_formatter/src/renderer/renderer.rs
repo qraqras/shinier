@@ -25,18 +25,24 @@ impl Renderer {
         let previous_is_flat = self.is_flat;
         match doc {
             Doc::Fill(fill) => {
-                for ref doc in fill.docs.iter() {
-                    self.is_flat = self.can_fit_in_line_doc(doc);
-                    self.render(doc);
-                }
+                match &*fill.doc {
+                    Doc::Sequence(sequence) => {
+                        for ref doc in sequence.docs.iter() {
+                            self.is_flat = self.fits(doc);
+                            self.render(doc);
+                        }
+                    }
+                    _ => {
+                        self.is_flat = self.fits(&fill.doc);
+                        self.render(&fill.doc);
+                    }
+                };
             }
             Doc::Group(group) => {
-                let can_fit = self.can_fit_in_line_docs(&group.docs);
+                let can_fit = self.fits(&group.doc);
                 self.group_stack.push((group.id, can_fit));
                 self.is_flat = can_fit;
-                for ref doc in group.docs.iter() {
-                    self.render(doc);
-                }
+                self.render(&*group.doc);
                 self.group_stack.pop();
             }
             Doc::HardLine(_hard_line) => {
@@ -63,7 +69,7 @@ impl Renderer {
             }
             Doc::Line(_line) => {
                 if self.is_flat {
-                    self.write_text(" ");
+                    self.write_space();
                 } else {
                     self.write_newline();
                 }
@@ -73,6 +79,9 @@ impl Renderer {
                 for ref doc in sequence.docs.iter() {
                     self.render(doc);
                 }
+            }
+            Doc::Space(_space) => {
+                self.write_space();
             }
             Doc::SoftLine(_soft_line) => {
                 if !self.is_flat {
@@ -98,6 +107,9 @@ impl Renderer {
         self.output.push_str(text);
         self.column += text.len();
     }
+    fn write_space(&mut self) {
+        self.write_text(" ");
+    }
     fn write_indent(&mut self) {
         if self.column == 0 && self.indent_level > 0 {
             let indent = self.indent_unit.repeat(self.indent_level);
@@ -109,7 +121,7 @@ impl Renderer {
         self.output.push_str("\n");
         self.column = 0;
     }
-    fn can_fit_in_line_doc(&self, doc: &Doc) -> bool {
+    fn fits(&self, doc: &Doc) -> bool {
         let column = self.column + self.measure_doc(doc);
         // 改行がちょうど収まってはいけない(次が必ずはみ出てしまうため)
         match doc {
@@ -119,19 +131,10 @@ impl Renderer {
             _ => column <= self.column_max,
         }
     }
-    fn can_fit_in_line_docs(&self, docs: &Docs) -> bool {
-        let column = self.column + self.measure_docs(docs);
-        match docs.iter().last() {
-            Some(Doc::HardLine(_)) => column < self.column_max,
-            Some(Doc::Line(_)) => column < self.column_max,
-            Some(Doc::SoftLine(_)) => column < self.column_max,
-            _ => column <= self.column_max,
-        }
-    }
     fn measure_doc(&self, doc: &Doc) -> usize {
         match doc {
-            Doc::Fill(fill) => self.measure_docs(&fill.docs),
-            Doc::Group(group) => self.measure_docs(&group.docs),
+            Doc::Fill(fill) => self.measure_doc(&fill.doc),
+            Doc::Group(group) => self.measure_doc(&group.doc),
             Doc::HardLine(_hard_line) => 0,
             Doc::IfBreak(if_break) => self.measure_doc(&if_break.flat),
             Doc::Indent(indent) => self.measure_doc(&indent.doc),
@@ -139,11 +142,12 @@ impl Renderer {
             Doc::Line(_line) => 1,
             Doc::None(_none) => 0,
             Doc::Sequence(sequence) => self.measure_docs(&sequence.docs),
+            Doc::Space(_space) => 1,
             Doc::SoftLine(_soft_line) => 0,
             Doc::Text(text) => text.text.len(),
         }
     }
-    fn measure_docs(&self, docs: &Docs) -> usize {
+    fn measure_docs(&self, docs: &Vec<Doc>) -> usize {
         let mut total = 0;
         for doc in docs {
             total += self.measure_doc(doc);

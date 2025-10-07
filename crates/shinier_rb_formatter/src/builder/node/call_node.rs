@@ -1,5 +1,5 @@
 use crate::builder::build;
-use crate::doc::{Doc, group, indent, softline, text};
+use crate::doc::{Doc, group, indent, softline, space, text};
 use crate::utility::constant_id_to_string;
 use ruby_prism::CallNode;
 
@@ -34,12 +34,12 @@ pub fn build_node(node: &CallNode) -> Doc {
         if let Some(arguments) = arguments {
             let (base_name, op) = split_var_and_op(&name);
             vec.push(text(base_name));
-            vec.push(text(" "));
+            vec.push(space());
             vec.push(text(op.unwrap_or("")));
-            vec.push(text(" "));
+            vec.push(space());
             vec.push(build(&arguments.as_node()));
         }
-        return group(vec);
+        return group(&vec);
     }
 
     // 可視性の無視の場合
@@ -48,10 +48,10 @@ pub fn build_node(node: &CallNode) -> Doc {
     // その他の場合
     vec.push(text(name));
     if let Some(arguments) = arguments {
-        vec.push(group(vec![
+        vec.push(group(&[
             text(OPEN_PAREN),
             softline(),
-            indent(build(&arguments.as_node())),
+            indent(&[build(&arguments.as_node())]),
             softline(),
             text(CLOSE_PAREN),
         ]));
@@ -59,7 +59,7 @@ pub fn build_node(node: &CallNode) -> Doc {
     if let Some(block) = block {
         vec.push(build(&block));
     }
-    group(vec)
+    group(&vec)
 }
 
 // 演算子を末尾から検出して (base_name, Option<op>) を返す
