@@ -1,4 +1,4 @@
-use crate::doc::{Doc, fill, group, indent, softline, text};
+use crate::doc::{Doc, group, indent, softline, text};
 use crate::layout::separate;
 use ruby_prism::*;
 
@@ -10,7 +10,7 @@ pub fn build_node(node: &ArrayNode) -> Doc {
     let separated = separate(&node.elements(), SEPARATOR);
     group(&[
         text(OPEN_DELIMITER),
-        indent(&[softline(), fill(&separated)]),
+        indent(&[softline(), group(&separated)]),
         softline(),
         text(CLOSE_DELIMITER),
     ])

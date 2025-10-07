@@ -4,5 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-ruby-prism = { version = "1.4.0" }
+ruby-prism = { version = "1.5.1" }
 shinier_fs = { workspace = true }
+
+[dev-dependencies]
+insta = { version = "1.43.2", features = ["yaml"] }
