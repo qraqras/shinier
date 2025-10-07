@@ -1,0 +1,34 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/call_node.rb
+---
+foo
+foo
+foo(bar)
+foo(
+  bar,
+  baz,
+  bazz,
+  bar,
+  baz,
+  bazz,
+  bar,
+  baz,
+  bazz,
+  a: bar,
+  b: baz,
+  c: bazz
+)
+foo.+@
+foo.+(bar)
+foo.bar
+foo&.bar
+foo.bar = baz
+foo.bar += baz
+foo&.bar *= baz
+foo.bar &&= baz
+foo&.bar &&= baz
+foo.bar ||= baz
+foo&.bar ||= baz

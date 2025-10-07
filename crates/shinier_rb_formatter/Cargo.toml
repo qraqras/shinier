@@ -8,4 +8,4 @@ ruby-prism = { version = "1.5.1" }
 shinier_fs = { workspace = true }
 
 [dev-dependencies]
-insta = { version = "1.43.2", features = ["yaml"] }
+insta = { version = "1.43.2", features = ["glob"] }

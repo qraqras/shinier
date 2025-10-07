@@ -16,5 +16,6 @@ mod utility;
 pub use builder::*;
 pub use doc::*;
 pub use formatter::*;
+pub use printer::*;
 pub use renderer::*;
 pub use utility::*;

@@ -1,0 +1,4 @@
+alias $foo $bar
+alias
+  $foo $bar
+alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
