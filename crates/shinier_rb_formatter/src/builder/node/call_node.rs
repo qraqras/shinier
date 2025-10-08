@@ -6,7 +6,8 @@ use ruby_prism::CallNode;
 const OPEN_PAREN: &str = "(";
 const CLOSE_PAREN: &str = ")";
 
-pub fn build_node(node: &CallNode) -> Doc {
+pub fn build_node(node: Option<&CallNode>) -> Doc {
+    let node = node.unwrap();
     let name = constant_id_to_string(&node.name());
     let receiver = node.receiver();
     let arguments = node.arguments();

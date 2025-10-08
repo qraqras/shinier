@@ -6,7 +6,8 @@ use ruby_prism::{AssocNode, Node};
 const SYMBOL_SEPARATER: &str = ":";
 const ROCKET_SEPARATER: &str = "=>";
 
-pub fn build_node(node: &AssocNode) -> Doc {
+pub fn build_node(node: Option<&AssocNode>) -> Doc {
+    let node = node.unwrap();
     let key = node.key();
     let value = node.value();
     let separater_doc = match key {

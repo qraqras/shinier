@@ -4,7 +4,8 @@ use ruby_prism::AssocSplatNode;
 
 const SPLAT_PREFIX: &str = "**";
 
-pub fn build_node(node: &AssocSplatNode) -> Doc {
+pub fn build_node(node: Option<&AssocSplatNode>) -> Doc {
+    let node = node.unwrap();
     let value = node.value();
     match value {
         Some(value) => sequence(&[text(SPLAT_PREFIX), build(&value)]),

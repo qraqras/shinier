@@ -4,6 +4,7 @@ use ruby_prism::ArgumentsNode;
 
 const SEPARATER: &str = ",";
 
-pub fn build_node(node: &ArgumentsNode) -> Doc {
+pub fn build_node(node: Option<&ArgumentsNode>) -> Doc {
+    let node = node.unwrap();
     group(&separate(&node.arguments(), SEPARATER))
 }

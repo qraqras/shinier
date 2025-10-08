@@ -5,7 +5,8 @@ use ruby_prism::CallAndWriteNode;
 
 const OPERATOR: &str = "&&=";
 
-pub fn build_node(node: &CallAndWriteNode) -> Doc {
+pub fn build_node(node: Option<&CallAndWriteNode>) -> Doc {
+    let node = node.unwrap();
     let receiver = node.receiver();
     let read_name = constant_id_to_string(&node.read_name());
     let value = &node.value();

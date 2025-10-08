@@ -4,7 +4,8 @@ use ruby_prism::ConstantWriteNode;
 
 const ASSIGNMENT_OPERATOR: &str = " =";
 
-pub fn build_node(node: &ConstantWriteNode) -> Doc {
+pub fn build_node(node: Option<&ConstantWriteNode>) -> Doc {
+    let node = node.unwrap();
     let name = text_from_u8(node.name().as_slice());
     let operator = text(ASSIGNMENT_OPERATOR);
     let value = build(&node.value());

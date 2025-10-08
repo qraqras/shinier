@@ -7,7 +7,8 @@ const OPEN_DELIMITER: &str = "[";
 const CLOSE_DELIMITER: &str = "]";
 const SEPARATOR: &str = ",";
 
-pub fn build_node(node: &ArrayPatternNode) -> Doc {
+pub fn build_node(node: Option<&ArrayPatternNode>) -> Doc {
+    let node = node.unwrap();
     let constant = node.constant();
     let requireds = node.requireds();
     let rest = node.rest();

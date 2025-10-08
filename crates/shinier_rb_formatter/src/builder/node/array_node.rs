@@ -6,7 +6,8 @@ const OPEN_DELIMITER: &str = "[";
 const CLOSE_DELIMITER: &str = "]";
 const SEPARATOR: &str = ",";
 
-pub fn build_node(node: &ArrayNode) -> Doc {
+pub fn build_node(node: Option<&ArrayNode>) -> Doc {
+    let node = node.unwrap();
     let separated = separate(&node.elements(), SEPARATOR);
     group(&[
         text(OPEN_DELIMITER),

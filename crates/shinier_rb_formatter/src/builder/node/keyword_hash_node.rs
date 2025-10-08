@@ -4,6 +4,7 @@ use ruby_prism::KeywordHashNode;
 
 const SEPARATER: &str = ",";
 
-pub fn build_node(node: &KeywordHashNode) -> Doc {
+pub fn build_node(node: Option<&KeywordHashNode>) -> Doc {
+    let node = node.unwrap();
     group(&separate(&node.elements(), SEPARATER))
 }
