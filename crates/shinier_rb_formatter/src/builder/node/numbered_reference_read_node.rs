@@ -1,9 +1,9 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, sequence, text};
+use ruby_prism::NumberedReferenceReadNode;
+
+const REFERENCE_PREFIX: &str = "$";
 
 pub fn build_node(node: &NumberedReferenceReadNode) -> Doc {
-    return text(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+    let number = node.number();
+    sequence(&[text(REFERENCE_PREFIX), text(number.to_string())])
 }
