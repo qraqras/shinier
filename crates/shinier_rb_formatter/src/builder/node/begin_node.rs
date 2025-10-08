@@ -1,4 +1,5 @@
-use crate::builder::build;
+use crate::builder::node::{else_node, ensure_node, rescue_node, statements_node};
+use crate::builder::{build, build_optional};
 use crate::doc::*;
 use ruby_prism::*;
 
@@ -12,16 +13,14 @@ pub fn build_node(node: Option<&BeginNode>) -> Doc {
     let else_clause = node.else_clause();
     let ensure_clause = node.ensure_clause();
 
-    let mut vec = Vec::new();
-    if let Some(rescue_clause) = rescue_clause {
-        vec.push(build(&rescue_clause.as_node()));
-    }
-    if let Some(else_clause) = else_clause {
-        vec.push(build(&else_clause.as_node()));
-    }
-    if let Some(ensure_clause) = ensure_clause {
-        vec.push(build(&ensure_clause.as_node()));
-    }
-
-    none() // TODO
+    sequence(&[
+        text(BEGIN_KEYWORD),
+        hardline(),
+        indent(&[statements_node::build_node(statements.as_ref())]),
+        rescue_node::build_node(rescue_clause.as_ref()),
+        else_node::build_node(else_clause.as_ref()),
+        ensure_node::build_node(ensure_clause.as_ref()),
+        text(END_KEYWORD),
+        hardline(),
+    ])
 }

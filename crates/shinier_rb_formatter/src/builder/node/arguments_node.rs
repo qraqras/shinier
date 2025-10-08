@@ -6,5 +6,6 @@ const SEPARATER: &str = ",";
 
 pub fn build_node(node: Option<&ArgumentsNode>) -> Doc {
     let node = node.unwrap();
-    group(&separate(&node.arguments(), SEPARATER))
+    let arguments = node.arguments();
+    group(&separate(&arguments, SEPARATER))
 }

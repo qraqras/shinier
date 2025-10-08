@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::{build, build_optional};
 use crate::doc::*;
 use crate::layout::separate;
 use ruby_prism::ArrayPatternNode;
@@ -16,16 +16,9 @@ pub fn build_node(node: Option<&ArrayPatternNode>) -> Doc {
 
     let separated_requireds = separate(&requireds, SEPARATOR);
     let separated_posts = separate(&posts, SEPARATOR);
-    let built_rest = if let Some(ref rest) = rest {
-        build(&rest)
-    } else {
-        none()
-    };
 
     let mut vec = Vec::new();
-    if let Some(constant) = &constant {
-        vec.push(build(constant));
-    }
+    vec.push(build_optional(constant.as_ref()));
     vec.push(text(OPEN_DELIMITER));
     vec.push(indent(&[
         softline(),
@@ -34,7 +27,7 @@ pub fn build_node(node: Option<&ArrayPatternNode>) -> Doc {
             rest.is_some() && separated_requireds.len() > 0,
             sequence(&[text(SEPARATOR), line()]),
         ),
-        built_rest,
+        build_optional(rest.as_ref()),
         none_if_false(
             separated_posts.len() > 0 && rest.is_some(),
             sequence(&[text(SEPARATOR), line()]),

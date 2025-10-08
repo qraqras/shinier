@@ -8,10 +8,10 @@ const SEPARATOR: &str = ",";
 
 pub fn build_node(node: Option<&ArrayNode>) -> Doc {
     let node = node.unwrap();
-    let separated = separate(&node.elements(), SEPARATOR);
+    let elements = node.elements();
     group(&[
         text(OPEN_DELIMITER),
-        indent(&[softline(), group(&separated)]),
+        indent(&[softline(), group(&separate(&elements, SEPARATOR))]),
         softline(),
         text(CLOSE_DELIMITER),
     ])

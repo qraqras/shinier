@@ -611,3 +611,10 @@ pub fn build(node: &Node) -> Doc {
         }
     }
 }
+
+pub fn build_optional(node: Option<&Node>) -> Doc {
+    match node {
+        Some(node) => build(node),
+        None => none(),
+    }
+}
