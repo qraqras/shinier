@@ -1,10 +1,11 @@
+use crate::builder::build;
 use crate::builder::node::statements_node;
-use crate::builder::{build, build_optional};
-use crate::doc::*;
+use crate::doc::{Doc, fill, hardline, indent, line, none, sequence, space, text};
 use crate::layout::separate;
-use ruby_prism::*;
+use ruby_prism::RescueNode;
 
 const RESCUE_KEYWORD: &str = "rescue";
+const EXCEPTIONS_SEPARATOR: &str = ",";
 const REFERENCE_ARROW: &str = "=>";
 
 pub fn build_node(node: Option<&RescueNode>) -> Doc {
@@ -18,11 +19,10 @@ pub fn build_node(node: Option<&RescueNode>) -> Doc {
             sequence(&[
                 text(RESCUE_KEYWORD),
                 space(),
-                fill(&separate(&exceptions, ",")),
-                if let Some(reference) = reference {
-                    sequence(&[space(), text(REFERENCE_ARROW), line(), build(&reference)])
-                } else {
-                    none()
+                fill(&separate(&exceptions, EXCEPTIONS_SEPARATOR)),
+                match reference {
+                    Some(r) => sequence(&[space(), text(REFERENCE_ARROW), line(), build(&r)]),
+                    None => none(),
                 },
                 indent(&[hardline(), statements_node::build_node(statements.as_ref())]),
                 build_node(subsequent.as_ref()),

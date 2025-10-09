@@ -6,34 +6,32 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/begin_node.rb
 ---
 begin
 end
-
 begin
   foo
 end
-
 begin
   foo
 rescue  => e
   handle(e)
 end
-
 begin
   foo
-not implemented: "ruby_prism::bindings::EnsureNode"end
-
+ensure
+  cleanup
+end
 begin
   try_block
 rescue 
   rescue_block
-not implemented: "ruby_prism::bindings::ElseNode"end
-
+else
+  else_block
+end
 begin
   begin
     inner
   rescue 
     inner_rescue
   end
-
 rescue 
   outer_rescue
 end
