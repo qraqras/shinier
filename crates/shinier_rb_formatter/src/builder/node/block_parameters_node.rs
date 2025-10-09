@@ -1,10 +1,13 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::node::parameters_node;
+use crate::doc::{Doc, none};
+use ruby_prism::BlockParametersNode;
 
 pub fn build_node(node: Option<&BlockParametersNode>) -> Doc {
-    let node = node.unwrap();
-    return text(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+    match node {
+        Some(node) => {
+            let parameters = node.parameters();
+            parameters_node::build_node(parameters.as_ref())
+        }
+        None => none(),
+    }
 }

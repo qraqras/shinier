@@ -119,6 +119,9 @@ pub fn none_if_false(cond: bool, true_branch: Doc) -> Doc {
     if cond { true_branch } else { none() }
 }
 pub fn sequence(docs: &[Doc]) -> Doc {
+    if docs.is_empty() {
+        return none();
+    }
     let mut flat_docs = Vec::new();
     let mut deque: std::collections::VecDeque<Doc> = docs.to_vec().into();
     while let Some(doc) = deque.pop_front() {
