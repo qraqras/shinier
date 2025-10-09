@@ -1,3 +1,4 @@
+use ruby_prism::ConstantId;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 static NEXT_GROUP_ID: AtomicUsize = AtomicUsize::new(0);
@@ -147,4 +148,7 @@ pub fn text_from_u8(text: &[u8]) -> Doc {
         Ok(text) => Doc::Text(TextDoc { text }),
         Err(_) => Doc::None(NoneDoc {}), // TODO: エラー処理
     }
+}
+pub fn text_constant(constant_id: &ConstantId) -> Doc {
+    text(String::from_utf8(constant_id.as_slice().to_vec()).unwrap())
 }

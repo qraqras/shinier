@@ -1,6 +1,6 @@
 use crate::builder::build_optional;
 use crate::doc::*;
-use crate::layout::separate;
+use crate::layout::separate_nodelist;
 use ruby_prism::ArrayPatternNode;
 
 const OPEN_DELIMITER: &str = "[";
@@ -14,8 +14,8 @@ pub fn build_node(node: Option<&ArrayPatternNode>) -> Doc {
     let rest = node.rest();
     let posts = node.posts();
 
-    let separated_requireds = separate(&requireds, SEPARATOR);
-    let separated_posts = separate(&posts, SEPARATOR);
+    let separated_requireds = separate_nodelist(&requireds, SEPARATOR);
+    let separated_posts = separate_nodelist(&posts, SEPARATOR);
 
     sequence(&[
         build_optional(constant.as_ref()),

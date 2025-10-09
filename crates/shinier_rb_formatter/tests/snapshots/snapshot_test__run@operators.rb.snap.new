@@ -1,0 +1,76 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/operators.rb
+---
+1.+(2)
+1.-(2)
+1.*(2)
+1./(2)
+1.%(2)
+2.**(3)
+-1
+1
+1.&(2)
+1.|(2)
+1.^(2)
+1.~
+1.<<(2)
+1.>>(2)
+1.==(2)
+1.!=(2)
+1.<(2)
+1.<=(2)
+1.>(2)
+1.>=(2)
+1.<=>(2)
+not implemented: "ruby_prism::bindings::CaseNode"
+obj.===(klass)
+not implemented: "ruby_prism::bindings::RegularExpressionNode".===(
+  str
+)
+not implemented: "ruby_prism::bindings::StringNode".=~(
+  not implemented: "ruby_prism::bindings::RegularExpressionNode"
+)
+not implemented: "ruby_prism::bindings::StringNode".!~(
+  not implemented: "ruby_prism::bindings::RegularExpressionNode"
+)
+not implemented: "ruby_prism::bindings::TrueNode" and not implemented: "ruby_prism::bindings::FalseNode"
+not implemented: "ruby_prism::bindings::OrNode"
+not implemented: "ruby_prism::bindings::TrueNode".!
+not implemented: "ruby_prism::bindings::IfNode"
+foo = 1
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+arr.[](0)
+arr.[](1, 2)
+arr.[]=(0, 1)
+hash.[](a)
+hash.[]=(a, 1)
+not implemented: "ruby_prism::bindings::RangeNode"
+not implemented: "ruby_prism::bindings::RangeNode"
+obj.method
+obj&.method
+foo.+(bar)
+foo.-(bar)
+obj.attr=(value)
+obj.attr += 1
+obj.attr ||= default
+obj.attr &&= other
+arr.mapnot implemented: "ruby_prism::bindings::BlockNode"
+arr.map(&to_s)&to_s
+not implemented: "ruby_prism::bindings::DefinedNode"
+func(
+  a, *rest, b: 1,
+  **kw
+)

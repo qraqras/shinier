@@ -1,0 +1,83 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/call_node.rb
+---
+foo
+foo
+foo(bar)
+foo(
+  bar,
+  baz,
+  bazz,
+  bar,
+  baz,
+  bazz,
+  bar,
+  baz,
+  bazz,
+  a: bar,
+  b: baz,
+  c: bazz
+)
+foo.+@
+foo.+(bar)
+foo.bar
+foo&.bar
+foo.|(bar)
+foo.^(bar)
+foo.&(bar)
+foo.<=>(bar)
+foo.==(bar)
+foo.===(bar)
+foo.=~(bar)
+foo.>(bar)
+foo.>=(bar)
+foo.<(bar)
+foo.<=(bar)
+foo.<<(bar)
+foo.>>(bar)
+foo.+(bar)
+foo.-(bar)
+foo.*(bar)
+foo./(bar)
+foo.%(bar)
+foo.**(bar)
+foo(bar.~)
+foo.+@
+foo.-@
+foo.[](bar)
+foo.[]=(bar, baz)
+not implemented: "ruby_prism::bindings::XStringNode"
+foo.!
+foo.!=(bar)
+foo.!~(bar)
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableAndWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOrWriteNode"
+foo(&bar)&bar
+foo(bar, &baz)&baz
+foonot implemented: "ruby_prism::bindings::BlockNode"
+foonot implemented: "ruby_prism::bindings::BlockNode"
+foo(bar)not implemented: "ruby_prism::bindings::BlockNode"
+foonot implemented: "ruby_prism::bindings::BlockNode"
+foo.barnot implemented: "ruby_prism::bindings::BlockNode"
+foo&.barnot implemented: "ruby_prism::bindings::BlockNode"
+foo(&proc_obj)&proc_obj
+foo and bar
+foo and bar
+not implemented: "ruby_prism::bindings::OrNode"
+not implemented: "ruby_prism::bindings::OrNode"
+foo.!
+foo.!

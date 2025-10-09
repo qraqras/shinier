@@ -1,66 +1,119 @@
-use crate::builder::build;
-use crate::doc::{Doc, group, indent, softline, space, text};
-use crate::utility::constant_id_to_string;
-use ruby_prism::CallNode;
+use crate::builder::layout::{separate, separate_docs};
+use crate::builder::node::{arguments_node, block_argument_node};
+use crate::builder::{build, build_optional};
+use crate::composite_node::arguments::build_composite_node;
+use crate::doc::{self, Doc, group, indent, line, none, sequence, softline, space, text};
+use crate::text_constant;
+use ruby_prism::{CallNode, Node};
 
 const OPEN_PAREN: &str = "(";
 const CLOSE_PAREN: &str = ")";
+const ARGUMENTS_SEPARATOR: &str = ",";
+const DOT_OPERATOR: &str = ".";
+const SAFE_NAVIGATION_OPERATOR: &str = "&.";
+const OPERATOR_METHODS: &[&str] = &[
+    "|",   // ...
+    "^",   // ...
+    "&",   // ...
+    "<=>", // ...
+    "==",  // ...
+    "===", // ...
+    "=~",  // ...
+    ">",   // ...
+    ">=",  // ...
+    "<",   // ...
+    "<=",  // ...
+    "<<",  // ...
+    ">>",  // ...
+    "+",   // ...
+    "-",   // ...
+    "*",   // ...
+    "/",   // ...
+    "%",   // ...
+    "**",  // ...
+    "~",   // ...
+    "+@",  // ...
+    "-@",  // ...
+    "[]",  // ...
+    "[]=", // ...
+    "`",   // ...
+    "!",   // ...
+    "!=",  // ...
+    "!~",  // ...
+];
+const SELF_ASSIGNABLE_METHODS: &[&str] = &[
+    "+",  // ...
+    "-",  // ...
+    "*",  // ...
+    "/",  // ...
+    "%",  // ...
+    "**", // ...
+    "&",  // ...
+    "|",  // ...
+    "^",  // ...
+    "<<", // ...
+    ">>", // ...
+    "&&", // ...
+    "||", // ...
+];
 
 pub fn build_node(node: Option<&CallNode>) -> Doc {
     let node = node.unwrap();
-    let name = constant_id_to_string(&node.name());
-    let receiver = node.receiver();
-    let arguments = node.arguments();
-    let block = node.block();
+
+    let doc_receiver = build_receiver(node);
+    let doc_name = build_name(node);
+    let doc_arguments = build_arguments(node);
+    let doc_block = build_block(node);
 
     // 変数呼び出しの場合
     if node.is_variable_call() {
-        return text(name);
+        return doc_name;
     }
 
-    let mut vec = Vec::new();
+    group(&[doc_receiver, doc_name, doc_arguments, doc_block])
+}
 
-    // レシーバーの書き込み
-    if let Some(receiver) = &receiver {
-        vec.push(build(receiver));
-        if node.is_safe_navigation() {
-            vec.push(text("&."));
-        } else {
-            vec.push(text("."));
-        }
+fn build_receiver(node: &CallNode) -> Doc {
+    let receiver = node.receiver();
+    match receiver {
+        Some(receiver) => sequence(&[
+            build(&receiver),
+            match node.is_safe_navigation() {
+                true => text(SAFE_NAVIGATION_OPERATOR),
+                false => text(DOT_OPERATOR),
+            },
+        ]),
+        None => none(),
     }
+}
 
-    // 属性の書き込みの場合
-    if node.is_attribute_write() {
-        if let Some(arguments) = arguments {
-            let (base_name, op) = split_var_and_op(&name);
-            vec.push(text(base_name));
-            vec.push(space());
-            vec.push(text(op.unwrap_or("")));
-            vec.push(space());
-            vec.push(build(&arguments.as_node()));
-        }
-        return group(&vec);
-    }
+fn build_name(node: &CallNode) -> Doc {
+    let name = node.name();
+    // TODO: オペレータ個別の処理を追加
+    text_constant(&name)
+}
 
-    // 可視性の無視の場合
-    if node.is_ignore_visibility() {}
-
-    // その他の場合
-    vec.push(text(name));
-    if let Some(arguments) = arguments {
-        vec.push(group(&[
+fn build_arguments(node: &CallNode) -> Doc {
+    let arguments = node.arguments();
+    let block = node.block();
+    let block_argument = block.and_then(|node| node.as_block_argument_node());
+    let doc_arguments = arguments_node::build_node(arguments.as_ref());
+    let doc_block_argument = block_argument_node::build_node(block_argument.as_ref());
+    match (arguments, block_argument) {
+        (None, None) => none(),
+        _ => group(&[
             text(OPEN_PAREN),
             softline(),
-            indent(&[build(&arguments.as_node())]),
+            indent(&separate_docs(&[doc_arguments, doc_block_argument])),
             softline(),
             text(CLOSE_PAREN),
-        ]));
+        ]),
     }
-    if let Some(block) = block {
-        vec.push(build(&block));
-    }
-    group(&vec)
+}
+
+fn build_block(node: &CallNode) -> Doc {
+    let block = node.block();
+    build_optional(block.as_ref())
 }
 
 // 演算子を末尾から検出して (base_name, Option<op>) を返す

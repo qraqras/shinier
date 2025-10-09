@@ -1,7 +1,7 @@
 use crate::builder::build;
 use crate::builder::node::statements_node;
 use crate::doc::{Doc, fill, hardline, indent, line, none, sequence, space, text};
-use crate::layout::separate;
+use crate::layout::separate_nodelist;
 use ruby_prism::RescueNode;
 
 const RESCUE_KEYWORD: &str = "rescue";
@@ -19,7 +19,7 @@ pub fn build_node(node: Option<&RescueNode>) -> Doc {
             sequence(&[
                 text(RESCUE_KEYWORD),
                 space(),
-                fill(&separate(&exceptions, EXCEPTIONS_SEPARATOR)),
+                fill(&separate_nodelist(&exceptions, EXCEPTIONS_SEPARATOR)),
                 match reference {
                     Some(r) => sequence(&[space(), text(REFERENCE_ARROW), line(), build(&r)]),
                     None => none(),
