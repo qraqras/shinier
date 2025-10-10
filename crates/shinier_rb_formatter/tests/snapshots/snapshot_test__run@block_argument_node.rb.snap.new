@@ -5,13 +5,6 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/block_argument_node.rb
 ---
 foo(&block_arg)&block_arg
-foo(
-  arg_0,
-  &block_arg
-)&block_arg
-foo(
-  arg_0, arg_1,
-  &block_arg
-)&block_arg
-bar{xx
-}
+foo(arg_0, &block_arg)&block_arg
+foo(arg_0, arg_1, &block_arg)&block_arg
+bar{ |x| x }

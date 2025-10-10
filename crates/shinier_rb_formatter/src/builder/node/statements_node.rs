@@ -6,9 +6,11 @@ pub fn build_node(node: Option<&StatementsNode>) -> Doc {
     match node {
         Some(node) => {
             let mut statements = Vec::new();
-            for node in node.body().iter() {
+            for (i, node) in node.body().iter().enumerate() {
+                if i > 0 {
+                    statements.push(hardline());
+                }
                 statements.push(builder::build(&node));
-                statements.push(hardline());
             }
             sequence(&statements)
         }

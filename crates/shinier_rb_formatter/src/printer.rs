@@ -27,7 +27,7 @@ impl Printer {
     }
     fn doc_to_str(&self, doc: Doc) -> String {
         println!("----doc_to_str----");
-        const COLUMN_MAX: usize = 20;
+        const COLUMN_MAX: usize = 40;
         const INDENT_UNIT: &str = "  ";
         let mut renderer = Renderer::new(INDENT_UNIT, COLUMN_MAX);
         renderer.render(&doc);

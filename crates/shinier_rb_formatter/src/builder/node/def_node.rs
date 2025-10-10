@@ -1,6 +1,8 @@
 use crate::builder::node::parameters_node;
 use crate::builder::{build, build_optional};
-use crate::doc::{Doc, hardline, indent, line, none, sequence, text, text_constant};
+use crate::doc::{
+    Doc, group, hardline, indent, line, none, sequence, softline, text, text_constant,
+};
 use ruby_prism::DefNode;
 
 const DEF_KEYWORD: &str = "def";
@@ -39,9 +41,11 @@ fn build_name(node: &DefNode) -> Doc {
 fn build_parameters(node: &DefNode) -> Doc {
     let parameters = node.parameters();
     match parameters {
-        Some(_) => sequence(&[
+        Some(_) => group(&[
             text(OPEN_DELIMITER),
-            parameters_node::build_node(parameters.as_ref()),
+            softline(),
+            indent(&[parameters_node::build_node(parameters.as_ref())]),
+            softline(),
             text(CLOSE_DELIMITER),
         ]),
         None => none(),

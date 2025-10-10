@@ -24,7 +24,11 @@ pub fn build_node(node: Option<&RescueNode>) -> Doc {
                     Some(r) => sequence(&[space(), text(REFERENCE_ARROW), line(), build(&r)]),
                     None => none(),
                 },
-                indent(&[hardline(), statements_node::build_node(statements.as_ref())]),
+                indent(&[
+                    hardline(),
+                    statements_node::build_node(statements.as_ref()),
+                    hardline(),
+                ]),
                 build_node(subsequent.as_ref()),
             ])
         }

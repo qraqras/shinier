@@ -15,7 +15,7 @@ pub fn build_node(node: Option<&BeginNode>) -> Doc {
     sequence(&[
         text(BEGIN_KEYWORD),
         hardline(),
-        indent(&[statements_node::build_node(statements.as_ref())]),
+        indent(&[statements_node::build_node(statements.as_ref()), hardline()]),
         rescue_node::build_node(rescue_clause.as_ref()),
         else_node::build_node(else_clause.as_ref()),
         ensure_node::build_node(ensure_clause.as_ref()),

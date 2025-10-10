@@ -5,6 +5,7 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/begin_node.rb
 ---
 begin
+
 end
 begin
   foo

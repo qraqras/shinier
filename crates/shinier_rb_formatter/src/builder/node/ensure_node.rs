@@ -10,7 +10,11 @@ pub fn build_node(node: Option<&EnsureNode>) -> Doc {
             let statements = node.statements();
             sequence(&[
                 text(ENSURE_KEYWORD),
-                indent(&[hardline(), statements_node::build_node(statements.as_ref())]),
+                indent(&[
+                    hardline(),
+                    statements_node::build_node(statements.as_ref()),
+                    hardline(),
+                ]),
             ])
         }
         None => none(),

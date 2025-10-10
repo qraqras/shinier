@@ -30,4 +30,10 @@ begin
 ensure
   outer_cleanup
 end
-not implemented: "ruby_prism::bindings::DefNode"
+def with_return
+  begin
+    1
+  ensure
+    not implemented: "ruby_prism::bindings::ReturnNode"
+  end
+end

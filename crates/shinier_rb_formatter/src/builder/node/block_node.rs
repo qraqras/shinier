@@ -3,17 +3,21 @@ use ruby_prism::*;
 
 const OPEN_DELIMITER: &str = "{";
 const CLOSE_DELIMITER: &str = "}";
-const PARAMETERS_SEPARATOR: &str = "|";
 
 pub fn build_node(node: Option<&BlockNode>) -> Doc {
     match node {
         Some(node) => {
             let parameters = node.parameters();
             let body = node.body();
-            sequence(&[
+            group(&[
                 text(OPEN_DELIMITER),
-                build_optional(parameters.as_ref()),
-                build_optional(body.as_ref()),
+                line(),
+                indent(&[
+                    build_optional(parameters.as_ref()),
+                    line(),
+                    build_optional(body.as_ref()),
+                ]),
+                line(),
                 text(CLOSE_DELIMITER),
             ])
         }

@@ -1,8 +1,8 @@
 use crate::builder::build_optional;
 use crate::builder::layout::{separate_docs, separate_nodelist};
 use crate::builder::node::block_parameter_node;
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, group, none, sequence};
+use ruby_prism::ParametersNode;
 
 const PARAMETERS_SEPARATOR: &str = ",";
 
