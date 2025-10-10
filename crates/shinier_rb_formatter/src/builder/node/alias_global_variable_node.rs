@@ -4,7 +4,8 @@ use ruby_prism::AliasGlobalVariableNode;
 
 const ALIAS_KEYWORD: &str = "alias";
 
-pub fn build_node(node: &AliasGlobalVariableNode) -> Doc {
+pub fn build_node(node: Option<&AliasGlobalVariableNode>) -> Doc {
+    let node = node.unwrap();
     let old_name = node.old_name();
     let new_name = node.new_name();
     group(&[

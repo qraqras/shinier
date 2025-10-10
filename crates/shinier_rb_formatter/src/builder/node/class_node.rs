@@ -3,7 +3,8 @@ use crate::doc::{Doc, hardline, sequence, text, text_from_u8};
 use crate::indent;
 use ruby_prism::ClassNode;
 
-pub fn build_node(node: &ClassNode) -> Doc {
+pub fn build_node(node: Option<&ClassNode>) -> Doc {
+    let node = node.unwrap();
     let mut seq = Vec::new();
     seq.push(text("class "));
     seq.push(text_from_u8(node.name().as_slice()));

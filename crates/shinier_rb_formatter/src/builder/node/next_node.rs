@@ -1,6 +1,7 @@
 use crate::doc::*;
 use ruby_prism::*;
 
-pub fn build_node(node: &NextNode) -> Doc {
+pub fn build_node(node: Option<&NextNode>) -> Doc {
+    let node = node.unwrap();
     return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
 }

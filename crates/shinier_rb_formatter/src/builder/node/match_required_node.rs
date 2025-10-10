@@ -4,7 +4,8 @@ use ruby_prism::*;
 
 const MATCH_KEYWORD: &str = "=>";
 
-pub fn build_node(node: &MatchRequiredNode) -> Doc {
+pub fn build_node(node: Option<&MatchRequiredNode>) -> Doc {
+    let node = node.unwrap();
     let value = node.value();
     let pattern = node.pattern();
     group(&[

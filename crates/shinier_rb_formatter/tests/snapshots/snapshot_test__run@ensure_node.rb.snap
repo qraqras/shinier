@@ -1,0 +1,39 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/ensure_node.rb
+---
+begin
+  foo
+ensure
+  cleanup
+end
+begin
+  risky
+rescue 
+  handle
+ensure
+  always_cleanup
+end
+begin
+  foo
+ensure
+  cleanup
+end
+begin
+  begin
+    inner
+  ensure
+    inner_cleanup
+  end
+ensure
+  outer_cleanup
+end
+def with_return
+  begin
+    1
+  ensure
+    not implemented: "ruby_prism::bindings::ReturnNode"
+  end
+end

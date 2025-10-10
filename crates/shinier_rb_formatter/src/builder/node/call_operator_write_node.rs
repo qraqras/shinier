@@ -1,9 +1,10 @@
 use crate::builder::build;
 use crate::doc::{Doc, group, space, text};
-use crate::utility::constant_id_to_string;
+use crate::prism_utility::constant_id_to_string;
 use ruby_prism::CallOperatorWriteNode;
 
-pub fn build_node(node: &CallOperatorWriteNode) -> Doc {
+pub fn build_node(node: Option<&CallOperatorWriteNode>) -> Doc {
+    let node = node.unwrap();
     let receiver = node.receiver();
     let read_name = constant_id_to_string(&node.read_name());
     let binary_operator = constant_id_to_string(&node.binary_operator());

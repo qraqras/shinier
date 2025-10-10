@@ -1,6 +1,9 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, text};
+use crate::prism_utility::constant_id_to_string;
+use ruby_prism::BackReferenceReadNode;
 
-pub fn build_node(node: &BackReferenceReadNode) -> Doc {
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+pub fn build_node(node: Option<&BackReferenceReadNode>) -> Doc {
+    let node = node.unwrap();
+    let name = node.name();
+    text(&constant_id_to_string(&name))
 }

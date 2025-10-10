@@ -1,6 +1,19 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, none, sequence, text, text_constant};
+use ruby_prism::RequiredKeywordParameterNode;
 
-pub fn build_node(node: &RequiredKeywordParameterNode) -> Doc {
-        return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+const REPEATED_PARAMETER_PREFIX: &str = "*";
+const REQUIRED_KEYWORD_PARAMETER_SUFFIX: &str = ":";
+
+pub fn build_node(node: Option<&RequiredKeywordParameterNode>) -> Doc {
+    let node = node.unwrap();
+    let is_repeated_parameter = node.is_repeated_parameter();
+    let name = node.name();
+    sequence(&[
+        match is_repeated_parameter {
+            true => text(REPEATED_PARAMETER_PREFIX),
+            false => none(),
+        },
+        text_constant(&name),
+        text(REQUIRED_KEYWORD_PARAMETER_SUFFIX),
+    ])
 }

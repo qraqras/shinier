@@ -1,0 +1,27 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/def_node.rb
+---
+def method
+
+end
+def method_with_params(
+  a, b = 1, *rest, c, d:, **kwargs, &block
+)
+  puts(a)
+end
+def not implemented: "ruby_prism::bindings::SelfNode".class_method
+  not implemented: "ruby_prism::bindings::StringNode"
+end
+def obj.instance_method
+  not implemented: "ruby_prism::bindings::StringNode"
+end
+def method_with_locals
+  local_var = 42
+  another_var = not implemented: "ruby_prism::bindings::StringNode"
+end
+def complex_method(x)
+  not implemented: "ruby_prism::bindings::IfNode"
+end

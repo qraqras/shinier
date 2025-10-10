@@ -4,7 +4,8 @@ use ruby_prism::AndNode;
 
 const AND_KEYWORD: &str = "and";
 
-pub fn build_node(node: &AndNode) -> Doc {
+pub fn build_node(node: Option<&AndNode>) -> Doc {
+    let node = node.unwrap();
     let left = node.left();
     let right = node.right();
     sequence(&[

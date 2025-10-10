@@ -4,7 +4,8 @@ use ruby_prism::AlternationPatternNode;
 
 const ALTERNATION_OPERATOR: &str = "|";
 
-pub fn build_node(node: &AlternationPatternNode) -> Doc {
+pub fn build_node(node: Option<&AlternationPatternNode>) -> Doc {
+    let node = node.unwrap();
     let left = node.left();
     let right = node.right();
     sequence(&[

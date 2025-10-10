@@ -1,3 +1,4 @@
+use ruby_prism::ConstantId;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 static NEXT_GROUP_ID: AtomicUsize = AtomicUsize::new(0);
@@ -118,6 +119,9 @@ pub fn none_if_false(cond: bool, true_branch: Doc) -> Doc {
     if cond { true_branch } else { none() }
 }
 pub fn sequence(docs: &[Doc]) -> Doc {
+    if docs.is_empty() {
+        return none();
+    }
     let mut flat_docs = Vec::new();
     let mut deque: std::collections::VecDeque<Doc> = docs.to_vec().into();
     while let Some(doc) = deque.pop_front() {
@@ -147,4 +151,7 @@ pub fn text_from_u8(text: &[u8]) -> Doc {
         Ok(text) => Doc::Text(TextDoc { text }),
         Err(_) => Doc::None(NoneDoc {}), // TODO: エラー処理
     }
+}
+pub fn text_constant(constant_id: &ConstantId) -> Doc {
+    text(String::from_utf8(constant_id.as_slice().to_vec()).unwrap())
 }

@@ -1,6 +1,18 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::build;
+use crate::doc::{Doc, fill, line, space, text, text_constant};
+use ruby_prism::OptionalParameterNode;
 
-pub fn build_node(node: &OptionalParameterNode) -> Doc {
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+const OPERATOR: &str = "=";
+
+pub fn build_node(node: Option<&OptionalParameterNode>) -> Doc {
+    let node = node.unwrap();
+    let name = node.name();
+    let value = node.value();
+    fill(&[
+        text_constant(&name),
+        space(),
+        text(OPERATOR),
+        line(),
+        build(&value),
+    ])
 }

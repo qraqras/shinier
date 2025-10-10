@@ -1,9 +1,10 @@
-use crate::builder::layout::separate;
+use crate::builder::layout::separate_nodelist;
 use crate::doc::{Doc, group};
 use ruby_prism::KeywordHashNode;
 
 const SEPARATER: &str = ",";
 
-pub fn build_node(node: &KeywordHashNode) -> Doc {
-    group(&separate(&node.elements(), SEPARATER))
+pub fn build_node(node: Option<&KeywordHashNode>) -> Doc {
+    let node = node.unwrap();
+    group(&separate_nodelist(&node.elements(), SEPARATER))
 }
