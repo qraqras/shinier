@@ -68,12 +68,24 @@ not implemented: "ruby_prism::bindings::LocalVariableAndWriteNode"
 not implemented: "ruby_prism::bindings::LocalVariableOrWriteNode"
 foo(&bar)&bar
 foo(bar, &baz)&baz
-foonot implemented: "ruby_prism::bindings::BlockNode"
-foonot implemented: "ruby_prism::bindings::BlockNode"
-foo(bar)not implemented: "ruby_prism::bindings::BlockNode"
-foonot implemented: "ruby_prism::bindings::BlockNode"
-foo.barnot implemented: "ruby_prism::bindings::BlockNode"
-foo&.barnot implemented: "ruby_prism::bindings::BlockNode"
+foo{puts(
+  not implemented: "ruby_prism::bindings::StringNode"
+)
+}
+foo{xx.*(2)
+}
+foo(bar){a, bp(
+  [a, b]
+)
+}
+foo{not implemented: "ruby_prism::bindings::MultiTargetNode"p(
+  a, b
+)
+}
+foo.bar{vv
+}
+foo&.bar{vv
+}
 foo(&proc_obj)&proc_obj
 foo and bar
 foo and bar

@@ -16,7 +16,7 @@ pub fn build_node(node: Option<&ParametersNode>) -> Doc {
             let keywords = node.keywords();
             let keyword_rest = node.keyword_rest();
             let block = node.block();
-            sequence(&separate_docs(&[
+            group(&separate_docs(&[
                 sequence(&separate_nodelist(&requireds, PARAMETERS_SEPARATOR)),
                 sequence(&separate_nodelist(&optionals, PARAMETERS_SEPARATOR)),
                 build_optional(rest.as_ref()),

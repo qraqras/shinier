@@ -13,4 +13,5 @@ foo(
   arg_0, arg_1,
   &block_arg
 )&block_arg
-barnot implemented: "ruby_prism::bindings::BlockNode"
+bar{xx
+}

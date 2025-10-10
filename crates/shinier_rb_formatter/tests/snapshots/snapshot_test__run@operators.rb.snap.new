@@ -67,7 +67,8 @@ obj.attr=(value)
 obj.attr += 1
 obj.attr ||= default
 obj.attr &&= other
-arr.mapnot implemented: "ruby_prism::bindings::BlockNode"
+arr.map{xx.*(2)
+}
 arr.map(&to_s)&to_s
 not implemented: "ruby_prism::bindings::DefinedNode"
 func(
