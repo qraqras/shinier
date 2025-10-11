@@ -17,18 +17,73 @@ foo(
   bar,
   baz,
   bazz,
-  a: bar,
-  b: baz,
-  c: bazz
+  a: bar, b: baz, c: bazz
 )
 foo.+@
 foo.+(bar)
 foo.bar
 foo&.bar
-foo.bar = baz
-foo.bar += baz
-foo&.bar *= baz
-foo.bar &&= baz
-foo&.bar &&= baz
-foo.bar ||= baz
-foo&.bar ||= baz
+foo.|(bar)
+foo.^(bar)
+foo.&(bar)
+foo.<=>(bar)
+foo.==(bar)
+foo.===(bar)
+foo.=~(bar)
+foo.>(bar)
+foo.>=(bar)
+foo.<(bar)
+foo.<=(bar)
+foo.<<(bar)
+foo.>>(bar)
+foo.+(bar)
+foo.-(bar)
+foo.*(bar)
+foo./(bar)
+foo.%(bar)
+foo.**(bar)
+foo(bar.~)
+foo.+@
+foo.-@
+foo.[](bar)
+foo.[]=(bar, baz)
+not implemented: "ruby_prism::bindings::XStringNode"
+foo.!
+foo.!=(bar)
+foo.!~(bar)
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableAndWriteNode"
+not implemented: "ruby_prism::bindings::LocalVariableOrWriteNode"
+foo(&bar)&bar
+foo(bar, &baz)&baz
+foo{
+
+  puts(
+    not implemented: "ruby_prism::bindings::StringNode"
+  )
+}
+foo{ |x| x.*(2) }
+foo(bar){ |a, b| p([a, b]) }
+foo{
+  |not implemented: "ruby_prism::bindings::MultiTargetNode"|
+  p(a, b)
+}
+foo.bar{ |v| v }
+foo&.bar{ |v| v }
+foo(&proc_obj)&proc_obj
+foo and bar
+foo and bar
+not implemented: "ruby_prism::bindings::OrNode"
+not implemented: "ruby_prism::bindings::OrNode"
+foo.!
+foo.!

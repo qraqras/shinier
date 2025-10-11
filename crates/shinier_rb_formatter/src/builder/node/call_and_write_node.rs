@@ -1,29 +1,34 @@
-use crate::builder::build;
-use crate::doc::{Doc, group, space, text};
-use crate::prism_utility::constant_id_to_string;
+use crate::builder::pattern::write_pattern::{
+    LogicalWriteNodeTrait, WriteNodeTrait, build_logical_write_pattern,
+};
+use crate::builder::{build, build_optional};
+use crate::doc::{Doc, sequence, text, text_constant};
+use crate::keyword::{DOT_OPERATOR, SAFE_NAVIGATION_OPERATOR};
 use ruby_prism::CallAndWriteNode;
-
-const OPERATOR: &str = "&&=";
 
 pub fn build_node(node: Option<&CallAndWriteNode>) -> Doc {
     let node = node.unwrap();
-    let receiver = node.receiver();
-    let read_name = constant_id_to_string(&node.read_name());
-    let value = &node.value();
-
-    let mut vec = Vec::new();
-    if let Some(receiver) = &receiver {
-        vec.push(build(receiver));
-        if node.is_safe_navigation() {
-            vec.push(text("&."));
-        } else {
-            vec.push(text("."));
-        };
-    };
-    vec.push(text(read_name));
-    vec.push(space());
-    vec.push(text(OPERATOR));
-    vec.push(space());
-    vec.push(build(&value));
-    group(&vec)
+    build_logical_write_pattern(node)
+}
+impl<'a> LogicalWriteNodeTrait<'a> for CallAndWriteNode<'a> {
+    fn logical_operator(&self) -> Doc {
+        text(Self::AND_OPERATOR)
+    }
+}
+impl<'a> WriteNodeTrait<'a> for CallAndWriteNode<'a> {
+    fn name(&self) -> Doc {
+        let is_safe_navigation = self.is_safe_navigation();
+        let receiver = self.receiver();
+        sequence(&[
+            build_optional(receiver.as_ref()),
+            match is_safe_navigation {
+                true => text(SAFE_NAVIGATION_OPERATOR),
+                false => text(DOT_OPERATOR),
+            },
+            text_constant(&self.read_name()),
+        ])
+    }
+    fn value(&self) -> Doc {
+        build(&self.value())
+    }
 }

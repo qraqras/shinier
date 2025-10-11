@@ -1,7 +1,6 @@
 use crate::builder::layout::{separate, separate_docs};
 use crate::builder::node::{arguments_node, block_argument_node};
 use crate::builder::{build, build_optional};
-use crate::composite_node::arguments::build_composite_node;
 use crate::doc::{self, Doc, group, indent, line, none, sequence, softline, space, text};
 use crate::text_constant;
 use ruby_prism::{CallNode, Node};
@@ -114,18 +113,4 @@ fn build_arguments(node: &CallNode) -> Doc {
 fn build_block(node: &CallNode) -> Doc {
     let block = node.block();
     build_optional(block.as_ref())
-}
-
-// 演算子を末尾から検出して (base_name, Option<op>) を返す
-fn split_var_and_op(name: &str) -> (&str, Option<&str>) {
-    const OPS: &[&str] = &[
-        "**=", "<<=", ">>=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "=",
-    ];
-    for &op in OPS {
-        if name.len() >= op.len() && name.ends_with(op) {
-            let base = &name[..name.len() - op.len()];
-            return (base, Some(op));
-        }
-    }
-    (name, None)
 }
