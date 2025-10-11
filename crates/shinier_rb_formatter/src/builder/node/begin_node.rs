@@ -1,9 +1,7 @@
 use crate::builder::node::{else_node, ensure_node, rescue_node, statements_node};
 use crate::doc::{Doc, hardline, indent, sequence, text};
+use crate::keyword::{BEGIN, END};
 use ruby_prism::BeginNode;
-
-const BEGIN_KEYWORD: &str = "begin";
-const END_KEYWORD: &str = "end";
 
 pub fn build_node(node: Option<&BeginNode>) -> Doc {
     let node = node.unwrap();
@@ -13,12 +11,13 @@ pub fn build_node(node: Option<&BeginNode>) -> Doc {
     let ensure_clause = node.ensure_clause();
 
     sequence(&[
-        text(BEGIN_KEYWORD),
+        text(BEGIN),
         hardline(),
-        indent(&[statements_node::build_node(statements.as_ref()), hardline()]),
+        indent(&[statements_node::build_node(statements.as_ref())]),
+        hardline(),
         rescue_node::build_node(rescue_clause.as_ref()),
         else_node::build_node(else_clause.as_ref()),
         ensure_node::build_node(ensure_clause.as_ref()),
-        text(END_KEYWORD),
+        text(END),
     ])
 }

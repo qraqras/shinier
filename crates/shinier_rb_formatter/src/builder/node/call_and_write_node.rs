@@ -1,18 +1,20 @@
+use crate::builder::build;
+use crate::builder::pattern::receiver_pattern::build_receiver_pattern;
 use crate::builder::pattern::write_pattern::{
     LogicalWriteNodeTrait, WriteNodeTrait, build_logical_write_pattern,
 };
-use crate::builder::{build, build_optional};
 use crate::doc::{Doc, sequence, text, text_constant};
-use crate::keyword::{DOT_OPERATOR, SAFE_NAVIGATION_OPERATOR};
+use crate::keyword::LOGICAL_AND;
 use ruby_prism::CallAndWriteNode;
 
 pub fn build_node(node: Option<&CallAndWriteNode>) -> Doc {
     let node = node.unwrap();
     build_logical_write_pattern(node)
 }
+
 impl<'a> LogicalWriteNodeTrait<'a> for CallAndWriteNode<'a> {
     fn logical_operator(&self) -> Doc {
-        text(Self::AND_OPERATOR)
+        text(LOGICAL_AND)
     }
 }
 impl<'a> WriteNodeTrait<'a> for CallAndWriteNode<'a> {
@@ -20,11 +22,7 @@ impl<'a> WriteNodeTrait<'a> for CallAndWriteNode<'a> {
         let is_safe_navigation = self.is_safe_navigation();
         let receiver = self.receiver();
         sequence(&[
-            build_optional(receiver.as_ref()),
-            match is_safe_navigation {
-                true => text(SAFE_NAVIGATION_OPERATOR),
-                false => text(DOT_OPERATOR),
-            },
+            build_receiver_pattern(receiver.as_ref(), is_safe_navigation),
             text_constant(&self.read_name()),
         ])
     }

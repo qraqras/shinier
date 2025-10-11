@@ -27,8 +27,6 @@ pub trait WriteNodeTrait<'sh> {
 }
 
 pub trait LogicalWriteNodeTrait<'sh>: WriteNodeTrait<'sh> {
-    const AND_OPERATOR: &'sh str = "&&";
-    const OR_OPERATOR: &'sh str = "||";
     fn logical_operator(&self) -> Doc;
 }
 

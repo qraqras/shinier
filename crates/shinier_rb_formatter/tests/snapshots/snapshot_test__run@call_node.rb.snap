@@ -81,8 +81,8 @@ foo{
 foo.bar{ |v| v }
 foo&.bar{ |v| v }
 foo(&proc_obj)&proc_obj
-foo and bar
-foo and bar
+foo && bar
+foo && bar
 not implemented: "ruby_prism::bindings::OrNode"
 not implemented: "ruby_prism::bindings::OrNode"
 foo.!

@@ -1,8 +1,7 @@
 use crate::builder::build;
 use crate::doc::{Doc, line, sequence, space, text};
+use crate::keyword::LOGICAL_AND;
 use ruby_prism::AndNode;
-
-const AND_KEYWORD: &str = "and";
 
 pub fn build_node(node: Option<&AndNode>) -> Doc {
     let node = node.unwrap();
@@ -11,7 +10,7 @@ pub fn build_node(node: Option<&AndNode>) -> Doc {
     sequence(&[
         build(&left),
         space(),
-        text(AND_KEYWORD),
+        text(LOGICAL_AND),
         line(),
         build(&right),
     ])

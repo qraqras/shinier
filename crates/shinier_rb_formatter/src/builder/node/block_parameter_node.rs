@@ -1,14 +1,13 @@
 use crate::doc::{Doc, none, sequence, text, text_constant};
+use crate::keyword::PROC_AND;
 use ruby_prism::BlockParameterNode;
-
-const BLOCK_PARAMETER_PREFIX: &str = "&";
 
 pub fn build_node(node: Option<&BlockParameterNode>) -> Doc {
     match node {
         Some(node) => {
             let name = node.name();
             match name {
-                Some(name) => sequence(&[text(BLOCK_PARAMETER_PREFIX), text_constant(&name)]),
+                Some(name) => sequence(&[text(PROC_AND), text_constant(&name)]),
                 None => none(),
             }
         }
