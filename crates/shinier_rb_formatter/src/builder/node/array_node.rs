@@ -1,18 +1,16 @@
 use crate::doc::{Doc, group, indent, softline, text};
+use crate::keyword::{BRACKETS, COMMA};
 use crate::layout::separate_nodelist;
-use ruby_prism::*;
-
-const OPEN_DELIMITER: &str = "[";
-const CLOSE_DELIMITER: &str = "]";
-const SEPARATOR: &str = ",";
+use ruby_prism::ArrayNode;
 
 pub fn build_node(node: Option<&ArrayNode>) -> Doc {
     let node = node.unwrap();
     let elements = node.elements();
     group(&[
-        text(OPEN_DELIMITER),
-        indent(&[softline(), group(&separate_nodelist(&elements, SEPARATOR))]),
+        text(BRACKETS.0),
         softline(),
-        text(CLOSE_DELIMITER),
+        indent(&[group(&separate_nodelist(&elements, COMMA))]),
+        softline(),
+        text(BRACKETS.1),
     ])
 }

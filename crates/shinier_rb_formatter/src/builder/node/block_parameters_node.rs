@@ -1,17 +1,16 @@
 use crate::builder::node::parameters_node;
 use crate::doc::{Doc, none, sequence, text};
+use crate::keyword::PIPE;
 use ruby_prism::BlockParametersNode;
-
-const PARAMETERS_SEPARATOR: &str = "|";
 
 pub fn build_node(node: Option<&BlockParametersNode>) -> Doc {
     match node {
         Some(node) => {
             let parameters = node.parameters();
             sequence(&[
-                text(PARAMETERS_SEPARATOR),
+                text(PIPE),
                 parameters_node::build_node(parameters.as_ref()),
-                text(PARAMETERS_SEPARATOR),
+                text(PIPE),
             ])
         }
         None => none(),

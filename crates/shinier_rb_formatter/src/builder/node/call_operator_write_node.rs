@@ -1,30 +1,29 @@
 use crate::builder::build;
-use crate::doc::{Doc, group, space, text};
-use crate::prism_utility::constant_id_to_string;
+use crate::builder::pattern::receiver_pattern::build_receiver_pattern;
+use crate::doc::{Doc, sequence, text_constant};
+use crate::{OperatorWriteNodeTrait, WriteNodeTrait, build_operator_write_pattern};
 use ruby_prism::CallOperatorWriteNode;
 
 pub fn build_node(node: Option<&CallOperatorWriteNode>) -> Doc {
     let node = node.unwrap();
-    let receiver = node.receiver();
-    let read_name = constant_id_to_string(&node.read_name());
-    let binary_operator = constant_id_to_string(&node.binary_operator());
-    let value = &node.value();
+    build_operator_write_pattern(node)
+}
 
-    let mut vec = Vec::new();
-
-    if let Some(receiver) = &receiver {
-        vec.push(build(receiver));
-        if node.is_safe_navigation() {
-            vec.push(text("&."));
-        } else {
-            vec.push(text("."));
-        }
+impl<'a> OperatorWriteNodeTrait<'a> for CallOperatorWriteNode<'a> {
+    fn binary_operator(&self) -> Doc {
+        text_constant(&self.binary_operator())
     }
-    vec.push(text(&read_name));
-    vec.push(space());
-    vec.push(text(&binary_operator));
-    vec.push(text("="));
-    vec.push(space());
-    vec.push(build(&value));
-    group(&vec)
+}
+impl<'a> WriteNodeTrait<'a> for CallOperatorWriteNode<'a> {
+    fn name(&self) -> Doc {
+        let is_safe_navigation = self.is_safe_navigation();
+        let receiver = self.receiver();
+        sequence(&[
+            build_receiver_pattern(receiver.as_ref(), is_safe_navigation),
+            text_constant(&self.read_name()),
+        ])
+    }
+    fn value(&self) -> Doc {
+        build(&self.value())
+    }
 }

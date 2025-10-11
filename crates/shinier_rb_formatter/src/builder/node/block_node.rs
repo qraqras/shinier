@@ -1,8 +1,7 @@
-use crate::{build_optional, doc::*};
-use ruby_prism::*;
-
-const OPEN_DELIMITER: &str = "{";
-const CLOSE_DELIMITER: &str = "}";
+use crate::builder::build_optional;
+use crate::doc::{Doc, group, indent, line, none, text};
+use crate::keyword::BRACES;
+use ruby_prism::BlockNode;
 
 pub fn build_node(node: Option<&BlockNode>) -> Doc {
     match node {
@@ -10,7 +9,7 @@ pub fn build_node(node: Option<&BlockNode>) -> Doc {
             let parameters = node.parameters();
             let body = node.body();
             group(&[
-                text(OPEN_DELIMITER),
+                text(BRACES.0),
                 line(),
                 indent(&[
                     build_optional(parameters.as_ref()),
@@ -18,7 +17,7 @@ pub fn build_node(node: Option<&BlockNode>) -> Doc {
                     build_optional(body.as_ref()),
                 ]),
                 line(),
-                text(CLOSE_DELIMITER),
+                text(BRACES.1),
             ])
         }
         None => none(),

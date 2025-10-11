@@ -1,7 +1,7 @@
 use crate::builder::layout::{separate, separate_docs};
 use crate::builder::node::{arguments_node, block_argument_node};
+use crate::builder::pattern::receiver_pattern::build_receiver_pattern;
 use crate::builder::{build, build_optional};
-use crate::composite_node::arguments::build_composite_node;
 use crate::doc::{self, Doc, group, indent, line, none, sequence, softline, space, text};
 use crate::text_constant;
 use ruby_prism::{CallNode, Node};
@@ -60,7 +60,6 @@ const SELF_ASSIGNABLE_METHODS: &[&str] = &[
 pub fn build_node(node: Option<&CallNode>) -> Doc {
     let node = node.unwrap();
 
-    let doc_receiver = build_receiver(node);
     let doc_name = build_name(node);
     let doc_arguments = build_arguments(node);
     let doc_block = build_block(node);
@@ -70,27 +69,18 @@ pub fn build_node(node: Option<&CallNode>) -> Doc {
         return doc_name;
     }
 
-    group(&[doc_receiver, doc_name, doc_arguments, doc_block])
-}
-
-fn build_receiver(node: &CallNode) -> Doc {
-    let receiver = node.receiver();
-    match receiver {
-        Some(receiver) => sequence(&[
-            build(&receiver),
-            match node.is_safe_navigation() {
-                true => text(SAFE_NAVIGATION_OPERATOR),
-                false => text(DOT_OPERATOR),
-            },
-        ]),
-        None => none(),
-    }
+    group(&[doc_name, doc_arguments, doc_block])
 }
 
 fn build_name(node: &CallNode) -> Doc {
-    let name = node.name();
     // TODO: オペレータ個別の処理を追加
-    text_constant(&name)
+    let is_safe_navigation = node.is_safe_navigation();
+    let receiver = node.receiver();
+    let name = node.name();
+    sequence(&[
+        build_receiver_pattern(receiver.as_ref(), is_safe_navigation),
+        text_constant(&name),
+    ])
 }
 
 fn build_arguments(node: &CallNode) -> Doc {
@@ -114,18 +104,4 @@ fn build_arguments(node: &CallNode) -> Doc {
 fn build_block(node: &CallNode) -> Doc {
     let block = node.block();
     build_optional(block.as_ref())
-}
-
-// 演算子を末尾から検出して (base_name, Option<op>) を返す
-fn split_var_and_op(name: &str) -> (&str, Option<&str>) {
-    const OPS: &[&str] = &[
-        "**=", "<<=", ">>=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "=",
-    ];
-    for &op in OPS {
-        if name.len() >= op.len() && name.ends_with(op) {
-            let base = &name[..name.len() - op.len()];
-            return (base, Some(op));
-        }
-    }
-    (name, None)
 }
