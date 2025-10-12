@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::Buildable;
 use crate::builder::pattern::receiver_pattern::build_receiver_pattern;
 use crate::doc::{Doc, sequence, text_constant};
 use crate::{OperatorWriteNodeTrait, WriteNodeTrait, build_operator_write_pattern};
@@ -24,6 +24,6 @@ impl<'a> WriteNodeTrait<'a> for CallOperatorWriteNode<'a> {
         ])
     }
     fn value(&self) -> Doc {
-        build(&self.value())
+        self.value().build()
     }
 }

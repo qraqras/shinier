@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::Buildable;
 use crate::doc::{Doc, fill, line, space, text, text_constant};
 use ruby_prism::OptionalParameterNode;
 
@@ -13,6 +13,6 @@ pub fn build_node(node: Option<&OptionalParameterNode>) -> Doc {
         space(),
         text(OPERATOR),
         line(),
-        build(&value),
+        value.build(),
     ])
 }

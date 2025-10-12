@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::Buildable;
 use crate::doc::{Doc, group, indent, line, space, text};
 use ruby_prism::*;
 
@@ -9,10 +9,10 @@ pub fn build_node(node: Option<&MatchRequiredNode>) -> Doc {
     let value = node.value();
     let pattern = node.pattern();
     group(&[
-        build(&value),
+        value.build(),
         space(),
         text(MATCH_KEYWORD),
         line(),
-        indent(&[build(&pattern)]),
+        indent(&[pattern.build()]),
     ])
 }

@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::Buildable;
 use crate::builder::pattern::write_pattern::{
     LogicalWriteNodeTrait, WriteNodeTrait, build_logical_write_pattern,
 };
@@ -21,6 +21,6 @@ impl<'a> WriteNodeTrait<'a> for ClassVariableAndWriteNode<'a> {
         text_constant(&self.name())
     }
     fn value(&self) -> Doc {
-        build(&self.value())
+        self.value().build()
     }
 }

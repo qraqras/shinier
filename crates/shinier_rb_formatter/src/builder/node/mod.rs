@@ -149,3 +149,5 @@ pub mod when_node;
 pub mod while_node;
 pub mod x_string_node;
 pub mod yield_node;
+
+pub use crate::builder::node_builder::*;

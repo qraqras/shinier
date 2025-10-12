@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::Buildable;
 use crate::doc::{Doc, group, sequence, space, text};
 use crate::keyword::{COLON, ROCKET};
 use ruby_prism::{AssocNode, Node};
@@ -11,5 +11,5 @@ pub fn build_node(node: Option<&AssocNode>) -> Doc {
         Node::SymbolNode { .. } => sequence(&[text(COLON), space()]),
         _ => sequence(&[space(), text(ROCKET), space()]),
     };
-    group(&[build(&key), separator, build(&value)])
+    group(&[key.build(), separator, value.build()])
 }

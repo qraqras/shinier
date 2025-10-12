@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::Buildable;
 use crate::builder::node::statements_node;
 use crate::doc::{Doc, fill, hardline, indent, line, none, sequence, space, text};
 use crate::layout::separate_nodelist;
@@ -24,7 +24,7 @@ pub fn build_node(node: Option<&RescueNode>) -> Doc {
                     &sequence(&[text(EXCEPTIONS_SEPARATOR), line()]),
                 )),
                 match reference {
-                    Some(r) => sequence(&[space(), text(REFERENCE_ARROW), line(), build(&r)]),
+                    Some(r) => sequence(&[space(), text(REFERENCE_ARROW), line(), r.build()]),
                     None => none(),
                 },
                 indent(&[

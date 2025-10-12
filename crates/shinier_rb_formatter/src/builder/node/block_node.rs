@@ -1,4 +1,4 @@
-use crate::builder::build_optional;
+use crate::builder::Buildable;
 use crate::doc::{Doc, group, indent, line, none, text};
 use crate::keyword::BRACES;
 use ruby_prism::BlockNode;
@@ -11,11 +11,7 @@ pub fn build_node(node: Option<&BlockNode>) -> Doc {
             group(&[
                 text(BRACES.0),
                 line(),
-                indent(&[
-                    build_optional(parameters.as_ref()),
-                    line(),
-                    build_optional(body.as_ref()),
-                ]),
+                indent(&[parameters.build(), line(), body.build()]),
                 line(),
                 text(BRACES.1),
             ])

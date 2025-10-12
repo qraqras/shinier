@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::Buildable;
 use crate::doc::*;
 use ruby_prism::MatchPredicateNode;
 
@@ -9,10 +9,10 @@ pub fn build_node(node: Option<&MatchPredicateNode>) -> Doc {
     let value = node.value();
     let pattern = node.pattern();
     sequence(&[
-        build(&value),
+        value.build(),
         space(),
         text(IN_KEYWORD),
         space(),
-        build(&pattern),
+        pattern.build(),
     ])
 }

@@ -1,4 +1,4 @@
-use crate::builder::build_optional;
+use crate::builder::Buildable;
 use crate::doc::{Doc, indent, line, sequence, softline, text};
 use crate::keyword::{BRACKETS, COMMA};
 use crate::layout::{separate_docs, separate_nodelist};
@@ -17,13 +17,13 @@ pub fn build_node(node: Option<&ArrayPatternNode>) -> Doc {
     let separated_posts = separate_nodelist(&posts, &separator);
 
     sequence(&[
-        build_optional(constant.as_ref()),
+        constant.build(),
         text(BRACKETS.0),
         softline(),
         indent(&separate_docs(
             &[
                 sequence(&separated_requireds),
-                build_optional(rest.as_ref()),
+                rest.build(),
                 sequence(&separated_posts),
             ],
             &separator,

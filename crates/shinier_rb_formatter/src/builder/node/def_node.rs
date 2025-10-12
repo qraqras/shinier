@@ -1,5 +1,5 @@
+use crate::builder::Buildable;
 use crate::builder::node::parameters_node;
-use crate::builder::{build, build_optional};
 use crate::doc::{
     Doc, group, hardline, indent, line, none, sequence, softline, text, text_constant,
 };
@@ -28,7 +28,7 @@ pub fn build_node(node: Option<&DefNode>) -> Doc {
 fn build_receiver(node: &DefNode) -> Doc {
     let receiver = node.receiver();
     match receiver {
-        Some(receiver) => sequence(&[build(&receiver), text(DOT_OPERATOR)]),
+        Some(receiver) => sequence(&[receiver.build(), text(DOT_OPERATOR)]),
         None => none(),
     }
 }
@@ -54,5 +54,5 @@ fn build_parameters(node: &DefNode) -> Doc {
 
 fn build_body(node: &DefNode) -> Doc {
     let body = node.body();
-    build_optional(body.as_ref())
+    body.build()
 }

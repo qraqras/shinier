@@ -1,4 +1,4 @@
-use crate::builder::builder;
+use crate::builder::Buildable;
 use crate::doc::{Doc, hardline, none, sequence};
 use ruby_prism::StatementsNode;
 
@@ -10,7 +10,7 @@ pub fn build_node(node: Option<&StatementsNode>) -> Doc {
                 if i > 0 {
                     statements.push(hardline());
                 }
-                statements.push(builder::build(&node));
+                statements.push(node.build());
             }
             sequence(&statements)
         }

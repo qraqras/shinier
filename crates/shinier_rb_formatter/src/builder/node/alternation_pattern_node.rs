@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::Buildable;
 use crate::doc::{Doc, line, sequence, space, text};
 use crate::keyword::ALTERNATION;
 use ruby_prism::AlternationPatternNode;
@@ -8,10 +8,10 @@ pub fn build_node(node: Option<&AlternationPatternNode>) -> Doc {
     let left = node.left();
     let right = node.right();
     sequence(&[
-        build(&left),
+        left.build(),
         space(),
         text(ALTERNATION),
         line(),
-        build(&right),
+        right.build(),
     ])
 }

@@ -1,4 +1,4 @@
-use crate::builder::build;
+use crate::builder::Buildable;
 use crate::doc::{Doc, fill, line, none, text, text_constant};
 use ruby_prism::OptionalKeywordParameterNode;
 
@@ -18,6 +18,6 @@ pub fn build_node(node: Option<&OptionalKeywordParameterNode>) -> Doc {
         text_constant(&name),
         text(REQUIRED_KEYWORD_PARAMETER_SUFFIX),
         line(),
-        build(&value),
+        value.build(),
     ])
 }

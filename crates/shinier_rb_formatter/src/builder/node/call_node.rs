@@ -1,7 +1,7 @@
+use crate::builder::Buildable;
 use crate::builder::layout::{separate, separate_docs};
 use crate::builder::node::{arguments_node, block_argument_node};
 use crate::builder::pattern::receiver_pattern::build_receiver_pattern;
-use crate::builder::{build, build_optional};
 use crate::doc::{self, Doc, group, indent, line, none, sequence, softline, space, text};
 use crate::text_constant;
 use ruby_prism::{CallNode, Node};
@@ -106,5 +106,5 @@ fn build_arguments(node: &CallNode) -> Doc {
 
 fn build_block(node: &CallNode) -> Doc {
     let block = node.block();
-    build_optional(block.as_ref())
+    block.build()
 }
