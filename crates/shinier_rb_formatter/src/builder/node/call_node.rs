@@ -94,7 +94,10 @@ fn build_arguments(node: &CallNode) -> Doc {
         _ => group(&[
             text(OPEN_PAREN),
             softline(),
-            indent(&separate_docs(&[doc_arguments, doc_block_argument])),
+            indent(&separate_docs(
+                &[doc_arguments, doc_block_argument],
+                &sequence(&[text(ARGUMENTS_SEPARATOR), line()]),
+            )),
             softline(),
             text(CLOSE_PAREN),
         ]),

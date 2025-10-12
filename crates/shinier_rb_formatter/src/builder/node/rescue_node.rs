@@ -19,7 +19,10 @@ pub fn build_node(node: Option<&RescueNode>) -> Doc {
             sequence(&[
                 text(RESCUE_KEYWORD),
                 space(),
-                fill(&separate_nodelist(&exceptions, EXCEPTIONS_SEPARATOR)),
+                fill(&separate_nodelist(
+                    &exceptions,
+                    &sequence(&[text(EXCEPTIONS_SEPARATOR), line()]),
+                )),
                 match reference {
                     Some(r) => sequence(&[space(), text(REFERENCE_ARROW), line(), build(&r)]),
                     None => none(),

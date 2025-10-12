@@ -1,5 +1,5 @@
 use crate::builder::build;
-use crate::doc::{Doc, line, sequence, text};
+use crate::doc::Doc;
 use ruby_prism::NodeList;
 
 pub fn separate<T, U>(items: T, separator: U) -> Vec<U>
@@ -17,15 +17,11 @@ where
     vec
 }
 
-pub fn separate_nodelist(nodelist: &NodeList, separator: &str) -> Vec<Doc> {
-    separate(
-        nodelist.iter().map(|node| build(&node)),
-        sequence(&[text(separator), line()]),
-    )
+pub fn separate_nodelist(nodelist: &NodeList, separator: &Doc) -> Vec<Doc> {
+    separate(nodelist.iter().map(|node| build(&node)), separator.clone())
 }
 
-pub fn separate_docs(docs: &[Doc]) -> Vec<Doc> {
-    const SEPARATOR: &str = ",";
+pub fn separate_docs(docs: &[Doc], separator: &Doc) -> Vec<Doc> {
     let mut vec = Vec::with_capacity(docs.len().saturating_mul(2).saturating_sub(1));
     let mut should_separator = false;
     for doc in docs.iter() {
@@ -33,7 +29,7 @@ pub fn separate_docs(docs: &[Doc]) -> Vec<Doc> {
             Doc::None(_) => {}
             _ => {
                 if should_separator {
-                    vec.push(sequence(&[text(SEPARATOR), line()]));
+                    vec.push(separator.clone());
                 }
                 vec.push(doc.clone());
                 should_separator = true;

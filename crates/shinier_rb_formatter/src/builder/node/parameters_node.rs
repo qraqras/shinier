@@ -1,7 +1,7 @@
 use crate::builder::build_optional;
 use crate::builder::layout::{separate_docs, separate_nodelist};
 use crate::builder::node::block_parameter_node;
-use crate::doc::{Doc, group, none, sequence};
+use crate::doc::{Doc, group, line, none, sequence, text};
 use ruby_prism::ParametersNode;
 
 const PARAMETERS_SEPARATOR: &str = ",";
@@ -16,15 +16,21 @@ pub fn build_node(node: Option<&ParametersNode>) -> Doc {
             let keywords = node.keywords();
             let keyword_rest = node.keyword_rest();
             let block = node.block();
-            group(&separate_docs(&[
-                sequence(&separate_nodelist(&requireds, PARAMETERS_SEPARATOR)),
-                sequence(&separate_nodelist(&optionals, PARAMETERS_SEPARATOR)),
-                build_optional(rest.as_ref()),
-                sequence(&separate_nodelist(&posts, PARAMETERS_SEPARATOR)),
-                sequence(&separate_nodelist(&keywords, PARAMETERS_SEPARATOR)),
-                build_optional(keyword_rest.as_ref()),
-                block_parameter_node::build_node(block.as_ref()),
-            ]))
+
+            let separator = sequence(&[text(PARAMETERS_SEPARATOR), line()]);
+
+            group(&separate_docs(
+                &[
+                    sequence(&separate_nodelist(&requireds, &separator)),
+                    sequence(&separate_nodelist(&optionals, &separator)),
+                    build_optional(rest.as_ref()),
+                    sequence(&separate_nodelist(&posts, &separator)),
+                    sequence(&separate_nodelist(&keywords, &separator)),
+                    build_optional(keyword_rest.as_ref()),
+                    block_parameter_node::build_node(block.as_ref()),
+                ],
+                &separator,
+            ))
         }
         None => none(),
     }
