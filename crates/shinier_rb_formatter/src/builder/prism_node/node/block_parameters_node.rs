@@ -1,4 +1,4 @@
-use crate::builder::node::parameters_node;
+use crate::builder::prism_node::node::parameters_node;
 use crate::doc::{Doc, none, sequence, text};
 use crate::keyword::PIPE;
 use ruby_prism::BlockParametersNode;

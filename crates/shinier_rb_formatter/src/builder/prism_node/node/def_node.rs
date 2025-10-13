@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::node::parameters_node;
+use crate::builder::prism_node::node::parameters_node;
 use crate::doc::{
     Doc, group, hardline, indent, line, none, sequence, softline, text, text_constant,
 };

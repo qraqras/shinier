@@ -1,4 +1,4 @@
-use crate::builder::node_builder::*;
+use crate::buildable::Buildable;
 use crate::doc::*;
 use crate::renderer::Renderer;
 use ruby_prism::*;
@@ -23,7 +23,7 @@ impl Printer {
     }
     fn ast_to_doc(&self, parsed: &ParseResult) -> Doc {
         println!("----ast_to_doc----");
-        build_node(&parsed.node())
+        parsed.node().build()
     }
     fn doc_to_str(&self, doc: Doc) -> String {
         println!("----doc_to_str----");

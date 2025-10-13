@@ -1,4 +1,4 @@
-use crate::builder::build_node;
+use crate::buildable::Buildable;
 use crate::doc::Doc;
 use ruby_prism::NodeList;
 
@@ -18,10 +18,7 @@ where
 }
 
 pub fn separate_nodelist(nodelist: &NodeList, separator: &Doc) -> Vec<Doc> {
-    separate(
-        nodelist.iter().map(|node| build_node(&node)),
-        separator.clone(),
-    )
+    separate(nodelist.iter().map(|node| node.build()), separator.clone())
 }
 
 pub fn separate_docs(docs: &[Doc], separator: &Doc) -> Vec<Doc> {

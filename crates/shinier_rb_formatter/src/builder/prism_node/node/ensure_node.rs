@@ -1,4 +1,4 @@
-use crate::builder::node::statements_node;
+use crate::builder::prism_node::node::statements_node;
 use crate::doc::{Doc, hardline, indent, none, sequence, text};
 use ruby_prism::EnsureNode;
 

@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::node::statements_node;
+use crate::builder::prism_node::node::statements_node;
 use crate::doc::{Doc, fill, hardline, indent, line, none, sequence, space, text};
 use crate::layout::separate_nodelist;
 use ruby_prism::RescueNode;

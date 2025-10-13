@@ -1,4 +1,4 @@
-use crate::builder::node::{else_node, ensure_node, rescue_node, statements_node};
+use crate::builder::prism_node::node::{else_node, ensure_node, rescue_node, statements_node};
 use crate::doc::{Doc, hardline, indent, sequence, text};
 use crate::keyword::{BEGIN, END};
 use ruby_prism::BeginNode;

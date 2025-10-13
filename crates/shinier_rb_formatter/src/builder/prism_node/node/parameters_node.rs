@@ -1,6 +1,6 @@
 use crate::builder::Buildable;
 use crate::builder::layout::{separate_docs, separate_nodelist};
-use crate::builder::node::block_parameter_node;
+use crate::builder::prism_node::node::block_parameter_node;
 use crate::doc::{Doc, group, line, none, sequence, text};
 use ruby_prism::ParametersNode;
 
