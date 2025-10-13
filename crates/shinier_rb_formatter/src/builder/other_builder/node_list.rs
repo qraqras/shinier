@@ -1,14 +1,14 @@
 use crate::builder::{Buildable, BuildableList};
 use crate::doc::{Doc, sequence};
-use ruby_prism::ConstantList;
+use ruby_prism::NodeList;
 
-impl<'a> Buildable<'_> for ConstantList<'_> {
+impl<'a> Buildable<'_> for NodeList<'_> {
     fn build(&self) -> Doc {
-        unimplemented!("ConstantList");
+        unimplemented!("NodeList");
     }
 }
 
-impl<'a> BuildableList<'_> for ConstantList<'_> {
+impl<'a> BuildableList<'_> for NodeList<'_> {
     fn build(&self, arg: &Doc) -> Doc {
         let mut vec = Vec::new();
         for (i, node) in self.iter().enumerate() {

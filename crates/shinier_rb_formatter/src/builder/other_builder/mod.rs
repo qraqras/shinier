@@ -9,6 +9,8 @@ pub mod integer_builder;
 pub mod location_builder;
 pub mod magic_comment_builder;
 pub mod magic_comments_builder;
+pub mod node_list;
+pub mod node_list_iter;
 pub mod parse_result_builder;
 
 pub use crate::builder::node_builder::*;
