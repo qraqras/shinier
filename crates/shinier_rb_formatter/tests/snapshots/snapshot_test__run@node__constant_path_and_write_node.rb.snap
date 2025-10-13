@@ -1,0 +1,8 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/constant_path_and_write_node.rb
+---
+Parent::not implemented: "ruby_prism::ConstantId" &&=
+value

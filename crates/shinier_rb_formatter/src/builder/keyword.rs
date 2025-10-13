@@ -9,6 +9,7 @@ pub const COLON: &str = ":";
 pub const COMMA: &str = ",";
 
 pub const DOT_OPERATOR: &str = ".";
+pub const DOUBLE_COLON: &str = "::";
 
 pub const END: &str = "end";
 
