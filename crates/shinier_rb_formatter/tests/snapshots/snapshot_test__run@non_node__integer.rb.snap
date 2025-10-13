@@ -1,0 +1,13 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/non_node/integer.rb
+---
+0
+1
+-1
+4294967295
+4294967296
+-4294967295
+-4294967296
