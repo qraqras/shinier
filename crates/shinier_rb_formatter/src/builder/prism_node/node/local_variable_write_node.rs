@@ -1,13 +1,11 @@
 use crate::builder::Buildable;
-use crate::doc::{Doc, line, sequence, text, text_from_u8};
-use ruby_prism::*;
-
-const ASSIGNMENT_OPERATOR: &str = " =";
+use crate::doc::Doc;
+use crate::helper::write_node::build_write_node;
+use ruby_prism::LocalVariableWriteNode;
 
 pub fn build_node(node: Option<&LocalVariableWriteNode>) -> Doc {
     let node = node.unwrap();
-    let name = text_from_u8(node.name().as_slice());
-    let operator = text(ASSIGNMENT_OPERATOR);
-    let value = node.value().build();
-    sequence(&[name, operator, line(), value])
+    let name = node.name();
+    let value = node.value();
+    build_write_node(name.build(), value.build())
 }

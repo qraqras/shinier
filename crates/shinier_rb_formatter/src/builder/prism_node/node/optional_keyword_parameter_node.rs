@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::doc::{Doc, fill, line, none, text, text_constant};
+use crate::doc::{Doc, fill, line, none, text};
 use ruby_prism::OptionalKeywordParameterNode;
 
 const REPEATED_PARAMETER_PREFIX: &str = "*";
@@ -15,7 +15,7 @@ pub fn build_node(node: Option<&OptionalKeywordParameterNode>) -> Doc {
             true => text(REPEATED_PARAMETER_PREFIX),
             false => none(),
         },
-        text_constant(&name),
+        name.build(),
         text(REQUIRED_KEYWORD_PARAMETER_SUFFIX),
         line(),
         value.build(),

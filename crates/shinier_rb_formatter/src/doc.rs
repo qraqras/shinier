@@ -145,13 +145,13 @@ pub fn softline() -> Doc {
 pub fn text<S: Into<String>>(text: S) -> Doc {
     Doc::Text(TextDoc { text: text.into() })
 }
-pub fn text_from_u8(text: &[u8]) -> Doc {
-    let text = String::from_utf8(text.to_vec());
-    match text {
-        Ok(text) => Doc::Text(TextDoc { text }),
-        Err(_) => Doc::None(NoneDoc {}), // TODO: エラー処理
-    }
-}
-pub fn text_constant(constant_id: &ConstantId) -> Doc {
-    text(String::from_utf8(constant_id.as_slice().to_vec()).unwrap())
-}
+// pub fn text_from_u8(text: &[u8]) -> Doc {
+//     let text = String::from_utf8(text.to_vec());
+//     match text {
+//         Ok(text) => Doc::Text(TextDoc { text }),
+//         Err(_) => Doc::None(NoneDoc {}), // TODO: エラー処理
+//     }
+// }
+// pub fn text_constant(constant_id: &ConstantId) -> Doc {
+//     text(String::from_utf8(constant_id.as_slice().to_vec()).unwrap())
+// }

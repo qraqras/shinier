@@ -3,7 +3,6 @@ use crate::builder::layout::{separate, separate_docs};
 use crate::builder::prism_node::node::{arguments_node, block_argument_node};
 use crate::doc::{self, Doc, group, indent, line, none, sequence, softline, space, text};
 use crate::helper::receiver::build_receiver;
-use crate::text_constant;
 use ruby_prism::{CallNode, Node};
 
 const OPEN_PAREN: &str = "(";
@@ -79,7 +78,7 @@ fn build_name(node: &CallNode) -> Doc {
     let name = node.name();
     sequence(&[
         build_receiver(receiver.as_ref(), is_safe_navigation),
-        text_constant(&name),
+        name.build(),
     ])
 }
 
