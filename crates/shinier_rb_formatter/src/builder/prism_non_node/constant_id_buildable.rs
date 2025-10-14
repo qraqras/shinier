@@ -4,10 +4,7 @@ use ruby_prism::ConstantId;
 
 impl<'a> Buildable<'_> for ConstantId<'_> {
     fn build(&self) -> Doc {
-        text(format!(
-            "not implemented: {:?}",
-            std::any::type_name_of_val(self)
-        ))
+        text(String::from_utf8(self.as_slice().to_vec()).unwrap())
     }
 }
 impl<'a> Buildable<'_> for Option<ConstantId<'a>> {

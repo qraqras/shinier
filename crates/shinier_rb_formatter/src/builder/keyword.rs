@@ -21,3 +21,18 @@ pub const ROCKET: &str = "=>";
 pub const SAFE_NAVIGATION_OPERATOR: &str = "&.";
 pub const SPLAT: &str = "**";
 pub const WRITE_OPERATOR: &str = "=";
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LogicalOperator {
+    And,
+    Or,
+}
+
+impl LogicalOperator {
+    pub const fn as_str(&self) -> &'static str {
+        match self {
+            Self::And => LOGICAL_AND,
+            Self::Or => LOGICAL_OR,
+        }
+    }
+}

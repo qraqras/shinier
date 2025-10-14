@@ -4,4 +4,4 @@ assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/constant_path_node.rb
 ---
-Foo::not implemented: "ruby_prism::ConstantId"
+Foo::Bar
