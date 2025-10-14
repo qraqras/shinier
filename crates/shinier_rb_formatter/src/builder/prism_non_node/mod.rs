@@ -12,4 +12,3 @@ pub mod magic_comments_buildable;
 pub mod node_list_buildable;
 pub mod node_list_iter_buildable;
 pub mod parse_result_buildable;
-pub mod u8_buildable;
