@@ -1,7 +1,9 @@
-use crate::doc::{Doc, text_from_u8};
+use crate::builder::Buildable;
+use crate::doc::Doc;
 use ruby_prism::SymbolNode;
 
 pub fn build_node(node: Option<&SymbolNode>) -> Doc {
     let node = node.unwrap();
-    text_from_u8(node.unescaped())
+    let unescaped = node.unescaped();
+    unescaped.build()
 }
