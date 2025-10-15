@@ -22,6 +22,5 @@ pub fn build_node(node: Option<&IndexAndWriteNode>) -> Doc {
         ),
         is_safe_navigation,
     )]);
-
     build_logical_write(name, value.build(), LogicalOperator::And)
 }
