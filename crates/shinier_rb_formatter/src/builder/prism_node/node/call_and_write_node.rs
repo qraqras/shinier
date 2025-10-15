@@ -1,7 +1,7 @@
 use crate::builder::Buildable;
 use crate::doc::{Doc, sequence};
-use crate::helper::build_receiver_pattern::build_receiver_pattern;
-use crate::helper::build_write_pattern::build_logical_write_pattern;
+use crate::helper::build_receiver::build_receiver;
+use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
 use ruby_prism::CallAndWriteNode;
 
@@ -11,9 +11,9 @@ pub fn build_node(node: Option<&CallAndWriteNode>) -> Doc {
     let receiver = node.receiver();
     let read_name = node.read_name();
     let value = node.value();
-    build_logical_write_pattern(
+    build_logical_write(
         sequence(&[
-            build_receiver_pattern(receiver.as_ref(), is_safe_navigation),
+            build_receiver(receiver.as_ref(), is_safe_navigation),
             read_name.build(),
         ]),
         value.build(),

@@ -3,7 +3,7 @@ use crate::doc::{Doc, none, sequence, text};
 use crate::keyword::{DOT_OPERATOR, SAFE_NAVIGATION_OPERATOR};
 use ruby_prism::Node;
 
-pub fn build_receiver_pattern(receiver_node: Option<&Node>, is_safe_navigation: bool) -> Doc {
+pub fn build_receiver(receiver_node: Option<&Node>, is_safe_navigation: bool) -> Doc {
     match receiver_node {
         Some(node) => sequence(&[
             node.build(),
