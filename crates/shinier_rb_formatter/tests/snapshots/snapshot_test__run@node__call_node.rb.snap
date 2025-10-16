@@ -51,17 +51,17 @@ not implemented: "ruby_prism::bindings::XStringNode"
 foo.!
 foo.!=(bar)
 foo.!~(bar)
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
-not implemented: "ruby_prism::bindings::LocalVariableOperatorWriteNode"
+foo += bar
+foo -= bar
+foo *= bar
+foo /= bar
+foo %= bar
+foo **= bar
+foo &= bar
+foo |= bar
+foo ^= bar
+foo <<= bar
+foo >>= bar
 foo &&= bar
 foo ||= bar
 foo(&bar)&bar

@@ -18,12 +18,12 @@
 - [ x ] InstanceVariableAndWriteNode
 - [ x ] InstanceVariableOrWriteNode
 - [ x ] LocalVariableAndWriteNode
-- [  ] LocalVariableOrWriteNode
+- [ x ] LocalVariableOrWriteNode
 - [ ]
-- [ ] ClassVariableOperatorWriteNode
-- [ ] ConstantOperatorWriteNode
-- [ ] ConstantPathOperatorWriteNode
-- [ ] GlobalVariableOperatorWriteNode
-- [ ] IndexOperatorWriteNode
-- [ ] InstanceVariableOperatorWriteNode
-- [ ] LocalVariableOperatorWriteNode
+- [ x ] ClassVariableOperatorWriteNode
+- [ x ] ConstantOperatorWriteNode
+- [ x ] ConstantPathOperatorWriteNode
+- [ x ] GlobalVariableOperatorWriteNode
+- [ x ] IndexOperatorWriteNode
+- [ x ] InstanceVariableOperatorWriteNode
+- [ x ] LocalVariableOperatorWriteNode

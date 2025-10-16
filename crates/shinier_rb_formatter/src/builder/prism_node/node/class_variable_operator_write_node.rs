@@ -1,7 +1,12 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::Buildable;
+use crate::doc::Doc;
+use crate::helper::build_write::build_operator_write;
+use ruby_prism::ClassVariableOperatorWriteNode;
 
 pub fn build_node(node: Option<&ClassVariableOperatorWriteNode>) -> Doc {
     let node = node.unwrap();
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let name = node.name();
+    let value = node.value();
+    let binary_operator = node.binary_operator();
+    build_operator_write(name.build(), value.build(), binary_operator.build())
 }
