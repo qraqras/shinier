@@ -1,7 +1,11 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::builder::Buildable;
+use crate::doc::{Doc, sequence, text};
+use crate::keyword::DOUBLE_COLON;
+use ruby_prism::ConstantPathTargetNode;
 
 pub fn build_node(node: Option<&ConstantPathTargetNode>) -> Doc {
     let node = node.unwrap();
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let parent = node.parent();
+    let name = node.name();
+    sequence(&[parent.build(), text(DOUBLE_COLON), name.build()])
 }

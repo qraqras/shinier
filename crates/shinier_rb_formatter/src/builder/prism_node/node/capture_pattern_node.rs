@@ -1,10 +1,17 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::buildable::Buildable;
+use crate::doc::{Doc, line, sequence, space, text};
+use crate::keyword::ROCKET;
+use ruby_prism::CapturePatternNode;
 
 pub fn build_node(node: Option<&CapturePatternNode>) -> Doc {
     let node = node.unwrap();
-    return text(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+    let target = node.target();
+    let value = node.value();
+    sequence(&[
+        target.as_node().build(),
+        space(),
+        text(ROCKET),
+        line(),
+        value.build(),
+    ])
 }

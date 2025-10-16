@@ -1,7 +1,7 @@
 use crate::builder::Buildable;
-use crate::builder::layout::{separate, separate_docs};
+use crate::builder::helper::separate_docs::separate_docs;
 use crate::builder::prism_node::node::{arguments_node, block_argument_node};
-use crate::doc::{self, Doc, group, indent, line, none, sequence, softline, space, text};
+use crate::doc::{Doc, group, indent, line, none, sequence, softline, space, text};
 use crate::helper::build_receiver::build_receiver;
 use ruby_prism::{CallNode, Node};
 
@@ -95,7 +95,7 @@ fn build_arguments(node: &CallNode) -> Doc {
             softline(),
             indent(&separate_docs(
                 &[doc_arguments, doc_block_argument],
-                &sequence(&[text(ARGUMENTS_SEPARATOR), line()]),
+                sequence(&[text(ARGUMENTS_SEPARATOR), line()]),
             )),
             softline(),
             text(CLOSE_PAREN),

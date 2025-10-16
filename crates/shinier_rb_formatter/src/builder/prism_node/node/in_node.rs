@@ -1,7 +1,17 @@
+use crate::buildable::Buildable;
 use crate::doc::*;
-use ruby_prism::*;
+use crate::keyword::IN;
+use ruby_prism::InNode;
 
 pub fn build_node(node: Option<&InNode>) -> Doc {
     let node = node.unwrap();
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let pattern = node.pattern();
+    let statements = node.statements();
+
+    sequence(&[
+        text(IN),
+        space(),
+        pattern.build(),
+        indent(&[statements.build_with(Some(hardline()), None)]),
+    ])
 }

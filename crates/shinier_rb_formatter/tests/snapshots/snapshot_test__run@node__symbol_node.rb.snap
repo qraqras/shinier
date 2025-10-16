@@ -58,4 +58,9 @@ end
 { key: :value }
 { key: :value }
 [:first, :second, :third]
-not implemented: "ruby_prism::bindings::CaseNode"
+case value
+when :option1
+  :result1
+when :option2
+  :result2
+end

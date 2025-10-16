@@ -1,6 +1,6 @@
 use crate::buildable::Buildable;
 use crate::builder::prism_node::node::*;
-use crate::doc::{Doc, none};
+use crate::doc::Doc;
 use ruby_prism::Node;
 
 impl<'a> Buildable<'_> for Node<'_> {
@@ -611,15 +611,6 @@ impl<'a> Buildable<'_> for Node<'_> {
                 println_dbg!("YieldNode");
                 yield_node::build_node(self.as_yield_node().as_ref())
             }
-        }
-    }
-}
-
-impl<'a> Buildable<'_> for Option<Node<'_>> {
-    fn build(&self) -> Doc {
-        match self {
-            Some(node) => node.build(),
-            None => none(),
         }
     }
 }

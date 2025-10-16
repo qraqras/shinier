@@ -1,7 +1,7 @@
-use crate::builder::Buildable;
-use crate::builder::layout::{separate_docs, separate_nodelist};
 use crate::builder::prism_node::node::block_parameter_node;
+use crate::builder::{Buildable, BuildableList};
 use crate::doc::{Doc, group, line, none, sequence, text};
+use crate::helper::separate_docs::separate_docs;
 use ruby_prism::ParametersNode;
 
 const PARAMETERS_SEPARATOR: &str = ",";
@@ -21,15 +21,15 @@ pub fn build_node(node: Option<&ParametersNode>) -> Doc {
 
             group(&separate_docs(
                 &[
-                    sequence(&separate_nodelist(&requireds, &separator)),
-                    sequence(&separate_nodelist(&optionals, &separator)),
+                    requireds.build(separator.clone(), sequence),
+                    optionals.build(separator.clone(), sequence),
                     rest.build(),
-                    sequence(&separate_nodelist(&posts, &separator)),
-                    sequence(&separate_nodelist(&keywords, &separator)),
+                    posts.build(separator.clone(), sequence),
+                    keywords.build(separator.clone(), sequence),
                     keyword_rest.build(),
-                    block_parameter_node::build_node(block.as_ref()),
+                    block.build(),
                 ],
-                &separator,
+                separator,
             ))
         }
         None => none(),

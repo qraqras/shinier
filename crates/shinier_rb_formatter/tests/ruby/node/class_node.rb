@@ -11,3 +11,6 @@ end
 class FooError < StandardError
     include Bar
 end
+
+class Foo::Bar < baz
+end

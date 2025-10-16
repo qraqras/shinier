@@ -5,6 +5,8 @@ pub const BRACES: (&str, &str) = ("{", "}");
 pub const BRACKETS: (&str, &str) = ("[", "]");
 pub const BREAK: &str = "break";
 
+pub const CASE: &str = "case";
+pub const CLASS: &str = "class";
 pub const COLON: &str = ":";
 pub const COMMA: &str = ",";
 
@@ -12,14 +14,21 @@ pub const DOT_OPERATOR: &str = ".";
 pub const DOUBLE_COLON: &str = "::";
 
 pub const END: &str = "end";
+pub const FALSE: &str = "false";
 
+pub const IN: &str = "in";
+pub const INHERITES: &str = "<";
 pub const LOGICAL_AND: &str = "&&";
 pub const LOGICAL_OR: &str = "||";
 pub const PIPE: &str = "|";
 pub const PROC_AND: &str = "&";
 pub const ROCKET: &str = "=>";
 pub const SAFE_NAVIGATION_OPERATOR: &str = "&.";
+pub const SEMI_COLON: &str = ";";
 pub const SPLAT: &str = "**";
+pub const THEN: &str = "then";
+pub const TRUE: &str = "true";
+pub const WHEN: &str = "when";
 pub const WRITE_OPERATOR: &str = "=";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
