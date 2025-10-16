@@ -1,7 +1,15 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::buildable::{Buildable, BuildableList};
+use crate::doc::{Doc, hardline, indent, sequence, space, text};
+use crate::keyword::WHEN;
+use ruby_prism::WhenNode;
 
 pub fn build_node(node: Option<&WhenNode>) -> Doc {
     let node = node.unwrap();
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let conditions = node.conditions();
+    let statements = node.statements();
+    sequence(&[
+        text(WHEN),
+        conditions.build_with(hardline(), sequence, Some(space()), None),
+        indent(&[statements.build_with(Some(hardline()), None)]),
+    ])
 }

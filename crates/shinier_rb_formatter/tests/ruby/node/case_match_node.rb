@@ -4,14 +4,14 @@ end
 
 case true
 in false
-  puts "false"
+  puts false
 end
 
 case true
-in falne
-  puts "false"
+in false
+  puts false
 else
-  puts "true"
+  puts true
 end
 
 case [true, false]

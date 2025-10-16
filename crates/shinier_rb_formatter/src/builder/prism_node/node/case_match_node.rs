@@ -10,8 +10,7 @@ pub fn build_node(node: Option<&CaseMatchNode>) -> Doc {
     let else_clause = node.else_clause();
     sequence(&[
         text(CASE),
-        space(),
-        predicate.build(),
+        predicate.build_with(Some(space()), None),
         conditions.build_with(hardline(), sequence, Some(hardline()), None),
         else_clause.build_with(Some(hardline()), None),
         hardline(),

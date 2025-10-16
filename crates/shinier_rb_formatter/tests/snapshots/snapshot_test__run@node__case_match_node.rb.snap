@@ -9,19 +9,13 @@ in false
 end
 case true
 in false
-  puts(
-    not implemented: "ruby_prism::bindings::StringNode"
-  )
+  puts(false)
 end
 case true
-in falne
-  puts(
-    not implemented: "ruby_prism::bindings::StringNode"
-  )
+in false
+  puts(false)
 else
-  puts(
-    not implemented: "ruby_prism::bindings::StringNode"
-  )
+  puts(true)
 end
 case [true, false]
 in [true, true]

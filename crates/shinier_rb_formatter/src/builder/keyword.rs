@@ -26,6 +26,7 @@ pub const SEMI_COLON: &str = ";";
 pub const SPLAT: &str = "**";
 pub const THEN: &str = "then";
 pub const TRUE: &str = "true";
+pub const WHEN: &str = "when";
 pub const WRITE_OPERATOR: &str = "=";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

@@ -23,8 +23,8 @@
 - [ x ] call_or_write_node.rs
 - [ x ] call_target_node.rs
 - [ x ] capture_pattern_node.rs
-- [ ] case_match_node.rs
-- [ ] case_node.rs
+- [ x ] case_match_node.rs
+- [ x ] case_node.rs
 - [ ] class_node.rs
 - [ ] class_variable_and_write_node.rs
 - [ ] class_variable_operator_write_node.rs
@@ -148,7 +148,7 @@
 - [ ] undef_node.rs
 - [ ] unless_node.rs
 - [ ] until_node.rs
-- [ ] when_node.rs
+- [ x ] when_node.rs
 - [ ] while_node.rs
 - [ ] x_string_node.rs
 - [ ] yield_node.rs
