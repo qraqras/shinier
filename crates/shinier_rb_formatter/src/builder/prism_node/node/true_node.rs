@@ -1,7 +1,10 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, none, text};
+use crate::keyword::TRUE;
+use ruby_prism::TrueNode;
 
 pub fn build_node(node: Option<&TrueNode>) -> Doc {
-    let node = node.unwrap();
-    return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    match node {
+        Some(_) => text(TRUE),
+        None => none(),
+    }
 }
