@@ -1,7 +1,7 @@
 use crate::buildable::Buildable;
 use crate::builder::prism_node::node::*;
 use crate::doc::Doc;
-use ruby_prism::{AliasGlobalVariableNode, Node};
+use ruby_prism::Node;
 
 impl<'a> Buildable<'_> for Node<'_> {
     #[rustfmt::skip]

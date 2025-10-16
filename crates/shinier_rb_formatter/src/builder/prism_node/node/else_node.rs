@@ -1,4 +1,4 @@
-use crate::builder::prism_node::node::statements_node;
+use crate::buildable::Buildable;
 use crate::doc::{Doc, hardline, indent, none, sequence, text};
 use ruby_prism::ElseNode;
 
@@ -10,11 +10,7 @@ pub fn build_node(node: Option<&ElseNode>) -> Doc {
             let statements = node.statements();
             return sequence(&[
                 text(ELSE_KEYWORD),
-                indent(&[
-                    hardline(),
-                    statements_node::build_node(statements.as_ref()),
-                    hardline(),
-                ]),
+                indent(&[statements.build_with(Some(hardline()), None)]),
             ]);
         }
         None => return none(),

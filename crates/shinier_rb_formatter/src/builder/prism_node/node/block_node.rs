@@ -10,8 +10,10 @@ pub fn build_node(node: Option<&BlockNode>) -> Doc {
             let body = node.body();
             group(&[
                 text(BRACES.0),
-                line(),
-                indent(&[parameters.build(), line(), body.build()]),
+                indent(&[
+                    parameters.build_with(Some(line()), None),
+                    body.build_with(Some(line()), None),
+                ]),
                 line(),
                 text(BRACES.1),
             ])

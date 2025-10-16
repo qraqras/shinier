@@ -22,7 +22,6 @@ else
   puts(
     not implemented: "ruby_prism::bindings::StringNode"
   )
-
 end
 case [true, false]
 in [true, true]

@@ -1,6 +1,6 @@
 use crate::buildable::{Buildable, BuildableList};
-use crate::doc::*;
-use crate::keyword::{CASE, COMMA, END, SEMI_COLON};
+use crate::doc::{Doc, hardline, sequence, space, text};
+use crate::keyword::{CASE, END};
 use ruby_prism::CaseMatchNode;
 
 pub fn build_node(node: Option<&CaseMatchNode>) -> Doc {

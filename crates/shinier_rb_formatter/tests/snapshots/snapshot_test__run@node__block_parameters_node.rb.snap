@@ -6,4 +6,4 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/block_parameters_node.rb
 ---
 not implemented: "ruby_prism::bindings::ParenthesesNode"
 {  }
-foo{ |a, b = 1|  }
+foo{ |a, b = 1| }
