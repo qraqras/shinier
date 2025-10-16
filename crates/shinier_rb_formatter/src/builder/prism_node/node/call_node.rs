@@ -2,7 +2,7 @@ use crate::builder::Buildable;
 use crate::builder::layout::{separate, separate_docs};
 use crate::builder::prism_node::node::{arguments_node, block_argument_node};
 use crate::doc::{self, Doc, group, indent, line, none, sequence, softline, space, text};
-use crate::helper::receiver::build_receiver;
+use crate::helper::build_receiver::build_receiver;
 use ruby_prism::{CallNode, Node};
 
 const OPEN_PAREN: &str = "(";

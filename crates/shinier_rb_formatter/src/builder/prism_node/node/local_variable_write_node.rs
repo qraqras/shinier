@@ -1,11 +1,11 @@
 use crate::builder::Buildable;
 use crate::doc::Doc;
-use crate::helper::write_node::build_write_node;
+use crate::helper::build_write::build_write;
 use ruby_prism::LocalVariableWriteNode;
 
 pub fn build_node(node: Option<&LocalVariableWriteNode>) -> Doc {
     let node = node.unwrap();
     let name = node.name();
     let value = node.value();
-    build_write_node(name.build(), value.build())
+    build_write(name.build(), value.build())
 }

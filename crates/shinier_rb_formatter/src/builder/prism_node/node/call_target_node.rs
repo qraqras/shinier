@@ -1,6 +1,6 @@
 use crate::builder::Buildable;
 use crate::doc::{Doc, sequence};
-use crate::helper::receiver::build_receiver;
+use crate::helper::build_receiver::build_receiver;
 use ruby_prism::CallTargetNode;
 
 pub fn build_node(node: Option<&CallTargetNode>) -> Doc {
