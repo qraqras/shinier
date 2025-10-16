@@ -30,19 +30,19 @@
 - [ x ] class_variable_operator_write_node.rs
 - [ x ] class_variable_or_write_node.rs
 - [ x ] class_variable_read_node.rs
-- [ ] class_variable_target_node.rs
-- [ ] class_variable_write_node.rs
-- [ ] constant_and_write_node.rs
-- [ ] constant_operator_write_node.rs
-- [ ] constant_or_write_node.rs
-- [ ] constant_path_and_write_node.rs
-- [ ] constant_path_node.rs
-- [ ] constant_path_operator_write_node.rs
-- [ ] constant_path_or_write_node.rs
-- [ ] constant_path_target_node.rs
-- [ ] constant_path_write_node.rs
-- [ ] constant_read_node.rs
-- [ ] constant_target_node.rs
+- [ x ] class_variable_target_node.rs
+- [ x ] class_variable_write_node.rs
+- [ x ] constant_and_write_node.rs
+- [ x ] constant_operator_write_node.rs
+- [ x ] constant_or_write_node.rs
+- [ x ] constant_path_and_write_node.rs
+- [ x ] constant_path_node.rs
+- [ x ] constant_path_operator_write_node.rs
+- [ x ] constant_path_or_write_node.rs
+- [ x ] constant_path_target_node.rs
+- [ x ] constant_path_write_node.rs
+- [ x ] constant_read_node.rs
+- [ x ] constant_target_node.rs
 - [ ] constant_write_node.rs
 - [ ] def_node.rs
 - [ ] defined_node.rs

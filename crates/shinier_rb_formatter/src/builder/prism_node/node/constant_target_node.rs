@@ -1,10 +1,9 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::buildable::Buildable;
+use crate::doc::Doc;
+use ruby_prism::ConstantTargetNode;
 
 pub fn build_node(node: Option<&ConstantTargetNode>) -> Doc {
     let node = node.unwrap();
-    return text(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+    let name = node.name();
+    name.build()
 }
