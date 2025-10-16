@@ -1,5 +1,5 @@
+use crate::builder::BuildableList;
 use crate::doc::{Doc, group, indent, line, sequence, text};
-use crate::layout::separate_nodelist;
 use ruby_prism::HashNode;
 
 const OPEN_DELIMITER: &str = "{";
@@ -13,10 +13,7 @@ pub fn build_node(node: Option<&HashNode>) -> Doc {
         text(OPEN_DELIMITER),
         indent(&[
             line(),
-            group(&separate_nodelist(
-                &elements,
-                &sequence(&[text(SEPARATOR), line()]),
-            )),
+            elements.build(sequence(&[text(SEPARATOR), line()]), group),
         ]),
         line(),
         text(CLOSE_DELIMITER),

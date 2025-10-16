@@ -2,8 +2,8 @@ use crate::builder::Buildable;
 use crate::doc::{Doc, line, sequence, text};
 use crate::helper::build_index::build_index;
 use crate::helper::build_write::build_logical_write;
+use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{COMMA, LogicalOperator};
-use crate::layout::separate_docs;
 use ruby_prism::IndexAndWriteNode;
 
 pub fn build_node(node: Option<&IndexAndWriteNode>) -> Doc {
@@ -18,7 +18,7 @@ pub fn build_node(node: Option<&IndexAndWriteNode>) -> Doc {
         receiver.as_ref(),
         &separate_docs(
             &[arguments.build(), block.build()],
-            &sequence(&[text(COMMA), line()]),
+            sequence(&[text(COMMA), line()]),
         ),
         is_safe_navigation,
     )]);

@@ -1,4 +1,3 @@
-use ruby_prism::ConstantId;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 static NEXT_GROUP_ID: AtomicUsize = AtomicUsize::new(0);
@@ -21,6 +20,11 @@ pub enum Doc {
 impl Default for Doc {
     fn default() -> Self {
         Doc::None(NoneDoc {})
+    }
+}
+impl Doc {
+    pub fn is_none(&self) -> bool {
+        matches!(self, Doc::None(_))
     }
 }
 

@@ -25,11 +25,11 @@
 - [ x ] capture_pattern_node.rs
 - [ x ] case_match_node.rs
 - [ x ] case_node.rs
-- [ ] class_node.rs
-- [ ] class_variable_and_write_node.rs
-- [ ] class_variable_operator_write_node.rs
-- [ ] class_variable_or_write_node.rs
-- [ ] class_variable_read_node.rs
+- [ x ] class_node.rs
+- [ x ] class_variable_and_write_node.rs
+- [ x ] class_variable_operator_write_node.rs
+- [ x ] class_variable_or_write_node.rs
+- [ x ] class_variable_read_node.rs
 - [ ] class_variable_target_node.rs
 - [ ] class_variable_write_node.rs
 - [ ] constant_and_write_node.rs
@@ -106,7 +106,7 @@
 - [ ] mod.rs
 - [ ] module_node.rs
 - [ ] multi_target_node.rs
-- [ ] multi_write_node.rs
+- [ x ] multi_write_node.rs
 - [ ] next_node.rs
 - [ ] nil_node.rs
 - [ ] no_keywords_parameter_node.rs

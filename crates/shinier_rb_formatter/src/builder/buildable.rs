@@ -1,4 +1,4 @@
-use crate::doc::{Doc, fill, group, none, sequence, text};
+use crate::doc::{Doc, none, sequence, text};
 
 pub trait Buildable<'sh> {
     fn build(&self) -> Doc;

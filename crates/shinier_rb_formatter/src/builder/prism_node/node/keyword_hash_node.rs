@@ -1,13 +1,10 @@
-use crate::builder::layout::separate_nodelist;
+use crate::builder::BuildableList;
 use crate::doc::{Doc, group, line, sequence, text};
+use crate::keyword::COMMA;
 use ruby_prism::KeywordHashNode;
-
-const SEPARATER: &str = ",";
 
 pub fn build_node(node: Option<&KeywordHashNode>) -> Doc {
     let node = node.unwrap();
-    group(&separate_nodelist(
-        &node.elements(),
-        &sequence(&[text(SEPARATER), line()]),
-    ))
+    let elements = node.elements();
+    elements.build(sequence(&[text(COMMA), line()]), group)
 }
