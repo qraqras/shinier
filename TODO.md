@@ -43,12 +43,12 @@
 - [ x ] constant_path_write_node.rs
 - [ x ] constant_read_node.rs
 - [ x ] constant_target_node.rs
-- [ ] constant_write_node.rs
-- [ ] def_node.rs
-- [ ] defined_node.rs
-- [ ] else_node.rs
-- [ ] embedded_statements_node.rs
-- [ ] embedded_variable_node.rs
+- [ x ] constant_write_node.rs
+- [ x ] def_node.rs
+- [ x ] defined_node.rs
+- [ x ] else_node.rs
+- [ x ] embedded_statements_node.rs
+- [ x ] embedded_variable_node.rs
 - [ ] ensure_node.rs
 - [ x ] false_node.rs
 - [ ] find_pattern_node.rs

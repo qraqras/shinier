@@ -10,16 +10,23 @@ pub const CLASS: &str = "class";
 pub const COLON: &str = ":";
 pub const COMMA: &str = ",";
 
+pub const DEF: &str = "def";
+pub const DEFINED: &str = "defined?";
 pub const DOT_OPERATOR: &str = ".";
 pub const DOUBLE_COLON: &str = "::";
+pub const DOUBLE_QUOTE: &str = "\"";
 
+pub const ELSE: &str = "else";
 pub const END: &str = "end";
 pub const FALSE: &str = "false";
+
+pub const HASH: &str = "#";
 
 pub const IN: &str = "in";
 pub const INHERITES: &str = "<";
 pub const LOGICAL_AND: &str = "&&";
 pub const LOGICAL_OR: &str = "||";
+pub const PARENTHESES: (&str, &str) = ("(", ")");
 pub const PIPE: &str = "|";
 pub const PROC_AND: &str = "&";
 pub const ROCKET: &str = "=>";

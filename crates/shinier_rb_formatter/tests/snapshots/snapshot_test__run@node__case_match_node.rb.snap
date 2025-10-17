@@ -19,19 +19,11 @@ else
 end
 case [true, false]
 in [true, true]
-  puts(
-    not implemented: "ruby_prism::bindings::StringNode"
-  )
+  puts("t-t")
 in [true, false]
-  puts(
-    not implemented: "ruby_prism::bindings::StringNode"
-  )
+  puts("t-f")
 in [false, true]
-  puts(
-    not implemented: "ruby_prism::bindings::StringNode"
-  )
+  puts("f-t")
 in [false, false]
-  puts(
-    not implemented: "ruby_prism::bindings::StringNode"
-  )
+  puts("f-f")
 end

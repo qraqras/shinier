@@ -1,4 +1,3 @@
-use crate::builder::prism_node::node::block_parameter_node;
 use crate::builder::{Buildable, BuildableList};
 use crate::doc::{Doc, group, line, none, sequence, text};
 use crate::helper::separate_docs::separate_docs;
