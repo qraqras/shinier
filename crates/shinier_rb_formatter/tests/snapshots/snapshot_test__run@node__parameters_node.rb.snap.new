@@ -9,9 +9,7 @@ end
 def required_only(x, y, z)
 end
 def with_optionals(
-  a,
-  b = 1,
-  c = "default"
+  a, b = 1, c = "default"
 )
 end
 def with_rest(*args)

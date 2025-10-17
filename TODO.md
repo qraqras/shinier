@@ -1,5 +1,7 @@
 # TODO
 
+- [ ] groupを内側から展開するように修正する
+
 - [ x ] alias_global_variable_node.rs
 - [ x ] alias_method_node.rs
 - [ x ] alternation_pattern_node.rs
@@ -49,15 +51,15 @@
 - [ x ] else_node.rs
 - [ x ] embedded_statements_node.rs
 - [ x ] embedded_variable_node.rs
-- [ ] ensure_node.rs
+- [ x ] ensure_node.rs
 - [ x ] false_node.rs
-- [ ] find_pattern_node.rs
-- [ ] flip_flop_node.rs
-- [ ] float_node.rs
-- [ ] for_node.rs
-- [ ] forwarding_arguments_node.rs
-- [ ] forwarding_parameter_node.rs
-- [ ] forwarding_super_node.rs
+- [ x ] find_pattern_node.rs
+- [ x ] flip_flop_node.rs
+- [ x ] float_node.rs
+- [ x ] for_node.rs
+- [ x ] forwarding_arguments_node.rs
+- [ x ] forwarding_parameter_node.rs
+- [ x ] forwarding_super_node.rs
 - [ ] global_variable_and_write_node.rs
 - [ ] global_variable_operator_write_node.rs
 - [ ] global_variable_or_write_node.rs

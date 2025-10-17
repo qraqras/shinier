@@ -1,0 +1,10 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/find_pattern_node.rb
+---
+foo in [*bar, baz, *qux]
+foo in [*bar, baz, *qux]
+foo in Foo(*bar, baz, *qux)
+foo => [*bar, baz, *qux]

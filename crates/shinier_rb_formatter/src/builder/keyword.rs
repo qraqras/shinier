@@ -12,16 +12,21 @@ pub const COMMA: &str = ",";
 
 pub const DEF: &str = "def";
 pub const DEFINED: &str = "defined?";
+pub const DO: &str = "do";
 pub const DOT_OPERATOR: &str = ".";
 pub const DOUBLE_COLON: &str = "::";
+pub const DOUBLE_DOT: &str = "..";
 pub const DOUBLE_QUOTE: &str = "\"";
 
 pub const ELSE: &str = "else";
 pub const END: &str = "end";
+pub const ENSURE: &str = "ensure";
 pub const FALSE: &str = "false";
+pub const FOR: &str = "for";
 
 pub const HASH: &str = "#";
 
+pub const IF: &str = "if";
 pub const IN: &str = "in";
 pub const INHERITES: &str = "<";
 pub const LOGICAL_AND: &str = "&&";
@@ -33,7 +38,9 @@ pub const ROCKET: &str = "=>";
 pub const SAFE_NAVIGATION_OPERATOR: &str = "&.";
 pub const SEMI_COLON: &str = ";";
 pub const SPLAT: &str = "**";
+pub const SUPER: &str = "super";
 pub const THEN: &str = "then";
+pub const TRIPLE_DOT: &str = "...";
 pub const TRUE: &str = "true";
 pub const WHEN: &str = "when";
 pub const WRITE_OPERATOR: &str = "=";

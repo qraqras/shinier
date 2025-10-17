@@ -1,6 +1,6 @@
 use crate::builder::Buildable;
 use crate::doc::{
-    Doc, begin_indent, end_indent, group, hardline, indent, line, sequence, softline, text,
+    Doc, begin_indent, end_indent, group, hardline, indent, line, sequence, softline, space, text,
 };
 use crate::keyword::{DEF, DOT_OPERATOR, END, PARENTHESES};
 use ruby_prism::DefNode;
@@ -11,9 +11,9 @@ pub fn build_node(node: Option<&DefNode>) -> Doc {
     let name = node.name();
     let parameters = node.parameters();
     let body = node.body();
-    sequence(&[
+    group(&[
         text(DEF),
-        line(),
+        space(),
         receiver.build_with(None, Some(text(DOT_OPERATOR))),
         name.build(),
         group(&[parameters.build_with(
