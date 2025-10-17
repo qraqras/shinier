@@ -4,6 +4,8 @@ static NEXT_GROUP_ID: AtomicUsize = AtomicUsize::new(0);
 
 #[derive(Debug, Clone)]
 pub enum Doc {
+    BeginIndent(BeginIndentDoc),
+    EndIndent(EndIndentDoc),
     Fill(FillDoc),
     Group(GroupDoc),
     HardLine(HardLineDoc),
@@ -28,6 +30,10 @@ impl Doc {
     }
 }
 
+#[derive(Debug, Clone)]
+pub struct BeginIndentDoc {}
+#[derive(Debug, Clone)]
+pub struct EndIndentDoc {}
 #[derive(Debug, Clone)]
 pub struct FillDoc {
     pub doc: Box<Doc>,
@@ -74,6 +80,12 @@ pub fn next_group_id() -> usize {
     NEXT_GROUP_ID.fetch_add(1, Ordering::Relaxed)
 }
 
+pub fn begin_indent() -> Doc {
+    Doc::BeginIndent(BeginIndentDoc {})
+}
+pub fn end_indent() -> Doc {
+    Doc::EndIndent(EndIndentDoc {})
+}
 pub fn fill(docs: &[Doc]) -> Doc {
     Doc::Fill(FillDoc {
         doc: Box::new(sequence(docs)),

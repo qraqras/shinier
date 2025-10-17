@@ -5,7 +5,6 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/def_node.rb
 ---
 def method
-
 end
 def method_with_params(
   a, b = 1, *rest, c, d:, **kwargs, &block
@@ -13,14 +12,14 @@ def method_with_params(
   puts(a)
 end
 def not implemented: "ruby_prism::bindings::SelfNode".class_method
-  not implemented: "ruby_prism::bindings::StringNode"
+  "class method"
 end
 def obj.instance_method
-  not implemented: "ruby_prism::bindings::StringNode"
+  "instance method"
 end
 def method_with_locals
   local_var = 42
-  another_var = not implemented: "ruby_prism::bindings::StringNode"
+  another_var = "hello"
 end
 def complex_method(x)
   not implemented: "ruby_prism::bindings::IfNode"

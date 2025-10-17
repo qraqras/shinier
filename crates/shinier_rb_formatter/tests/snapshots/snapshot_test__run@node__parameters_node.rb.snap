@@ -5,32 +5,22 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/parameters_node.rb
 ---
 def a(b, c, d)
-
 end
 def required_only(x, y, z)
-
 end
 def with_optionals(
-  a,
-  b = 1,
-  c = not implemented: "ruby_prism::bindings::StringNode"
+  a, b = 1, c = "default"
 )
-
 end
 def with_rest(*args)
-
 end
 def with_posts(a, *rest, b)
-
 end
 def with_keywords(a:, b: 2)
-
 end
 def with_keyword_rest(**kwargs)
-
 end
 def with_block(&block)
-
 end
 def all_params(
   req,
@@ -42,8 +32,6 @@ def all_params(
   **kw_rest,
   &blk
 )
-
 end
 def no_params
-
 end

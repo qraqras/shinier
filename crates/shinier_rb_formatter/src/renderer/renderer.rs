@@ -24,6 +24,12 @@ impl Renderer {
     pub fn render(&mut self, doc: &Doc) {
         let previous_is_flat = self.is_flat;
         match doc {
+            Doc::BeginIndent(_begin_indent) => {
+                self.indent_level += 1;
+            }
+            Doc::EndIndent(_end_indent) => {
+                self.indent_level -= 1;
+            }
             Doc::Fill(fill) => {
                 match &*fill.doc {
                     Doc::Sequence(sequence) => {
@@ -133,6 +139,8 @@ impl Renderer {
     }
     fn measure_doc(&self, doc: &Doc) -> usize {
         match doc {
+            Doc::BeginIndent(_begin_indent) => 0,
+            Doc::EndIndent(_end_indent) => 0,
             Doc::Fill(fill) => self.measure_doc(&fill.doc),
             Doc::Group(group) => self.measure_doc(&group.doc),
             Doc::HardLine(_hard_line) => 0,
