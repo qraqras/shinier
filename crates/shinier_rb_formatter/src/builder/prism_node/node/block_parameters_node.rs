@@ -1,6 +1,6 @@
 use crate::SEMI_COLON;
 use crate::buildable::{Buildable, BuildableList};
-use crate::doc::{Doc, none, sequence, space, text};
+use crate::doc::{Doc, group, none, sequence, space, text};
 use crate::keyword::{COMMA, PIPE};
 use ruby_prism::{BlockParametersNode, NodeList};
 
@@ -9,14 +9,14 @@ pub fn build_node(node: Option<&BlockParametersNode>) -> Doc {
         Some(node) => {
             let parameters = node.parameters();
             let locals = node.locals();
-            sequence(&[
+            group(&[
                 text(PIPE),
                 parameters.build(),
                 match is_empty_node_list(&locals) {
                     true => none(),
                     false => locals.build_with(
                         sequence(&[text(COMMA), space()]),
-                        sequence,
+                        group,
                         Some(sequence(&[text(SEMI_COLON), space()])),
                         None,
                     ),

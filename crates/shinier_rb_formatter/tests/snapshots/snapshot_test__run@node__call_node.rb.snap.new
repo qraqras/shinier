@@ -1,5 +1,6 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/call_node.rb
 ---
@@ -16,9 +17,7 @@ foo(
   bar,
   baz,
   bazz,
-  a: bar,
-  b: baz,
-  c: bazz
+  a: bar, b: baz, c: bazz
 )
 foo.+@
 foo.+(bar)
@@ -72,10 +71,7 @@ foo{ |x| x.*(2) }
 foo(bar){ |a, b| p([a, b]) }
 foo{
   |not implemented: "ruby_prism::bindings::MultiTargetNode"|
-  p(
-    a,
-    b
-  )
+  p(a, b)
 }
 foo.bar{ |v| v }
 foo&.bar{ |v| v }

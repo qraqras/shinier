@@ -1,13 +1,18 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/def_node.rb
 ---
 def method
 end
 def method_with_params(
-  a, b = 1, *rest, c, d:, **kwargs, &block
+  a,
+  b = 1,
+  *rest,
+  c,
+  d:,
+  **kwargs,
+  &block
 )
   puts(a)
 end
@@ -22,5 +27,9 @@ def method_with_locals
   another_var = "hello"
 end
 def complex_method(x)
-  not implemented: "ruby_prism::bindings::IfNode"
+  if x.>(0) 
+    not implemented: "ruby_prism::bindings::ReturnNode"
+  else
+    raise("negative")
+  end
 end

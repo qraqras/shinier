@@ -1,7 +1,8 @@
-use crate::doc::*;
-use ruby_prism::*;
+use crate::doc::{Doc, text};
+use crate::keyword::TRIPLE_DOT;
+use ruby_prism::ForwardingParameterNode;
 
 pub fn build_node(node: Option<&ForwardingParameterNode>) -> Doc {
-    let node = node.unwrap();
-        return text(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let _node = node.unwrap();
+    text(TRIPLE_DOT)
 }
