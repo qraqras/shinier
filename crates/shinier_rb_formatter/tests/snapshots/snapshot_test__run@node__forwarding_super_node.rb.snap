@@ -1,5 +1,6 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/forwarding_super_node.rb
 ---
@@ -18,15 +19,11 @@ super {
 super { puts("no parameters") }
 super {
   |items|
-  items.each{
-    |item|
-    puts(
-      item
-    )
-  }
+  items.each{ |item| puts(item) }
 }
 super { |x| x.*(2) }.map(&:to_s)&:to_s
-result = if condition 
+result =
+if condition 
   super { |x| x.+(1) }
 else
   default_value
