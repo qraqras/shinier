@@ -28,7 +28,7 @@ struct IndentIfBreak {
 }
 #[derive(Clone)]
 struct Group {
-    id: usize,
+    id: Option<usize>,
     r#break: GroupBreakState,
     expanded_states: Vec<Doc>, // 少ない折り畳み方から試すためのリスト
 }
@@ -57,6 +57,7 @@ enum Mode {
     Flat,
 }
 
+#[derive(Clone)]
 struct Command {
     ind: usize,
     doc: Doc,
@@ -171,9 +172,9 @@ fn print_doc_to_string(doc: &Doc, _options: ()) {
         mode: Mode::Break,
         doc: doc.clone(),
     }];
-    // const out = vec![];
-    // let should_mesuere = false;
-    // const mut line_suffixes = vec![];
+    let mut out = vec![];
+    let mut should_remesure = false;
+    // let mut line_suffix = vec![];
     // let printed_cursor_count = 0;
 
     propagate_breaks(doc);
@@ -181,8 +182,108 @@ fn print_doc_to_string(doc: &Doc, _options: ()) {
     while !cmds.is_empty() {
         let Command { ind, doc, mode } = cmds.pop().unwrap();
         match doc {
-            // TODO:
-            _ => (),
+            Doc::String(string) => {
+                out.push(string.clone());
+                pos += get_string_width(string.as_str());
+            }
+            Doc::Indent(indent) => cmds.push(Command {
+                ind: ind + 1,
+                doc: *indent.contents,
+                mode: mode.clone(),
+            }),
+            Doc::Group(group) => match mode {
+                Mode::Flat => {
+                    if !should_remesure {
+                        cmds.push(Command {
+                            ind,
+                            doc: group.expanded_states.first().unwrap().clone(),
+                            mode: match group.r#break {
+                                GroupBreakState::False => Mode::Flat,
+                                _ => Mode::Break,
+                            },
+                        });
+                    }
+                }
+                Mode::Break => {
+                    should_remesure = false;
+                    let next = Command {
+                        ind,
+                        doc: group.expanded_states.last().unwrap().clone(),
+                        mode: Mode::Flat,
+                    };
+                    let mut rem = width - pos;
+                    let has_line_suffix = false; // !line_suffix.is_empty();
+                    if matches!(group.r#break, GroupBreakState::False)
+                        && fits(
+                            next.clone(),
+                            &mut cmds,
+                            &mut rem,
+                            has_line_suffix,
+                            &group_mod_map,
+                            false,
+                        )
+                    {
+                        cmds.push(next);
+                    } else {
+                        if group.expanded_states.len() > 1 {
+                            let most_expanded = group.expanded_states.last().unwrap();
+                            if !matches!(group.r#break, GroupBreakState::False) {
+                                cmds.push(Command {
+                                    ind,
+                                    doc: most_expanded.clone(),
+                                    mode: Mode::Break,
+                                });
+                            } else {
+                                for (i, state) in group.expanded_states.iter().enumerate() {
+                                    if i >= group.expanded_states.len() - 1 {
+                                        cmds.push(Command {
+                                            ind,
+                                            doc: most_expanded.clone(),
+                                            mode: Mode::Break,
+                                        });
+                                    } else {
+                                        let state = group.expanded_states[i].clone();
+                                        let cmd = Command {
+                                            ind,
+                                            doc: state,
+                                            mode: Mode::Flat,
+                                        };
+                                        if fits(
+                                            cmd.clone(),
+                                            &mut cmds,
+                                            &mut rem,
+                                            has_line_suffix,
+                                            &group_mod_map,
+                                            false,
+                                        ) {
+                                            cmds.push(cmd);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            cmds.push(Command {
+                                ind,
+                                doc: group.expanded_states.first().unwrap().clone(),
+                                mode: Mode::Break,
+                            });
+                        }
+                    }
+                    if let Some(group_id) = group.id {
+                        group_mod_map.insert(group_id, cmds.last().unwrap().mode.clone());
+                    }
+                }
+            },
+            Doc::Fill(fill) => {}
+            Doc::IfBreak(if_break) => {}
+            Doc::IndentIfBreak(indent_if_break) => {}
+            Doc::Line(line) => {}
+            Doc::BreakParent => {
+                break;
+            }
+            _ => {
+                break;
+            } // TODO: 残り
         }
     }
 }
@@ -198,7 +299,7 @@ fn break_parent_group(group_stack: &RefCell<Vec<Group>>) {
 }
 
 fn propagate_breaks(doc: &Doc) {
-    let mut already_visited_set: HashSet<usize> = HashSet::new();
+    let mut already_visited_set: HashSet<Option<usize>> = HashSet::new();
     let group_stack = RefCell::new(Vec::<Group>::new());
     let propagate_breaks_on_enter_fn = |doc: &Doc| {
         if matches!(doc, Doc::BreakParent) {
