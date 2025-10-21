@@ -67,12 +67,12 @@ struct Command {
 fn fits(
     next: Command,
     rest_commands: &mut Vec<Command>,
-    width: &mut usize,
+    width: &mut i32,
     has_line_suffix: bool,
     group_mode_map: &HashMap<usize, Mode>,
     must_be_flat: bool,
 ) -> bool {
-    if *width == usize::MAX {
+    if *width >= i32::MAX {
         return true;
     }
     let mut cmds = vec![next];
@@ -89,7 +89,7 @@ fn fits(
         match doc {
             Doc::String(string) => {
                 out.push(string.clone());
-                *width -= get_string_width(string.as_str());
+                *width -= get_string_width(string.as_str()) as i32;
             }
             Doc::Fill(fill) => {
                 // TODO: DOC_FILL_PRINTED_LENGTH
@@ -158,7 +158,6 @@ fn fits(
             }
         }
     }
-
     false
 }
 
@@ -184,7 +183,7 @@ fn print_doc_to_string(doc: &Doc, _options: ()) {
         match doc {
             Doc::String(string) => {
                 out.push(string.clone());
-                pos += get_string_width(string.as_str());
+                pos += get_string_width(string.as_str()) as i32;
             }
             Doc::Indent(indent) => cmds.push(Command {
                 ind: ind + 1,
@@ -355,7 +354,6 @@ fn traverse_docs(
                 for part in fill.parts.iter().rev() {
                     docs_stack.push(part);
                 }
-                break;
             }
             Doc::IfBreak(if_break) => {
                 docs_stack.push(&if_break.flat_contents);
@@ -369,7 +367,6 @@ fn traverse_docs(
                 } else {
                     docs_stack.push(&group.expanded_states.first().unwrap());
                 }
-                break;
             }
             Doc::Indent(indent) => {
                 docs_stack.push(&indent.contents);
@@ -377,9 +374,7 @@ fn traverse_docs(
             Doc::IndentIfBreak(indent_if_break) => {
                 docs_stack.push(&indent_if_break.contents);
             }
-            _ => {
-                break;
-            }
+            _ => {}
         }
     }
 }

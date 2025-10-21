@@ -8,14 +8,14 @@ macro_rules! println_dbg {
 
 mod builder;
 mod doc;
+mod document;
 mod formatter;
 mod printer;
-mod prism_utility;
 mod renderer;
 
 pub use builder::*;
 pub use doc::*;
+pub use document::*;
 pub use formatter::*;
 pub use printer::*;
-pub use prism_utility::*;
 pub use renderer::*;
