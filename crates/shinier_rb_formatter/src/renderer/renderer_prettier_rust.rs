@@ -1,5 +1,5 @@
 use crate::utility::*;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Mode {
@@ -9,8 +9,9 @@ enum Mode {
 
 #[derive(Clone)]
 enum Doc {
-    String(String),
+    BreakParent,
     Group(Group),
+    String(String),
 }
 
 impl Doc {
@@ -47,10 +48,10 @@ struct Command<'a> {
 
 fn fits(
     next: Command,
-    rest_commands: &Vec<Command>,
+    rest_commands: &[Command],
     width: &mut i32,
     _has_line_suffix: bool,
-    _group_mode_map: &HashMap<usize, Mode>,
+    group_mode_map: &HashMap<usize, Mode>,
     must_be_flat: bool,
 ) -> bool {
     if *width >= i32::MAX {
@@ -69,11 +70,10 @@ fn fits(
         }
         let Command { ind, doc, mode } = cmds.pop().unwrap();
         match doc {
-            Doc::String(string) => {
-                *width -= get_string_width(string.as_str()) as i32;
-            }
+            Doc::BreakParent => {}
             Doc::Group(group) => {
-                if must_be_flat && group.mode == Mode::Break {
+                let effective_mode = group_mode_map.get(&group.id).copied().unwrap_or(group.mode);
+                if must_be_flat && effective_mode == Mode::Break {
                     return false;
                 }
                 let contents = match mode {
@@ -84,94 +84,136 @@ fn fits(
                     cmds.push(contents.as_cmd(ind, mode));
                 }
             }
+            Doc::String(string) => {
+                *width -= get_string_width(string.as_str()) as i32;
+            }
         }
     }
     false
 }
 
-fn print_doc_to_string(doc: &Doc, _options: ()) {
-    let mut group_mod_map: HashMap<usize, Mode> = HashMap::new();
+fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
     let width = 80;
     let mut pos = 0;
     let mut cmds = vec![doc.as_cmd(0, Mode::Break)];
-    let mut out = vec![];
-    let mut should_remesure = false;
+    let mut out = String::new();
+    let mut should_remeasure = false;
 
-    //propagate_breaks(doc);
+    let mut group_mode_map = propagate_breaks(doc);
 
-    while !cmds.is_empty() {
-        let Command { ind, doc, mode } = cmds.pop().unwrap();
+    while let Some(Command { ind, doc, mode }) = cmds.pop() {
         match doc {
-            Doc::String(string) => {
-                out.push(string);
-                pos += get_string_width(string.as_str()) as i32;
-            }
-            Doc::Group(group) => match mode {
-                Mode::Flat => {
-                    if !should_remesure {
-                        cmds.push(group.contents().as_cmd(ind, group.mode));
+            Doc::BreakParent => {}
+            Doc::Group(group) => {
+                let effective_mode = group_mode_map.get(&group.id).copied().unwrap_or(group.mode);
+                match mode {
+                    Mode::Flat => {
+                        if !should_remeasure {
+                            cmds.push(group.contents().as_cmd(ind, effective_mode));
+                        }
                     }
-                }
-                Mode::Break => {
-                    should_remesure = false;
-
-                    let next = group
-                        .expanded_states
-                        .last()
-                        .unwrap()
-                        .as_cmd(ind, Mode::Flat);
-                    let mut rem = width - pos;
-                    let has_line_suffix = false; // !line_suffix.is_empty();
-                    if group.mode == Mode::Flat
-                        && fits(
-                            next,
-                            &cmds,
-                            &mut rem,
-                            has_line_suffix,
-                            &group_mod_map,
-                            false,
-                        )
-                    {
-                        cmds.push(next);
-                    } else {
-                        if group.expanded_states.len() > 1 {
-                            let most_expanded = group.expanded_states.last().unwrap();
-                            if group.mode == Mode::Break {
-                                cmds.push(most_expanded.as_cmd(ind, Mode::Break));
-                            } else {
-                                for (i, state) in group.expanded_states.iter().enumerate() {
-                                    if i >= group.expanded_states.len() - 1 {
-                                        cmds.push(most_expanded.as_cmd(ind, Mode::Break));
-                                        break;
-                                    } else {
-                                        let cmd = state.as_cmd(ind, Mode::Flat);
-                                        if fits(
-                                            cmd,
-                                            &cmds,
-                                            &mut rem,
-                                            has_line_suffix,
-                                            &group_mod_map,
-                                            false,
-                                        ) {
-                                            cmds.push(cmd);
+                    Mode::Break => {
+                        should_remeasure = false;
+                        let next = group
+                            .expanded_states
+                            .last()
+                            .unwrap()
+                            .as_cmd(ind, Mode::Flat);
+                        let mut rem = width - pos;
+                        let has_line_suffix = false;
+                        if effective_mode == Mode::Flat
+                            && fits(
+                                next,
+                                &cmds,
+                                &mut rem,
+                                has_line_suffix,
+                                &group_mode_map,
+                                false,
+                            )
+                        {
+                            cmds.push(next);
+                        } else {
+                            if group.expanded_states.len() > 1 {
+                                let most_expanded = group.expanded_states.last().unwrap();
+                                if effective_mode == Mode::Break {
+                                    cmds.push(most_expanded.as_cmd(ind, Mode::Break));
+                                } else {
+                                    for (i, state) in group.expanded_states.iter().enumerate() {
+                                        if i >= group.expanded_states.len() - 1 {
+                                            cmds.push(most_expanded.as_cmd(ind, Mode::Break));
                                             break;
+                                        } else {
+                                            let cmd = state.as_cmd(ind, Mode::Flat);
+                                            if fits(
+                                                cmd,
+                                                &cmds,
+                                                &mut rem,
+                                                has_line_suffix,
+                                                &group_mode_map,
+                                                false,
+                                            ) {
+                                                cmds.push(cmd);
+                                                break;
+                                            }
                                         }
                                     }
                                 }
+                            } else {
+                                cmds.push(
+                                    group
+                                        .expanded_states
+                                        .first()
+                                        .unwrap()
+                                        .as_cmd(ind, Mode::Break),
+                                );
                             }
-                        } else {
-                            cmds.push(
-                                group
-                                    .expanded_states
-                                    .first()
-                                    .unwrap()
-                                    .as_cmd(ind, Mode::Break),
-                            );
                         }
+                        group_mode_map.insert(group.id, cmds.last().unwrap().mode);
                     }
-                    group_mod_map.insert(group.id, cmds.last().unwrap().mode);
                 }
-            },
+            }
+            Doc::String(string) => {
+                out.push_str(string);
+                pos += get_string_width(string.as_str()) as i32;
+            }
         }
     }
+    out
+}
+
+fn propagate_breaks(doc: &Doc) -> HashMap<usize, Mode> {
+    let mut group_mode_map = HashMap::new();
+    fn visit(
+        doc: &Doc,
+        parent_stack: &mut Vec<usize>,
+        group_mode_map: &mut HashMap<usize, Mode>,
+        visited: &mut HashSet<usize>,
+    ) {
+        match doc {
+            Doc::BreakParent => {
+                if let Some(&parent) = parent_stack.last() {
+                    group_mode_map.insert(parent, Mode::Break);
+                }
+            }
+            Doc::Group(group) => {
+                if !visited.insert(group.id) {
+                    return;
+                }
+                parent_stack.push(group.id);
+                group_mode_map.insert(group.id, group.mode);
+                for state in &group.expanded_states {
+                    visit(state, parent_stack, group_mode_map, visited);
+                }
+                parent_stack.pop();
+            }
+            _ => {}
+        }
+    }
+    visit(
+        doc,
+        &mut Vec::new(),
+        &mut group_mode_map,
+        &mut HashSet::new(),
+    );
+    group_mode_map
 }
