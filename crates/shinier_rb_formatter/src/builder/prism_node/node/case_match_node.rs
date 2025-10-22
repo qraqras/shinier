@@ -1,10 +1,10 @@
 use crate::buildable::{Buildable, BuildableList};
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::{CASE, END};
 use ruby_prism::CaseMatchNode;
 
-pub fn build_node(node: Option<&CaseMatchNode>) -> Doc {
+pub fn build_node(node: Option<&CaseMatchNode>) -> Document {
     let node = node.unwrap();
     let predicate = node.predicate();
     let conditions = node.conditions();

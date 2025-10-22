@@ -1,11 +1,11 @@
 use crate::buildable::Buildable;
 use crate::builder::prism_node::node::*;
-use crate::document::Doc;
+use crate::document::Document;
 use ruby_prism::Node;
 
 impl<'a> Buildable<'_> for Node<'_> {
     #[rustfmt::skip]
-    fn build(&self) -> Doc {
+    fn build(&self) -> Document {
         match self {
             Node::AliasGlobalVariableNode { .. } => {
                 println_dbg!("AliasGlobalVariableNode");

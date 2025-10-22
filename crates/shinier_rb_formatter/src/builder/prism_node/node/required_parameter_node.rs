@@ -1,11 +1,11 @@
 use crate::builder::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use ruby_prism::RequiredParameterNode;
 
 const REPEATED_PARAMETER_PREFIX: &str = "*";
 
-pub fn build_node(node: Option<&RequiredParameterNode>) -> Doc {
+pub fn build_node(node: Option<&RequiredParameterNode>) -> Document {
     let node = node.unwrap();
     let is_repeated_parameter = node.is_repeated_parameter();
     let name = node.name();

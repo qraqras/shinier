@@ -1,11 +1,11 @@
 use crate::builder::builder::*;
 use crate::builder::{Buildable, BuildableList};
-use crate::document::*;
+use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{BRACKETS, COMMA};
 use ruby_prism::ArrayPatternNode;
 
-pub fn build_node(node: Option<&ArrayPatternNode>) -> Doc {
+pub fn build_node(node: Option<&ArrayPatternNode>) -> Document {
     let node = node.unwrap();
     let constant = node.constant();
     let requireds = node.requireds();

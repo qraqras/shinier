@@ -1,10 +1,10 @@
 use crate::buildable::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::{BRACES, HASH};
 use ruby_prism::EmbeddedStatementsNode;
 
-pub fn build_node(node: Option<&EmbeddedStatementsNode>) -> Doc {
+pub fn build_node(node: Option<&EmbeddedStatementsNode>) -> Document {
     let node = node.unwrap();
     let statements = node.statements();
     statements.build_with(

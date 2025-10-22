@@ -1,10 +1,10 @@
 use crate::buildable::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::BREAK;
 use ruby_prism::BreakNode;
 
-pub fn build_node(node: Option<&BreakNode>) -> Doc {
+pub fn build_node(node: Option<&BreakNode>) -> Document {
     let node = node.unwrap();
     let arguments = node.arguments();
     group(array(&[

@@ -1,10 +1,10 @@
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::helper::build_symbol_without_colon::build_symbol_without_colon;
 use crate::keyword::ALIAS;
 use ruby_prism::AliasMethodNode;
 
-pub fn build_node(node: Option<&AliasMethodNode>) -> Doc {
+pub fn build_node(node: Option<&AliasMethodNode>) -> Document {
     let node = node.unwrap();
     let old_name = node.old_name();
     let new_name = node.new_name();

@@ -1,8 +1,8 @@
-use crate::document::*;
+use crate::document::Document;
 use crate::builder::builder::*;
 use ruby_prism::*;
 
-pub fn build_node(node: Option<&ShareableConstantNode>) -> Doc {
+pub fn build_node(node: Option<&ShareableConstantNode>) -> Document {
     let node = node.unwrap();
     return string(format!(
         "not implemented: {:?}",

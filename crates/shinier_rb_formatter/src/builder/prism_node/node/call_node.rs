@@ -2,7 +2,7 @@ use crate::builder::Buildable;
 use crate::builder::builder::*;
 use crate::builder::helper::separate_docs::separate_docs;
 use crate::builder::prism_node::node::{arguments_node, block_argument_node};
-use crate::document::*;
+use crate::document::Document;
 use crate::helper::build_receiver::build_receiver;
 use ruby_prism::CallNode;
 
@@ -57,7 +57,7 @@ const SELF_ASSIGNABLE_METHODS: &[&str] = &[
     "||", // ...
 ];
 
-pub fn build_node(node: Option<&CallNode>) -> Doc {
+pub fn build_node(node: Option<&CallNode>) -> Document {
     let node = node.unwrap();
 
     let doc_name = build_name(node);
@@ -72,7 +72,7 @@ pub fn build_node(node: Option<&CallNode>) -> Doc {
     group(array(&[doc_name, doc_arguments, doc_block]))
 }
 
-fn build_name(node: &CallNode) -> Doc {
+fn build_name(node: &CallNode) -> Document {
     // TODO: オペレータ個別の処理を追加
     let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();
@@ -86,7 +86,7 @@ fn build_name(node: &CallNode) -> Doc {
     }
 }
 
-fn build_arguments(node: &CallNode) -> Doc {
+fn build_arguments(node: &CallNode) -> Document {
     let arguments = node.arguments();
     let block = node.block();
     let block_argument = block.and_then(|node| node.as_block_argument_node());
@@ -109,7 +109,7 @@ fn build_arguments(node: &CallNode) -> Doc {
     }
 }
 
-fn build_block(node: &CallNode) -> Doc {
+fn build_block(node: &CallNode) -> Document {
     let block = node.block();
     block.build()
 }

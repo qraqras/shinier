@@ -1,10 +1,10 @@
 use crate::buildable::{Buildable, BuildableList};
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::{BRACKETS, COMMA};
 use ruby_prism::ArrayNode;
 
-pub fn build_node(node: Option<&ArrayNode>) -> Doc {
+pub fn build_node(node: Option<&ArrayNode>) -> Document {
     let node = node.unwrap();
     let elements = node.elements();
     let opening_loc = node.opening_loc();

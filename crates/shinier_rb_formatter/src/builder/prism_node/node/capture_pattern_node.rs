@@ -1,10 +1,10 @@
 use crate::buildable::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::ROCKET;
 use ruby_prism::CapturePatternNode;
 
-pub fn build_node(node: Option<&CapturePatternNode>) -> Doc {
+pub fn build_node(node: Option<&CapturePatternNode>) -> Document {
     let node = node.unwrap();
     let target = node.target();
     let value = node.value();

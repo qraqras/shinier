@@ -1,11 +1,11 @@
 use crate::SEMI_COLON;
 use crate::buildable::{Buildable, BuildableList};
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::{COMMA, PIPE};
 use ruby_prism::{BlockParametersNode, NodeList};
 
-pub fn build_node(node: Option<&BlockParametersNode>) -> Doc {
+pub fn build_node(node: Option<&BlockParametersNode>) -> Document {
     match node {
         Some(node) => {
             let parameters = node.parameters();

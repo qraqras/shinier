@@ -1,9 +1,9 @@
 use crate::builder::Buildable;
-use crate::document::Doc;
+use crate::document::Document;
 use ruby_prism::ConstantListIter;
 
 impl<'a> Buildable<'_> for ConstantListIter<'_> {
-    fn build(&self) -> Doc {
+    fn build(&self) -> Document {
         unimplemented!("ConstantListIter");
     }
 }

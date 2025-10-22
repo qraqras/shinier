@@ -1,9 +1,9 @@
 use crate::builder::Buildable;
-use crate::document::*;
+use crate::document::Document;
 use crate::helper::build_write::build_operator_write;
 use ruby_prism::GlobalVariableOperatorWriteNode;
 
-pub fn build_node(node: Option<&GlobalVariableOperatorWriteNode>) -> Doc {
+pub fn build_node(node: Option<&GlobalVariableOperatorWriteNode>) -> Document {
     let node = node.unwrap();
     let name = node.name();
     let value = node.value();

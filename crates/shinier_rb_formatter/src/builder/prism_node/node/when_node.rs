@@ -1,10 +1,10 @@
 use crate::buildable::{Buildable, BuildableList};
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::WHEN;
 use ruby_prism::WhenNode;
 
-pub fn build_node(node: Option<&WhenNode>) -> Doc {
+pub fn build_node(node: Option<&WhenNode>) -> Document {
     let node = node.unwrap();
     let conditions = node.conditions();
     let statements = node.statements();

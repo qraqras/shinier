@@ -1,10 +1,10 @@
 use crate::builder::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::{CLASS, END, INHERITES};
 use ruby_prism::ClassNode;
 
-pub fn build_node(node: Option<&ClassNode>) -> Doc {
+pub fn build_node(node: Option<&ClassNode>) -> Document {
     let node = node.unwrap();
     let constant_path = node.constant_path();
     let super_class = node.superclass();

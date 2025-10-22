@@ -1,10 +1,10 @@
-use crate::document::Doc;
+use crate::document::Document;
 use std::collections::{HashMap, HashSet};
 
 #[derive(Clone, Copy, Debug)]
 struct Command<'a> {
     ind: i32,
-    doc: &'a Doc,
+    doc: &'a Document,
     mode: Mode,
 }
 
@@ -32,7 +32,7 @@ impl From<Mode> for bool {
     }
 }
 
-impl Doc {
+impl Document {
     fn as_cmd(&self, ind: i32, mode: Mode) -> Command {
         Command {
             ind,
@@ -70,13 +70,13 @@ fn fits(
         }
         let Command { ind, doc, mode } = cmds.pop().unwrap();
         match doc {
-            Doc::Array(array) => {
+            Document::Array(array) => {
                 for doc in array.iter().rev() {
                     cmds.push(doc.as_cmd(ind, mode));
                 }
             }
-            Doc::BreakParent => {}
-            Doc::Group(group) => {
+            Document::BreakParent => {}
+            Document::Group(group) => {
                 if must_be_flat && group.r#break {
                     return false;
                 }
@@ -93,7 +93,7 @@ fn fits(
                 };
                 cmds.push(contents.as_cmd(ind, mode));
             }
-            Doc::IfBreak(if_break) => {
+            Document::IfBreak(if_break) => {
                 let group_mode = match if_break.group_id {
                     Some(group_id) => group_mode_map.get(&group_id).copied().unwrap_or(Mode::Flat),
                     None => mode,
@@ -104,10 +104,10 @@ fn fits(
                 };
                 cmds.push(contents.as_cmd(ind, mode));
             }
-            Doc::Indent(indent) => {
+            Document::Indent(indent) => {
                 cmds.push(indent.contents.as_cmd(ind, mode));
             }
-            Doc::Line(line) => {
+            Document::Line(line) => {
                 if mode == Mode::Break || line.hard {
                     return true;
                 }
@@ -115,8 +115,8 @@ fn fits(
                     *width -= 1;
                 }
             }
-            Doc::None => {}
-            Doc::String(string) => {
+            Document::None => {}
+            Document::String(string) => {
                 *width -= get_string_width(string) as i32;
             }
         }
@@ -124,7 +124,7 @@ fn fits(
     false
 }
 
-pub fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
+pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
     let width = 40; // TODO: オプション化
     let mut pos = 0;
     let mut cmds = Vec::from(&[doc.as_cmd(0, Mode::Break)]);
@@ -135,13 +135,13 @@ pub fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
 
     while let Some(Command { ind, doc, mode }) = cmds.pop() {
         match doc {
-            Doc::Array(array) => {
+            Document::Array(array) => {
                 for doc in array.iter().rev() {
                     cmds.push(doc.as_cmd(ind, mode));
                 }
             }
-            Doc::BreakParent => {}
-            Doc::Group(group) => {
+            Document::BreakParent => {}
+            Document::Group(group) => {
                 let effective_mode = group_mode_map
                     .get(&group.id)
                     .copied()
@@ -202,7 +202,7 @@ pub fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
                     }
                 }
             }
-            Doc::IfBreak(if_break) => {
+            Document::IfBreak(if_break) => {
                 let group_mode = if_break
                     .group_id
                     .and_then(|id| group_mode_map.get(&id).copied())
@@ -213,10 +213,10 @@ pub fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
                 };
                 cmds.push(contents.as_cmd(ind, mode));
             }
-            Doc::Indent(indent) => {
+            Document::Indent(indent) => {
                 cmds.push(indent.contents.as_cmd(ind + 1, mode));
             }
-            Doc::Line(line) => match mode {
+            Document::Line(line) => match mode {
                 Mode::Flat => {
                     if !line.hard {
                         if !line.soft {
@@ -248,8 +248,8 @@ pub fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
                     }
                 }
             },
-            Doc::None => {}
-            Doc::String(string) => {
+            Document::None => {}
+            Document::String(string) => {
                 out.push_str(string);
                 pos += get_string_width(string) as i32;
             }
@@ -258,26 +258,26 @@ pub fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
     out
 }
 
-fn propagate_breaks(doc: &Doc) -> HashMap<usize, Mode> {
+fn propagate_breaks(doc: &Document) -> HashMap<usize, Mode> {
     let mut group_mode_map = HashMap::new();
     fn visit(
-        doc: &Doc,
+        doc: &Document,
         parent_stack: &mut Vec<usize>,
         group_break_map: &mut HashMap<usize, Mode>,
         visited: &mut HashSet<usize>,
     ) {
         match doc {
-            Doc::Array(array) => {
+            Document::Array(array) => {
                 for doc in array {
                     visit(doc, parent_stack, group_break_map, visited);
                 }
             }
-            Doc::BreakParent => {
+            Document::BreakParent => {
                 if let Some(&parent) = parent_stack.last() {
                     group_break_map.insert(parent, Mode::Break);
                 }
             }
-            Doc::Group(group) => {
+            Document::Group(group) => {
                 if !visited.insert(group.id) {
                     return;
                 }
@@ -297,16 +297,16 @@ fn propagate_breaks(doc: &Doc) -> HashMap<usize, Mode> {
                     }
                 }
             }
-            Doc::IfBreak(if_break) => {
+            Document::IfBreak(if_break) => {
                 visit(&if_break.r#break, parent_stack, group_break_map, visited);
                 visit(&if_break.flat, parent_stack, group_break_map, visited);
             }
-            Doc::Indent(indent) => {
+            Document::Indent(indent) => {
                 visit(&indent.contents, parent_stack, group_break_map, visited);
             }
-            Doc::Line(_line) => {}
-            Doc::None => {}
-            Doc::String(_string) => {}
+            Document::Line(_line) => {}
+            Document::None => {}
+            Document::String(_string) => {}
         }
     }
     visit(

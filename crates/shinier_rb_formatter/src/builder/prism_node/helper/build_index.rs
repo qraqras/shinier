@@ -1,14 +1,14 @@
 use crate::buildable::Buildable;
 use crate::builder::builder::*;
-use crate::document::Doc;
+use crate::document::Document;
 use crate::keyword::{BRACKETS, SAFE_NAVIGATION_OPERATOR};
 use ruby_prism::Node;
 
 pub fn build_index(
     receiver_node: Option<&Node>,
-    arguments: &[Doc],
+    arguments: &[Document],
     is_safe_navigation: bool,
-) -> Doc {
+) -> Document {
     match receiver_node {
         Some(node) => group(array(&[
             node.build(),

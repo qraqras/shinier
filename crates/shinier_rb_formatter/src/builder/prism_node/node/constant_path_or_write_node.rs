@@ -1,10 +1,10 @@
 use crate::builder::Buildable;
-use crate::document::*;
+use crate::document::Document;
 use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
 use ruby_prism::ConstantPathOrWriteNode;
 
-pub fn build_node(node: Option<&ConstantPathOrWriteNode>) -> Doc {
+pub fn build_node(node: Option<&ConstantPathOrWriteNode>) -> Document {
     let node = node.unwrap();
     let target = node.target();
     let value = node.value();

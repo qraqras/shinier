@@ -21,11 +21,11 @@ impl Printer {
         println!("----str_to_ast----");
         parse(self.src.as_bytes())
     }
-    fn ast_to_doc(&self, parsed: &ParseResult) -> Doc {
+    fn ast_to_doc(&self, parsed: &ParseResult) -> Document {
         println!("----ast_to_doc----");
         parsed.node().build()
     }
-    fn doc_to_str(&self, doc: Doc) -> String {
+    fn doc_to_str(&self, doc: Document) -> String {
         println!("----doc_to_str----");
         const COLUMN_MAX: usize = 40;
         const INDENT_UNIT: &str = "  ";

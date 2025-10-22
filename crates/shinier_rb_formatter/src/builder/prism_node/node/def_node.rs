@@ -1,10 +1,10 @@
 use crate::builder::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::{DEF, DOT_OPERATOR, END, PARENTHESES};
 use ruby_prism::DefNode;
 
-pub fn build_node(node: Option<&DefNode>) -> Doc {
+pub fn build_node(node: Option<&DefNode>) -> Document {
     let node = node.unwrap();
     let receiver = node.receiver();
     let name = node.name();
