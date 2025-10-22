@@ -1,5 +1,5 @@
 use crate::buildable::Buildable;
-use crate::doc::Doc;
+use crate::document::*;
 use ruby_prism::StringNode;
 
 pub fn build_node(node: Option<&StringNode>) -> Doc {

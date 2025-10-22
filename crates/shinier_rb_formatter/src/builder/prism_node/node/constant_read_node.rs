@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::doc::Doc;
+use crate::document::*;
 use ruby_prism::ConstantReadNode;
 
 pub fn build_node(node: Option<&ConstantReadNode>) -> Doc {

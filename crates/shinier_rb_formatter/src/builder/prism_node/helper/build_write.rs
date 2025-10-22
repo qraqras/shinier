@@ -1,26 +1,33 @@
-use crate::doc::{Doc, group, line, space, text};
+use crate::builder::builder::*;
+use crate::document::Doc;
 use crate::keyword::{LogicalOperator, WRITE_OPERATOR};
 
 pub fn build_write(name: Doc, value: Doc) -> Doc {
-    group(&[name, space(), text(WRITE_OPERATOR), group(&[line(), value])])
+    group(array(&[
+        name,
+        space(),
+        string(WRITE_OPERATOR),
+        space(),
+        value,
+    ]))
 }
 
 pub fn build_logical_write(name: Doc, value: Doc, logical_operator: LogicalOperator) -> Doc {
-    group(&[
+    group(array(&[
         name,
         space(),
-        text(logical_operator.as_str()),
-        text(WRITE_OPERATOR),
-        group(&[line(), value]),
-    ])
+        string(logical_operator.as_str()),
+        string(WRITE_OPERATOR),
+        group(array(&[line(), value])),
+    ]))
 }
 
 pub fn build_operator_write(name: Doc, value: Doc, operator: Doc) -> Doc {
-    group(&[
+    group(array(&[
         name,
         space(),
         operator,
-        text(WRITE_OPERATOR),
-        group(&[line(), value]),
-    ])
+        string(WRITE_OPERATOR),
+        group(array(&[line(), value])),
+    ]))
 }

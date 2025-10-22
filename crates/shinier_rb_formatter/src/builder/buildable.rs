@@ -1,11 +1,12 @@
-use crate::doc::{Doc, none, sequence, text};
+use crate::builder::builder::*;
+use crate::document::Doc;
 
 pub trait Buildable<'sh> {
     fn build(&self) -> Doc;
     fn build_with(&self, before: Option<Doc>, after: Option<Doc>) -> Doc {
         let before = before.unwrap_or_else(|| none());
         let after = after.unwrap_or_else(|| none());
-        sequence(&[before, self.build(), after])
+        array(&[before, self.build(), after])
     }
     fn build_or(&self, _default: Doc) -> Doc {
         unimplemented!("only implemented for Option<T>")
@@ -44,7 +45,7 @@ pub trait BuildableList<'sh> {
     ) -> Doc {
         let before = before.unwrap_or_else(|| none());
         let after = after.unwrap_or_else(|| none());
-        sequence(&[before, self.build(separator, build_function), after])
+        array(&[before, self.build(separator, build_function), after])
     }
     fn build_or<F: Fn(&[Doc]) -> Doc>(
         &self,
@@ -92,8 +93,8 @@ impl<'sh, T: BuildableList<'sh>> BuildableList<'sh> for Option<T> {
 impl<'sh> Buildable<'sh> for &[u8] {
     fn build(&self) -> Doc {
         match std::str::from_utf8(self) {
-            Ok(s) => text(s),
-            Err(_) => text("<invalid utf8>"),
+            Ok(s) => string(s),
+            Err(_) => string("<invalid utf8>"),
         }
     }
 }

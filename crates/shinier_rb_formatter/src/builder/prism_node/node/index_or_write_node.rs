@@ -1,5 +1,6 @@
 use crate::builder::Buildable;
-use crate::doc::{Doc, line, sequence, text};
+use crate::builder::builder::*;
+use crate::document::*;
 use crate::helper::build_index::build_index;
 use crate::helper::build_write::build_logical_write;
 use crate::helper::separate_docs::separate_docs;
@@ -14,11 +15,11 @@ pub fn build_node(node: Option<&IndexOrWriteNode>) -> Doc {
     let block = node.block();
     let value = node.value();
 
-    let name = sequence(&[build_index(
+    let name = array(&[build_index(
         receiver.as_ref(),
         &separate_docs(
             &[arguments.build(), block.build()],
-            sequence(&[text(COMMA), line()]),
+            array(&[string(COMMA), line()]),
         ),
         is_safe_navigation,
     )]);

@@ -9,10 +9,8 @@ end
 def required_only(x, y, z)
 end
 def with_optionals(
-  a,
-  b = 1,
-  c = "default"
-)
+  a, b = 1, c = "default"
+  )
 end
 def with_rest(*args)
 end
@@ -33,7 +31,7 @@ def all_params(
   kw_opt: 3,
   **kw_rest,
   &blk
-)
+  )
 end
 def no_params
 end

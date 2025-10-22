@@ -1,5 +1,6 @@
 use crate::builder::Buildable;
-use crate::doc::{Doc, text};
+use crate::builder::builder::*;
+use crate::document::Doc;
 use num_bigint::{BigInt, Sign};
 use ruby_prism::Integer;
 
@@ -8,7 +9,7 @@ impl Buildable<'_> for Integer<'_> {
         let (negative, digits) = self.to_u32_digits();
 
         if digits.is_empty() {
-            return text("0");
+            return string("0");
         }
 
         // u32配列をBigIntに変換
@@ -16,6 +17,6 @@ impl Buildable<'_> for Integer<'_> {
         let bigint = BigInt::from_slice(sign, digits);
 
         // BigIntの文字列表現を使用
-        text(bigint.to_string())
+        string(bigint.to_string())
     }
 }

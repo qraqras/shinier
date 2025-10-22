@@ -1,15 +1,16 @@
 use crate::buildable::Buildable;
-use crate::doc::{Doc, none, sequence, text};
+use crate::builder::builder::*;
+use crate::document::Doc;
 use crate::keyword::{DOT_OPERATOR, SAFE_NAVIGATION_OPERATOR};
 use ruby_prism::Node;
 
 pub fn build_receiver(receiver_node: Option<&Node>, is_safe_navigation: bool) -> Doc {
     match receiver_node {
-        Some(node) => sequence(&[
+        Some(node) => array(&[
             node.build(),
             match is_safe_navigation {
-                true => text(SAFE_NAVIGATION_OPERATOR),
-                false => text(DOT_OPERATOR),
+                true => string(SAFE_NAVIGATION_OPERATOR),
+                false => string(DOT_OPERATOR),
             },
         ]),
         None => none(),

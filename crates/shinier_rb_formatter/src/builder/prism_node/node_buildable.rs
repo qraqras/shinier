@@ -1,6 +1,6 @@
 use crate::buildable::Buildable;
 use crate::builder::prism_node::node::*;
-use crate::doc::Doc;
+use crate::document::Doc;
 use ruby_prism::Node;
 
 impl<'a> Buildable<'_> for Node<'_> {

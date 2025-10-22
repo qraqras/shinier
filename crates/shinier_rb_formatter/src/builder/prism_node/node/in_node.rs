@@ -1,5 +1,6 @@
 use crate::buildable::Buildable;
-use crate::doc::*;
+use crate::builder::builder::*;
+use crate::document::*;
 use crate::keyword::IN;
 use ruby_prism::InNode;
 
@@ -8,10 +9,10 @@ pub fn build_node(node: Option<&InNode>) -> Doc {
     let pattern = node.pattern();
     let statements = node.statements();
 
-    sequence(&[
-        text(IN),
+    array(&[
+        string(IN),
         space(),
         pattern.build(),
-        indent(&[statements.build_with(Some(hardline()), None)]),
+        indent(array(&[statements.build_with(Some(hardline()), None)])),
     ])
 }

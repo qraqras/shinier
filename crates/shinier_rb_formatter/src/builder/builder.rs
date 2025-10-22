@@ -1,7 +1,20 @@
 use crate::document::{Doc, Group, IfBreak, Indent, Line};
+use std::cell::Cell;
 
-pub fn string<T: Into<String>>(string: T) -> Doc {
-    Doc::String(string.into())
+thread_local! {
+    static GROUP_ID_NEXT: Cell<usize> = Cell::new(0);
+}
+
+fn generate_group_id() -> usize {
+    GROUP_ID_NEXT.with(|next| {
+        let id = next.get();
+        next.set(id + 1);
+        id
+    })
+}
+
+pub fn reset_group_id() {
+    GROUP_ID_NEXT.with(|next| next.set(0));
 }
 
 pub fn array(contents: &[Doc]) -> Doc {
@@ -14,7 +27,7 @@ pub fn break_parent() -> Doc {
 
 pub fn group(contents: Doc) -> Doc {
     Doc::Group(Group {
-        id: None,
+        id: generate_group_id(),
         contents: Box::new(contents),
         expanded_states: None,
         r#break: false,
@@ -35,6 +48,10 @@ pub fn indent(contents: Doc) -> Doc {
     })
 }
 
+pub fn none() -> Doc {
+    Doc::None
+}
+
 pub fn line() -> Doc {
     Doc::Line(Line {
         hard: false,
@@ -44,19 +61,25 @@ pub fn line() -> Doc {
 }
 
 pub fn hardline() -> Doc {
-    Doc::Line(Line {
-        hard: true,
-        literal: false,
-        soft: false,
-    })
+    array(&[
+        Doc::Line(Line {
+            hard: true,
+            literal: false,
+            soft: false,
+        }),
+        Doc::BreakParent,
+    ])
 }
 
 pub fn literalline() -> Doc {
-    Doc::Line(Line {
-        hard: true,
-        literal: true,
-        soft: false,
-    })
+    array(&[
+        Doc::Line(Line {
+            hard: true,
+            literal: true,
+            soft: false,
+        }),
+        Doc::BreakParent,
+    ])
 }
 
 pub fn softline() -> Doc {
@@ -65,4 +88,12 @@ pub fn softline() -> Doc {
         literal: false,
         soft: true,
     })
+}
+
+pub fn string<T: Into<String>>(string: T) -> Doc {
+    Doc::String(string.into())
+}
+
+pub fn space() -> Doc {
+    Doc::String(" ".to_string())
 }

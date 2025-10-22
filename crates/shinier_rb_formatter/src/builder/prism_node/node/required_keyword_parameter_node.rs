@@ -1,5 +1,6 @@
 use crate::builder::Buildable;
-use crate::doc::{Doc, none, sequence, text};
+use crate::builder::builder::*;
+use crate::document::*;
 use ruby_prism::RequiredKeywordParameterNode;
 
 const REPEATED_PARAMETER_PREFIX: &str = "*";
@@ -9,12 +10,12 @@ pub fn build_node(node: Option<&RequiredKeywordParameterNode>) -> Doc {
     let node = node.unwrap();
     let is_repeated_parameter = node.is_repeated_parameter();
     let name = node.name();
-    sequence(&[
+    array(&[
         match is_repeated_parameter {
-            true => text(REPEATED_PARAMETER_PREFIX),
+            true => string(REPEATED_PARAMETER_PREFIX),
             false => none(),
         },
         name.build(),
-        text(REQUIRED_KEYWORD_PARAMETER_SUFFIX),
+        string(REQUIRED_KEYWORD_PARAMETER_SUFFIX),
     ])
 }

@@ -1,4 +1,4 @@
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Doc {
     Array(Vec<Doc>),  //
     BreakParent,      //
@@ -6,30 +6,31 @@ pub enum Doc {
     IfBreak(IfBreak), //
     Indent(Indent),   //
     Line(Line),       //
+    None,             //
     String(String),   //
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Group {
-    pub id: Option<usize>,
+    pub id: usize,
     pub contents: Box<Doc>,
     pub expanded_states: Option<Vec<Doc>>,
     pub r#break: bool,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct IfBreak {
     pub group_id: Option<usize>,
     pub r#break: Box<Doc>,
     pub flat: Box<Doc>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Indent {
     pub contents: Box<Doc>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Line {
     pub hard: bool,
     pub literal: bool,

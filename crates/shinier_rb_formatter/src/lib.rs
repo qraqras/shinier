@@ -7,14 +7,12 @@ macro_rules! println_dbg {
 }
 
 mod builder;
-mod doc;
 mod document;
 mod formatter;
 mod printer;
 mod renderer;
 
 pub use builder::*;
-pub use doc::*;
 pub use document::*;
 pub use formatter::*;
 pub use printer::*;

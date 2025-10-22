@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::doc::Doc;
+use crate::document::Doc;
 use ruby_prism::MagicComments;
 
 impl<'a> Buildable<'_> for MagicComments<'_> {

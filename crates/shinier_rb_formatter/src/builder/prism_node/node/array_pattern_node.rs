@@ -1,5 +1,6 @@
+use crate::builder::builder::*;
 use crate::builder::{Buildable, BuildableList};
-use crate::doc::{Doc, group, indent, line, sequence, softline, text};
+use crate::document::*;
 use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{BRACKETS, COMMA};
 use ruby_prism::ArrayPatternNode;
@@ -11,20 +12,20 @@ pub fn build_node(node: Option<&ArrayPatternNode>) -> Doc {
     let rest = node.rest();
     let posts = node.posts();
 
-    let separator = sequence(&[text(COMMA), line()]);
+    let separator = array(&[string(COMMA), line()]);
 
-    let separated_requireds = requireds.build(separator.clone(), sequence);
-    let separated_posts = posts.build(separator.clone(), sequence);
+    let separated_requireds = requireds.build(separator.clone(), array);
+    let separated_posts = posts.build(separator.clone(), array);
 
-    group(&[
+    group(array(&[
         constant.build(),
-        text(BRACKETS.0),
+        string(BRACKETS.0),
         softline(),
-        indent(&[group(&separate_docs(
+        indent(array(&[group(array(&separate_docs(
             &[separated_requireds, rest.build(), separated_posts],
             separator.clone(),
-        ))]),
+        )))])),
         softline(),
-        text(BRACKETS.1),
-    ])
+        string(BRACKETS.1),
+    ]))
 }

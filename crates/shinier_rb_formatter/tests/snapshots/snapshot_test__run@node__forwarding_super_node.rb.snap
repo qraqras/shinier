@@ -22,8 +22,7 @@ super {
   items.each{ |item| puts(item) }
 }
 super { |x| x.*(2) }.map(&:to_s)&:to_s
-result =
-if condition 
+result = if condition 
   super { |x| x.+(1) }
 else
   default_value

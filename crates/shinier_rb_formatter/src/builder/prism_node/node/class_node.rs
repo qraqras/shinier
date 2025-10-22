@@ -1,5 +1,6 @@
 use crate::builder::Buildable;
-use crate::doc::{Doc, group, hardline, indent, sequence, space, text};
+use crate::builder::builder::*;
+use crate::document::*;
 use crate::keyword::{CLASS, END, INHERITES};
 use ruby_prism::ClassNode;
 
@@ -8,16 +9,16 @@ pub fn build_node(node: Option<&ClassNode>) -> Doc {
     let constant_path = node.constant_path();
     let super_class = node.superclass();
     let body = node.body();
-    group(&[
-        text(CLASS),
+    group(array(&[
+        string(CLASS),
         space(),
         constant_path.build(),
         super_class.build_with(
-            Some(sequence(&[space(), text(INHERITES), space()])),
+            Some(array(&[space(), string(INHERITES), space()])),
             Some(space()),
         ),
-        indent(&[body.build_with(Some(hardline()), None)]),
+        indent(body.build_with(Some(hardline()), None)),
         hardline(),
-        text(END),
-    ])
+        string(END),
+    ]))
 }

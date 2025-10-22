@@ -5,15 +5,12 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/rescue_node.rb
 ---
 begin
-rescue Foo, *splat, Bar =>
-ex
+rescue Foo, *splat, Bar => ex
   foo
 end
 begin
-rescue Foo =>
-ex
+rescue Foo => ex
   foo
-rescue Bar =>
-ex
+rescue Bar => ex
   bar
 end

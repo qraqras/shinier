@@ -1,5 +1,5 @@
 use crate::buildable::Buildable;
-use crate::doc::Doc;
+use crate::document::Doc;
 use ruby_prism::Node;
 
 pub fn build_symbol_without_colon(symbol_node: &Node) -> Doc {

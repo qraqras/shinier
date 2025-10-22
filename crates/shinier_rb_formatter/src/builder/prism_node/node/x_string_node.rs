@@ -1,9 +1,10 @@
-use crate::doc::*;
+use crate::document::*;
+use crate::builder::builder::*;
 use ruby_prism::*;
 
 pub fn build_node(node: Option<&XStringNode>) -> Doc {
     let node = node.unwrap();
-    return text(format!(
+    return string(format!(
         "not implemented: {:?}",
         std::any::type_name_of_val(node)
     ));

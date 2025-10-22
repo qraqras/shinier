@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::doc::Doc;
+use crate::document::Doc;
 use ruby_prism::Diagnostic;
 
 impl<'a> Buildable<'_> for Diagnostic<'_> {
