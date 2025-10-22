@@ -19,7 +19,7 @@ pub fn build_node(node: Option<&RescueNode>) -> Document {
                 group(array(&[
                     string(RESCUE_KEYWORD),
                     space(),
-                    exceptions.build(array(&[string(EXCEPTIONS_SEPARATOR), line()]), array),
+                    exceptions.build(array(&[string(EXCEPTIONS_SEPARATOR), line()])),
                     match reference {
                         Some(r) => array(&[space(), string(REFERENCE_ARROW), line(), r.build()]),
                         None => none(),

@@ -12,7 +12,7 @@ pub fn build_node(node: Option<&CaseNode>) -> Document {
     group(array(&[
         string(CASE),
         predicate.build_with(Some(space()), None),
-        conditions.build_with(hardline(), array, Some(hardline()), None),
+        conditions.build_with(hardline(), Some(hardline()), None),
         else_clause.build_with(Some(hardline()), None),
         hardline(),
         string(END),

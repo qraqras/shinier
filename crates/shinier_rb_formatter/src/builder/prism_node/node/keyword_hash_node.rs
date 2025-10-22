@@ -7,5 +7,5 @@ use ruby_prism::KeywordHashNode;
 pub fn build_node(node: Option<&KeywordHashNode>) -> Document {
     let node = node.unwrap();
     let elements = node.elements();
-    elements.build(array(&[string(COMMA), line()]), array)
+    elements.build(array(&[string(COMMA), line()]))
 }

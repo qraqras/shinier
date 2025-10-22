@@ -9,7 +9,6 @@ pub fn build_node(node: Option<&InterpolatedStringNode>) -> Document {
     let parts = node.parts();
     parts.build_with(
         none(),
-        array,
         Some(string(DOUBLE_QUOTE)),
         Some(string(DOUBLE_QUOTE)),
     )

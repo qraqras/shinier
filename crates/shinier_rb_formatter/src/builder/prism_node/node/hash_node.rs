@@ -14,7 +14,7 @@ pub fn build_node(node: Option<&HashNode>) -> Document {
         string(OPEN_DELIMITER),
         indent(array(&[
             line(),
-            elements.build(array(&[string(SEPARATOR), line()]), array),
+            elements.build(array(&[string(SEPARATOR), line()])),
         ])),
         line(),
         string(CLOSE_DELIMITER),

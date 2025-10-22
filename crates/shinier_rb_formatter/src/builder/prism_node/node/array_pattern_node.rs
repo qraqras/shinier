@@ -1,4 +1,4 @@
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, indent, line, softline, string};
 use crate::builder::{Buildable, BuildableList};
 use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
@@ -14,8 +14,8 @@ pub fn build_node(node: Option<&ArrayPatternNode>) -> Document {
 
     let separator = array(&[string(COMMA), line()]);
 
-    let separated_requireds = requireds.build(separator.clone(), array);
-    let separated_posts = posts.build(separator.clone(), array);
+    let separated_requireds = requireds.build(separator.clone());
+    let separated_posts = posts.build(separator.clone());
 
     group(array(&[
         constant.build(),

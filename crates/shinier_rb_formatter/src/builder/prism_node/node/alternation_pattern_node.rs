@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, line, space, string};
 use crate::document::Document;
 use crate::keyword::ALTERNATION;
 use ruby_prism::AlternationPatternNode;

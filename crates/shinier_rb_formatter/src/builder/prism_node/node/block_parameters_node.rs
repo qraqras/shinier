@@ -17,7 +17,6 @@ pub fn build_node(node: Option<&BlockParametersNode>) -> Document {
                     true => none(),
                     false => locals.build_with(
                         array(&[string(COMMA), space()]),
-                        array,
                         Some(array(&[string(SEMI_COLON), space()])),
                         None,
                     ),

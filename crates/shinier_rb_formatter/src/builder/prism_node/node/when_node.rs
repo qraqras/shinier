@@ -10,7 +10,7 @@ pub fn build_node(node: Option<&WhenNode>) -> Document {
     let statements = node.statements();
     array(&[
         string(WHEN),
-        conditions.build_with(hardline(), array, Some(space()), None),
+        conditions.build_with(hardline(), Some(space()), None),
         indent(statements.build_with(Some(hardline()), None)),
     ])
 }

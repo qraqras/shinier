@@ -21,11 +21,11 @@ pub fn build_node(node: Option<&ParametersNode>) -> Document {
 
             group(array(&separate_docs(
                 &[
-                    requireds.build(separator.clone(), array),
-                    optionals.build(separator.clone(), array),
+                    requireds.build(separator.clone()),
+                    optionals.build(separator.clone()),
                     rest.build(),
-                    posts.build(separator.clone(), array),
-                    keywords.build(separator.clone(), array),
+                    posts.build(separator.clone()),
+                    keywords.build(separator.clone()),
                     keyword_rest.build(),
                     block.build(),
                 ],

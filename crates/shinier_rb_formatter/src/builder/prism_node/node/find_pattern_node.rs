@@ -16,7 +16,7 @@ pub fn build_node(node: Option<&FindPatternNode>) -> Document {
     let elements = separate_docs(
         &[
             left.as_node().build(),
-            requireds.build(separator.clone(), array),
+            requireds.build(separator.clone()),
             right.build(),
         ],
         separator.clone(),
