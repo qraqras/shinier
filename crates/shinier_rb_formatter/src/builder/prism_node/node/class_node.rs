@@ -9,12 +9,6 @@ pub fn build_node(node: Option<&ClassNode>) -> Doc {
     let constant_path = node.constant_path();
     let super_class = node.superclass();
     let body = node.body();
-
-    let body_doc = match body {
-        Some(_) => indent(array(&[hardline(), body.build()])),
-        None => none(),
-    };
-
     group(array(&[
         string(CLASS),
         space(),
@@ -23,7 +17,7 @@ pub fn build_node(node: Option<&ClassNode>) -> Doc {
             Some(array(&[space(), string(INHERITES), space()])),
             Some(space()),
         ),
-        body_doc,
+        indent(body.build_with(Some(hardline()), None)),
         hardline(),
         string(END),
     ]))
