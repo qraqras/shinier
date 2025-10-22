@@ -1,6 +1,6 @@
 use crate::buildable::Buildable;
+use crate::builder::builder::string;
 use crate::document::Document;
-use crate::builder::builder::*;
 use crate::keyword::HASH;
 use ruby_prism::EmbeddedVariableNode;
 

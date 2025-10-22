@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::keyword::DOUBLE_COLON;
 use ruby_prism::ConstantPathTargetNode;

@@ -33,7 +33,7 @@ impl From<Mode> for bool {
 }
 
 impl Document {
-    fn as_cmd(&self, ind: i32, mode: Mode) -> Command {
+    fn as_cmd<'a>(&'a self, ind: i32, mode: Mode) -> Command<'a> {
         Command {
             ind,
             doc: self,

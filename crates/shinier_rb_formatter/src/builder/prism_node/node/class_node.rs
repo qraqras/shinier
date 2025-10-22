@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, hardline, indent, space, string};
 use crate::document::Document;
 use crate::keyword::{CLASS, END, INHERITES};
 use ruby_prism::ClassNode;

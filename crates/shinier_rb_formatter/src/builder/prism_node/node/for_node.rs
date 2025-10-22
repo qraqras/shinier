@@ -1,5 +1,5 @@
 use crate::buildable::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, indent, line, space, string};
 use crate::document::Document;
 use crate::keyword::{DO, END, FOR, IN};
 use ruby_prism::ForNode;
@@ -17,10 +17,7 @@ pub fn build_node(node: Option<&ForNode>) -> Document {
         string(IN),
         space(),
         collection.build(),
-        indent(array(&[statements.build_with(
-            Some(array(&[space(), string(DO), line()])),
-            None,
-        )])),
+        indent(statements.build_with(Some(array(&[space(), string(DO), line()])), None)),
         line(),
         string(END),
     ]))

@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, hardline, indent, softline, space, string};
 use crate::document::Document;
 use crate::keyword::{DEF, DOT_OPERATOR, END, PARENTHESES};
 use ruby_prism::DefNode;
@@ -15,12 +15,6 @@ pub fn build_node(node: Option<&DefNode>) -> Document {
         space(),
         receiver.build_with(None, Some(string(DOT_OPERATOR))),
         name.build(),
-        /*
-        group(array(&[parameters.build_with(
-            Some(array(&[string(PARENTHESES.0), softline(), begin_indent()])),
-            Some(array(&[end_indent(), softline(), string(PARENTHESES.1)])),
-        )])),
-        */
         group(indent(parameters.build_with(
             Some(array(&[string(PARENTHESES.0), softline()])),
             Some(array(&[softline(), string(PARENTHESES.1)])),

@@ -20,11 +20,13 @@ pub fn build_node(node: Option<&ArrayPatternNode>) -> Document {
     group(array(&[
         constant.build(),
         string(BRACKETS.0),
-        softline(),
-        indent(array(&[group(array(&separate_docs(
-            &[separated_requireds, rest.build(), separated_posts],
-            separator.clone(),
-        )))])),
+        indent(array(&[
+            softline(),
+            group(array(&separate_docs(
+                &[separated_requireds, rest.build(), separated_posts],
+                separator.clone(),
+            ))),
+        ])),
         softline(),
         string(BRACKETS.1),
     ]))

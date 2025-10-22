@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::array;
 use crate::document::Document;
 use crate::helper::build_receiver::build_receiver;
 use ruby_prism::CallTargetNode;

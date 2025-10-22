@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, string};
 use crate::document::Document;
 use crate::keyword::SPLAT;
 use ruby_prism::AssocSplatNode;

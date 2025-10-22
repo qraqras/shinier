@@ -1,5 +1,5 @@
 use crate::buildable::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, space, string};
 use crate::document::Document;
 use crate::keyword::{DOUBLE_DOT, TRIPLE_DOT};
 use ruby_prism::FlipFlopNode;
