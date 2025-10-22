@@ -1,21 +1,39 @@
-use crate::utility::*;
+use crate::document::Doc;
 use std::collections::{HashMap, HashSet};
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug)]
+struct Command<'a> {
+    ind: i32,
+    doc: &'a Doc,
+    mode: Mode,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum Mode {
     Flat,
     Break,
 }
 
-#[derive(Clone)]
-enum Doc {
-    BreakParent,
-    Group(Group),
-    String(String),
+impl From<bool> for Mode {
+    fn from(value: bool) -> Self {
+        match value {
+            true => Mode::Break,
+            false => Mode::Flat,
+        }
+    }
+}
+
+impl From<Mode> for bool {
+    fn from(mode: Mode) -> Self {
+        match mode {
+            Mode::Break => true,
+            Mode::Flat => false,
+        }
+    }
 }
 
 impl Doc {
-    pub fn as_cmd(&self, ind: i32, mode: Mode) -> Command {
+    fn as_cmd(&self, ind: i32, mode: Mode) -> Command {
         Command {
             ind,
             doc: self,
@@ -24,26 +42,8 @@ impl Doc {
     }
 }
 
-#[derive(Clone)]
-struct Group {
-    pub id: usize,
-    pub expanded_states: Vec<Doc>,
-    pub mode: Mode,
-}
-
-impl Group {
-    fn contents(&self) -> &Doc {
-        self.expanded_states
-            .first()
-            .expect("Group must have at least one expanded state")
-    }
-}
-
-#[derive(Clone, Copy)]
-struct Command<'a> {
-    pub ind: i32,
-    pub doc: &'a Doc,
-    pub mode: Mode,
+pub fn get_string_width(string: &String) -> usize {
+    string.chars().count()
 }
 
 fn fits(
@@ -58,7 +58,7 @@ fn fits(
         return true;
     }
     let mut rest_idx = rest_commands.len();
-    let mut cmds = vec![next];
+    let mut cmds: Vec<Command<'_>> = Vec::from(&[next]);
     while *width >= 0 {
         if cmds.is_empty() {
             if rest_idx == 0 {
@@ -70,32 +70,63 @@ fn fits(
         }
         let Command { ind, doc, mode } = cmds.pop().unwrap();
         match doc {
+            Doc::Array(array) => {
+                for doc in array.iter().rev() {
+                    cmds.push(doc.as_cmd(ind, mode));
+                }
+            }
             Doc::BreakParent => {}
             Doc::Group(group) => {
-                let effective_mode = group_mode_map.get(&group.id).copied().unwrap_or(group.mode);
-                if must_be_flat && effective_mode == Mode::Break {
+                if must_be_flat && group.r#break {
                     return false;
                 }
-                let contents = match mode {
-                    Mode::Flat => group.expanded_states.first(),
-                    Mode::Break => group.expanded_states.last(),
+                let group_mode = match group.r#break {
+                    true => Mode::Break,
+                    false => Mode::Flat,
                 };
-                if let Some(contents) = contents {
-                    cmds.push(contents.as_cmd(ind, mode));
+                let contents = if let Some(expanded_states) = &group.expanded_states
+                    && group_mode == Mode::Break
+                {
+                    expanded_states.first().unwrap()
+                } else {
+                    &group.contents
+                };
+                cmds.push(contents.as_cmd(ind, mode));
+            }
+            Doc::IfBreak(if_break) => {
+                let group_mode = match if_break.group_id {
+                    Some(group_id) => group_mode_map.get(&group_id).copied().unwrap_or(Mode::Flat),
+                    None => mode,
+                };
+                let contents = match group_mode {
+                    Mode::Break => &if_break.r#break,
+                    Mode::Flat => &if_break.flat,
+                };
+                cmds.push(contents.as_cmd(ind, mode));
+            }
+            Doc::Indent(indent) => {
+                cmds.push(indent.contents.as_cmd(ind, mode));
+            }
+            Doc::Line(line) => {
+                if mode == Mode::Break || line.hard {
+                    return true;
+                }
+                if !line.soft {
+                    *width -= 1;
                 }
             }
             Doc::String(string) => {
-                *width -= get_string_width(string.as_str()) as i32;
+                *width -= get_string_width(string) as i32;
             }
         }
     }
     false
 }
 
-fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
+pub fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
     let width = 80;
     let mut pos = 0;
-    let mut cmds = vec![doc.as_cmd(0, Mode::Break)];
+    let mut cmds = Vec::from(&[doc.as_cmd(0, Mode::Break)]);
     let mut out = String::new();
     let mut should_remeasure = false;
 
@@ -103,22 +134,26 @@ fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
 
     while let Some(Command { ind, doc, mode }) = cmds.pop() {
         match doc {
+            Doc::Array(array) => {
+                for doc in array.iter().rev() {
+                    cmds.push(doc.as_cmd(ind, mode));
+                }
+            }
             Doc::BreakParent => {}
             Doc::Group(group) => {
-                let effective_mode = group_mode_map.get(&group.id).copied().unwrap_or(group.mode);
+                let effective_mode = group_mode_map
+                    .get(&group.id)
+                    .copied()
+                    .unwrap_or(Mode::from(group.r#break));
                 match mode {
                     Mode::Flat => {
                         if !should_remeasure {
-                            cmds.push(group.contents().as_cmd(ind, effective_mode));
+                            cmds.push(group.contents.as_cmd(ind, effective_mode));
                         }
                     }
                     Mode::Break => {
                         should_remeasure = false;
-                        let next = group
-                            .expanded_states
-                            .last()
-                            .unwrap()
-                            .as_cmd(ind, Mode::Flat);
+                        let next = group.contents.as_cmd(ind, Mode::Flat);
                         let mut rem = width - pos;
                         let has_line_suffix = false;
                         if effective_mode == Mode::Flat
@@ -133,13 +168,13 @@ fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
                         {
                             cmds.push(next);
                         } else {
-                            if group.expanded_states.len() > 1 {
-                                let most_expanded = group.expanded_states.last().unwrap();
+                            if let Some(expanded_states) = &group.expanded_states {
+                                let most_expanded = expanded_states.last().unwrap();
                                 if effective_mode == Mode::Break {
                                     cmds.push(most_expanded.as_cmd(ind, Mode::Break));
                                 } else {
-                                    for (i, state) in group.expanded_states.iter().enumerate() {
-                                        if i >= group.expanded_states.len() - 1 {
+                                    for (i, state) in expanded_states.iter().enumerate() {
+                                        if i >= expanded_states.len() {
                                             cmds.push(most_expanded.as_cmd(ind, Mode::Break));
                                             break;
                                         } else {
@@ -159,22 +194,62 @@ fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
                                     }
                                 }
                             } else {
-                                cmds.push(
-                                    group
-                                        .expanded_states
-                                        .first()
-                                        .unwrap()
-                                        .as_cmd(ind, Mode::Break),
-                                );
+                                cmds.push(group.contents.as_cmd(ind, Mode::Break));
                             }
                         }
                         group_mode_map.insert(group.id, cmds.last().unwrap().mode);
                     }
                 }
             }
+            Doc::IfBreak(if_break) => {
+                let group_mode = if_break
+                    .group_id
+                    .and_then(|id| group_mode_map.get(&id).copied())
+                    .unwrap_or(mode);
+                let contents = match group_mode {
+                    Mode::Break => &if_break.r#break,
+                    Mode::Flat => &if_break.flat,
+                };
+                cmds.push(contents.as_cmd(ind, mode));
+            }
+            Doc::Indent(indent) => {
+                cmds.push(indent.contents.as_cmd(ind + 1, mode));
+            }
+            Doc::Line(line) => match mode {
+                Mode::Flat => {
+                    if !line.hard {
+                        if !line.soft {
+                            out.push(' ');
+                            pos += 1;
+                        }
+                    } else {
+                        should_remeasure = true;
+                        if line.literal {
+                            out.push('\n');
+                            pos = 0;
+                        } else {
+                            out.push('\n');
+                            let indent_str = "  ".repeat(ind as usize);
+                            out.push_str(&indent_str);
+                            pos = indent_str.len() as i32;
+                        }
+                    }
+                }
+                Mode::Break => {
+                    if line.literal {
+                        out.push('\n');
+                        pos = 0;
+                    } else {
+                        out.push('\n');
+                        let indent_str = "  ".repeat(ind as usize);
+                        out.push_str(&indent_str);
+                        pos = indent_str.len() as i32;
+                    }
+                }
+            },
             Doc::String(string) => {
                 out.push_str(string);
-                pos += get_string_width(string.as_str()) as i32;
+                pos += get_string_width(string) as i32;
             }
         }
     }
@@ -186,13 +261,18 @@ fn propagate_breaks(doc: &Doc) -> HashMap<usize, Mode> {
     fn visit(
         doc: &Doc,
         parent_stack: &mut Vec<usize>,
-        group_mode_map: &mut HashMap<usize, Mode>,
+        group_break_map: &mut HashMap<usize, Mode>,
         visited: &mut HashSet<usize>,
     ) {
         match doc {
+            Doc::Array(array) => {
+                for doc in array {
+                    visit(doc, parent_stack, group_break_map, visited);
+                }
+            }
             Doc::BreakParent => {
                 if let Some(&parent) = parent_stack.last() {
-                    group_mode_map.insert(parent, Mode::Break);
+                    group_break_map.insert(parent, Mode::Break);
                 }
             }
             Doc::Group(group) => {
@@ -200,13 +280,30 @@ fn propagate_breaks(doc: &Doc) -> HashMap<usize, Mode> {
                     return;
                 }
                 parent_stack.push(group.id);
-                group_mode_map.insert(group.id, group.mode);
-                for state in &group.expanded_states {
-                    visit(state, parent_stack, group_mode_map, visited);
+                group_break_map.insert(group.id, Mode::from(group.r#break));
+                if let Some(expanded_states) = &group.expanded_states {
+                    for state in expanded_states {
+                        visit(state, parent_stack, group_break_map, visited);
+                    }
+                } else {
+                    visit(&group.contents, parent_stack, group_break_map, visited);
                 }
                 parent_stack.pop();
+                if group.r#break {
+                    if let Some(&parent_id) = parent_stack.last() {
+                        group_break_map.insert(parent_id, Mode::Break);
+                    }
+                }
             }
-            _ => {}
+            Doc::IfBreak(if_break) => {
+                visit(&if_break.r#break, parent_stack, group_break_map, visited);
+                visit(&if_break.flat, parent_stack, group_break_map, visited);
+            }
+            Doc::Indent(indent) => {
+                visit(&indent.contents, parent_stack, group_break_map, visited);
+            }
+            Doc::Line(_line) => {}
+            Doc::String(_string) => {}
         }
     }
     visit(

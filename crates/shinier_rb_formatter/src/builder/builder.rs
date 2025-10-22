@@ -1,4 +1,21 @@
 use crate::document::{Doc, Group, IfBreak, Indent, Line};
+use std::cell::Cell;
+
+thread_local! {
+    static GROUP_ID_NEXT: Cell<usize> = Cell::new(0);
+}
+
+fn generate_group_id() -> usize {
+    GROUP_ID_NEXT.with(|next| {
+        let id = next.get();
+        next.set(id + 1);
+        id
+    })
+}
+
+pub fn reset_group_id() {
+    GROUP_ID_NEXT.with(|next| next.set(0));
+}
 
 pub fn string<T: Into<String>>(string: T) -> Doc {
     Doc::String(string.into())
@@ -14,7 +31,7 @@ pub fn break_parent() -> Doc {
 
 pub fn group(contents: Doc) -> Doc {
     Doc::Group(Group {
-        id: None,
+        id: generate_group_id(),
         contents: Box::new(contents),
         expanded_states: None,
         r#break: false,
