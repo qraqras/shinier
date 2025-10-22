@@ -1,10 +1,10 @@
 use crate::buildable::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::IN;
 use ruby_prism::InNode;
 
-pub fn build_node(node: Option<&InNode>) -> Doc {
+pub fn build_node(node: Option<&InNode>) -> Document {
     let node = node.unwrap();
     let pattern = node.pattern();
     let statements = node.statements();

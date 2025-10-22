@@ -1,10 +1,10 @@
 use crate::builder::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::keyword::{END, IF};
 use ruby_prism::*;
 
-pub fn build_node(node: Option<&IfNode>) -> Doc {
+pub fn build_node(node: Option<&IfNode>) -> Document {
     let node = node.unwrap();
     let predicate = node.predicate();
     let statements = node.statements();

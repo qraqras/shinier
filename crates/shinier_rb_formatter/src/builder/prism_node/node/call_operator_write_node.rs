@@ -1,11 +1,11 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
-use crate::document::*;
+use crate::builder::builder::array;
+use crate::document::Document;
 use crate::helper::build_receiver::build_receiver;
 use crate::helper::build_write::build_operator_write;
 use ruby_prism::CallOperatorWriteNode;
 
-pub fn build_node(node: Option<&CallOperatorWriteNode>) -> Doc {
+pub fn build_node(node: Option<&CallOperatorWriteNode>) -> Document {
     let node = node.unwrap();
     let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();

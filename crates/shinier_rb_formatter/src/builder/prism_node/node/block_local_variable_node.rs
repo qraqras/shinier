@@ -1,8 +1,8 @@
 use crate::buildable::Buildable;
-use crate::document::*;
+use crate::document::Document;
 use ruby_prism::BlockLocalVariableNode;
 
-pub fn build_node(node: Option<&BlockLocalVariableNode>) -> Doc {
+pub fn build_node(node: Option<&BlockLocalVariableNode>) -> Document {
     let node = node.unwrap();
     let name = node.name();
     name.build()

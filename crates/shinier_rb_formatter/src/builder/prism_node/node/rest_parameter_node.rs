@@ -1,11 +1,11 @@
 use crate::builder::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use ruby_prism::RestParameterNode;
 
 const REST_PARAMETER_PREFIX: &str = "*";
 
-pub fn build_node(node: Option<&RestParameterNode>) -> Doc {
+pub fn build_node(node: Option<&RestParameterNode>) -> Document {
     let node = node.unwrap();
     let name = node.name();
     match name {

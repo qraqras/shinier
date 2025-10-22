@@ -1,10 +1,10 @@
 use crate::buildable::Buildable;
-use crate::builder::builder::*;
-use crate::document::*;
+use crate::builder::builder::{array, group, space, string};
+use crate::document::Document;
 use crate::keyword::{DOUBLE_DOT, TRIPLE_DOT};
 use ruby_prism::FlipFlopNode;
 
-pub fn build_node(node: Option<&FlipFlopNode>) -> Doc {
+pub fn build_node(node: Option<&FlipFlopNode>) -> Document {
     let node = node.unwrap();
     let is_exclude_end = node.is_exclude_end();
     let left = node.left();

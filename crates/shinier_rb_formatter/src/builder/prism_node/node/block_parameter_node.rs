@@ -1,10 +1,10 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
-use crate::document::*;
+use crate::builder::builder::{array, group, none, string};
+use crate::document::Document;
 use crate::keyword::PROC_AND;
 use ruby_prism::BlockParameterNode;
 
-pub fn build_node(node: Option<&BlockParameterNode>) -> Doc {
+pub fn build_node(node: Option<&BlockParameterNode>) -> Document {
     match node {
         Some(node) => {
             let name = node.name();

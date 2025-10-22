@@ -1,8 +1,8 @@
 use crate::builder::builder::*;
-use crate::document::Doc;
+use crate::document::Document;
 use crate::keyword::{LogicalOperator, WRITE_OPERATOR};
 
-pub fn build_write(name: Doc, value: Doc) -> Doc {
+pub fn build_write(name: Document, value: Document) -> Document {
     group(array(&[
         name,
         space(),
@@ -12,7 +12,7 @@ pub fn build_write(name: Doc, value: Doc) -> Doc {
     ]))
 }
 
-pub fn build_logical_write(name: Doc, value: Doc, logical_operator: LogicalOperator) -> Doc {
+pub fn build_logical_write(name: Document, value: Document, logical_operator: LogicalOperator) -> Document {
     group(array(&[
         name,
         space(),
@@ -22,7 +22,7 @@ pub fn build_logical_write(name: Doc, value: Doc, logical_operator: LogicalOpera
     ]))
 }
 
-pub fn build_operator_write(name: Doc, value: Doc, operator: Doc) -> Doc {
+pub fn build_operator_write(name: Document, value: Document, operator: Document) -> Document {
     group(array(&[
         name,
         space(),

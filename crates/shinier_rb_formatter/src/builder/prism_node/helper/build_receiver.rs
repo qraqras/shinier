@@ -1,10 +1,10 @@
 use crate::buildable::Buildable;
 use crate::builder::builder::*;
-use crate::document::Doc;
+use crate::document::Document;
 use crate::keyword::{DOT_OPERATOR, SAFE_NAVIGATION_OPERATOR};
 use ruby_prism::Node;
 
-pub fn build_receiver(receiver_node: Option<&Node>, is_safe_navigation: bool) -> Doc {
+pub fn build_receiver(receiver_node: Option<&Node>, is_safe_navigation: bool) -> Document {
     match receiver_node {
         Some(node) => array(&[
             node.build(),

@@ -1,13 +1,13 @@
 use crate::builder::builder::*;
 use crate::builder::{Buildable, BuildableList};
-use crate::document::*;
+use crate::document::Document;
 use ruby_prism::RescueNode;
 
 const RESCUE_KEYWORD: &str = "rescue";
 const EXCEPTIONS_SEPARATOR: &str = ",";
 const REFERENCE_ARROW: &str = "=>";
 
-pub fn build_node(node: Option<&RescueNode>) -> Doc {
+pub fn build_node(node: Option<&RescueNode>) -> Document {
     match node {
         Some(node) => {
             let exceptions = node.exceptions();
@@ -19,7 +19,7 @@ pub fn build_node(node: Option<&RescueNode>) -> Doc {
                 group(array(&[
                     string(RESCUE_KEYWORD),
                     space(),
-                    exceptions.build(array(&[string(EXCEPTIONS_SEPARATOR), line()]), array),
+                    exceptions.build(array(&[string(EXCEPTIONS_SEPARATOR), line()])),
                     match reference {
                         Some(r) => array(&[space(), string(REFERENCE_ARROW), line(), r.build()]),
                         None => none(),

@@ -1,10 +1,10 @@
-use crate::builder::builder::none;
+use crate::builder::builder::{array, none};
 use crate::builder::{Buildable, BuildableList};
-use crate::document::Doc;
+use crate::document::Document;
 use ruby_prism::NodeList;
 
 impl<'a> BuildableList<'_> for NodeList<'_> {
-    fn build<F: Fn(&[Doc]) -> Doc>(&self, separator: Doc, wrapper: F) -> Doc {
+    fn build(&self, separator: Document) -> Document {
         if self.iter().next().is_none() {
             return none();
         }
@@ -15,6 +15,6 @@ impl<'a> BuildableList<'_> for NodeList<'_> {
             }
             vec.push(node.build());
         }
-        wrapper(&vec)
+        array(&vec)
     }
 }

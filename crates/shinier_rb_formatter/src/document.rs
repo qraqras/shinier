@@ -1,33 +1,33 @@
 #[derive(Clone, Debug)]
-pub enum Doc {
-    Array(Vec<Doc>),  //
-    BreakParent,      //
-    Group(Group),     //
-    IfBreak(IfBreak), //
-    Indent(Indent),   //
-    Line(Line),       //
-    None,             //
-    String(String),   //
+pub enum Document {
+    Array(Vec<Document>), //
+    BreakParent,          //
+    Group(Group),         //
+    IfBreak(IfBreak),     //
+    Indent(Indent),       //
+    Line(Line),           //
+    None,                 //
+    String(String),       //
 }
 
 #[derive(Clone, Debug)]
 pub struct Group {
     pub id: usize,
-    pub contents: Box<Doc>,
-    pub expanded_states: Option<Vec<Doc>>,
+    pub contents: Box<Document>,
+    pub expanded_states: Option<Vec<Document>>,
     pub r#break: bool,
 }
 
 #[derive(Clone, Debug)]
 pub struct IfBreak {
     pub group_id: Option<usize>,
-    pub r#break: Box<Doc>,
-    pub flat: Box<Doc>,
+    pub r#break: Box<Document>,
+    pub flat: Box<Document>,
 }
 
 #[derive(Clone, Debug)]
 pub struct Indent {
-    pub contents: Box<Doc>,
+    pub contents: Box<Document>,
 }
 
 #[derive(Clone, Debug)]

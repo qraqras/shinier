@@ -1,10 +1,10 @@
 use crate::buildable::{Buildable, BuildableList};
-use crate::builder::builder::*;
-use crate::document::*;
+use crate::builder::builder::{array, group, hardline, space, string};
+use crate::document::Document;
 use crate::keyword::{CASE, END};
 use ruby_prism::*;
 
-pub fn build_node(node: Option<&CaseNode>) -> Doc {
+pub fn build_node(node: Option<&CaseNode>) -> Document {
     let node = node.unwrap();
     let predicate = node.predicate();
     let conditions = node.conditions();
@@ -12,7 +12,7 @@ pub fn build_node(node: Option<&CaseNode>) -> Doc {
     group(array(&[
         string(CASE),
         predicate.build_with(Some(space()), None),
-        conditions.build_with(hardline(), array, Some(hardline()), None),
+        conditions.build_with(hardline(), Some(hardline()), None),
         else_clause.build_with(Some(hardline()), None),
         hardline(),
         string(END),

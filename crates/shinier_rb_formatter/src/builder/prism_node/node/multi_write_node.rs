@@ -1,11 +1,11 @@
 use crate::builder::Buildable;
 use crate::builder::builder::*;
-use crate::document::*;
+use crate::document::Document;
 use crate::helper::build_rest::build_rest;
 use crate::keyword::{COMMA, WRITE_OPERATOR};
 use ruby_prism::MultiWriteNode;
 
-pub fn build_node(node: Option<&MultiWriteNode>) -> Doc {
+pub fn build_node(node: Option<&MultiWriteNode>) -> Document {
     let node = node.unwrap();
     let lefts = node.lefts();
     let rest = node.rest();

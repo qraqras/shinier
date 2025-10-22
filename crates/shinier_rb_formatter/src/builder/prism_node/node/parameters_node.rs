@@ -1,12 +1,12 @@
 use crate::builder::builder::*;
 use crate::builder::{Buildable, BuildableList};
-use crate::document::*;
+use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
 use ruby_prism::ParametersNode;
 
 const PARAMETERS_SEPARATOR: &str = ",";
 
-pub fn build_node(node: Option<&ParametersNode>) -> Doc {
+pub fn build_node(node: Option<&ParametersNode>) -> Document {
     match node {
         Some(node) => {
             let requireds = node.requireds();
@@ -21,11 +21,11 @@ pub fn build_node(node: Option<&ParametersNode>) -> Doc {
 
             group(array(&separate_docs(
                 &[
-                    requireds.build(separator.clone(), array),
-                    optionals.build(separator.clone(), array),
+                    requireds.build(separator.clone()),
+                    optionals.build(separator.clone()),
                     rest.build(),
-                    posts.build(separator.clone(), array),
-                    keywords.build(separator.clone(), array),
+                    posts.build(separator.clone()),
+                    keywords.build(separator.clone()),
                     keyword_rest.build(),
                     block.build(),
                 ],
