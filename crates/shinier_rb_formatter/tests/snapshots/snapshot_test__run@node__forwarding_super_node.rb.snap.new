@@ -1,0 +1,19 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/forwarding_super_node.rb
+---
+super 
+super { |, , | puts() }
+super { |, , | process()
+   }
+super { |, , | result = x.+()
+   }
+super { puts() }
+super { |, , | items.each{ |, , | puts() } }
+super { |, , | x.*() }.map()&:to_s
+result = if condition 
+  
+
+end

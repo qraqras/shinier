@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::doc::Doc;
+use crate::document::*;
 use crate::helper::build_write::build_write;
 use ruby_prism::LocalVariableWriteNode;
 

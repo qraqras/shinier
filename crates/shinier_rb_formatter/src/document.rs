@@ -6,6 +6,7 @@ pub enum Doc {
     IfBreak(IfBreak), //
     Indent(Indent),   //
     Line(Line),       //
+    None,             //
     String(String),   //
 }
 

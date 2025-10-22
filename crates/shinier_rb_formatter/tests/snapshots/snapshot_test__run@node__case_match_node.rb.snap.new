@@ -1,0 +1,28 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/case_match_node.rb
+---
+case true
+in false
+end
+case true
+in false
+  
+end
+case true
+in false
+  
+
+end
+case [true, false]
+in 
+  
+in 
+  
+in 
+  
+in 
+  
+end

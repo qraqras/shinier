@@ -1,5 +1,5 @@
 use crate::builder::{Buildable, BuildableList};
-use crate::doc::Doc;
+use crate::document::Doc;
 use ruby_prism::NodeList;
 
 impl<'a> BuildableList<'_> for NodeList<'_> {

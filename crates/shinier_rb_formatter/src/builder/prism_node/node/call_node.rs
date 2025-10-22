@@ -1,9 +1,10 @@
 use crate::builder::Buildable;
+use crate::builder::builder::*;
 use crate::builder::helper::separate_docs::separate_docs;
 use crate::builder::prism_node::node::{arguments_node, block_argument_node};
-use crate::doc::{Doc, group, indent, line, none, sequence, softline, space, text};
+use crate::document::*;
 use crate::helper::build_receiver::build_receiver;
-use ruby_prism::{CallNode, Node};
+use ruby_prism::CallNode;
 
 const OPEN_PAREN: &str = "(";
 const CLOSE_PAREN: &str = ")";
@@ -68,7 +69,7 @@ pub fn build_node(node: Option<&CallNode>) -> Doc {
         return doc_name;
     }
 
-    group(&[doc_name, doc_arguments, doc_block])
+    group(array(&[doc_name, doc_arguments, doc_block]))
 }
 
 fn build_name(node: &CallNode) -> Doc {
@@ -76,7 +77,7 @@ fn build_name(node: &CallNode) -> Doc {
     let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();
     let name = node.name();
-    sequence(&[
+    array(&[
         build_receiver(receiver.as_ref(), is_safe_navigation),
         name.build(),
     ])
@@ -90,16 +91,16 @@ fn build_arguments(node: &CallNode) -> Doc {
     let doc_block_argument = block_argument_node::build_node(block_argument.as_ref());
     match (arguments, block_argument) {
         (None, None) => none(),
-        _ => group(&[
-            text(OPEN_PAREN),
+        _ => group(array(&[
+            string(OPEN_PAREN),
             softline(),
-            indent(&separate_docs(
+            indent(array(&separate_docs(
                 &[doc_arguments, doc_block_argument],
-                sequence(&[text(ARGUMENTS_SEPARATOR), line()]),
-            )),
+                array(&[string(ARGUMENTS_SEPARATOR), line()]),
+            ))),
             softline(),
-            text(CLOSE_PAREN),
-        ]),
+            string(CLOSE_PAREN),
+        ])),
     }
 }
 

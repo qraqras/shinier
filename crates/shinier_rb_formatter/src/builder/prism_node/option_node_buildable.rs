@@ -1,5 +1,5 @@
 use crate::buildable::Buildable;
-use crate::doc::Doc;
+use crate::document::Doc;
 use ruby_prism::{
     ArgumentsNode, BlockArgumentNode, BlockNode, BlockParameterNode, ElseNode, EnsureNode,
     ParametersNode, RescueNode, StatementsNode,

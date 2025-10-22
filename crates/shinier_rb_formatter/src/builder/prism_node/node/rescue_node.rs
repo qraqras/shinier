@@ -1,5 +1,6 @@
+use crate::builder::builder::*;
 use crate::builder::{Buildable, BuildableList};
-use crate::doc::{Doc, fill, hardline, indent, line, none, sequence, space, text};
+use crate::document::*;
 use ruby_prism::RescueNode;
 
 const RESCUE_KEYWORD: &str = "rescue";
@@ -14,15 +15,15 @@ pub fn build_node(node: Option<&RescueNode>) -> Doc {
             let statements = node.statements();
             let subsequent = node.subsequent();
 
-            sequence(&[
-                text(RESCUE_KEYWORD),
+            array(&[
+                string(RESCUE_KEYWORD),
                 space(),
-                exceptions.build(sequence(&[text(EXCEPTIONS_SEPARATOR), line()]), fill),
+                exceptions.build(array(&[string(EXCEPTIONS_SEPARATOR), line()]), array),
                 match reference {
-                    Some(r) => sequence(&[space(), text(REFERENCE_ARROW), line(), r.build()]),
+                    Some(r) => array(&[space(), string(REFERENCE_ARROW), line(), r.build()]),
                     None => none(),
                 },
-                indent(&[statements.build_with(Some(hardline()), None)]),
+                indent(statements.build_with(Some(hardline()), None)),
                 subsequent.build_with(Some(hardline()), None),
             ])
         }

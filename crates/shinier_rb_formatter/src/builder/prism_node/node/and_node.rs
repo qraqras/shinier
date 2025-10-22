@@ -1,5 +1,6 @@
 use crate::builder::Buildable;
-use crate::doc::{Doc, indent, line, sequence, space, text};
+use crate::builder::builder::*;
+use crate::document::*;
 use crate::keyword::LOGICAL_AND;
 use ruby_prism::AndNode;
 
@@ -7,11 +8,11 @@ pub fn build_node(node: Option<&AndNode>) -> Doc {
     let node = node.unwrap();
     let left = node.left();
     let right = node.right();
-    sequence(&[
+    array(&[
         left.build(),
         space(),
-        text(LOGICAL_AND),
+        string(LOGICAL_AND),
         line(),
-        indent(&[right.build()]),
+        indent(array(&[right.build()])),
     ])
 }

@@ -17,10 +17,6 @@ pub fn reset_group_id() {
     GROUP_ID_NEXT.with(|next| next.set(0));
 }
 
-pub fn string<T: Into<String>>(string: T) -> Doc {
-    Doc::String(string.into())
-}
-
 pub fn array(contents: &[Doc]) -> Doc {
     Doc::Array(contents.to_vec())
 }
@@ -50,6 +46,10 @@ pub fn indent(contents: Doc) -> Doc {
     Doc::Indent(Indent {
         contents: Box::new(contents),
     })
+}
+
+pub fn none() -> Doc {
+    Doc::None
 }
 
 pub fn line() -> Doc {
@@ -82,4 +82,12 @@ pub fn softline() -> Doc {
         literal: false,
         soft: true,
     })
+}
+
+pub fn string<T: Into<String>>(string: T) -> Doc {
+    Doc::String(string.into())
+}
+
+pub fn space() -> Doc {
+    Doc::String(" ".to_string())
 }

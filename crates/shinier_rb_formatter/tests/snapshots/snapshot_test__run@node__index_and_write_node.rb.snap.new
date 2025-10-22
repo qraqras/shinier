@@ -1,0 +1,15 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/index_and_write_node.rb
+---
+array[] &&= value
+foo.bar[] &&= value
+hash[] &&= value
+matrix[] &&= value
+array&.[] &&= value
+foo&.bar[] &&= value
+array[] &&= value
+array[] &&= new_value
+matrix.[]()[] &&= value

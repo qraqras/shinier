@@ -1,6 +1,6 @@
 use crate::buildable::Buildable;
-use crate::doc::*;
-use crate::renderer::Renderer;
+use crate::document::*;
+use crate::renderer::print_doc_to_string;
 use ruby_prism::*;
 
 pub struct Printer {
@@ -29,9 +29,8 @@ impl Printer {
         println!("----doc_to_str----");
         const COLUMN_MAX: usize = 40;
         const INDENT_UNIT: &str = "  ";
-        let mut renderer = Renderer::new(INDENT_UNIT, COLUMN_MAX);
-        renderer.render(&doc);
-        println!("{}", renderer.output);
-        renderer.output
+        let output = print_doc_to_string(&doc, ());
+        println!("{}", output);
+        output
     }
 }

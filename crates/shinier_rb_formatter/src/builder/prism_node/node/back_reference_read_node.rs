@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::doc::Doc;
+use crate::document::*;
 use ruby_prism::BackReferenceReadNode;
 
 pub fn build_node(node: Option<&BackReferenceReadNode>) -> Doc {

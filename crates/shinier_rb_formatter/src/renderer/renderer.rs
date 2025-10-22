@@ -1,234 +1,319 @@
-use crate::doc::*;
+use crate::document::Doc;
+use std::collections::{HashMap, HashSet};
 
-pub struct Renderer {
-    pub column: usize,
-    pub is_flat: bool,
-    pub output: String,
-    group_stack: Vec<(usize, bool)>,
-    indent_level: usize,
-    indent_unit: String,
-    column_max: usize,
+#[derive(Clone, Copy, Debug)]
+struct Command<'a> {
+    ind: i32,
+    doc: &'a Doc,
+    mode: Mode,
 }
-impl Renderer {
-    pub fn new(indent_unit: &str, column_max: usize) -> Self {
-        Self {
-            column: 0,
-            is_flat: true,
-            output: String::new(),
-            group_stack: Vec::new(),
-            indent_unit: indent_unit.to_string(),
-            indent_level: 0,
-            column_max,
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum Mode {
+    Flat,
+    Break,
+}
+
+impl From<bool> for Mode {
+    fn from(value: bool) -> Self {
+        match value {
+            true => Mode::Break,
+            false => Mode::Flat,
         }
     }
-    pub fn render(&mut self, doc: &Doc) {
-        self.render_doc(doc);
-    }
+}
 
-    fn render_doc(&mut self, doc: &Doc) {
-        let previous_is_flat = self.is_flat;
+impl From<Mode> for bool {
+    fn from(mode: Mode) -> Self {
+        match mode {
+            Mode::Break => true,
+            Mode::Flat => false,
+        }
+    }
+}
+
+impl Doc {
+    fn as_cmd(&self, ind: i32, mode: Mode) -> Command {
+        Command {
+            ind,
+            doc: self,
+            mode,
+        }
+    }
+}
+
+pub fn get_string_width(string: &String) -> usize {
+    string.chars().count()
+}
+
+fn fits(
+    next: Command,
+    rest_commands: &[Command],
+    width: &mut i32,
+    _has_line_suffix: bool,
+    group_mode_map: &HashMap<usize, Mode>,
+    must_be_flat: bool,
+) -> bool {
+    if *width >= i32::MAX {
+        return true;
+    }
+    let mut rest_idx = rest_commands.len();
+    let mut cmds: Vec<Command<'_>> = Vec::from(&[next]);
+    while *width >= 0 {
+        if cmds.is_empty() {
+            if rest_idx == 0 {
+                return true;
+            }
+            rest_idx -= 1;
+            cmds.push(rest_commands[rest_idx]);
+            continue;
+        }
+        let Command { ind, doc, mode } = cmds.pop().unwrap();
         match doc {
-            Doc::BeginIndent(_begin_indent) => {
-                self.indent_level += 1;
+            Doc::Array(array) => {
+                for doc in array.iter().rev() {
+                    cmds.push(doc.as_cmd(ind, mode));
+                }
             }
-            Doc::EndIndent(_end_indent) => {
-                self.indent_level -= 1;
-            }
-            Doc::Fill(fill) => {
-                match &*fill.doc {
-                    Doc::Sequence(sequence) => {
-                        for ref doc in sequence.docs.iter() {
-                            self.is_flat = self.fits(doc);
-                            self.render_doc(doc);
-                        }
-                    }
-                    _ => {
-                        self.is_flat = self.fits(&fill.doc);
-                        self.render_doc(&fill.doc);
-                    }
-                };
-            }
+            Doc::BreakParent => {}
             Doc::Group(group) => {
-                // Prettier-style: check if group fits on current line
-                let can_fit = self.fits(&group.doc);
-                self.group_stack.push((group.id, can_fit));
-                self.is_flat = can_fit;
-                self.render_doc(&*group.doc);
-                self.group_stack.pop();
-            }
-            Doc::HardLine(_hard_line) => {
-                self.write_newline();
+                if must_be_flat && group.r#break {
+                    return false;
+                }
+                let group_mode = match group.r#break {
+                    true => Mode::Break,
+                    false => Mode::Flat,
+                };
+                let contents = if let Some(expanded_states) = &group.expanded_states
+                    && group_mode == Mode::Break
+                {
+                    expanded_states.first().unwrap()
+                } else {
+                    &group.contents
+                };
+                cmds.push(contents.as_cmd(ind, mode));
             }
             Doc::IfBreak(if_break) => {
-                let is_flat = self.is_flat_group(if_break.group_id);
-                if is_flat {
-                    self.render_doc(&*if_break.flat);
-                } else {
-                    self.render_doc(&*if_break.r#break);
-                }
+                let group_mode = match if_break.group_id {
+                    Some(group_id) => group_mode_map.get(&group_id).copied().unwrap_or(Mode::Flat),
+                    None => mode,
+                };
+                let contents = match group_mode {
+                    Mode::Break => &if_break.r#break,
+                    Mode::Flat => &if_break.flat,
+                };
+                cmds.push(contents.as_cmd(ind, mode));
             }
             Doc::Indent(indent) => {
-                return self.render_with_indent(&*indent.doc);
+                cmds.push(indent.contents.as_cmd(ind, mode));
             }
-            Doc::IndentIfBreak(indent_if_break) => {
-                let is_flat = self.is_flat_group(indent_if_break.group_id);
-                if is_flat {
-                    self.render_doc(&*indent_if_break.doc);
-                } else {
-                    self.render_with_indent(&*indent_if_break.doc);
+            Doc::Line(line) => {
+                if mode == Mode::Break || line.hard {
+                    return true;
+                }
+                if !line.soft {
+                    *width -= 1;
                 }
             }
-            Doc::Line(_line) => {
-                if self.is_flat {
-                    self.write_space();
-                } else {
-                    self.write_newline();
-                }
-            }
-            Doc::None(_none) => {}
-            Doc::Sequence(sequence) => {
-                for ref doc in sequence.docs.iter() {
-                    self.render_doc(doc);
-                }
-            }
-            Doc::Space(_space) => {
-                self.write_space();
-            }
-            Doc::SoftLine(_soft_line) => {
-                if !self.is_flat {
-                    self.write_newline();
-                }
-            }
-            Doc::Text(text) => {
-                self.write_text(&text.text);
+            Doc::None => {}
+            Doc::String(string) => {
+                *width -= get_string_width(string) as i32;
             }
         }
-        self.is_flat = previous_is_flat;
     }
-    fn render_with_indent(&mut self, doc: &Doc) {
-        let previous_is_flat = self.is_flat;
-        let previous_indent_level = self.indent_level;
-        self.indent_level += 1;
-        self.render_doc(doc);
-        self.indent_level = previous_indent_level;
-        self.is_flat = previous_is_flat;
-    }
-    fn write_text(&mut self, text: &str) {
-        self.write_indent();
-        self.output.push_str(text);
-        self.column += text.len();
-    }
-    fn write_space(&mut self) {
-        self.write_text(" ");
-    }
-    fn write_indent(&mut self) {
-        if self.column == 0 && self.indent_level > 0 {
-            let indent = self.indent_unit.repeat(self.indent_level);
-            self.output.push_str(indent.as_str());
-            self.column += indent.len();
-        }
-    }
-    fn write_newline(&mut self) {
-        self.output.push_str("\n");
-        self.column = 0;
-    }
-    fn fits(&self, doc: &Doc) -> bool {
-        let remaining = self.column_max.saturating_sub(self.column);
-        self.fits_impl(doc, self.column, remaining)
-    }
+    false
+}
 
-    fn fits_impl(&self, doc: &Doc, mut column: usize, mut remaining: usize) -> bool {
-        if remaining == 0 {
-            return false;
-        }
+pub fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
+    let width = 80;
+    let mut pos = 0;
+    let mut cmds = Vec::from(&[doc.as_cmd(0, Mode::Break)]);
+    let mut out = String::new();
+    let mut should_remeasure = false;
 
+    let mut group_mode_map = propagate_breaks(doc);
+
+    while let Some(Command { ind, doc, mode }) = cmds.pop() {
         match doc {
-            Doc::Text(text) => {
-                let len = text.text.len();
-                remaining >= len
+            Doc::Array(array) => {
+                for doc in array.iter().rev() {
+                    cmds.push(doc.as_cmd(ind, mode));
+                }
             }
-            Doc::Space(_) => remaining >= 1,
-            Doc::Line(_) => {
-                // Line becomes space in flat mode
-                remaining >= 1
+            Doc::BreakParent => {}
+            Doc::Group(group) => {
+                let effective_mode = group_mode_map
+                    .get(&group.id)
+                    .copied()
+                    .unwrap_or(Mode::from(group.r#break));
+                match mode {
+                    Mode::Flat => {
+                        if !should_remeasure {
+                            cmds.push(group.contents.as_cmd(ind, effective_mode));
+                        }
+                    }
+                    Mode::Break => {
+                        should_remeasure = false;
+                        let next = group.contents.as_cmd(ind, Mode::Flat);
+                        let mut rem = width - pos;
+                        let has_line_suffix = false;
+                        if effective_mode == Mode::Flat
+                            && fits(
+                                next,
+                                &cmds,
+                                &mut rem,
+                                has_line_suffix,
+                                &group_mode_map,
+                                false,
+                            )
+                        {
+                            cmds.push(next);
+                        } else {
+                            if let Some(expanded_states) = &group.expanded_states {
+                                let most_expanded = expanded_states.last().unwrap();
+                                if effective_mode == Mode::Break {
+                                    cmds.push(most_expanded.as_cmd(ind, Mode::Break));
+                                } else {
+                                    for (i, state) in expanded_states.iter().enumerate() {
+                                        if i >= expanded_states.len() {
+                                            cmds.push(most_expanded.as_cmd(ind, Mode::Break));
+                                            break;
+                                        } else {
+                                            let cmd = state.as_cmd(ind, Mode::Flat);
+                                            if fits(
+                                                cmd,
+                                                &cmds,
+                                                &mut rem,
+                                                has_line_suffix,
+                                                &group_mode_map,
+                                                false,
+                                            ) {
+                                                cmds.push(cmd);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                cmds.push(group.contents.as_cmd(ind, Mode::Break));
+                            }
+                        }
+                        group_mode_map.insert(group.id, cmds.last().unwrap().mode);
+                    }
+                }
             }
-            Doc::SoftLine(_) => {
-                // SoftLine becomes empty in flat mode
-                true
+            Doc::IfBreak(if_break) => {
+                let group_mode = if_break
+                    .group_id
+                    .and_then(|id| group_mode_map.get(&id).copied())
+                    .unwrap_or(mode);
+                let contents = match group_mode {
+                    Mode::Break => &if_break.r#break,
+                    Mode::Flat => &if_break.flat,
+                };
+                cmds.push(contents.as_cmd(ind, mode));
             }
-            Doc::HardLine(_) => {
-                // HardLine always forces break
-                false
+            Doc::Indent(indent) => {
+                cmds.push(indent.contents.as_cmd(ind + 1, mode));
+            }
+            Doc::Line(line) => match mode {
+                Mode::Flat => {
+                    if !line.hard {
+                        if !line.soft {
+                            out.push(' ');
+                            pos += 1;
+                        }
+                    } else {
+                        should_remeasure = true;
+                        if line.literal {
+                            out.push('\n');
+                            pos = 0;
+                        } else {
+                            out.push('\n');
+                            let indent_str = "  ".repeat(ind as usize);
+                            out.push_str(&indent_str);
+                            pos = indent_str.len() as i32;
+                        }
+                    }
+                }
+                Mode::Break => {
+                    if line.literal {
+                        out.push('\n');
+                        pos = 0;
+                    } else {
+                        out.push('\n');
+                        let indent_str = "  ".repeat(ind as usize);
+                        out.push_str(&indent_str);
+                        pos = indent_str.len() as i32;
+                    }
+                }
+            },
+            Doc::None => {}
+            Doc::String(string) => {
+                out.push_str(string);
+                pos += get_string_width(string) as i32;
+            }
+        }
+    }
+    out
+}
+
+fn propagate_breaks(doc: &Doc) -> HashMap<usize, Mode> {
+    let mut group_mode_map = HashMap::new();
+    fn visit(
+        doc: &Doc,
+        parent_stack: &mut Vec<usize>,
+        group_break_map: &mut HashMap<usize, Mode>,
+        visited: &mut HashSet<usize>,
+    ) {
+        match doc {
+            Doc::Array(array) => {
+                for doc in array {
+                    visit(doc, parent_stack, group_break_map, visited);
+                }
+            }
+            Doc::BreakParent => {
+                if let Some(&parent) = parent_stack.last() {
+                    group_break_map.insert(parent, Mode::Break);
+                }
             }
             Doc::Group(group) => {
-                // Groups are measured in flat mode
-                self.fits_impl(&group.doc, column, remaining)
-            }
-            Doc::Sequence(sequence) => {
-                for doc in &sequence.docs {
-                    if !self.fits_impl(doc, column, remaining) {
-                        return false;
-                    }
-                    // Update column and remaining for next element
-                    let width = self.measure_flat(doc);
-                    column = column.saturating_add(width);
-                    remaining = remaining.saturating_sub(width);
-                    if remaining == 0 {
-                        return false;
-                    }
+                if !visited.insert(group.id) {
+                    return;
                 }
-                true
-            }
-            Doc::Indent(inner) => self.fits_impl(&inner.doc, column, remaining),
-            Doc::IndentIfBreak(inner) => self.fits_impl(&inner.doc, column, remaining),
-            Doc::Fill(fill) => self.fits_impl(&fill.doc, column, remaining),
-            Doc::IfBreak(if_break) => {
-                // Use flat version when checking if it fits
-                self.fits_impl(&if_break.flat, column, remaining)
-            }
-            Doc::BeginIndent(_) | Doc::EndIndent(_) | Doc::None(_) => true,
-        }
-    }
-
-    fn measure_flat(&self, doc: &Doc) -> usize {
-        match doc {
-            Doc::Text(text) => text.text.len(),
-            Doc::Space(_) => 1,
-            Doc::Line(_) => 1,
-            Doc::SoftLine(_) => 0,
-            Doc::HardLine(_) => 0,
-            Doc::Group(group) => self.measure_flat(&group.doc),
-            Doc::Sequence(sequence) => {
-                let mut total = 0;
-                for doc in &sequence.docs {
-                    total += self.measure_flat(doc);
-                }
-                total
-            }
-            Doc::Indent(inner) => self.measure_flat(&inner.doc),
-            Doc::IndentIfBreak(inner) => self.measure_flat(&inner.doc),
-            Doc::Fill(fill) => self.measure_flat(&fill.doc),
-            Doc::IfBreak(if_break) => self.measure_flat(&if_break.flat),
-            Doc::BeginIndent(_) | Doc::EndIndent(_) | Doc::None(_) => 0,
-        }
-    }
-    fn is_flat_group(&self, group_id: Option<usize>) -> bool {
-        match group_id {
-            Some(group_id) => {
-                for group in self.group_stack.iter() {
-                    if group.0 == group_id {
-                        return group.1;
+                parent_stack.push(group.id);
+                group_break_map.insert(group.id, Mode::from(group.r#break));
+                if let Some(expanded_states) = &group.expanded_states {
+                    for state in expanded_states {
+                        visit(state, parent_stack, group_break_map, visited);
                     }
-                }
-                true
-            }
-            None => {
-                if let Some((_, is_flat)) = self.group_stack.last() {
-                    *is_flat
                 } else {
-                    true
+                    visit(&group.contents, parent_stack, group_break_map, visited);
+                }
+                parent_stack.pop();
+                if group.r#break {
+                    if let Some(&parent_id) = parent_stack.last() {
+                        group_break_map.insert(parent_id, Mode::Break);
+                    }
                 }
             }
+            Doc::IfBreak(if_break) => {
+                visit(&if_break.r#break, parent_stack, group_break_map, visited);
+                visit(&if_break.flat, parent_stack, group_break_map, visited);
+            }
+            Doc::Indent(indent) => {
+                visit(&indent.contents, parent_stack, group_break_map, visited);
+            }
+            Doc::Line(_line) => {}
+            Doc::None => {}
+            Doc::String(_string) => {}
         }
     }
+    visit(
+        doc,
+        &mut Vec::new(),
+        &mut group_mode_map,
+        &mut HashSet::new(),
+    );
+    group_mode_map
 }

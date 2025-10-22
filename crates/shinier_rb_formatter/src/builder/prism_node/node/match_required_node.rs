@@ -1,5 +1,6 @@
 use crate::builder::Buildable;
-use crate::doc::{Doc, group, indent, line, space, text};
+use crate::builder::builder::*;
+use crate::document::*;
 use ruby_prism::*;
 
 const MATCH_KEYWORD: &str = "=>";
@@ -8,11 +9,11 @@ pub fn build_node(node: Option<&MatchRequiredNode>) -> Doc {
     let node = node.unwrap();
     let value = node.value();
     let pattern = node.pattern();
-    group(&[
+    group(array(&[
         value.build(),
         space(),
-        text(MATCH_KEYWORD),
+        string(MATCH_KEYWORD),
         line(),
-        indent(&[pattern.build()]),
-    ])
+        indent(pattern.build()),
+    ]))
 }

@@ -1,5 +1,6 @@
 use crate::builder::Buildable;
-use crate::doc::{Doc, sequence};
+use crate::builder::builder::*;
+use crate::document::*;
 use crate::helper::build_receiver::build_receiver;
 use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
@@ -12,7 +13,7 @@ pub fn build_node(node: Option<&CallAndWriteNode>) -> Doc {
     let read_name = node.read_name();
     let value = node.value();
     build_logical_write(
-        sequence(&[
+        array(&[
             build_receiver(receiver.as_ref(), is_safe_navigation),
             read_name.build(),
         ]),

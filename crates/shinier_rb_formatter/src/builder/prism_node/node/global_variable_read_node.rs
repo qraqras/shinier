@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::doc::Doc;
+use crate::document::*;
 use ruby_prism::GlobalVariableReadNode;
 
 pub fn build_node(node: Option<&GlobalVariableReadNode>) -> Doc {

@@ -1,4 +1,5 @@
-use crate::doc::{Doc, sequence, text};
+use crate::builder::builder::*;
+use crate::document::*;
 use ruby_prism::NumberedReferenceReadNode;
 
 const REFERENCE_PREFIX: &str = "$";
@@ -6,5 +7,5 @@ const REFERENCE_PREFIX: &str = "$";
 pub fn build_node(node: Option<&NumberedReferenceReadNode>) -> Doc {
     let node = node.unwrap();
     let number = node.number();
-    sequence(&[text(REFERENCE_PREFIX), text(number.to_string())])
+    array(&[string(REFERENCE_PREFIX), string(number.to_string())])
 }

@@ -1,5 +1,6 @@
+use crate::builder::builder::*;
 use crate::builder::{Buildable, BuildableList};
-use crate::doc::{Doc, group, line, none, sequence, text};
+use crate::document::*;
 use crate::helper::separate_docs::separate_docs;
 use ruby_prism::ParametersNode;
 
@@ -16,20 +17,20 @@ pub fn build_node(node: Option<&ParametersNode>) -> Doc {
             let keyword_rest = node.keyword_rest();
             let block = node.block();
 
-            let separator = sequence(&[text(PARAMETERS_SEPARATOR), line()]);
+            let separator = array(&[string(PARAMETERS_SEPARATOR), line()]);
 
-            group(&separate_docs(
+            group(array(&separate_docs(
                 &[
-                    requireds.build(separator.clone(), sequence),
-                    optionals.build(separator.clone(), sequence),
+                    requireds.build(separator.clone(), array),
+                    optionals.build(separator.clone(), array),
                     rest.build(),
-                    posts.build(separator.clone(), sequence),
-                    keywords.build(separator.clone(), sequence),
+                    posts.build(separator.clone(), array),
+                    keywords.build(separator.clone(), array),
                     keyword_rest.build(),
                     block.build(),
                 ],
                 separator,
-            ))
+            )))
         }
         None => none(),
     }

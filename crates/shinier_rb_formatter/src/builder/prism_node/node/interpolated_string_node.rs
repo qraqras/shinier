@@ -1,5 +1,6 @@
 use crate::buildable::BuildableList;
-use crate::doc::{Doc, none, sequence, text};
+use crate::builder::builder::*;
+use crate::document::*;
 use crate::keyword::DOUBLE_QUOTE;
 use ruby_prism::InterpolatedStringNode;
 
@@ -8,8 +9,8 @@ pub fn build_node(node: Option<&InterpolatedStringNode>) -> Doc {
     let parts = node.parts();
     parts.build_with(
         none(),
-        sequence,
-        Some(text(DOUBLE_QUOTE)),
-        Some(text(DOUBLE_QUOTE)),
+        array,
+        Some(string(DOUBLE_QUOTE)),
+        Some(string(DOUBLE_QUOTE)),
     )
 }

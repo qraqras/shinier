@@ -4,34 +4,23 @@ assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/parameters_node.rb
 ---
-def a(b, c, d)
+def a(, , )
 end
-def required_only(x, y, z)
+def required_only(, , )
 end
-def with_optionals(
-  a, b = 1, c = "default"
-)
+def with_optionals(, , )
 end
-def with_rest(*args)
+def with_rest(, )
 end
-def with_posts(a, *rest, b)
+def with_posts(, )
 end
-def with_keywords(a:, b: 2)
+def with_keywords(, , )
 end
-def with_keyword_rest(**kwargs)
+def with_keyword_rest(, )
 end
-def with_block(&block)
+def with_block(, )
 end
-def all_params(
-  req,
-  opt = 1,
-  *rest,
-  post,
-  kw:,
-  kw_opt: 3,
-  **kw_rest,
-  &blk
-)
+def all_params()
 end
 def no_params
 end

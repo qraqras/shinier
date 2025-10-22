@@ -1,14 +1,15 @@
+use crate::builder::builder::*;
 use crate::builder::{Buildable, BuildableList};
-use crate::doc::{Doc, sequence};
+use crate::document::Doc;
 use crate::helper::separate_docs::separate_docs;
 use ruby_prism::{Node, NodeList};
 
 pub fn build_rest(lefts: NodeList, rest: Option<Node>, rights: NodeList, separator: &Doc) -> Doc {
-    sequence(&separate_docs(
+    array(&separate_docs(
         &[
-            lefts.build(separator.clone(), sequence),
+            lefts.build(separator.clone(), array),
             rest.build(),
-            rights.build(separator.clone(), sequence),
+            rights.build(separator.clone(), array),
         ],
         separator.clone(),
     ))
