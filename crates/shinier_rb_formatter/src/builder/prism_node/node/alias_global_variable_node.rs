@@ -10,7 +10,11 @@ pub fn build_node(node: Option<&AliasGlobalVariableNode>) -> Doc {
     let new_name = node.new_name();
     group(array(&[
         string(ALIAS),
-        line(),
-        indent(array(&[old_name.build(), space(), new_name.build()])),
+        indent(array(&[
+            line(),
+            old_name.build(),
+            space(),
+            new_name.build(),
+        ])),
     ]))
 }

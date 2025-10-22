@@ -125,7 +125,7 @@ fn fits(
 }
 
 pub fn print_doc_to_string(doc: &Doc, _options: ()) -> String {
-    let width = 80;
+    let width = 40; // TODO: オプション化
     let mut pos = 0;
     let mut cmds = Vec::from(&[doc.as_cmd(0, Mode::Break)]);
     let mut out = String::new();

@@ -15,17 +15,19 @@ pub fn build_node(node: Option<&RescueNode>) -> Doc {
             let statements = node.statements();
             let subsequent = node.subsequent();
 
-            array(&[
-                string(RESCUE_KEYWORD),
-                space(),
-                exceptions.build(array(&[string(EXCEPTIONS_SEPARATOR), line()]), array),
-                match reference {
-                    Some(r) => array(&[space(), string(REFERENCE_ARROW), line(), r.build()]),
-                    None => none(),
-                },
+            group(array(&[
+                group(array(&[
+                    string(RESCUE_KEYWORD),
+                    space(),
+                    exceptions.build(array(&[string(EXCEPTIONS_SEPARATOR), line()]), array),
+                    match reference {
+                        Some(r) => array(&[space(), string(REFERENCE_ARROW), line(), r.build()]),
+                        None => none(),
+                    },
+                ])),
                 indent(statements.build_with(Some(hardline()), None)),
                 subsequent.build_with(Some(hardline()), None),
-            ])
+            ]))
         }
         None => none(),
     }

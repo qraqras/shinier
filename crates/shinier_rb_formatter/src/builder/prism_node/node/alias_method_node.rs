@@ -11,8 +11,8 @@ pub fn build_node(node: Option<&AliasMethodNode>) -> Doc {
 
     group(array(&[
         string(ALIAS),
-        line(),
         indent(array(&[
+            line(),
             build_symbol_without_colon(&new_name),
             space(),
             build_symbol_without_colon(&old_name),

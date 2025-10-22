@@ -13,7 +13,6 @@ pub fn build_node(node: Option<&MatchRequiredNode>) -> Doc {
         value.build(),
         space(),
         string(MATCH_KEYWORD),
-        line(),
-        indent(pattern.build()),
+        indent(array(&[line(), pattern.build()])),
     ]))
 }

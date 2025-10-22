@@ -7,7 +7,8 @@ pub fn build_write(name: Doc, value: Doc) -> Doc {
         name,
         space(),
         string(WRITE_OPERATOR),
-        group(array(&[line(), value])),
+        space(),
+        value,
     ]))
 }
 

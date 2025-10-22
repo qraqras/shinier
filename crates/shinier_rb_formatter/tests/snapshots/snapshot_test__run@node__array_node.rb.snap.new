@@ -1,9 +1,0 @@
----
-source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
-expression: output
-input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
----
-foo = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]
-bar = [9, *foo, 9000]
-baz = []

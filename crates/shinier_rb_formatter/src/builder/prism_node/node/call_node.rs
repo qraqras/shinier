@@ -77,10 +77,13 @@ fn build_name(node: &CallNode) -> Doc {
     let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();
     let name = node.name();
-    array(&[
-        build_receiver(receiver.as_ref(), is_safe_navigation),
-        name.build(),
-    ])
+    match receiver {
+        Some(_) => array(&[
+            build_receiver(receiver.as_ref(), is_safe_navigation),
+            name.build(),
+        ]),
+        None => name.build(),
+    }
 }
 
 fn build_arguments(node: &CallNode) -> Doc {
@@ -93,11 +96,13 @@ fn build_arguments(node: &CallNode) -> Doc {
         (None, None) => none(),
         _ => group(array(&[
             string(OPEN_PAREN),
-            softline(),
-            indent(array(&separate_docs(
-                &[doc_arguments, doc_block_argument],
-                array(&[string(ARGUMENTS_SEPARATOR), line()]),
-            ))),
+            indent(array(&[
+                softline(),
+                array(&separate_docs(
+                    &[doc_arguments, doc_block_argument],
+                    array(&[string(ARGUMENTS_SEPARATOR), line()]),
+                )),
+            ])),
             softline(),
             string(CLOSE_PAREN),
         ])),

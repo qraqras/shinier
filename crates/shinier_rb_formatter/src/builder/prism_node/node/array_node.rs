@@ -12,8 +12,7 @@ pub fn build_node(node: Option<&ArrayNode>) -> Doc {
     let separator = array(&[string(COMMA), line()]);
     group(array(&[
         opening_loc.build_or(string(BRACKETS.0)),
-        softline(),
-        indent(array(&[elements.build(separator, array)])),
+        indent(array(&[softline(), elements.build(separator, array)])),
         softline(),
         closing_loc.build_or(string(BRACKETS.1)),
     ]))

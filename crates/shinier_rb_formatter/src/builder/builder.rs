@@ -61,19 +61,25 @@ pub fn line() -> Doc {
 }
 
 pub fn hardline() -> Doc {
-    Doc::Line(Line {
-        hard: true,
-        literal: false,
-        soft: false,
-    })
+    array(&[
+        Doc::Line(Line {
+            hard: true,
+            literal: false,
+            soft: false,
+        }),
+        Doc::BreakParent,
+    ])
 }
 
 pub fn literalline() -> Doc {
-    Doc::Line(Line {
-        hard: true,
-        literal: true,
-        soft: false,
-    })
+    array(&[
+        Doc::Line(Line {
+            hard: true,
+            literal: true,
+            soft: false,
+        }),
+        Doc::BreakParent,
+    ])
 }
 
 pub fn softline() -> Doc {
