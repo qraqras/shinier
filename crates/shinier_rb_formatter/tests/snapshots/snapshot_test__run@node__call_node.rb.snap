@@ -71,10 +71,7 @@ foo(bar, &baz)&baz
 foo{ puts("x") }
 foo{ |x| x.*(2) }
 foo(bar){ |a, b| p([a, b]) }
-foo{
-  |not implemented: "ruby_prism::bindings::MultiTargetNode"|
-  p(a, b)
-}
+foo{ |(a, b)| p(a, b) }
 foo.bar{ |v| v }
 foo&.bar{ |v| v }
 foo(&proc_obj)&proc_obj

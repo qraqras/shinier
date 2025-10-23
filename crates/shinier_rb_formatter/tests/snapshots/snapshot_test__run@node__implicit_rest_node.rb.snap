@@ -1,0 +1,10 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/implicit_rest_node.rb
+---
+foo{ |bar| }
+foo in [bar]
+for (foo) in bar end
+foo = bar

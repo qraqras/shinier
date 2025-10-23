@@ -1,22 +1,19 @@
 use crate::builder::BuildableList;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, indent, line, string};
 use crate::document::Document;
+use crate::keyword::{BRACES, COMMA};
 use ruby_prism::HashNode;
-
-const OPEN_DELIMITER: &str = "{";
-const CLOSE_DELIMITER: &str = "}";
-const SEPARATOR: &str = ",";
 
 pub fn build_node(node: Option<&HashNode>) -> Document {
     let node = node.unwrap();
     let elements = node.elements();
     group(array(&[
-        string(OPEN_DELIMITER),
+        string(BRACES.0),
         indent(array(&[
             line(),
-            elements.build(array(&[string(SEPARATOR), line()])),
+            elements.build(array(&[string(COMMA), line()])),
         ])),
         line(),
-        string(CLOSE_DELIMITER),
+        string(BRACES.1),
     ]))
 }

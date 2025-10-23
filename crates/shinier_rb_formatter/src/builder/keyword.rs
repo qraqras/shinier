@@ -27,6 +27,7 @@ pub const FOR: &str = "for";
 pub const HASH: &str = "#";
 
 pub const IF: &str = "if";
+pub const IMAGINARY: &str = "i";
 pub const IN: &str = "in";
 pub const INHERITES: &str = "<";
 pub const LOGICAL_AND: &str = "&&";

@@ -1,7 +1,5 @@
 # TODO
 
-- [ ] groupを内側から展開するように修正する
-
 - [ x ] alias_global_variable_node.rs
 - [ x ] alias_method_node.rs
 - [ x ] alternation_pattern_node.rs
@@ -60,23 +58,23 @@
 - [ x ] forwarding_arguments_node.rs
 - [ x ] forwarding_parameter_node.rs
 - [ x ] forwarding_super_node.rs
-- [ ] global_variable_and_write_node.rs
-- [ ] global_variable_operator_write_node.rs
-- [ ] global_variable_or_write_node.rs
-- [ ] global_variable_read_node.rs
-- [ ] global_variable_target_node.rs
-- [ ] global_variable_write_node.rs
-- [ ] hash_node.rs
-- [ ] hash_pattern_node.rs
-- [ ] if_node.rs
-- [ ] imaginary_node.rs
-- [ ] implicit_node.rs
-- [ ] implicit_rest_node.rs
-- [ ] in_node.rs
-- [ ] index_and_write_node.rs
-- [ ] index_operator_write_node.rs
-- [ ] index_or_write_node.rs
-- [ ] index_target_node.rs
+- [ x ] global_variable_and_write_node.rs
+- [ x ] global_variable_operator_write_node.rs
+- [ x ] global_variable_or_write_node.rs
+- [ x ] global_variable_read_node.rs
+- [ x ] global_variable_target_node.rs
+- [ x ] global_variable_write_node.rs
+- [ x ] hash_node.rs
+- [ x ] hash_pattern_node.rs
+- [ x ] if_node.rs
+- [ x ] imaginary_node.rs
+- [ x ] implicit_node.rs
+- [ x ] implicit_rest_node.rs
+- [ x ] in_node.rs
+- [ x ] index_and_write_node.rs
+- [ x ] index_operator_write_node.rs
+- [ x ] index_or_write_node.rs
+- [  ] index_target_node.rs
 - [ ] instance_variable_and_write_node.rs
 - [ ] instance_variable_operator_write_node.rs
 - [ ] instance_variable_or_write_node.rs

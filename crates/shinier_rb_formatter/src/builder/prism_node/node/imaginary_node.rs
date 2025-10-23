@@ -1,8 +1,11 @@
+use crate::buildable::Buildable;
+use crate::builder::builder::{array, string};
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use crate::keyword::IMAGINARY;
+use ruby_prism::ImaginaryNode;
 
 pub fn build_node(node: Option<&ImaginaryNode>) -> Document {
     let node = node.unwrap();
-    return string(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let numeric = node.numeric();
+    array(&[numeric.build(), string(IMAGINARY)])
 }

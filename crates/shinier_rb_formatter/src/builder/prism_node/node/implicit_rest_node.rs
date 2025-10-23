@@ -1,11 +1,7 @@
-use crate::builder::builder::*;
+use crate::builder::builder::none;
 use crate::document::Document;
-use ruby_prism::*;
+use ruby_prism::ImplicitRestNode;
 
-pub fn build_node(node: Option<&ImplicitRestNode>) -> Document {
-    let node = node.unwrap();
-    return string(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+pub fn build_node(_node: Option<&ImplicitRestNode>) -> Document {
+    none()
 }

@@ -28,7 +28,7 @@ def method_with_locals
   another_var = "hello"
 end
 def complex_method(x)
-  if x.>(0) 
+  if x.>(0)
     not implemented: "ruby_prism::bindings::ReturnNode"
   else
     raise("negative")

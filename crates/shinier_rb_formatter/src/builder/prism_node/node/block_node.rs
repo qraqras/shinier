@@ -12,8 +12,8 @@ pub fn build_node(node: Option<&BlockNode>) -> Document {
             group(array(&[
                 string(BRACES.0),
                 indent(array(&[
-                    parameters.build_with(Some(line()), None),
-                    body.build_with(Some(line()), None),
+                    group(parameters.build_with(Some(line()), None)),
+                    group(body.build_with(Some(line()), None)),
                 ])),
                 line(),
                 string(BRACES.1),
