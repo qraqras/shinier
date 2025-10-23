@@ -74,19 +74,19 @@
 - [ x ] index_and_write_node.rs
 - [ x ] index_operator_write_node.rs
 - [ x ] index_or_write_node.rs
-- [  ] index_target_node.rs
-- [ ] instance_variable_and_write_node.rs
-- [ ] instance_variable_operator_write_node.rs
-- [ ] instance_variable_or_write_node.rs
-- [ ] instance_variable_read_node.rs
-- [ ] instance_variable_target_node.rs
-- [ ] instance_variable_write_node.rs
-- [ ] integer_node.rs
-- [ ] interpolated_match_last_line_node.rs
-- [ ] interpolated_regular_expression_node.rs
-- [ ] interpolated_string_node.rs
-- [ ] interpolated_symbol_node.rs
-- [ ] interpolated_x_string_node.rs
+- [ x ] index_target_node.rs
+- [ x ] instance_variable_and_write_node.rs
+- [ x ] instance_variable_operator_write_node.rs
+- [ x ] instance_variable_or_write_node.rs
+- [ x ] instance_variable_read_node.rs
+- [ x ] instance_variable_target_node.rs
+- [ x ] instance_variable_write_node.rs
+- [ x ] integer_node.rs
+- [ x ] interpolated_match_last_line_node.rs
+- [ x ] interpolated_regular_expression_node.rs
+- [ x ] interpolated_string_node.rs
+- [ x ] interpolated_symbol_node.rs
+- [ x ] interpolated_x_string_node.rs
 - [ ] it_local_variable_read_node.rs
 - [ ] it_parameters_node.rs
 - [ ] keyword_hash_node.rs

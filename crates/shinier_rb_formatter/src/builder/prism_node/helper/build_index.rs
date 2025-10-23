@@ -1,24 +1,15 @@
 use crate::buildable::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, indent, none, softline, string};
 use crate::document::Document;
-use crate::keyword::{BRACKETS, SAFE_NAVIGATION_OPERATOR};
+use crate::keyword::BRACKETS;
 use ruby_prism::Node;
 
-pub fn build_index(
-    receiver_node: Option<&Node>,
-    arguments: &[Document],
-    is_safe_navigation: bool,
-) -> Document {
+pub fn build_index(receiver_node: Option<&Node>, arguments: &[Document]) -> Document {
     match receiver_node {
-        Some(node) => group(array(&[
-            node.build(),
+        Some(receiver) => group(array(&[
+            receiver.build(),
             string(BRACKETS.0),
-            softline(),
-            match is_safe_navigation {
-                true => string(SAFE_NAVIGATION_OPERATOR),
-                false => none(),
-            },
-            indent(array(arguments)),
+            indent(array(&[softline(), array(arguments)])),
             softline(),
             string(BRACKETS.1),
         ])),

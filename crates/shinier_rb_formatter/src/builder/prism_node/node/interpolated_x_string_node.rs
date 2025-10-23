@@ -1,8 +1,11 @@
+use crate::buildable::BuildableList;
+use crate::builder::builder::{group, none, string};
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use crate::keyword::BACK_QUOTE;
+use ruby_prism::InterpolatedXStringNode;
 
 pub fn build_node(node: Option<&InterpolatedXStringNode>) -> Document {
     let node = node.unwrap();
-    return string(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let parts = node.parts();
+    group(parts.build_with(none(), Some(string(BACK_QUOTE)), Some(string(BACK_QUOTE))))
 }

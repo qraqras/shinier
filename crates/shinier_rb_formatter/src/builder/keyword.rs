@@ -1,5 +1,6 @@
 pub const ALIAS: &str = "alias";
 pub const ALTERNATION: &str = "|";
+pub const BACK_QUOTE: &str = "`";
 pub const BEGIN: &str = "begin";
 pub const BRACES: (&str, &str) = ("{", "}");
 pub const BRACKETS: (&str, &str) = ("[", "]");
@@ -38,6 +39,7 @@ pub const PROC_AND: &str = "&";
 pub const ROCKET: &str = "=>";
 pub const SAFE_NAVIGATION_OPERATOR: &str = "&.";
 pub const SEMI_COLON: &str = ";";
+pub const SLASH: &str = "/";
 pub const SPLAT: &str = "**";
 pub const SUPER: &str = "super";
 pub const THEN: &str = "then";

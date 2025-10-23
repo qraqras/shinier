@@ -1,8 +1,11 @@
+use crate::buildable::BuildableList;
+use crate::builder::builder::{group, none, string};
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use crate::keyword::SLASH;
+use ruby_prism::InterpolatedRegularExpressionNode;
 
 pub fn build_node(node: Option<&InterpolatedRegularExpressionNode>) -> Document {
     let node = node.unwrap();
-    return string(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let parts = node.parts();
+    group(parts.build_with(none(), Some(string(SLASH)), Some(string(SLASH))))
 }

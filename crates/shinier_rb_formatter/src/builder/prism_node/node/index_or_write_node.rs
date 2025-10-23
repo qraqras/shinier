@@ -9,7 +9,6 @@ use ruby_prism::IndexOrWriteNode;
 
 pub fn build_node(node: Option<&IndexOrWriteNode>) -> Document {
     let node = node.unwrap();
-    let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();
     let arguments = node.arguments();
     let block = node.block();
@@ -21,7 +20,6 @@ pub fn build_node(node: Option<&IndexOrWriteNode>) -> Document {
             &[arguments.build(), block.build()],
             array(&[string(COMMA), line()]),
         ),
-        is_safe_navigation,
     )]);
     build_logical_write(name, value.build(), LogicalOperator::Or)
 }
