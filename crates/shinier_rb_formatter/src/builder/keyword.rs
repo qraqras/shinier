@@ -1,5 +1,6 @@
 pub const ALIAS: &str = "alias";
 pub const ALTERNATION: &str = "|";
+pub const ARROW: &str = "->";
 pub const BACK_QUOTE: &str = "`";
 pub const BEGIN: &str = "begin";
 pub const BRACES: (&str, &str) = ("{", "}");
@@ -31,6 +32,7 @@ pub const IF: &str = "if";
 pub const IMAGINARY: &str = "i";
 pub const IN: &str = "in";
 pub const INHERITES: &str = "<";
+pub const IT: &str = "it";
 pub const LOGICAL_AND: &str = "&&";
 pub const LOGICAL_OR: &str = "||";
 pub const PARENTHESES: (&str, &str) = ("(", ")");

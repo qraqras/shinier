@@ -49,6 +49,7 @@ pub trait BuildableList<'sh> {
     fn build_or(&self, _separator: Document, _default: Document) -> Document {
         unimplemented!("only implemented for Option<T>")
     }
+    fn is_empty(&self) -> bool;
 }
 
 impl<'sh, T: BuildableList<'sh>> BuildableList<'sh> for Option<T> {
@@ -73,6 +74,12 @@ impl<'sh, T: BuildableList<'sh>> BuildableList<'sh> for Option<T> {
         match self {
             Some(s) => s.build(separator),
             None => default,
+        }
+    }
+    fn is_empty(&self) -> bool {
+        match self {
+            Some(s) => s.is_empty(),
+            None => true,
         }
     }
 }

@@ -1,0 +1,44 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/lambda_node.rb
+---
+->(value) { value.*(2) }
+-> { puts("no params") }
+->(
+  a,
+  b,
+  c,
+  d,
+  e,
+  f,
+  g,
+  h,
+  i,
+  j,
+  k,
+  l,
+  m,
+  n,
+  o,
+  p,
+  q,
+  r,
+  s,
+  t,
+  u,
+  v,
+  w,
+  x,
+  y,
+  z
+) {
+  puts(a)
+  puts(b)
+  puts(c)
+  puts(d)
+  puts(e)
+  puts(f)
+  puts(g)
+}

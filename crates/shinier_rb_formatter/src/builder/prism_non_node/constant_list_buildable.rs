@@ -23,4 +23,7 @@ impl<'a> BuildableList<'_> for ConstantList<'_> {
         }
         array(&vec)
     }
+    fn is_empty(&self) -> bool {
+        self.iter().next().is_none()
+    }
 }

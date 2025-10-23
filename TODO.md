@@ -87,7 +87,7 @@
 - [ x ] interpolated_string_node.rs
 - [ x ] interpolated_symbol_node.rs
 - [ x ] interpolated_x_string_node.rs
-- [ ] it_local_variable_read_node.rs
+- [ x ] it_local_variable_read_node.rs
 - [ ] it_parameters_node.rs
 - [ ] keyword_hash_node.rs
 - [ ] keyword_rest_parameter_node.rs
