@@ -64,3 +64,29 @@ impl LogicalOperator {
         }
     }
 }
+
+pub enum Flag {
+    IgnoreCase,
+    Extended,
+    MultiLine,
+    Once,
+    EucJp,
+    Ascii8bit,
+    Windows31j,
+    Utf8,
+}
+
+impl Flag {
+    pub const fn as_char(&self) -> char {
+        match self {
+            Self::IgnoreCase => 'i',
+            Self::Extended => 'x',
+            Self::MultiLine => 'm',
+            Self::Once => 'o',
+            Self::EucJp => 'e',
+            Self::Ascii8bit => 'n',
+            Self::Windows31j => 's',
+            Self::Utf8 => 'u',
+        }
+    }
+}

@@ -1,8 +1,10 @@
+use crate::buildable::Buildable;
+use crate::builder::builder::group;
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use ruby_prism::MatchWriteNode;
 
 pub fn build_node(node: Option<&MatchWriteNode>) -> Document {
     let node = node.unwrap();
-    return string(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let call = node.call();
+    group(call.as_node().build())
 }

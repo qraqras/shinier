@@ -88,20 +88,20 @@
 - [ x ] interpolated_symbol_node.rs
 - [ x ] interpolated_x_string_node.rs
 - [ x ] it_local_variable_read_node.rs
-- [ ] it_parameters_node.rs
-- [ ] keyword_hash_node.rs
-- [ ] keyword_rest_parameter_node.rs
-- [ ] lambda_node.rs
-- [ ] local_variable_and_write_node.rs
-- [ ] local_variable_operator_write_node.rs
-- [ ] local_variable_or_write_node.rs
-- [ ] local_variable_read_node.rs
-- [ ] local_variable_target_node.rs
-- [ ] local_variable_write_node.rs
-- [ ] match_last_line_node.rs
-- [ ] match_predicate_node.rs
-- [ ] match_required_node.rs
-- [ ] match_write_node.rs
+- [ x ] it_parameters_node.rs
+- [ x ] keyword_hash_node.rs
+- [ x ] keyword_rest_parameter_node.rs
+- [ x ] lambda_node.rs
+- [ x ] local_variable_and_write_node.rs
+- [ x ] local_variable_operator_write_node.rs
+- [ x ] local_variable_or_write_node.rs
+- [ x ] local_variable_read_node.rs
+- [ x ] local_variable_target_node.rs
+- [ x ] local_variable_write_node.rs
+- [ x ] match_last_line_node.rs
+- [ x ] match_predicate_node.rs
+- [ x ] match_required_node.rs
+- [ x ] match_write_node.rs
 - [ ] missing_node.rs
 - [ ] mod.rs
 - [ ] module_node.rs

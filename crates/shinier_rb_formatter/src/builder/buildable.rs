@@ -93,3 +93,10 @@ impl<'sh> Buildable<'sh> for &[u8] {
         }
     }
 }
+
+// u16
+impl<'sh> Buildable<'sh> for u16 {
+    fn build(&self) -> Document {
+        string(self.to_string())
+    }
+}
