@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::{array, line, space, string};
+use crate::builder::builder::{array, indent, line, space, string};
 use crate::document::Document;
 use crate::keyword::ALTERNATION;
 use ruby_prism::AlternationPatternNode;
@@ -12,7 +12,6 @@ pub fn build_node(node: Option<&AlternationPatternNode>) -> Document {
         left.build(),
         space(),
         string(ALTERNATION),
-        line(),
-        right.build(),
+        indent(array(&[line(), right.build()])),
     ])
 }

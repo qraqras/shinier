@@ -1,6 +1,7 @@
 pub const ALIAS: &str = "alias";
 pub const ALTERNATION: &str = "|";
 pub const ARROW: &str = "->";
+pub const ASTERISK: &str = "*";
 pub const BACK_QUOTE: &str = "`";
 pub const BEGIN: &str = "begin";
 pub const BRACES: (&str, &str) = ("{", "}");

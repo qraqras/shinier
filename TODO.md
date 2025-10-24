@@ -111,9 +111,9 @@
 - [ x ] no_keywords_parameter_node.rs
 - [ x ] numbered_parameters_node.rs
 - [ x ] numbered_reference_read_node.rs
-- [ ] optional_keyword_parameter_node.rs
-- [ ] optional_parameter_node.rs
-- [ ] or_node.rs
+- [ x ] optional_keyword_parameter_node.rs
+- [ x ] optional_parameter_node.rs
+- [ x ] or_node.rs
 - [ ] parameters_node.rs
 - [ ] parentheses_node.rs
 - [ ] pinned_expression_node.rs
