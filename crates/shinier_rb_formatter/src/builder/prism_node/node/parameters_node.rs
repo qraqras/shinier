@@ -1,10 +1,9 @@
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, line, none, string};
 use crate::builder::{Buildable, BuildableList};
 use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
+use crate::keyword::COMMA;
 use ruby_prism::ParametersNode;
-
-const PARAMETERS_SEPARATOR: &str = ",";
 
 pub fn build_node(node: Option<&ParametersNode>) -> Document {
     match node {
@@ -17,8 +16,7 @@ pub fn build_node(node: Option<&ParametersNode>) -> Document {
             let keyword_rest = node.keyword_rest();
             let block = node.block();
 
-            let separator = array(&[string(PARAMETERS_SEPARATOR), line()]);
-
+            let separator = array(&[string(COMMA), line()]);
             group(array(&separate_docs(
                 &[
                     requireds.build(separator.clone()),

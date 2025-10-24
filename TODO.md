@@ -114,13 +114,13 @@
 - [ x ] optional_keyword_parameter_node.rs
 - [ x ] optional_parameter_node.rs
 - [ x ] or_node.rs
-- [ ] parameters_node.rs
-- [ ] parentheses_node.rs
-- [ ] pinned_expression_node.rs
-- [ ] pinned_variable_node.rs
-- [ ] post_execution_node.rs
-- [ ] pre_execution_node.rs
-- [ ] program_node.rs
+- [ x ] parameters_node.rs
+- [ x ] parentheses_node.rs
+- [ x ] pinned_expression_node.rs
+- [ x ] pinned_variable_node.rs
+- [ x ] post_execution_node.rs
+- [ x ] pre_execution_node.rs
+- [ x ] program_node.rs
 - [ ] range_node.rs
 - [ ] rational_node.rs
 - [ ] redo_node.rs

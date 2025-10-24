@@ -4,6 +4,5 @@ assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/block_parameters_node.rb
 ---
-not implemented: "ruby_prism::bindings::ParenthesesNode"
-{  }
+->(a, b = 1; local) {  }
 foo{ |a, b = 1; local| }
