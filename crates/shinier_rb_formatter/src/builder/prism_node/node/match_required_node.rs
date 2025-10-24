@@ -1,9 +1,8 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, indent, line, space, string};
 use crate::document::Document;
-use ruby_prism::*;
-
-const MATCH_KEYWORD: &str = "=>";
+use crate::keyword::ROCKET;
+use ruby_prism::MatchRequiredNode;
 
 pub fn build_node(node: Option<&MatchRequiredNode>) -> Document {
     let node = node.unwrap();
@@ -12,7 +11,7 @@ pub fn build_node(node: Option<&MatchRequiredNode>) -> Document {
     group(array(&[
         value.build(),
         space(),
-        string(MATCH_KEYWORD),
+        string(ROCKET),
         indent(array(&[line(), pattern.build()])),
     ]))
 }

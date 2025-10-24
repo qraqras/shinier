@@ -35,3 +35,18 @@ pub fn build_node(node: Option<&ParametersNode>) -> Document {
         None => none(),
     }
 }
+
+pub fn has_parameters(node: Option<&ParametersNode>) -> bool {
+    match node {
+        Some(node) => {
+            node.requireds().iter().next().is_some()
+                || node.optionals().iter().next().is_some()
+                || node.rest().is_some()
+                || node.posts().iter().next().is_some()
+                || node.keywords().iter().next().is_some()
+                || node.keyword_rest().is_some()
+                || node.block().is_some()
+        }
+        None => false,
+    }
+}

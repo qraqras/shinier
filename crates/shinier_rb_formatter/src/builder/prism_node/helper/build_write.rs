@@ -12,13 +12,18 @@ pub fn build_write(name: Document, value: Document) -> Document {
     ]))
 }
 
-pub fn build_logical_write(name: Document, value: Document, logical_operator: LogicalOperator) -> Document {
+pub fn build_logical_write(
+    name: Document,
+    value: Document,
+    logical_operator: LogicalOperator,
+) -> Document {
     group(array(&[
         name,
         space(),
         string(logical_operator.as_str()),
         string(WRITE_OPERATOR),
-        group(array(&[line(), value])),
+        space(),
+        value,
     ]))
 }
 
@@ -28,6 +33,7 @@ pub fn build_operator_write(name: Document, value: Document, operator: Document)
         space(),
         operator,
         string(WRITE_OPERATOR),
-        group(array(&[line(), value])),
+        space(),
+        value,
     ]))
 }

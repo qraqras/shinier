@@ -46,8 +46,8 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/symbol_node.rb
 with
 newlines
 :symbol	with	tabs
-not implemented: "ruby_prism::bindings::InterpolatedSymbolNode"
-not implemented: "ruby_prism::bindings::InterpolatedSymbolNode"
+:"symbol_#{value}"
+:"prefix_#{x.+(y)}_suffix"
 :
 :日本語
 :émoji

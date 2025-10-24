@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, line, string};
 use crate::document::Document;
 use crate::helper::build_index::build_index;
 use crate::helper::build_write::build_operator_write;
@@ -9,7 +9,6 @@ use ruby_prism::IndexOperatorWriteNode;
 
 pub fn build_node(node: Option<&IndexOperatorWriteNode>) -> Document {
     let node = node.unwrap();
-    let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();
     let arguments = node.arguments();
     let block = node.block();
@@ -22,7 +21,6 @@ pub fn build_node(node: Option<&IndexOperatorWriteNode>) -> Document {
             &[arguments.build(), block.build()],
             array(&[string(COMMA), line()]),
         ),
-        is_safe_navigation,
     )]);
     build_operator_write(name, value.build(), binary_operator.build())
 }

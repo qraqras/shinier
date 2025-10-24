@@ -1,19 +1,18 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, space, string};
 use crate::document::Document;
+use crate::keyword::IN;
 use ruby_prism::MatchPredicateNode;
-
-const IN_KEYWORD: &str = "in";
 
 pub fn build_node(node: Option<&MatchPredicateNode>) -> Document {
     let node = node.unwrap();
     let value = node.value();
     let pattern = node.pattern();
-    array(&[
+    group(array(&[
         value.build(),
         space(),
-        string(IN_KEYWORD),
+        string(IN),
         space(),
         pattern.build(),
-    ])
+    ]))
 }

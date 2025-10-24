@@ -1,11 +1,8 @@
-use crate::builder::builder::*;
+use crate::builder::builder::string;
 use crate::document::Document;
-use ruby_prism::*;
+use crate::keyword::IT;
+use ruby_prism::ItLocalVariableReadNode;
 
-pub fn build_node(node: Option<&ItLocalVariableReadNode>) -> Document {
-    let node = node.unwrap();
-    return string(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+pub fn build_node(_node: Option<&ItLocalVariableReadNode>) -> Document {
+    string(IT)
 }

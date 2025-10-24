@@ -49,6 +49,7 @@ pub trait BuildableList<'sh> {
     fn build_or(&self, _separator: Document, _default: Document) -> Document {
         unimplemented!("only implemented for Option<T>")
     }
+    fn is_empty(&self) -> bool;
 }
 
 impl<'sh, T: BuildableList<'sh>> BuildableList<'sh> for Option<T> {
@@ -75,6 +76,12 @@ impl<'sh, T: BuildableList<'sh>> BuildableList<'sh> for Option<T> {
             None => default,
         }
     }
+    fn is_empty(&self) -> bool {
+        match self {
+            Some(s) => s.is_empty(),
+            None => true,
+        }
+    }
 }
 
 // &[u8]
@@ -84,5 +91,12 @@ impl<'sh> Buildable<'sh> for &[u8] {
             Ok(s) => string(s),
             Err(_) => string("<invalid utf8>"),
         }
+    }
+}
+
+// u16
+impl<'sh> Buildable<'sh> for u16 {
+    fn build(&self) -> Document {
+        string(self.to_string())
     }
 }

@@ -1,7 +1,7 @@
 use crate::builder::Buildable;
 use crate::builder::builder::{array, group, indent, line, none, string};
 use crate::document::Document;
-use crate::keyword::BRACES;
+use crate::keyword::{BRACES, PIPE};
 use ruby_prism::BlockNode;
 
 pub fn build_node(node: Option<&BlockNode>) -> Document {
@@ -12,8 +12,11 @@ pub fn build_node(node: Option<&BlockNode>) -> Document {
             group(array(&[
                 string(BRACES.0),
                 indent(array(&[
-                    parameters.build_with(Some(line()), None),
-                    body.build_with(Some(line()), None),
+                    group(
+                        parameters
+                            .build_with(Some(array(&[line(), string(PIPE)])), Some(string(PIPE))),
+                    ),
+                    group(body.build_with(Some(line()), None)),
                 ])),
                 line(),
                 string(BRACES.1),

@@ -1,9 +1,10 @@
 use crate::SEMI_COLON;
 use crate::buildable::{Buildable, BuildableList};
 use crate::builder::builder::{array, group, none, space, string};
+use crate::builder::node::parameters_node;
 use crate::document::Document;
-use crate::keyword::{COMMA, PIPE};
-use ruby_prism::{BlockParametersNode, NodeList};
+use crate::keyword::COMMA;
+use ruby_prism::BlockParametersNode;
 
 pub fn build_node(node: Option<&BlockParametersNode>) -> Document {
     match node {
@@ -11,9 +12,8 @@ pub fn build_node(node: Option<&BlockParametersNode>) -> Document {
             let parameters = node.parameters();
             let locals = node.locals();
             group(array(&[
-                string(PIPE),
                 parameters.build(),
-                match is_empty_node_list(&locals) {
+                match locals.is_empty() {
                     true => none(),
                     false => locals.build_with(
                         array(&[string(COMMA), space()]),
@@ -21,13 +21,21 @@ pub fn build_node(node: Option<&BlockParametersNode>) -> Document {
                         None,
                     ),
                 },
-                string(PIPE),
             ]))
         }
         None => none(),
     }
 }
 
-fn is_empty_node_list(node_list: &NodeList) -> bool {
-    node_list.iter().next().is_none()
+pub fn has_parameters(node: Option<&BlockParametersNode>) -> bool {
+    if let Some(node) = node {
+        if let Some(parameters) = node.parameters() {
+            parameters_node::has_parameters(Some(&parameters))
+                || node.locals().iter().next().is_some()
+        } else {
+            false
+        }
+    } else {
+        false
+    }
 }

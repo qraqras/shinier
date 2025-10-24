@@ -1,8 +1,11 @@
+use crate::buildable::Buildable;
+use crate::builder::helper::build_write::build_write;
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use ruby_prism::InstanceVariableWriteNode;
 
 pub fn build_node(node: Option<&InstanceVariableWriteNode>) -> Document {
     let node = node.unwrap();
-    return string(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let name = node.name();
+    let value = node.value();
+    build_write(name.build(), value.build())
 }

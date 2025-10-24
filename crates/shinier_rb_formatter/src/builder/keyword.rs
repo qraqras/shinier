@@ -1,5 +1,7 @@
 pub const ALIAS: &str = "alias";
 pub const ALTERNATION: &str = "|";
+pub const ARROW: &str = "->";
+pub const BACK_QUOTE: &str = "`";
 pub const BEGIN: &str = "begin";
 pub const BRACES: (&str, &str) = ("{", "}");
 pub const BRACKETS: (&str, &str) = ("[", "]");
@@ -27,8 +29,10 @@ pub const FOR: &str = "for";
 pub const HASH: &str = "#";
 
 pub const IF: &str = "if";
+pub const IMAGINARY: &str = "i";
 pub const IN: &str = "in";
 pub const INHERITES: &str = "<";
+pub const IT: &str = "it";
 pub const LOGICAL_AND: &str = "&&";
 pub const LOGICAL_OR: &str = "||";
 pub const PARENTHESES: (&str, &str) = ("(", ")");
@@ -37,6 +41,7 @@ pub const PROC_AND: &str = "&";
 pub const ROCKET: &str = "=>";
 pub const SAFE_NAVIGATION_OPERATOR: &str = "&.";
 pub const SEMI_COLON: &str = ";";
+pub const SLASH: &str = "/";
 pub const SPLAT: &str = "**";
 pub const SUPER: &str = "super";
 pub const THEN: &str = "then";
@@ -56,6 +61,32 @@ impl LogicalOperator {
         match self {
             Self::And => LOGICAL_AND,
             Self::Or => LOGICAL_OR,
+        }
+    }
+}
+
+pub enum Flag {
+    IgnoreCase,
+    Extended,
+    MultiLine,
+    Once,
+    EucJp,
+    Ascii8bit,
+    Windows31j,
+    Utf8,
+}
+
+impl Flag {
+    pub const fn as_char(&self) -> char {
+        match self {
+            Self::IgnoreCase => 'i',
+            Self::Extended => 'x',
+            Self::MultiLine => 'm',
+            Self::Once => 'o',
+            Self::EucJp => 'e',
+            Self::Ascii8bit => 'n',
+            Self::Windows31j => 's',
+            Self::Utf8 => 'u',
         }
     }
 }

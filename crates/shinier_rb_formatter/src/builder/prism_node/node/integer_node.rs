@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::none;
 use crate::document::Document;
 use ruby_prism::IntegerNode;
 
