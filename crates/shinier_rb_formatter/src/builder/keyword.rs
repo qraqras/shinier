@@ -6,12 +6,11 @@ pub const BEGIN: &str = "begin";
 pub const BRACES: (&str, &str) = ("{", "}");
 pub const BRACKETS: (&str, &str) = ("[", "]");
 pub const BREAK: &str = "break";
-
 pub const CASE: &str = "case";
 pub const CLASS: &str = "class";
 pub const COLON: &str = ":";
 pub const COMMA: &str = ",";
-
+pub const DOLLAR: &str = "$";
 pub const DEF: &str = "def";
 pub const DEFINED: &str = "defined?";
 pub const DO: &str = "do";
@@ -19,15 +18,12 @@ pub const DOT_OPERATOR: &str = ".";
 pub const DOUBLE_COLON: &str = "::";
 pub const DOUBLE_DOT: &str = "..";
 pub const DOUBLE_QUOTE: &str = "\"";
-
 pub const ELSE: &str = "else";
 pub const END: &str = "end";
 pub const ENSURE: &str = "ensure";
 pub const FALSE: &str = "false";
 pub const FOR: &str = "for";
-
 pub const HASH: &str = "#";
-
 pub const IF: &str = "if";
 pub const IMAGINARY: &str = "i";
 pub const IN: &str = "in";
@@ -35,6 +31,9 @@ pub const INHERITES: &str = "<";
 pub const IT: &str = "it";
 pub const LOGICAL_AND: &str = "&&";
 pub const LOGICAL_OR: &str = "||";
+pub const MODULE: &str = "module";
+pub const NEXT: &str = "next";
+pub const NIL: &str = "nil";
 pub const PARENTHESES: (&str, &str) = ("(", ")");
 pub const PIPE: &str = "|";
 pub const PROC_AND: &str = "&";

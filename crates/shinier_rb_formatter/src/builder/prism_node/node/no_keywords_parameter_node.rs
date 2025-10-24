@@ -1,8 +1,8 @@
+use crate::builder::builder::{array, string};
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use crate::keyword::{NIL, SPLAT};
+use ruby_prism::NoKeywordsParameterNode;
 
-pub fn build_node(node: Option<&NoKeywordsParameterNode>) -> Document {
-    let node = node.unwrap();
-    return string(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+pub fn build_node(_node: Option<&NoKeywordsParameterNode>) -> Document {
+    array(&[string(SPLAT), string(NIL)])
 }

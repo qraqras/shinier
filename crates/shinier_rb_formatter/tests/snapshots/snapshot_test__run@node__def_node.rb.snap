@@ -4,8 +4,7 @@ assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/def_node.rb
 ---
-def method
-end
+def method end
 def method_with_params(
   a,
   b = 1,

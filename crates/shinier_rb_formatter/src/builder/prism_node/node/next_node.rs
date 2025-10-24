@@ -1,8 +1,11 @@
+use crate::buildable::Buildable;
+use crate::builder::builder::{array, group, space, string};
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use crate::keyword::NEXT;
+use ruby_prism::NextNode;
 
 pub fn build_node(node: Option<&NextNode>) -> Document {
     let node = node.unwrap();
-    return string(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+    let arguments = node.arguments();
+    group(array(&[string(NEXT), space(), arguments.build()]))
 }
