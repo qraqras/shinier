@@ -121,17 +121,17 @@
 - [ x ] post_execution_node.rs
 - [ x ] pre_execution_node.rs
 - [ x ] program_node.rs
-- [ ] range_node.rs
-- [ ] rational_node.rs
-- [ ] redo_node.rs
-- [ ] regular_expression_node.rs
-- [ ] required_keyword_parameter_node.rs
-- [ ] required_parameter_node.rs
-- [ ] rescue_modifier_node.rs
-- [ ] rescue_node.rs
-- [ ] rest_parameter_node.rs
-- [ ] retry_node.rs
-- [ ] return_node.rs
+- [ x ] range_node.rs
+- [ x ] rational_node.rs
+- [ x ] redo_node.rs
+- [ x ] regular_expression_node.rs
+- [ x ] required_keyword_parameter_node.rs
+- [ x ] required_parameter_node.rs
+- [ x ] rescue_modifier_node.rs
+- [ x ] rescue_node.rs
+- [ x ] rest_parameter_node.rs
+- [ x ] retry_node.rs
+- [ x ] return_node.rs
 - [ ] self_node.rs
 - [ ] shareable_constant_node.rs
 - [ ] singleton_class_node.rs

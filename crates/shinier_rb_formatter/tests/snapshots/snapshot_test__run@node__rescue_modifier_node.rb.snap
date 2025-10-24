@@ -2,10 +2,6 @@
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
 assertion_line: 9
 expression: output
-input_file: crates/shinier_rb_formatter/tests/ruby/node/integer_node.rb
+input_file: crates/shinier_rb_formatter/tests/ruby/node/rescue_modifier_node.rb
 ---
-1
-0b1
-0o1
-0d1
-0x1
+foo rescue nil

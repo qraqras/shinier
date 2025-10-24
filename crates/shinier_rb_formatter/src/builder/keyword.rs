@@ -41,6 +41,11 @@ pub const PIPE: &str = "|";
 pub const POST_EXECUTION: &str = "END";
 pub const PRE_EXECUTION: &str = "BEGIN";
 pub const PROC_AND: &str = "&";
+pub const RATIONAL_SUFFIX: &str = "r";
+pub const REDO: &str = "redo";
+pub const RESCUE: &str = "rescue";
+pub const RETRY: &str = "retry";
+pub const RETURN: &str = "return";
 pub const ROCKET: &str = "=>";
 pub const SAFE_NAVIGATION_OPERATOR: &str = "&.";
 pub const SEMI_COLON: &str = ";";
@@ -90,6 +95,24 @@ impl Flag {
             Self::Ascii8bit => 'n',
             Self::Windows31j => 's',
             Self::Utf8 => 'u',
+        }
+    }
+}
+
+pub enum NumberBase {
+    Binary,
+    Octal,
+    Decimal,
+    Hexadecimal,
+}
+
+impl NumberBase {
+    pub const fn as_str(&self) -> &'static str {
+        match self {
+            Self::Binary => "0b",
+            Self::Octal => "0o",
+            Self::Decimal => "", // 0d
+            Self::Hexadecimal => "0x",
         }
     }
 }

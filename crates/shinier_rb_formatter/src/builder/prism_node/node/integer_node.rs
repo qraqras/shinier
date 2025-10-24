@@ -5,7 +5,10 @@ use ruby_prism::IntegerNode;
 
 pub fn build_node(node: Option<&IntegerNode>) -> Document {
     match node {
-        Some(node) => node.value().build(),
+        Some(node) => {
+            let location = node.location();
+            location.build()
+        }
         None => none(),
     }
 }
