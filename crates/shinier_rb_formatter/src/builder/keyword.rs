@@ -21,9 +21,11 @@ pub const DOUBLE_COLON: &str = "::";
 pub const DOUBLE_DOT: &str = "..";
 pub const DOUBLE_QUOTE: &str = "\"";
 pub const ELSE: &str = "else";
+pub const ENCODING: &str = "__ENCODING__";
 pub const END: &str = "end";
 pub const ENSURE: &str = "ensure";
 pub const FALSE: &str = "false";
+pub const FILE: &str = "__FILE__";
 pub const FOR: &str = "for";
 pub const HASH: &str = "#";
 pub const IF: &str = "if";
@@ -31,6 +33,7 @@ pub const IMAGINARY: &str = "i";
 pub const IN: &str = "in";
 pub const INHERITES: &str = "<";
 pub const IT: &str = "it";
+pub const LINE: &str = "__LINE__";
 pub const LOGICAL_AND: &str = "&&";
 pub const LOGICAL_OR: &str = "||";
 pub const MODULE: &str = "module";
@@ -48,7 +51,9 @@ pub const RETRY: &str = "retry";
 pub const RETURN: &str = "return";
 pub const ROCKET: &str = "=>";
 pub const SAFE_NAVIGATION_OPERATOR: &str = "&.";
+pub const SELF: &str = "self";
 pub const SEMI_COLON: &str = ";";
+pub const SINGLETON: &str = "<<";
 pub const SLASH: &str = "/";
 pub const SPLAT: &str = "**";
 pub const SUPER: &str = "super";
@@ -113,6 +118,22 @@ impl NumberBase {
             Self::Octal => "0o",
             Self::Decimal => "", // 0d
             Self::Hexadecimal => "0x",
+        }
+    }
+}
+
+pub enum ShareableConstantComment {
+    Literal,
+    ExperimentalEverything,
+    ExperimentalCopy,
+}
+
+impl ShareableConstantComment {
+    pub const fn as_str(&self) -> &'static str {
+        match self {
+            Self::Literal => "# shareable_constant_value: literal",
+            Self::ExperimentalEverything => "# shareable_constant_value: experimental_everything",
+            Self::ExperimentalCopy => "# shareable_constant_value: experimental_copy",
         }
     }
 }

@@ -16,7 +16,7 @@ def method_with_params(
   )
   puts(a)
 end
-def not implemented: "ruby_prism::bindings::SelfNode".class_method
+def self.class_method
   "class method"
 end
 def obj.instance_method
@@ -28,7 +28,7 @@ def method_with_locals
 end
 def complex_method(x)
   if x.>(0)
-    not implemented: "ruby_prism::bindings::ReturnNode"
+    return x.*(2)
   else
     raise("negative")
   end

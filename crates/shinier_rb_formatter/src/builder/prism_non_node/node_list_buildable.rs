@@ -5,7 +5,7 @@ use ruby_prism::NodeList;
 
 impl<'a> BuildableList<'_> for NodeList<'_> {
     fn build(&self, separator: Document) -> Document {
-        if self.iter().next().is_none() {
+        if self.is_empty() {
             return none();
         }
         let mut vec = Vec::new();

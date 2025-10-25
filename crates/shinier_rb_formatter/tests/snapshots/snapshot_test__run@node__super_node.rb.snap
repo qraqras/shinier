@@ -1,0 +1,26 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/super_node.rb
+---
+super()
+super(foo, bar)
+super
+super(foo) { |arg| puts(arg) }
+class Foo
+  def foo(arg = nil)
+    p(arg)
+  end
+end
+class Bar < Foo 
+  def foo(arg)
+    super(5)
+    super(arg)
+    super
+    arg = 1
+    super
+    super()
+  end
+end
+Bar.new.foo(5)

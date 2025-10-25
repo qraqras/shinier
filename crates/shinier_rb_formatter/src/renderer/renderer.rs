@@ -77,6 +77,7 @@ fn fits(
             }
             Document::BreakParent => {}
             Document::Group(group) => {
+                // group.r#break は書き換わらないため group_mode_map を取得する必要があるのでは？
                 if must_be_flat && group.r#break {
                     return false;
                 }
@@ -131,7 +132,9 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
     let mut out = String::new();
     let mut should_remeasure = false;
 
-    let mut group_mode_map = propagate_breaks(doc);
+    let mut group_mode_map = HashMap::new();
+
+    let effective_group_mode_map = propagate_breaks(doc);
 
     while let Some(Command { ind, doc, mode }) = cmds.pop() {
         match doc {
@@ -142,7 +145,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
             }
             Document::BreakParent => {}
             Document::Group(group) => {
-                let effective_mode = group_mode_map
+                let effective_mode = effective_group_mode_map
                     .get(&group.id)
                     .copied()
                     .unwrap_or(Mode::from(group.r#break));

@@ -1,11 +1,11 @@
-use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, string};
 use crate::document::Document;
+use crate::helper::escape::escape;
 use crate::keyword::COLON;
 use ruby_prism::SymbolNode;
 
 pub fn build_node(node: Option<&SymbolNode>) -> Document {
     let node = node.unwrap();
     let unescaped = node.unescaped();
-    array(&[string(COLON), unescaped.build()])
+    array(&[string(COLON), string(escape(unescaped))])
 }

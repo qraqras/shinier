@@ -1,8 +1,8 @@
+use crate::ENCODING;
+use crate::builder::builder::string;
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use ruby_prism::SourceEncodingNode;
 
-pub fn build_node(node: Option<&SourceEncodingNode>) -> Document {
-    let node = node.unwrap();
-        return string(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+pub fn build_node(_node: Option<&SourceEncodingNode>) -> Document {
+    string(ENCODING)
 }

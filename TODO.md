@@ -1,5 +1,14 @@
 # TODO
 
+- [ ] %記法
+- [ ] 文字列エスケープ(escape_slash_in_pattern(), escape())
+- [ ] build_symbol_without_colon
+- [ ] 空行
+- [ ] コメント
+- [ ]
+- [ ]
+
+
 - [ x ] alias_global_variable_node.rs
 - [ x ] alias_method_node.rs
 - [ x ] alternation_pattern_node.rs
@@ -132,17 +141,17 @@
 - [ x ] rest_parameter_node.rs
 - [ x ] retry_node.rs
 - [ x ] return_node.rs
-- [ ] self_node.rs
-- [ ] shareable_constant_node.rs
-- [ ] singleton_class_node.rs
-- [ ] source_encoding_node.rs
-- [ ] source_file_node.rs
-- [ ] source_line_node.rs
-- [ ] splat_node.rs
-- [ ] statements_node.rs
-- [ ] string_node.rs
-- [ ] super_node.rs
-- [ ] symbol_node.rs
+- [ x ] self_node.rs
+- [ x ] shareable_constant_node.rs
+- [ x ] singleton_class_node.rs
+- [ x ] source_encoding_node.rs
+- [ x ] source_file_node.rs
+- [ x ] source_line_node.rs
+- [ x ] splat_node.rs
+- [ x ] statements_node.rs
+- [ x ] string_node.rs
+- [ x ] super_node.rs
+- [ x ] symbol_node.rs
 - [ x ] true_node.rs
 - [ ] undef_node.rs
 - [ ] unless_node.rs

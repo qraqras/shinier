@@ -2,8 +2,6 @@
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
 assertion_line: 9
 expression: output
-input_file: crates/shinier_rb_formatter/tests/ruby/node/string_node.rb
+input_file: crates/shinier_rb_formatter/tests/ruby/node/source_file_node.rb
 ---
-"foo"
-["foo"]
-"foo #{bar} baz"
+__FILE__

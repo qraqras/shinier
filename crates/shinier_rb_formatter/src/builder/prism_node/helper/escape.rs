@@ -1,19 +1,5 @@
-use crate::builder::builder::{array, string};
-use crate::document::Document;
-use crate::keyword::DOUBLE_QUOTE;
-use ruby_prism::StringNode;
-
-pub fn build_node(node: Option<&StringNode>) -> Document {
-    let node = node.unwrap();
-    let unescaped = node.unescaped();
-    array(&[
-        string(DOUBLE_QUOTE),
-        string(escape(unescaped)),
-        string(DOUBLE_QUOTE),
-    ])
-}
-
-fn escape(input: &[u8]) -> String {
+pub fn escape(input: &[u8]) -> String {
+    // TODO: 仮実装中
     let mut result = String::new();
     let mut i = 0;
     while i < input.len() {
