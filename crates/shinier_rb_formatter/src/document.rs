@@ -2,12 +2,18 @@
 pub enum Document {
     Array(Vec<Document>), //
     BreakParent,          //
+    Fill(Fill),           //
     Group(Group),         //
     IfBreak(IfBreak),     //
     Indent(Indent),       //
     Line(Line),           //
     None,                 //
     String(String),       //
+}
+
+#[derive(Clone, Debug)]
+pub struct Fill {
+    pub parts: Vec<Document>,
 }
 
 #[derive(Clone, Debug)]
