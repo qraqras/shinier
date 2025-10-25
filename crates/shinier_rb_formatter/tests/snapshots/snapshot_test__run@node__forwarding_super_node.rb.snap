@@ -8,7 +8,7 @@ super
 super { |item| puts(item) }
 super { |item|
   process(item)
-  not implemented: "ruby_prism::bindings::YieldNode" }
+  yield item }
 super { |x, y|
   result = x.+(y)
   result.*(2) }

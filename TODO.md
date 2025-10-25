@@ -1,12 +1,17 @@
 # TODO
 
+- [ ] デバッグようにスナップショットにASTを含める
 - [ ] %記法
 - [ ] 文字列エスケープ(escape_slash_in_pattern(), escape())
+- [ ] call_nodeの呼び出し(block関連と+=のようなパターン)
 - [ ] build_symbol_without_colon
+- [ ] block_nodeで複数行のときが無効な構文になる(参考: snapshot_test__run@node__forwarding_super_node.rb.snap)
+- [ ] キーワードの命名整理
+- [ ] インポートの整理
 - [ ] 空行
 - [ ] コメント
-- [ ]
-- [ ]
+- [ ] doとかthenとか
+- [ ] is_forced_utf8_encoding / is_forced_binary_encoding
 
 
 - [ x ] alias_global_variable_node.rs
@@ -153,10 +158,10 @@
 - [ x ] super_node.rs
 - [ x ] symbol_node.rs
 - [ x ] true_node.rs
-- [ ] undef_node.rs
-- [ ] unless_node.rs
-- [ ] until_node.rs
+- [ x ] undef_node.rs
+- [ x ] unless_node.rs
+- [ x ] until_node.rs
 - [ x ] when_node.rs
-- [ ] while_node.rs
-- [ ] x_string_node.rs
-- [ ] yield_node.rs
+- [ x ] while_node.rs
+- [ x ] x_string_node.rs
+- [ x ] yield_node.rs

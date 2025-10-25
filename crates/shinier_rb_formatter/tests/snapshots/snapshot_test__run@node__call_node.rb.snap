@@ -49,7 +49,7 @@ foo.+@
 foo.-@
 foo.[](bar)
 foo.[]=(bar, baz)
-not implemented: "ruby_prism::bindings::XStringNode"
+`foo`
 foo.!
 foo.!=(bar)
 foo.!~(bar)

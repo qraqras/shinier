@@ -47,9 +47,9 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/symbol_node.rb
 :"symbol_#{value}"
 :"prefix_#{x.+(y)}_suffix"
 :
-:\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e
-:\xc3\xa9moji
-:\xf0\x9f\x9a\x80
+:æ¥æ¬èª
+:Ã©moji
+:ð
 def foo
   :method_name
 end

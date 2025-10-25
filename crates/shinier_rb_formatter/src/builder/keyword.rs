@@ -60,8 +60,13 @@ pub const SUPER: &str = "super";
 pub const THEN: &str = "then";
 pub const TRIPLE_DOT: &str = "...";
 pub const TRUE: &str = "true";
+pub const UNDEF: &str = "undef";
+pub const UNLESS: &str = "unless";
+pub const UNTIL: &str = "until";
 pub const WHEN: &str = "when";
+pub const WHILE: &str = "while";
 pub const WRITE_OPERATOR: &str = "=";
+pub const YIELD: &str = "yield";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LogicalOperator {
