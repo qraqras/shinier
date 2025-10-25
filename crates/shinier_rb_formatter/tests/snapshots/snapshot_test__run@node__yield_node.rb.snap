@@ -1,7 +1,13 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/yield_node.rb
 ---
+****FORMATTED****
 yield 1
+
+****AST****
+ProgramNode: "yield 1"
+__YieldNode: "yield 1"
+____IntegerNode: "1"

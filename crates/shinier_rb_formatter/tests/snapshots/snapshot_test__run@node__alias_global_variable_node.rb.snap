@@ -1,10 +1,23 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/alias_global_variable_node.rb
 ---
+****FORMATTED****
 alias $bar $foo
 alias $bar $foo
 alias
   $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo
+
+****AST****
+ProgramNode: "alias $foo $bar\nalias\n  $foo $bar\nalias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+__AliasGlobalVariableNode: "alias $foo $bar"
+____GlobalVariableReadNode: "$foo"
+____GlobalVariableReadNode: "$bar"
+__AliasGlobalVariableNode: "alias\n  $foo $bar"
+____GlobalVariableReadNode: "$foo"
+____GlobalVariableReadNode: "$bar"
+__AliasGlobalVariableNode: "alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____GlobalVariableReadNode: "$foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+____GlobalVariableReadNode: "$barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"

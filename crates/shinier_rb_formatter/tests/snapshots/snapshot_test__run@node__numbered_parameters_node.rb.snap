@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/numbered_parameters_node.rb
 ---
+****FORMATTED****
 -> { _1.+(_2) }
 -> { puts(_1) }
 -> { _1.*(2) }
@@ -17,3 +18,40 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/numbered_parameters_node
   else
     "no"
   end }
+
+****AST****
+ProgramNode: "-> { _1 + _2 }\n\n-> { puts _1 }\n\n-> { _1 * 2 }\n\n-> { puts _1; puts _2; puts _3 }\n\n-> { _1 ? \"yes\" : \"no\" }"
+__LambdaNode: "-> { _1 + _2 }"
+____NumberedParametersNode: "-> { _1 + _2 }"
+____StatementsNode: "_1 + _2"
+______CallNode: "_1 + _2"
+________LocalVariableReadNode: "_1"
+________LocalVariableReadNode: "_2"
+__LambdaNode: "-> { puts _1 }"
+____NumberedParametersNode: "-> { puts _1 }"
+____StatementsNode: "puts _1"
+______CallNode: "puts _1"
+________LocalVariableReadNode: "_1"
+__LambdaNode: "-> { _1 * 2 }"
+____NumberedParametersNode: "-> { _1 * 2 }"
+____StatementsNode: "_1 * 2"
+______CallNode: "_1 * 2"
+________LocalVariableReadNode: "_1"
+________IntegerNode: "2"
+__LambdaNode: "-> { puts _1; puts _2; puts _3 }"
+____NumberedParametersNode: "-> { puts _1; puts _2; puts _3 }"
+____StatementsNode: "puts _1; puts _2; puts _3"
+______CallNode: "puts _1"
+________LocalVariableReadNode: "_1"
+______CallNode: "puts _2"
+________LocalVariableReadNode: "_2"
+______CallNode: "puts _3"
+________LocalVariableReadNode: "_3"
+__LambdaNode: "-> { _1 ? \"yes\" : \"no\" }"
+____NumberedParametersNode: "-> { _1 ? \"yes\" : \"no\" }"
+____StatementsNode: "_1 ? \"yes\" : \"no\""
+______IfNode: "_1 ? \"yes\" : \"no\""
+________LocalVariableReadNode: "_1"
+________StringNode: "\"yes\""
+________ElseNode: ": \"no\""
+__________StringNode: "\"no\""

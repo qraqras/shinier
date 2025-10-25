@@ -1,10 +1,18 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/match_last_line_node.rb
 ---
+****FORMATTED****
 if /foo/i
 end
 if /foo\/bar/
 end
+
+****AST****
+ProgramNode: "if /foo/i then end\n\n    if /foo\\/bar/ then end"
+__IfNode: "if /foo/i then end"
+____MatchLastLineNode: "/foo/i"
+__IfNode: "if /foo\\/bar/ then end"
+____MatchLastLineNode: "/foo\\/bar/"

@@ -1,7 +1,12 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/nil_node.rb
 ---
+****FORMATTED****
 nil
+
+****AST****
+ProgramNode: "nil"
+__NilNode: "nil"

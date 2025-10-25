@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/case_match_node.rb
 ---
+****FORMATTED****
 case true
 in false
 end
@@ -27,3 +28,52 @@ in [false, true]
 in [false, false]
   puts("f-f")
 end
+
+****AST****
+ProgramNode: "case true\nin false\nend\n\ncase true\nin false\n  puts false\nend\n\ncase true\nin false\n  puts false\nelse\n  puts true\nend\n\ncase [true, false]\nin [true, true]\n  puts \"t-t\"\nin [true, false]\n  puts \"t-f\"\nin [false, true]\n  puts \"f-t\"\nin [false, false]\n  puts \"f-f\"\nend"
+__CaseMatchNode: "case true\nin false\nend"
+____TrueNode: "true"
+____InNode: "in false"
+______FalseNode: "false"
+__CaseMatchNode: "case true\nin false\n  puts false\nend"
+____TrueNode: "true"
+____InNode: "in false\n  puts false"
+______FalseNode: "false"
+______CallNode: "puts false"
+________FalseNode: "false"
+__CaseMatchNode: "case true\nin false\n  puts false\nelse\n  puts true\nend"
+____TrueNode: "true"
+____InNode: "in false\n  puts false"
+______FalseNode: "false"
+______CallNode: "puts false"
+________FalseNode: "false"
+____CallNode: "puts true"
+______TrueNode: "true"
+__CaseMatchNode: "case [true, false]\nin [true, true]\n  puts \"t-t\"\nin [true, false]\n  puts \"t-f\"\nin [false, true]\n  puts \"f-t\"\nin [false, false]\n  puts \"f-f\"\nend"
+____ArrayNode: "[true, false]"
+______TrueNode: "true"
+______FalseNode: "false"
+____InNode: "in [true, true]\n  puts \"t-t\""
+______ArrayPatternNode: "[true, true]"
+________TrueNode: "true"
+________TrueNode: "true"
+______CallNode: "puts \"t-t\""
+________StringNode: "\"t-t\""
+____InNode: "in [true, false]\n  puts \"t-f\""
+______ArrayPatternNode: "[true, false]"
+________TrueNode: "true"
+________FalseNode: "false"
+______CallNode: "puts \"t-f\""
+________StringNode: "\"t-f\""
+____InNode: "in [false, true]\n  puts \"f-t\""
+______ArrayPatternNode: "[false, true]"
+________FalseNode: "false"
+________TrueNode: "true"
+______CallNode: "puts \"f-t\""
+________StringNode: "\"f-t\""
+____InNode: "in [false, false]\n  puts \"f-f\""
+______ArrayPatternNode: "[false, false]"
+________FalseNode: "false"
+________FalseNode: "false"
+______CallNode: "puts \"f-f\""
+________StringNode: "\"f-f\""

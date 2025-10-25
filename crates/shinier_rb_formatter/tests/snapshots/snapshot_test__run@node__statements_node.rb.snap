@@ -1,9 +1,16 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/statements_node.rb
 ---
+****FORMATTED****
 foo
 bar
 baz
+
+****AST****
+ProgramNode: "foo; bar; baz"
+__CallNode: "foo"
+__CallNode: "bar"
+__CallNode: "baz"

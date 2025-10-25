@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/lambda_node.rb
 ---
+****FORMATTED****
 ->(value) { value.*(2) }
 -> { puts("no params") }
 ->(
@@ -42,3 +43,61 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/lambda_node.rb
   puts(f)
   puts(g)
 }
+
+****AST****
+ProgramNode: "->(value) { value * 2 }\n\n->() { puts \"no params\" }\n-> (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z) {\n    puts a\n    puts b\n    puts c\n    puts d\n    puts e\n    puts f\n    puts g\n}"
+__LambdaNode: "->(value) { value * 2 }"
+____BlockParametersNode: "(value)"
+______RequiredParameterNode: "value"
+____StatementsNode: "value * 2"
+______CallNode: "value * 2"
+________LocalVariableReadNode: "value"
+________IntegerNode: "2"
+__LambdaNode: "->() { puts \"no params\" }"
+____BlockParametersNode: "()"
+____StatementsNode: "puts \"no params\""
+______CallNode: "puts \"no params\""
+________StringNode: "\"no params\""
+__LambdaNode: "-> (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z) {\n    puts a\n    puts b\n    puts c\n    puts d\n    puts e\n    puts f\n    puts g\n}"
+____BlockParametersNode: "(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z)"
+______RequiredParameterNode: "a"
+______RequiredParameterNode: "b"
+______RequiredParameterNode: "c"
+______RequiredParameterNode: "d"
+______RequiredParameterNode: "e"
+______RequiredParameterNode: "f"
+______RequiredParameterNode: "g"
+______RequiredParameterNode: "h"
+______RequiredParameterNode: "i"
+______RequiredParameterNode: "j"
+______RequiredParameterNode: "k"
+______RequiredParameterNode: "l"
+______RequiredParameterNode: "m"
+______RequiredParameterNode: "n"
+______RequiredParameterNode: "o"
+______RequiredParameterNode: "p"
+______RequiredParameterNode: "q"
+______RequiredParameterNode: "r"
+______RequiredParameterNode: "s"
+______RequiredParameterNode: "t"
+______RequiredParameterNode: "u"
+______RequiredParameterNode: "v"
+______RequiredParameterNode: "w"
+______RequiredParameterNode: "x"
+______RequiredParameterNode: "y"
+______RequiredParameterNode: "z"
+____StatementsNode: "puts a\n    puts b\n    puts c\n    puts d\n    puts e\n    puts f\n    puts g"
+______CallNode: "puts a"
+________LocalVariableReadNode: "a"
+______CallNode: "puts b"
+________LocalVariableReadNode: "b"
+______CallNode: "puts c"
+________LocalVariableReadNode: "c"
+______CallNode: "puts d"
+________LocalVariableReadNode: "d"
+______CallNode: "puts e"
+________LocalVariableReadNode: "e"
+______CallNode: "puts f"
+________LocalVariableReadNode: "f"
+______CallNode: "puts g"
+________LocalVariableReadNode: "g"

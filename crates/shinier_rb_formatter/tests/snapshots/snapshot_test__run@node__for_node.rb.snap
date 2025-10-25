@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/for_node.rb
 ---
+****FORMATTED****
 for i in a end
 for i in a do puts(i) end
 for i in a do
@@ -12,3 +13,25 @@ for i in a do
   puts(i)
   puts(i)
 end
+
+****AST****
+ProgramNode: "for i in a end\n\nfor i in a\n    puts i\nend\n\nfor i in a\n    puts i\n    puts i\n    puts i\n    puts i\nend"
+__ForNode: "for i in a end"
+____LocalVariableTargetNode: "i"
+____CallNode: "a"
+__ForNode: "for i in a\n    puts i\nend"
+____LocalVariableTargetNode: "i"
+____CallNode: "a"
+____CallNode: "puts i"
+______LocalVariableReadNode: "i"
+__ForNode: "for i in a\n    puts i\n    puts i\n    puts i\n    puts i\nend"
+____LocalVariableTargetNode: "i"
+____CallNode: "a"
+____CallNode: "puts i"
+______LocalVariableReadNode: "i"
+____CallNode: "puts i"
+______LocalVariableReadNode: "i"
+____CallNode: "puts i"
+______LocalVariableReadNode: "i"
+____CallNode: "puts i"
+______LocalVariableReadNode: "i"

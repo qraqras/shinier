@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/rescue_node.rb
 ---
+****FORMATTED****
 begin
 rescue Foo, *splat, Bar => ex
   foo
@@ -14,3 +15,20 @@ rescue Foo => ex
 rescue Bar => ex
   bar
 end
+
+****AST****
+ProgramNode: "begin\nrescue Foo, *splat, Bar => ex\n  foo\nend\n\nbegin\nrescue Foo => ex\n  foo\nrescue Bar => ex\n  bar\nend"
+__BeginNode: "begin\nrescue Foo, *splat, Bar => ex\n  foo\nend"
+____ConstantReadNode: "Foo"
+____SplatNode: "*splat"
+______CallNode: "splat"
+____ConstantReadNode: "Bar"
+____LocalVariableTargetNode: "ex"
+____CallNode: "foo"
+__BeginNode: "begin\nrescue Foo => ex\n  foo\nrescue Bar => ex\n  bar\nend"
+____ConstantReadNode: "Foo"
+____LocalVariableTargetNode: "ex"
+____CallNode: "foo"
+____ConstantReadNode: "Bar"
+____LocalVariableTargetNode: "ex"
+____CallNode: "bar"

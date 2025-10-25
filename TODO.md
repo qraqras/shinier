@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] デバッグようにスナップショットにASTを含める
+- [ x ] デバッグ用にスナップショットにASTを含める
 - [ ] %記法
 - [ ] 文字列エスケープ(escape_slash_in_pattern(), escape())
 - [ ] call_nodeの呼び出し(block関連と+=のようなパターン)

@@ -1,7 +1,14 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/constant_path_or_write_node.rb
 ---
+****FORMATTED****
 Parent::Child ||= value
+
+****AST****
+ProgramNode: "Parent::Child ||= value"
+__ConstantPathOrWriteNode: "Parent::Child ||= value"
+____ConstantReadNode: "Parent"
+____CallNode: "value"

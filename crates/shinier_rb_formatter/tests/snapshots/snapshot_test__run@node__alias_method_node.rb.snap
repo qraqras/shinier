@@ -1,10 +1,23 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/alias_method_node.rb
 ---
+****FORMATTED****
 alias foo bar
 alias foo bar
 alias
   foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+
+****AST****
+ProgramNode: "alias foo bar\nalias\n  foo bar\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+__AliasMethodNode: "alias foo bar"
+____SymbolNode: "foo"
+____SymbolNode: "bar"
+__AliasMethodNode: "alias\n  foo bar"
+____SymbolNode: "foo"
+____SymbolNode: "bar"
+__AliasMethodNode: "alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____SymbolNode: "foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+____SymbolNode: "barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"

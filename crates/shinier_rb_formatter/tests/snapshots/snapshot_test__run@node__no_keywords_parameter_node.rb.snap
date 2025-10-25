@@ -1,7 +1,13 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/no_keywords_parameter_node.rb
 ---
+****FORMATTED****
 def a(**nil) end
+
+****AST****
+ProgramNode: "def a(**nil)\nend"
+__DefNode: "def a(**nil)\nend"
+____NoKeywordsParameterNode: "**nil"

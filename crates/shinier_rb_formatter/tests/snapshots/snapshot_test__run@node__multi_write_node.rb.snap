@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/multi_write_node.rb
 ---
+****FORMATTED****
 a, b, c = [1, 2, 3]
 *a, b, c = [1, 2, 3]
 a, *b, c = [1, 2, 3]
@@ -11,3 +12,59 @@ a, b, *c = [1, 2, 3]
 *a, b = [1, 2]
 a, *b = [1, 2]
 *a = 1
+
+****AST****
+ProgramNode: "a, b, c = 1, 2, 3\n\n*a, b, c = 1, 2, 3\na, *b, c = 1, 2, 3\na, b, *c = 1, 2, 3\n\n*a, b = 1, 2\na, *b = 1, 2\n\n*a = 1"
+__MultiWriteNode: "a, b, c = 1, 2, 3"
+____LocalVariableTargetNode: "a"
+____LocalVariableTargetNode: "b"
+____LocalVariableTargetNode: "c"
+____ArrayNode: "1, 2, 3"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "3"
+__MultiWriteNode: "*a, b, c = 1, 2, 3"
+____SplatNode: "*a"
+______LocalVariableTargetNode: "a"
+____LocalVariableTargetNode: "b"
+____LocalVariableTargetNode: "c"
+____ArrayNode: "1, 2, 3"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "3"
+__MultiWriteNode: "a, *b, c = 1, 2, 3"
+____LocalVariableTargetNode: "a"
+____SplatNode: "*b"
+______LocalVariableTargetNode: "b"
+____LocalVariableTargetNode: "c"
+____ArrayNode: "1, 2, 3"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "3"
+__MultiWriteNode: "a, b, *c = 1, 2, 3"
+____LocalVariableTargetNode: "a"
+____LocalVariableTargetNode: "b"
+____SplatNode: "*c"
+______LocalVariableTargetNode: "c"
+____ArrayNode: "1, 2, 3"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "3"
+__MultiWriteNode: "*a, b = 1, 2"
+____SplatNode: "*a"
+______LocalVariableTargetNode: "a"
+____LocalVariableTargetNode: "b"
+____ArrayNode: "1, 2"
+______IntegerNode: "1"
+______IntegerNode: "2"
+__MultiWriteNode: "a, *b = 1, 2"
+____LocalVariableTargetNode: "a"
+____SplatNode: "*b"
+______LocalVariableTargetNode: "b"
+____ArrayNode: "1, 2"
+______IntegerNode: "1"
+______IntegerNode: "2"
+__MultiWriteNode: "*a = 1"
+____SplatNode: "*a"
+______LocalVariableTargetNode: "a"
+____IntegerNode: "1"

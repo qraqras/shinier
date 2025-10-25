@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/while_node.rb
 ---
+****FORMATTED****
 while foo
   bar
 end
@@ -13,3 +14,19 @@ end
 begin
   puts(x)
 end while x.<(10)
+
+****AST****
+ProgramNode: "bar while foo\nwhile foo do bar end\n\nbegin\n  puts x\nend while x < 10"
+__WhileNode: "bar while foo"
+____CallNode: "foo"
+____CallNode: "bar"
+__WhileNode: "while foo do bar end"
+____CallNode: "foo"
+____CallNode: "bar"
+__WhileNode: "begin\n  puts x\nend while x < 10"
+____CallNode: "x < 10"
+______CallNode: "x"
+______IntegerNode: "10"
+____BeginNode: "begin\n  puts x\nend"
+______CallNode: "puts x"
+________CallNode: "x"

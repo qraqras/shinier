@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/return_node.rb
 ---
+****FORMATTED****
 return 1
 return a,
   b,
@@ -31,3 +32,35 @@ return a,
   x,
   y,
   z
+
+****AST****
+ProgramNode: "return 1\n\nreturn a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z"
+__ReturnNode: "return 1"
+____IntegerNode: "1"
+__ReturnNode: "return a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z"
+____CallNode: "a"
+____CallNode: "b"
+____CallNode: "c"
+____CallNode: "d"
+____CallNode: "e"
+____CallNode: "f"
+____CallNode: "g"
+____CallNode: "h"
+____CallNode: "i"
+____CallNode: "j"
+____CallNode: "k"
+____CallNode: "l"
+____CallNode: "m"
+____CallNode: "n"
+____CallNode: "o"
+____CallNode: "p"
+____CallNode: "q"
+____CallNode: "r"
+____CallNode: "s"
+____CallNode: "t"
+____CallNode: "u"
+____CallNode: "v"
+____CallNode: "w"
+____CallNode: "x"
+____CallNode: "y"
+____CallNode: "z"

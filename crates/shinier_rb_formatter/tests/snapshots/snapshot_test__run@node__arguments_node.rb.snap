@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/arguments_node.rb
 ---
+****FORMATTED****
 func(foo, bar, baz)
 func(
   foo,
@@ -22,3 +23,26 @@ func(
   bar,
   baz
 )
+
+****AST****
+ProgramNode: "func foo, bar, baz\n\nfunc foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz"
+__CallNode: "func foo, bar, baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+__CallNode: "func foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"

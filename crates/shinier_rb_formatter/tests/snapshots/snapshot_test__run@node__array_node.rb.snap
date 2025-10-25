@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
 ---
+****FORMATTED****
 foo = [
   0,
   1,
@@ -32,3 +33,40 @@ foo = [
 ]
 bar = [9, *foo, 9000]
 baz = []
+
+****AST****
+ProgramNode: "foo = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]\nbar = [9, *foo, 9000]\nbaz = []"
+__LocalVariableWriteNode: "foo = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]"
+____ArrayNode: "[0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]"
+______IntegerNode: "0"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "0"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "0"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "0"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "0"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "0"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "0"
+______IntegerNode: "1"
+______IntegerNode: "2"
+______IntegerNode: "0"
+______IntegerNode: "1"
+______IntegerNode: "2"
+__LocalVariableWriteNode: "bar = [9, *foo, 9000]"
+____ArrayNode: "[9, *foo, 9000]"
+______IntegerNode: "9"
+______SplatNode: "*foo"
+________LocalVariableReadNode: "foo"
+______IntegerNode: "9000"
+__LocalVariableWriteNode: "baz = []"
+____ArrayNode: "[]"

@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/class_node.rb
 ---
+****FORMATTED****
 FooError = Class.new(StandardError)
 class FooError < StandardError 
 end
@@ -14,3 +15,26 @@ class FooError < StandardError
 end
 class Foo::Bar < baz 
 end
+
+****AST****
+ProgramNode: "FooError = Class.new(StandardError)\n\n# okish\nclass FooError < StandardError; end\n\n# ok\nclass FooError < StandardError\nend\n\nclass FooError < StandardError\n    include Bar\nend\n\nclass Foo::Bar < baz\nend"
+__ConstantWriteNode: "FooError = Class.new(StandardError)"
+____CallNode: "Class.new(StandardError)"
+______ConstantReadNode: "Class"
+______ConstantReadNode: "StandardError"
+__ClassNode: "class FooError < StandardError; end"
+____ConstantReadNode: "FooError"
+____ConstantReadNode: "StandardError"
+__ClassNode: "class FooError < StandardError\nend"
+____ConstantReadNode: "FooError"
+____ConstantReadNode: "StandardError"
+__ClassNode: "class FooError < StandardError\n    include Bar\nend"
+____ConstantReadNode: "FooError"
+____ConstantReadNode: "StandardError"
+____StatementsNode: "include Bar"
+______CallNode: "include Bar"
+________ConstantReadNode: "Bar"
+__ClassNode: "class Foo::Bar < baz\nend"
+____ConstantPathNode: "Foo::Bar"
+______ConstantReadNode: "Foo"
+____CallNode: "baz"

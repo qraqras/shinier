@@ -1,8 +1,20 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/assoc_node.rb
 ---
+****FORMATTED****
 { a => b }
 { a: b }
+
+****AST****
+ProgramNode: "{ a => b }\n{ a: b }"
+__HashNode: "{ a => b }"
+____AssocNode: "a => b"
+______CallNode: "a"
+______CallNode: "b"
+__HashNode: "{ a: b }"
+____AssocNode: "a: b"
+______SymbolNode: "a:"
+______CallNode: "b"

@@ -1,7 +1,15 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/block_local_variable_node.rb
 ---
+****FORMATTED****
 a{ |; b| }
+
+****AST****
+ProgramNode: "a { |; b| }"
+__CallNode: "a { |; b| }"
+____BlockNode: "{ |; b| }"
+______BlockParametersNode: "|; b|"
+________BlockLocalVariableNode: "b"

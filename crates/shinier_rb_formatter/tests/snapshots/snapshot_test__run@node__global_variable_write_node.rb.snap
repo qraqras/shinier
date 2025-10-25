@@ -1,7 +1,13 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/global_variable_write_node.rb
 ---
+****FORMATTED****
 $foo = 1
+
+****AST****
+ProgramNode: "$foo = 1"
+__GlobalVariableWriteNode: "$foo = 1"
+____IntegerNode: "1"

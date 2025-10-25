@@ -1,12 +1,22 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/rational_node.rb
 ---
+****FORMATTED****
 1.0r
 1.5r
 0b11r
 0o77r
 0d99r
 0xffr
+
+****AST****
+ProgramNode: "1.0r\n\n1.5r\n0b11r\n0o77r\n0d99r\n0xffr"
+__RationalNode: "1.0r"
+__RationalNode: "1.5r"
+__RationalNode: "0b11r"
+__RationalNode: "0o77r"
+__RationalNode: "0d99r"
+__RationalNode: "0xffr"

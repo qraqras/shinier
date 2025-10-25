@@ -1,7 +1,13 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/class_variable_or_write_node.rb
 ---
+****FORMATTED****
 @@target ||= value
+
+****AST****
+ProgramNode: "@@target ||= value"
+__ClassVariableOrWriteNode: "@@target ||= value"
+____CallNode: "value"

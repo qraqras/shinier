@@ -1,10 +1,33 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/implicit_rest_node.rb
 ---
+****FORMATTED****
 foo{ |bar| }
 foo in [bar]
 for (foo) in bar end
 foo = bar
+
+****AST****
+ProgramNode: "foo { |bar,| }\nfoo in [bar,]\nfor foo, in bar do end\nfoo, = bar"
+__CallNode: "foo { |bar,| }"
+____BlockNode: "{ |bar,| }"
+______BlockParametersNode: "|bar,|"
+________RequiredParameterNode: "bar"
+________ImplicitRestNode: ","
+__MatchPredicateNode: "foo in [bar,]"
+____CallNode: "foo"
+____ArrayPatternNode: "[bar,]"
+______LocalVariableTargetNode: "bar"
+______ImplicitRestNode: ","
+__ForNode: "for foo, in bar do end"
+____MultiTargetNode: "foo,"
+______LocalVariableTargetNode: "foo"
+______ImplicitRestNode: ","
+____LocalVariableReadNode: "bar"
+__MultiWriteNode: "foo, = bar"
+____LocalVariableTargetNode: "foo"
+____ImplicitRestNode: ","
+____LocalVariableReadNode: "bar"

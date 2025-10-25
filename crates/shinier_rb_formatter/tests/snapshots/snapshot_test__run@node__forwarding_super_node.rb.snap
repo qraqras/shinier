@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/forwarding_super_node.rb
 ---
+****FORMATTED****
 super
 super { |item| puts(item) }
 super { |item|
@@ -22,3 +23,71 @@ result = if condition
 else
   default_value
 end
+
+****AST****
+ProgramNode: "super\n\n# \xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\xe4\xbb\x98\xe3\x81\x8d - \xe8\xa6\xaa\xe3\x83\xa1\xe3\x82\xbd\xe3\x83\x83\xe3\x83\x89\xe3\x81\xab\xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\xe3\x82\x92\xe6\xb8\xa1\xe3\x81\x99\nsuper { |item| puts item }\n\n# \xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\xe4\xbb\x98\xe3\x81\x8d - \xe8\xa4\x87\xe6\x95\xb0\xe8\xa1\x8c\nsuper do |item|\n  process(item)\n  yield item\nend\n\n# \xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\xe4\xbb\x98\xe3\x81\x8d - \xe8\xa4\x87\xe9\x9b\x91\xe3\x81\xaa\xe5\x87\xa6\xe7\x90\x86\nsuper { |x, y|\n  result = x + y\n  result * 2\n}\n\n# \xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\xe4\xbb\x98\xe3\x81\x8d - \xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\xe3\x83\x91\xe3\x83\xa9\xe3\x83\xa1\xe3\x83\xbc\xe3\x82\xbf\xe3\x81\xaa\xe3\x81\x97\nsuper { puts \"no parameters\" }\n\n# \xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\xe4\xbb\x98\xe3\x81\x8d - \xe3\x83\x8d\xe3\x82\xb9\xe3\x83\x88\xe3\x81\x97\xe3\x81\x9f\xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\nsuper { |items|\n  items.each { |item|\n    puts item\n  }\n}\n\n# \xe3\x83\xa1\xe3\x82\xbd\xe3\x83\x83\xe3\x83\x89\xe3\x83\x81\xe3\x82\xa7\xe3\x83\xbc\xe3\x83\xb3\xe3\x81\xa8\xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\nsuper { |x| x * 2 }.map(&:to_s)\n\n# \xe6\x9d\xa1\xe4\xbb\xb6\xe5\xbc\x8f\xe5\x86\x85\xe3\x81\xa7\xe3\x81\xae super \xe3\x81\xa8\xe3\x83\x96\xe3\x83\xad\xe3\x83\x83\xe3\x82\xaf\nresult = if condition\n  super { |x| x + 1 }\nelse\n  default_value\nend"
+__ForwardingSuperNode: "super"
+__ForwardingSuperNode: "super { |item| puts item }"
+____BlockParametersNode: "|item|"
+______RequiredParameterNode: "item"
+____StatementsNode: "puts item"
+______CallNode: "puts item"
+________LocalVariableReadNode: "item"
+__ForwardingSuperNode: "super do |item|\n  process(item)\n  yield item\nend"
+____BlockParametersNode: "|item|"
+______RequiredParameterNode: "item"
+____StatementsNode: "process(item)\n  yield item"
+______CallNode: "process(item)"
+________LocalVariableReadNode: "item"
+______YieldNode: "yield item"
+________LocalVariableReadNode: "item"
+__ForwardingSuperNode: "super { |x, y|\n  result = x + y\n  result * 2\n}"
+____BlockParametersNode: "|x, y|"
+______RequiredParameterNode: "x"
+______RequiredParameterNode: "y"
+____StatementsNode: "result = x + y\n  result * 2"
+______LocalVariableWriteNode: "result = x + y"
+________CallNode: "x + y"
+__________LocalVariableReadNode: "x"
+__________LocalVariableReadNode: "y"
+______CallNode: "result * 2"
+________LocalVariableReadNode: "result"
+________IntegerNode: "2"
+__ForwardingSuperNode: "super { puts \"no parameters\" }"
+____StatementsNode: "puts \"no parameters\""
+______CallNode: "puts \"no parameters\""
+________StringNode: "\"no parameters\""
+__ForwardingSuperNode: "super { |items|\n  items.each { |item|\n    puts item\n  }\n}"
+____BlockParametersNode: "|items|"
+______RequiredParameterNode: "items"
+____StatementsNode: "items.each { |item|\n    puts item\n  }"
+______CallNode: "items.each { |item|\n    puts item\n  }"
+________LocalVariableReadNode: "items"
+________BlockNode: "{ |item|\n    puts item\n  }"
+__________BlockParametersNode: "|item|"
+____________RequiredParameterNode: "item"
+__________StatementsNode: "puts item"
+____________CallNode: "puts item"
+______________LocalVariableReadNode: "item"
+__CallNode: "super { |x| x * 2 }.map(&:to_s)"
+____ForwardingSuperNode: "super { |x| x * 2 }"
+______BlockParametersNode: "|x|"
+________RequiredParameterNode: "x"
+______StatementsNode: "x * 2"
+________CallNode: "x * 2"
+__________LocalVariableReadNode: "x"
+__________IntegerNode: "2"
+____BlockArgumentNode: "&:to_s"
+______SymbolNode: ":to_s"
+__LocalVariableWriteNode: "result = if condition\n  super { |x| x + 1 }\nelse\n  default_value\nend"
+____IfNode: "if condition\n  super { |x| x + 1 }\nelse\n  default_value\nend"
+______CallNode: "condition"
+______ForwardingSuperNode: "super { |x| x + 1 }"
+________BlockParametersNode: "|x|"
+__________RequiredParameterNode: "x"
+________StatementsNode: "x + 1"
+__________CallNode: "x + 1"
+____________LocalVariableReadNode: "x"
+____________IntegerNode: "1"
+______ElseNode: "else\n  default_value\nend"
+________CallNode: "default_value"

@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/module_node.rb
 ---
+****FORMATTED****
 module Foo end
 module Bar end
 module Baz
@@ -22,3 +23,36 @@ module VeryLongModuleNameThatShouldBeFormattedNicely
   def method_one end
   def method_two end
 end
+
+****AST****
+ProgramNode: "module Foo end\n\nmodule Bar\nend\n\nmodule Baz\n  def hello\n    puts \"Hello\"\n  end\n\n  def world\n    puts \"World\"\n  end\nend\n\nmodule Nested::Module::Path\nend\n\nmodule VeryLongModuleNameThatShouldBeFormattedNicely\n  include SomeModule\n  extend AnotherModule\n\n  CONSTANT = 42\n\n  def method_one\n    # implementation\n  end\n\n  def method_two\n    # implementation\n  end\nend"
+__ModuleNode: "module Foo end"
+____ConstantReadNode: "Foo"
+__ModuleNode: "module Bar\nend"
+____ConstantReadNode: "Bar"
+__ModuleNode: "module Baz\n  def hello\n    puts \"Hello\"\n  end\n\n  def world\n    puts \"World\"\n  end\nend"
+____ConstantReadNode: "Baz"
+____StatementsNode: "def hello\n    puts \"Hello\"\n  end\n\n  def world\n    puts \"World\"\n  end"
+______DefNode: "def hello\n    puts \"Hello\"\n  end"
+________StatementsNode: "puts \"Hello\""
+__________CallNode: "puts \"Hello\""
+____________StringNode: "\"Hello\""
+______DefNode: "def world\n    puts \"World\"\n  end"
+________StatementsNode: "puts \"World\""
+__________CallNode: "puts \"World\""
+____________StringNode: "\"World\""
+__ModuleNode: "module Nested::Module::Path\nend"
+____ConstantPathNode: "Nested::Module::Path"
+______ConstantPathNode: "Nested::Module"
+________ConstantReadNode: "Nested"
+__ModuleNode: "module VeryLongModuleNameThatShouldBeFormattedNicely\n  include SomeModule\n  extend AnotherModule\n\n  CONSTANT = 42\n\n  def method_one\n    # implementation\n  end\n\n  def method_two\n    # implementation\n  end\nend"
+____ConstantReadNode: "VeryLongModuleNameThatShouldBeFormattedNicely"
+____StatementsNode: "include SomeModule\n  extend AnotherModule\n\n  CONSTANT = 42\n\n  def method_one\n    # implementation\n  end\n\n  def method_two\n    # implementation\n  end"
+______CallNode: "include SomeModule"
+________ConstantReadNode: "SomeModule"
+______CallNode: "extend AnotherModule"
+________ConstantReadNode: "AnotherModule"
+______ConstantWriteNode: "CONSTANT = 42"
+________IntegerNode: "42"
+______DefNode: "def method_one\n    # implementation\n  end"
+______DefNode: "def method_two\n    # implementation\n  end"

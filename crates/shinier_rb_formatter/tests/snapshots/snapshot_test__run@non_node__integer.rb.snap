@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/non_node/integer.rb
 ---
+****FORMATTED****
 0
 1
 -1
@@ -11,3 +12,13 @@ input_file: crates/shinier_rb_formatter/tests/ruby/non_node/integer.rb
 4294967296
 -4294967295
 -4294967296
+
+****AST****
+ProgramNode: "0\n1\n-1\n4294967295\n4294967296\n\n-4294967295\n-4294967296"
+__IntegerNode: "0"
+__IntegerNode: "1"
+__IntegerNode: "-1"
+__IntegerNode: "4294967295"
+__IntegerNode: "4294967296"
+__IntegerNode: "-4294967295"
+__IntegerNode: "-4294967296"

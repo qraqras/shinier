@@ -1,11 +1,30 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/index_target_node.rb
 ---
+****FORMATTED****
 foo[bar] = 1
 begin
 rescue  => foo[bar]
 end
 for foo[bar] in baz end
+
+****AST****
+ProgramNode: "foo[bar], = 1\nbegin\nrescue => foo[bar]\nend\nfor foo[bar] in baz do end"
+__MultiWriteNode: "foo[bar], = 1"
+____IndexTargetNode: "foo[bar]"
+______CallNode: "foo"
+______CallNode: "bar"
+____ImplicitRestNode: ","
+____IntegerNode: "1"
+__BeginNode: "begin\nrescue => foo[bar]\nend"
+____IndexTargetNode: "foo[bar]"
+______CallNode: "foo"
+______CallNode: "bar"
+__ForNode: "for foo[bar] in baz do end"
+____IndexTargetNode: "foo[bar]"
+______CallNode: "foo"
+______CallNode: "bar"
+____CallNode: "baz"

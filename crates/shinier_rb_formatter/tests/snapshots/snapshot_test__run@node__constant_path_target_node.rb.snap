@@ -1,9 +1,31 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/constant_path_target_node.rb
 ---
+****FORMATTED****
 Foo::Foo, Bar::Bar = baz
 Foo::Foo::Foo, Bar::Bar::Bar = baz
 ::Foo, ::Bar = baz
+
+****AST****
+ProgramNode: "Foo::Foo, Bar::Bar = baz\n\n# \xe3\x83\x8d\xe3\x82\xb9\xe3\x83\x88\xe3\x81\x95\xe3\x82\x8c\xe3\x81\x9f\xe5\xae\x9a\xe6\x95\xb0\xe3\x83\x91\xe3\x82\xb9\nFoo::Foo::Foo, Bar::Bar::Bar = baz\n\n# \xe3\x83\x88\xe3\x83\x83\xe3\x83\x97\xe3\x83\xac\xe3\x83\x99\xe3\x83\xab\xe5\xae\x9a\xe6\x95\xb0\n::Foo, ::Bar = baz"
+__MultiWriteNode: "Foo::Foo, Bar::Bar = baz"
+____ConstantPathTargetNode: "Foo::Foo"
+______ConstantReadNode: "Foo"
+____ConstantPathTargetNode: "Bar::Bar"
+______ConstantReadNode: "Bar"
+____CallNode: "baz"
+__MultiWriteNode: "Foo::Foo::Foo, Bar::Bar::Bar = baz"
+____ConstantPathTargetNode: "Foo::Foo::Foo"
+______ConstantPathNode: "Foo::Foo"
+________ConstantReadNode: "Foo"
+____ConstantPathTargetNode: "Bar::Bar::Bar"
+______ConstantPathNode: "Bar::Bar"
+________ConstantReadNode: "Bar"
+____CallNode: "baz"
+__MultiWriteNode: "::Foo, ::Bar = baz"
+____ConstantPathTargetNode: "::Foo"
+____ConstantPathTargetNode: "::Bar"
+____CallNode: "baz"

@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/def_node.rb
 ---
+****FORMATTED****
 def method end
 def method_with_params(
   a,
@@ -33,3 +34,46 @@ def complex_method(x)
     raise("negative")
   end
 end
+
+****AST****
+ProgramNode: "def method\nend\n\n# Test case: method with parameters\ndef method_with_params(a, b = 1, *rest, c, d:, **kwargs, &block)\n  puts a\nend\n\n# Test case: class method\ndef self.class_method\n  \"class method\"\nend\n\n# Test case: method with receiver\ndef obj.instance_method\n  \"instance method\"\nend\n\n# Test case: empty method with locals\ndef method_with_locals\n  local_var = 42\n  another_var = \"hello\"\nend\n\n# Test case: method with complex body\ndef complex_method(x)\n  if x > 0\n    return x * 2\n  else\n    raise \"negative\"\n  end\nend"
+__DefNode: "def method\nend"
+__DefNode: "def method_with_params(a, b = 1, *rest, c, d:, **kwargs, &block)\n  puts a\nend"
+____RequiredParameterNode: "a"
+____OptionalParameterNode: "b = 1"
+______IntegerNode: "1"
+____RestParameterNode: "*rest"
+____RequiredParameterNode: "c"
+____RequiredKeywordParameterNode: "d:"
+____KeywordRestParameterNode: "**kwargs"
+____StatementsNode: "puts a"
+______CallNode: "puts a"
+________LocalVariableReadNode: "a"
+__DefNode: "def self.class_method\n  \"class method\"\nend"
+____SelfNode: "self"
+____StatementsNode: "\"class method\""
+______StringNode: "\"class method\""
+__DefNode: "def obj.instance_method\n  \"instance method\"\nend"
+____CallNode: "obj"
+____StatementsNode: "\"instance method\""
+______StringNode: "\"instance method\""
+__DefNode: "def method_with_locals\n  local_var = 42\n  another_var = \"hello\"\nend"
+____StatementsNode: "local_var = 42\n  another_var = \"hello\""
+______LocalVariableWriteNode: "local_var = 42"
+________IntegerNode: "42"
+______LocalVariableWriteNode: "another_var = \"hello\""
+________StringNode: "\"hello\""
+__DefNode: "def complex_method(x)\n  if x > 0\n    return x * 2\n  else\n    raise \"negative\"\n  end\nend"
+____RequiredParameterNode: "x"
+____StatementsNode: "if x > 0\n    return x * 2\n  else\n    raise \"negative\"\n  end"
+______IfNode: "if x > 0\n    return x * 2\n  else\n    raise \"negative\"\n  end"
+________CallNode: "x > 0"
+__________LocalVariableReadNode: "x"
+__________IntegerNode: "0"
+________ReturnNode: "return x * 2"
+__________CallNode: "x * 2"
+____________LocalVariableReadNode: "x"
+____________IntegerNode: "2"
+________ElseNode: "else\n    raise \"negative\"\n  end"
+__________CallNode: "raise \"negative\""
+____________StringNode: "\"negative\""

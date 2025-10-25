@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/singleton_class_node.rb
 ---
+****FORMATTED****
 class << self end
 class << self
   CONSTANT = 123
@@ -11,3 +12,17 @@ class << self
     puts("hello")
   end
 end
+
+****AST****
+ProgramNode: "class << self end\n\nclass << self\n    CONSTANT = 123\n\tdef hello\n\t\tputs \"hello\"\n\tend\nend"
+__SingletonClassNode: "class << self end"
+____SelfNode: "self"
+__SingletonClassNode: "class << self\n    CONSTANT = 123\n\tdef hello\n\t\tputs \"hello\"\n\tend\nend"
+____SelfNode: "self"
+____StatementsNode: "CONSTANT = 123\n\tdef hello\n\t\tputs \"hello\"\n\tend"
+______ConstantWriteNode: "CONSTANT = 123"
+________IntegerNode: "123"
+______DefNode: "def hello\n\t\tputs \"hello\"\n\tend"
+________StatementsNode: "puts \"hello\""
+__________CallNode: "puts \"hello\""
+____________StringNode: "\"hello\""

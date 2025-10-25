@@ -1,9 +1,10 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 9
+assertion_line: 509
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/ensure_node.rb
 ---
+****FORMATTED****
 begin
   foo
 ensure
@@ -37,3 +38,27 @@ def with_return
     return 2
   end
 end
+
+****AST****
+ProgramNode: "begin\n  foo\nensure\n  cleanup\nend\n\n# ensure with rescue\nbegin\n  risky\nrescue\n  handle\nensure\n  always_cleanup\nend\n\n# single-line ensure\nbegin; foo; ensure; cleanup; end\n\n# nested ensure\nbegin\n  begin\n    inner\n  ensure\n    inner_cleanup\n  end\nensure\n  outer_cleanup\nend\n\n# ensure that contains an explicit return (formatting only)\ndef with_return\n  begin\n    1\n  ensure\n    return 2\n  end\nend"
+__BeginNode: "begin\n  foo\nensure\n  cleanup\nend"
+____CallNode: "foo"
+____CallNode: "cleanup"
+__BeginNode: "begin\n  risky\nrescue\n  handle\nensure\n  always_cleanup\nend"
+____CallNode: "risky"
+____CallNode: "handle"
+____CallNode: "always_cleanup"
+__BeginNode: "begin; foo; ensure; cleanup; end"
+____CallNode: "foo"
+____CallNode: "cleanup"
+__BeginNode: "begin\n  begin\n    inner\n  ensure\n    inner_cleanup\n  end\nensure\n  outer_cleanup\nend"
+____BeginNode: "begin\n    inner\n  ensure\n    inner_cleanup\n  end"
+______CallNode: "inner"
+______CallNode: "inner_cleanup"
+____CallNode: "outer_cleanup"
+__DefNode: "def with_return\n  begin\n    1\n  ensure\n    return 2\n  end\nend"
+____StatementsNode: "begin\n    1\n  ensure\n    return 2\n  end"
+______BeginNode: "begin\n    1\n  ensure\n    return 2\n  end"
+________IntegerNode: "1"
+________ReturnNode: "return 2"
+__________IntegerNode: "2"
