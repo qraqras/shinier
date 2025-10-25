@@ -4,8 +4,7 @@ assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/def_node.rb
 ---
-def method
-end
+def method end
 def method_with_params(
   a,
   b = 1,
@@ -17,7 +16,7 @@ def method_with_params(
   )
   puts(a)
 end
-def not implemented: "ruby_prism::bindings::SelfNode".class_method
+def self.class_method
   "class method"
 end
 def obj.instance_method
@@ -29,7 +28,7 @@ def method_with_locals
 end
 def complex_method(x)
   if x.>(0)
-    not implemented: "ruby_prism::bindings::ReturnNode"
+    return x.*(2)
   else
     raise("negative")
   end

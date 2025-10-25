@@ -1,11 +1,25 @@
-use crate::buildable::BuildableList;
-use crate::builder::builder::{group, none, string};
+use crate::buildable::Buildable;
+use crate::builder::builder::{array, string};
 use crate::document::Document;
+use crate::helper::escape::escape;
 use crate::keyword::BACK_QUOTE;
 use ruby_prism::InterpolatedXStringNode;
 
 pub fn build_node(node: Option<&InterpolatedXStringNode>) -> Document {
     let node = node.unwrap();
     let parts = node.parts();
-    group(parts.build_with(none(), Some(string(BACK_QUOTE)), Some(string(BACK_QUOTE))))
+
+    let mut vec = Vec::new();
+    for part in parts.iter() {
+        match part.as_string_node() {
+            Some(string_node) => {
+                let unescaped = string_node.unescaped();
+                vec.push(string(escape(unescaped)));
+            }
+            None => {
+                vec.push(part.build());
+            }
+        }
+    }
+    array(&[string(BACK_QUOTE), array(&vec), string(BACK_QUOTE)])
 }

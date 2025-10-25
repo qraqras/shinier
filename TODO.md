@@ -1,5 +1,19 @@
 # TODO
 
+- [ ] デバッグようにスナップショットにASTを含める
+- [ ] %記法
+- [ ] 文字列エスケープ(escape_slash_in_pattern(), escape())
+- [ ] call_nodeの呼び出し(block関連と+=のようなパターン)
+- [ ] build_symbol_without_colon
+- [ ] block_nodeで複数行のときが無効な構文になる(参考: snapshot_test__run@node__forwarding_super_node.rb.snap)
+- [ ] キーワードの命名整理
+- [ ] インポートの整理
+- [ ] 空行
+- [ ] コメント
+- [ ] doとかthenとか
+- [ ] is_forced_utf8_encoding / is_forced_binary_encoding
+
+
 - [ x ] alias_global_variable_node.rs
 - [ x ] alias_method_node.rs
 - [ x ] alternation_pattern_node.rs
@@ -102,53 +116,52 @@
 - [ x ] match_predicate_node.rs
 - [ x ] match_required_node.rs
 - [ x ] match_write_node.rs
-- [ ] missing_node.rs
-- [ ] mod.rs
-- [ ] module_node.rs
-- [ ] multi_target_node.rs
+- [ x ] missing_node.rs
+- [ x ] module_node.rs
+- [ x ] multi_target_node.rs
 - [ x ] multi_write_node.rs
-- [ ] next_node.rs
-- [ ] nil_node.rs
-- [ ] no_keywords_parameter_node.rs
-- [ ] numbered_parameters_node.rs
-- [ ] numbered_reference_read_node.rs
-- [ ] optional_keyword_parameter_node.rs
-- [ ] optional_parameter_node.rs
-- [ ] or_node.rs
-- [ ] parameters_node.rs
-- [ ] parentheses_node.rs
-- [ ] pinned_expression_node.rs
-- [ ] pinned_variable_node.rs
-- [ ] post_execution_node.rs
-- [ ] pre_execution_node.rs
-- [ ] program_node.rs
-- [ ] range_node.rs
-- [ ] rational_node.rs
-- [ ] redo_node.rs
-- [ ] regular_expression_node.rs
-- [ ] required_keyword_parameter_node.rs
-- [ ] required_parameter_node.rs
-- [ ] rescue_modifier_node.rs
-- [ ] rescue_node.rs
-- [ ] rest_parameter_node.rs
-- [ ] retry_node.rs
-- [ ] return_node.rs
-- [ ] self_node.rs
-- [ ] shareable_constant_node.rs
-- [ ] singleton_class_node.rs
-- [ ] source_encoding_node.rs
-- [ ] source_file_node.rs
-- [ ] source_line_node.rs
-- [ ] splat_node.rs
-- [ ] statements_node.rs
-- [ ] string_node.rs
-- [ ] super_node.rs
-- [ ] symbol_node.rs
+- [ x ] next_node.rs
+- [ x ] nil_node.rs
+- [ x ] no_keywords_parameter_node.rs
+- [ x ] numbered_parameters_node.rs
+- [ x ] numbered_reference_read_node.rs
+- [ x ] optional_keyword_parameter_node.rs
+- [ x ] optional_parameter_node.rs
+- [ x ] or_node.rs
+- [ x ] parameters_node.rs
+- [ x ] parentheses_node.rs
+- [ x ] pinned_expression_node.rs
+- [ x ] pinned_variable_node.rs
+- [ x ] post_execution_node.rs
+- [ x ] pre_execution_node.rs
+- [ x ] program_node.rs
+- [ x ] range_node.rs
+- [ x ] rational_node.rs
+- [ x ] redo_node.rs
+- [ x ] regular_expression_node.rs
+- [ x ] required_keyword_parameter_node.rs
+- [ x ] required_parameter_node.rs
+- [ x ] rescue_modifier_node.rs
+- [ x ] rescue_node.rs
+- [ x ] rest_parameter_node.rs
+- [ x ] retry_node.rs
+- [ x ] return_node.rs
+- [ x ] self_node.rs
+- [ x ] shareable_constant_node.rs
+- [ x ] singleton_class_node.rs
+- [ x ] source_encoding_node.rs
+- [ x ] source_file_node.rs
+- [ x ] source_line_node.rs
+- [ x ] splat_node.rs
+- [ x ] statements_node.rs
+- [ x ] string_node.rs
+- [ x ] super_node.rs
+- [ x ] symbol_node.rs
 - [ x ] true_node.rs
-- [ ] undef_node.rs
-- [ ] unless_node.rs
-- [ ] until_node.rs
+- [ x ] undef_node.rs
+- [ x ] unless_node.rs
+- [ x ] until_node.rs
 - [ x ] when_node.rs
-- [ ] while_node.rs
-- [ ] x_string_node.rs
-- [ ] yield_node.rs
+- [ x ] while_node.rs
+- [ x ] x_string_node.rs
+- [ x ] yield_node.rs

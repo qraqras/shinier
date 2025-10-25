@@ -34,6 +34,6 @@ def with_return
   begin
     1
   ensure
-    not implemented: "ruby_prism::bindings::ReturnNode"
+    return 2
   end
 end

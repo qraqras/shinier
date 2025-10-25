@@ -1,4 +1,4 @@
-use crate::buildable::{Buildable, BuildableList};
+use crate::buildable::BuildableList;
 use crate::builder::builder::{array, group, indent, line, softline, string};
 use crate::document::Document;
 use crate::keyword::{BRACKETS, COMMA};
@@ -7,13 +7,11 @@ use ruby_prism::ArrayNode;
 pub fn build_node(node: Option<&ArrayNode>) -> Document {
     let node = node.unwrap();
     let elements = node.elements();
-    let opening_loc = node.opening_loc();
-    let closing_loc = node.closing_loc();
     let separator = array(&[string(COMMA), line()]);
     group(array(&[
-        opening_loc.build_or(string(BRACKETS.0)),
+        string(BRACKETS.0),
         indent(array(&[softline(), elements.build(separator)])),
         softline(),
-        closing_loc.build_or(string(BRACKETS.1)),
+        string(BRACKETS.1),
     ]))
 }

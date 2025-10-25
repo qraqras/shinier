@@ -5,3 +5,7 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/integer_node.rb
 ---
 1
+0b1
+0o1
+0d1
+0x1

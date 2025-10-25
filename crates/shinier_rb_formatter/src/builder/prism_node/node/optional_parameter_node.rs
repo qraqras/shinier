@@ -1,9 +1,8 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, space, string};
 use crate::document::Document;
+use crate::keyword::WRITE_OPERATOR;
 use ruby_prism::OptionalParameterNode;
-
-const OPERATOR: &str = "=";
 
 pub fn build_node(node: Option<&OptionalParameterNode>) -> Document {
     let node = node.unwrap();
@@ -12,8 +11,8 @@ pub fn build_node(node: Option<&OptionalParameterNode>) -> Document {
     group(array(&[
         name.build(),
         space(),
-        string(OPERATOR),
-        line(),
+        string(WRITE_OPERATOR),
+        space(),
         value.build(),
     ]))
 }

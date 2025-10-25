@@ -1,8 +1,8 @@
+use crate::builder::builder::string;
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use crate::keyword::REDO;
+use ruby_prism::RedoNode;
 
-pub fn build_node(node: Option<&RedoNode>) -> Document {
-    let node = node.unwrap();
-        return string(format!("not implemented: {:?}", std::any::type_name_of_val(node)));
+pub fn build_node(_node: Option<&RedoNode>) -> Document {
+    string(REDO)
 }

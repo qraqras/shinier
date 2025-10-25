@@ -1,11 +1,8 @@
+use crate::builder::builder::string;
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use crate::keyword::RETRY;
+use ruby_prism::RetryNode;
 
-pub fn build_node(node: Option<&RetryNode>) -> Document {
-    let node = node.unwrap();
-    return string(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+pub fn build_node(_node: Option<&RetryNode>) -> Document {
+    string(RETRY)
 }

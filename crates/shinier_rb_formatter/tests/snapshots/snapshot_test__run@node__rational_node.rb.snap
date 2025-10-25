@@ -1,0 +1,12 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/rational_node.rb
+---
+1.0r
+1.5r
+0b11r
+0o77r
+0d99r
+0xffr

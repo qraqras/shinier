@@ -1,21 +1,19 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, none, string};
 use crate::document::Document;
+use crate::keyword::{ASTERISK, COLON};
 use ruby_prism::RequiredKeywordParameterNode;
-
-const REPEATED_PARAMETER_PREFIX: &str = "*";
-const REQUIRED_KEYWORD_PARAMETER_SUFFIX: &str = ":";
 
 pub fn build_node(node: Option<&RequiredKeywordParameterNode>) -> Document {
     let node = node.unwrap();
     let is_repeated_parameter = node.is_repeated_parameter();
     let name = node.name();
-    array(&[
+    group(array(&[
         match is_repeated_parameter {
-            true => string(REPEATED_PARAMETER_PREFIX),
+            true => string(ASTERISK),
             false => none(),
         },
         name.build(),
-        string(REQUIRED_KEYWORD_PARAMETER_SUFFIX),
-    ])
+        string(COLON),
+    ]))
 }

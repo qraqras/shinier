@@ -1,12 +1,15 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, none, string};
 use crate::document::Document;
+use crate::keyword::ASTERISK;
 use ruby_prism::SplatNode;
 
 pub fn build_node(node: Option<&SplatNode>) -> Document {
-    let node = node.unwrap();
-    if let Some(node) = node.expression() {
-        return array(&[string("*"), node.build()]);
+    match node {
+        Some(node) => {
+            let expression = node.expression();
+            array(&[string(ASTERISK), expression.build()])
+        }
+        None => none(),
     }
-    string("") // TODO: 要確認
 }

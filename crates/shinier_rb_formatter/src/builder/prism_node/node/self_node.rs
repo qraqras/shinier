@@ -1,11 +1,8 @@
+use crate::builder::builder::string;
 use crate::document::Document;
-use crate::builder::builder::*;
-use ruby_prism::*;
+use crate::keyword::SELF;
+use ruby_prism::SelfNode;
 
-pub fn build_node(node: Option<&SelfNode>) -> Document {
-    let node = node.unwrap();
-    return string(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+pub fn build_node(_node: Option<&SelfNode>) -> Document {
+    string(SELF)
 }

@@ -1,11 +1,18 @@
-use crate::builder::builder::*;
+use crate::builder::Buildable;
+use crate::builder::builder::{array, group, indent, line, space, string};
 use crate::document::Document;
-use ruby_prism::*;
+use crate::keyword::{BRACES, POST_EXECUTION};
+use ruby_prism::PostExecutionNode;
 
 pub fn build_node(node: Option<&PostExecutionNode>) -> Document {
     let node = node.unwrap();
-    return string(format!(
-        "not implemented: {:?}",
-        std::any::type_name_of_val(node)
-    ));
+    let statements = node.statements();
+    group(array(&[
+        string(POST_EXECUTION),
+        space(),
+        string(BRACES.0),
+        indent(array(&[line(), statements.build()])),
+        line(),
+        string(BRACES.1),
+    ]))
 }

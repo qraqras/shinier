@@ -4,5 +4,4 @@ assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/keyword_rest_parameter_node.rb
 ---
-def a(**b)
-end
+def a(**b) end

@@ -1,0 +1,15 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/while_node.rb
+---
+while foo
+  bar
+end
+while foo
+  bar
+end
+begin
+  puts(x)
+end while x.<(10)

@@ -5,7 +5,7 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/symbol_node.rb
 ---
 :foo
-%i[:foo]
+[:foo]
 :symbol
 :my_symbol
 :valid?
@@ -42,16 +42,14 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/symbol_node.rb
 :symbol-with-dashes
 :symbol.with.dots
 :symbol@with@at
-:symbol
-with
-newlines
-:symbol	with	tabs
+:symbol\nwith\nnewlines
+:symbol\twith\ttabs
 :"symbol_#{value}"
 :"prefix_#{x.+(y)}_suffix"
 :
-:日本語
-:émoji
-:🚀
+:æ¥æ¬èª
+:Ã©moji
+:ð
 def foo
   :method_name
 end

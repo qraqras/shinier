@@ -1,0 +1,2 @@
+def a(**nil)
+end

@@ -5,5 +5,5 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/string_node.rb
 ---
 "foo"
-%w[foo]
+["foo"]
 "foo #{bar} baz"

@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, line, space, string};
 use crate::document::Document;
 use crate::helper::build_rest::build_rest;
 use crate::keyword::{COMMA, WRITE_OPERATOR};
@@ -13,11 +13,11 @@ pub fn build_node(node: Option<&MultiWriteNode>) -> Document {
     let value = node.value();
 
     let separator = array(&[string(COMMA), line()]);
-    array(&[
+    group(array(&[
         build_rest(lefts, rest, rights, &separator),
         space(),
         string(WRITE_OPERATOR),
         line(),
         value.build(),
-    ])
+    ]))
 }

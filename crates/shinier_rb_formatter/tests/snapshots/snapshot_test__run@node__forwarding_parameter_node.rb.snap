@@ -4,5 +4,4 @@ assertion_line: 9
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/forwarding_parameter_node.rb
 ---
-def foo(...)
-end
+def foo(...) end

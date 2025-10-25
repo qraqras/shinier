@@ -7,5 +7,8 @@ use ruby_prism::ForwardingSuperNode;
 pub fn build_node(node: Option<&ForwardingSuperNode>) -> Document {
     let node = node.unwrap();
     let block = node.block();
-    group(array(&[string(SUPER), space(), block.build()]))
+    group(array(&[
+        string(SUPER),
+        block.build_with(Some(space()), None),
+    ]))
 }

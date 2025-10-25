@@ -1,0 +1,15 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 9
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/parentheses_node.rb
+---
+(10.+(34))
+(
+  foo.+(bar).+(baz)
+  foo.+(bar).+(baz)
+  foo.+(bar).+(baz)
+  foo.+(bar).+(baz)
+  foo.+(bar).+(baz)
+  foo.+(bar).+(baz)
+)

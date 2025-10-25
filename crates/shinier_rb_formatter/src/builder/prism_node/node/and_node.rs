@@ -1,7 +1,7 @@
 use crate::builder::Buildable;
-use crate::builder::builder::{array, line, space, string};
+use crate::builder::builder::{array, group, indent, line, space, string};
 use crate::document::Document;
-use crate::keyword::LOGICAL_AND;
+use crate::keyword::LogicalOperator;
 use ruby_prism::AndNode;
 
 pub fn build_node(node: Option<&AndNode>) -> Document {
@@ -11,8 +11,7 @@ pub fn build_node(node: Option<&AndNode>) -> Document {
     array(&[
         left.build(),
         space(),
-        string(LOGICAL_AND),
-        line(),
-        right.build(),
+        string(LogicalOperator::And.as_str()),
+        indent(array(&[line(), right.build()])),
     ])
 }
