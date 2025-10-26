@@ -5,19 +5,22 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/alias_method_node.rb
 ---
 ****FORMATTED****
-alias foo bar
-alias foo bar
-alias
-  foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+alias_method :foo, :bar
+alias_method :foo, :bar
+alias_method :foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo, :barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+alias_method :foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo, :barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
 
 ****AST****
-ProgramNode: "alias foo bar\nalias\n  foo bar\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+ProgramNode: "alias foo bar\n\n# unnecessary line break\nalias\nfoo bar\n\n# long expression\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\n\n# long expression with unnecessary line break\nalias\nfoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
 __AliasMethodNode: "alias foo bar"
 ____SymbolNode: "foo"
 ____SymbolNode: "bar"
-__AliasMethodNode: "alias\n  foo bar"
+__AliasMethodNode: "alias\nfoo bar"
 ____SymbolNode: "foo"
 ____SymbolNode: "bar"
-__AliasMethodNode: "alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
-____SymbolNode: "foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
-____SymbolNode: "barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+__AliasMethodNode: "alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____SymbolNode: "foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+____SymbolNode: "barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+__AliasMethodNode: "alias\nfoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____SymbolNode: "foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+____SymbolNode: "barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"

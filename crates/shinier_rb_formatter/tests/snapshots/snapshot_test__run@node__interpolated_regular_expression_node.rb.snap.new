@@ -1,0 +1,16 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 509
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/interpolated_regular_expression_node.rb
+---
+****FORMATTED****
+/foo\s#{bar}\sbaz/
+
+****AST****
+ProgramNode: "/foo #{bar} baz/"
+__InterpolatedRegularExpressionNode: "/foo #{bar} baz/"
+____StringNode: "foo "
+____EmbeddedStatementsNode: "#{bar}"
+______CallNode: "bar"
+____StringNode: " baz"

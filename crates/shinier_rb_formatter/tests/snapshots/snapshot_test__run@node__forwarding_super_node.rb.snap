@@ -9,10 +9,12 @@ super
 super { |item| puts(item) }
 super { |item|
   process(item)
-  yield item }
+  yield item
+}
 super { |x, y|
   result = x.+(y)
-  result.*(2) }
+  result.*(2)
+}
 super { puts("no parameters") }
 super { |items|
   items.each{ |item| puts(item) }

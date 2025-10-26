@@ -5,68 +5,119 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
 ---
 ****FORMATTED****
-foo = [
-  0,
-  1,
-  2,
-  0,
-  1,
-  2,
-  0,
-  1,
-  2,
-  0,
-  1,
-  2,
-  0,
-  1,
-  2,
-  0,
-  1,
-  2,
-  0,
-  1,
-  2,
-  0,
-  1,
-  2
+[1, 2, 3]
+[]
+[1]
+[1]
+[1]
+[
+  1000,
+  2000,
+  3000,
+  4000,
+  5000,
+  6000,
+  7000,
+  8000,
+  9000,
+  10000,
+  11000,
+  12000,
+  13000,
+  14000,
+  15000,
+  16000,
+  17000,
+  18000,
+  19000,
+  20000
 ]
-bar = [9, *foo, 9000]
-baz = []
+%w[foo bar]
+%W[foo #{bar}]
+%i[foo bar]
+%I[foo #{bar}]
+[]
+%w[foo, bar]
+[]
+%i[foo, bar]
+%w[foo bar]
+%i[foo bar]
+["foo"]
+[:foo]
+["foo", :bar]
+%w[foo\sbar\t baz\n]
 
 ****AST****
-ProgramNode: "foo = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]\nbar = [9, *foo, 9000]\nbaz = []"
-__LocalVariableWriteNode: "foo = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]"
-____ArrayNode: "[0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]"
-______IntegerNode: "0"
-______IntegerNode: "1"
-______IntegerNode: "2"
-______IntegerNode: "0"
-______IntegerNode: "1"
-______IntegerNode: "2"
-______IntegerNode: "0"
-______IntegerNode: "1"
-______IntegerNode: "2"
-______IntegerNode: "0"
-______IntegerNode: "1"
-______IntegerNode: "2"
-______IntegerNode: "0"
-______IntegerNode: "1"
-______IntegerNode: "2"
-______IntegerNode: "0"
-______IntegerNode: "1"
-______IntegerNode: "2"
-______IntegerNode: "0"
-______IntegerNode: "1"
-______IntegerNode: "2"
-______IntegerNode: "0"
-______IntegerNode: "1"
-______IntegerNode: "2"
-__LocalVariableWriteNode: "bar = [9, *foo, 9000]"
-____ArrayNode: "[9, *foo, 9000]"
-______IntegerNode: "9"
-______SplatNode: "*foo"
-________LocalVariableReadNode: "foo"
-______IntegerNode: "9000"
-__LocalVariableWriteNode: "baz = []"
-____ArrayNode: "[]"
+ProgramNode: "[1, 2, 3]\n\n# empty array\n[]\n\n# single element array\n[1]\n\n# unnecessary commas\n[1,]\n\n# unnecessary line breaks\n[\n  1\n]\n\n# long array\n[1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000]\n\n\n# percent literal arrays\n%w(foo bar)\n%W[foo #{bar}]\n%i{foo bar}\n%I\\foo #{bar}\\\n\n# excessive percent literal arrays\n%w()\n%W(foo, bar)\n%i()\n%I(foo, bar)\n\n# recommended percent literal arrays\n[\"foo\", \"bar\"]\n[:foo, :bar]\n\n# not recommended percent literal arrays\n[\"foo\"]\n[:foo]\n[\"foo\", :bar]\n\n# escape sequences in percent literal arrays\n%w(foo\\ bar\\t baz\\n)"
+__ArrayNode: "[1, 2, 3]"
+____IntegerNode: "1"
+____IntegerNode: "2"
+____IntegerNode: "3"
+__ArrayNode: "[]"
+__ArrayNode: "[1]"
+____IntegerNode: "1"
+__ArrayNode: "[1,]"
+____IntegerNode: "1"
+__ArrayNode: "[\n  1\n]"
+____IntegerNode: "1"
+__ArrayNode: "[1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000]"
+____IntegerNode: "1000"
+____IntegerNode: "2000"
+____IntegerNode: "3000"
+____IntegerNode: "4000"
+____IntegerNode: "5000"
+____IntegerNode: "6000"
+____IntegerNode: "7000"
+____IntegerNode: "8000"
+____IntegerNode: "9000"
+____IntegerNode: "10000"
+____IntegerNode: "11000"
+____IntegerNode: "12000"
+____IntegerNode: "13000"
+____IntegerNode: "14000"
+____IntegerNode: "15000"
+____IntegerNode: "16000"
+____IntegerNode: "17000"
+____IntegerNode: "18000"
+____IntegerNode: "19000"
+____IntegerNode: "20000"
+__ArrayNode: "%w(foo bar)"
+____StringNode: "foo"
+____StringNode: "bar"
+__ArrayNode: "%W[foo #{bar}]"
+____StringNode: "foo"
+____InterpolatedStringNode: "#{bar}"
+______EmbeddedStatementsNode: "#{bar}"
+________CallNode: "bar"
+__ArrayNode: "%i{foo bar}"
+____SymbolNode: "foo"
+____SymbolNode: "bar"
+__ArrayNode: "%I\\foo #{bar}\\"
+____SymbolNode: "foo"
+____InterpolatedSymbolNode: "#{bar}"
+______EmbeddedStatementsNode: "#{bar}"
+________CallNode: "bar"
+__ArrayNode: "%w()"
+__ArrayNode: "%W(foo, bar)"
+____StringNode: "foo,"
+____StringNode: "bar"
+__ArrayNode: "%i()"
+__ArrayNode: "%I(foo, bar)"
+____SymbolNode: "foo,"
+____SymbolNode: "bar"
+__ArrayNode: "[\"foo\", \"bar\"]"
+____StringNode: "\"foo\""
+____StringNode: "\"bar\""
+__ArrayNode: "[:foo, :bar]"
+____SymbolNode: ":foo"
+____SymbolNode: ":bar"
+__ArrayNode: "[\"foo\"]"
+____StringNode: "\"foo\""
+__ArrayNode: "[:foo]"
+____SymbolNode: ":foo"
+__ArrayNode: "[\"foo\", :bar]"
+____StringNode: "\"foo\""
+____SymbolNode: ":bar"
+__ArrayNode: "%w(foo\\ bar\\t baz\\n)"
+____StringNode: "foo\\ bar\\t"
+____StringNode: "baz\\n"

@@ -5,8 +5,18 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/arguments_node.rb
 ---
 ****FORMATTED****
-func(foo, bar, baz)
-func(
+return foo, bar, baz
+return foo, bar, baz
+return foo, bar, baz
+return foo,
+  bar,
+  baz,
+  foo,
+  bar,
+  baz,
+  foo,
+  bar,
+  baz,
   foo,
   bar,
   baz,
@@ -22,15 +32,31 @@ func(
   foo,
   bar,
   baz
-)
 
 ****AST****
-ProgramNode: "func foo, bar, baz\n\nfunc foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz"
-__CallNode: "func foo, bar, baz"
+ProgramNode: "return foo, bar, baz\n\n# unnecessary line breaks\nreturn foo, bar,\nbaz\nreturn foo,\nbar,\nbaz\n\n# long argument list\nreturn foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz"
+__ReturnNode: "return foo, bar, baz"
 ____CallNode: "foo"
 ____CallNode: "bar"
 ____CallNode: "baz"
-__CallNode: "func foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz"
+__ReturnNode: "return foo, bar,\nbaz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+__ReturnNode: "return foo,\nbar,\nbaz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+__ReturnNode: "return foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
 ____CallNode: "foo"
 ____CallNode: "bar"
 ____CallNode: "baz"

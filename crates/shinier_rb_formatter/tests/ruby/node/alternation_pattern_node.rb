@@ -1,3 +1,15 @@
-0 => 0 | 1
-0 => 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20
-0 => 1000000 | 2000000 | 3000000 | 4000000 | 5000000 | 6000000 | 7000000 | 8000000 | 9000000 | 10000000 | 11000000 | 12000000 | 13000000 | 14000000
+# Docs.rs
+foo => bar | baz
+
+# unnecessary line break
+foo =>
+bar | baz
+foo => bar |
+baz
+
+# long expression
+foo => bar | baz | bar | baz | bar | baz | bar | baz | bar | baz | bar | baz | bar | baz | bar | baz | bar | baz | bar | baz
+
+# long expression with unnecessary line break
+foo => bar | baz | bar | baz | bar | baz | bar | baz | bar | baz |
+bar | baz | bar | baz | bar | baz | bar | baz | bar | baz

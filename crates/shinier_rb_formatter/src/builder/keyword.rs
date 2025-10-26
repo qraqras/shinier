@@ -1,4 +1,5 @@
 pub const ALIAS: &str = "alias";
+pub const ALIAS_METHOD: &str = "alias_method";
 pub const ALTERNATION: &str = "|";
 pub const ARROW: &str = "->";
 pub const ASTERISK: &str = "*";
@@ -45,6 +46,10 @@ pub const POST_EXECUTION: &str = "END";
 pub const PRE_EXECUTION: &str = "BEGIN";
 pub const PROC_AND: &str = "&";
 pub const RATIONAL_SUFFIX: &str = "r";
+pub const PERCENT_LOWER_I: &str = "%i";
+pub const PERCENT_LOWER_W: &str = "%w";
+pub const PERCENT_UPPER_I: &str = "%I";
+pub const PERCENT_UPPER_W: &str = "%W";
 pub const REDO: &str = "redo";
 pub const RESCUE: &str = "rescue";
 pub const RETRY: &str = "retry";

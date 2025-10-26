@@ -1,0 +1,147 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 509
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/symbol_node.rb
+---
+****FORMATTED****
+:foo
+[:foo]
+:symbol
+:my_symbol
+:valid?
+:save!
+:name=
+:+
+:-
+:*
+:/
+:%
+:**
+:==
+:!=
+:<
+:>
+:<=
+:>=
+:<=>
+:===
+:=~
+:!~
+:[]
+:[]=
+:<<
+:>>
+:&
+:|
+:^
+:~
+:!
+:single\squoted\ssymbol
+:double\squoted\ssymbol
+:symbol\swith\sspaces
+:symbol-with-dashes
+:symbol.with.dots
+:symbol@with@at
+:symbol\nwith\nnewlines
+:symbol\twith\ttabs
+:"symbol_#{value}"
+:"prefix_#{x.+(y)}_suffix"
+:
+:æ¥æ¬èª
+:Ã©moji
+:ð
+def foo
+  :method_name
+end
+{ key: :value }
+{ key: :value }
+%i[first second third]
+case value
+when :option1
+  :result1
+when :option2
+  :result2
+end
+
+****AST****
+ProgramNode: ":foo\n%i[foo]\n\n# \xe5\x9f\xba\xe6\x9c\xac\xe7\x9a\x84\xe3\x81\xaa\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\n:symbol\n\n# \xe3\x82\xa2\xe3\x83\xb3\xe3\x83\x80\xe3\x83\xbc\xe3\x82\xb9\xe3\x82\xb3\xe3\x82\xa2\xe4\xbb\x98\xe3\x81\x8d\n:my_symbol\n\n# \xe7\x96\x91\xe5\x95\x8f\xe7\xac\xa6\xe4\xbb\x98\xe3\x81\x8d\n:valid?\n\n# \xe6\x84\x9f\xe5\x98\x86\xe7\xac\xa6\xe4\xbb\x98\xe3\x81\x8d\n:save!\n\n# \xe3\x82\xa4\xe3\x82\xb3\xe3\x83\xbc\xe3\x83\xab\xe4\xbb\x98\xe3\x81\x8d\n:name=\n\n# \xe6\xbc\x94\xe7\xae\x97\xe5\xad\x90\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\n:+\n:-\n:*\n:/\n:%\n:**\n:==\n:!=\n:<\n:>\n:<=\n:>=\n:<=>\n:===\n:=~\n:!~\n:[]\n:[]=\n:<<\n:>>\n:&\n:|\n:^\n:~\n:!\n\n# \xe3\x82\xaf\xe3\x82\xa9\xe3\x83\xbc\xe3\x83\x88\xe4\xbb\x98\xe3\x81\x8d\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\n:\'single quoted symbol\'\n:\"double quoted symbol\"\n\n# \xe3\x82\xb9\xe3\x83\x9a\xe3\x83\xbc\xe3\x82\xb9\xe3\x82\x92\xe5\x90\xab\xe3\x82\x80\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\n:\"symbol with spaces\"\n\n# \xe7\x89\xb9\xe6\xae\x8a\xe6\x96\x87\xe5\xad\x97\xe3\x82\x92\xe5\x90\xab\xe3\x82\x80\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\n:\"symbol-with-dashes\"\n:\"symbol.with.dots\"\n:\"symbol@with@at\"\n\n# \xe3\x82\xa8\xe3\x82\xb9\xe3\x82\xb1\xe3\x83\xbc\xe3\x83\x97\xe3\x82\xb7\xe3\x83\xbc\xe3\x82\xb1\xe3\x83\xb3\xe3\x82\xb9\xe3\x82\x92\xe5\x90\xab\xe3\x82\x80\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\n:\"symbol\\nwith\\nnewlines\"\n:\"symbol\\twith\\ttabs\"\n\n# \xe8\xa3\x9c\xe9\x96\x93\xe3\x82\x92\xe5\x90\xab\xe3\x82\x80\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\n:\"symbol_#{value}\"\n:\"prefix_#{x + y}_suffix\"\n\n# \xe7\xa9\xba\xe3\x81\xae\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\n:\"\"\n\n# Unicode\xe6\x96\x87\xe5\xad\x97\xe3\x82\x92\xe5\x90\xab\xe3\x82\x80\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\n:\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e\n:\xc3\xa9moji\n:\xf0\x9f\x9a\x80\n\n# \xe3\x83\xa1\xe3\x82\xbd\xe3\x83\x83\xe3\x83\x89\xe5\x90\x8d\xe3\x81\xa8\xe3\x81\x97\xe3\x81\xa6\xe3\x81\xae\xe3\x82\xb7\xe3\x83\xb3\xe3\x83\x9c\xe3\x83\xab\ndef foo\n  :method_name\nend\n\n# \xe3\x83\x8f\xe3\x83\x83\xe3\x82\xb7\xe3\x83\xa5\xe3\x81\xae\xe3\x82\xad\xe3\x83\xbc\xe3\x81\xa8\xe3\x81\x97\xe3\x81\xa6\n{ :key => :value }\n{ key: :value }\n\n# \xe9\x85\x8d\xe5\x88\x97\xe5\x86\x85\n[:first, :second, :third]\n\n# case\xe6\x96\x87\xe3\x81\xa7\ncase value\nwhen :option1\n  :result1\nwhen :option2\n  :result2\nend"
+__SymbolNode: ":foo"
+__ArrayNode: "%i[foo]"
+____SymbolNode: "foo"
+__SymbolNode: ":symbol"
+__SymbolNode: ":my_symbol"
+__SymbolNode: ":valid?"
+__SymbolNode: ":save!"
+__SymbolNode: ":name="
+__SymbolNode: ":+"
+__SymbolNode: ":-"
+__SymbolNode: ":*"
+__SymbolNode: ":/"
+__SymbolNode: ":%"
+__SymbolNode: ":**"
+__SymbolNode: ":=="
+__SymbolNode: ":!="
+__SymbolNode: ":<"
+__SymbolNode: ":>"
+__SymbolNode: ":<="
+__SymbolNode: ":>="
+__SymbolNode: ":<=>"
+__SymbolNode: ":==="
+__SymbolNode: ":=~"
+__SymbolNode: ":!~"
+__SymbolNode: ":[]"
+__SymbolNode: ":[]="
+__SymbolNode: ":<<"
+__SymbolNode: ":>>"
+__SymbolNode: ":&"
+__SymbolNode: ":|"
+__SymbolNode: ":^"
+__SymbolNode: ":~"
+__SymbolNode: ":!"
+__SymbolNode: ":\'single quoted symbol\'"
+__SymbolNode: ":\"double quoted symbol\""
+__SymbolNode: ":\"symbol with spaces\""
+__SymbolNode: ":\"symbol-with-dashes\""
+__SymbolNode: ":\"symbol.with.dots\""
+__SymbolNode: ":\"symbol@with@at\""
+__SymbolNode: ":\"symbol\\nwith\\nnewlines\""
+__SymbolNode: ":\"symbol\\twith\\ttabs\""
+__InterpolatedSymbolNode: ":\"symbol_#{value}\""
+____StringNode: "symbol_"
+____EmbeddedStatementsNode: "#{value}"
+______CallNode: "value"
+__InterpolatedSymbolNode: ":\"prefix_#{x + y}_suffix\""
+____StringNode: "prefix_"
+____EmbeddedStatementsNode: "#{x + y}"
+______CallNode: "x + y"
+________CallNode: "x"
+________CallNode: "y"
+____StringNode: "_suffix"
+__SymbolNode: ":\"\""
+__SymbolNode: ":\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e"
+__SymbolNode: ":\xc3\xa9moji"
+__SymbolNode: ":\xf0\x9f\x9a\x80"
+__DefNode: "def foo\n  :method_name\nend"
+____StatementsNode: ":method_name"
+______SymbolNode: ":method_name"
+__HashNode: "{ :key => :value }"
+____AssocNode: ":key => :value"
+______SymbolNode: ":key"
+______SymbolNode: ":value"
+__HashNode: "{ key: :value }"
+____AssocNode: "key: :value"
+______SymbolNode: "key:"
+______SymbolNode: ":value"
+__ArrayNode: "[:first, :second, :third]"
+____SymbolNode: ":first"
+____SymbolNode: ":second"
+____SymbolNode: ":third"
+__CaseNode: "case value\nwhen :option1\n  :result1\nwhen :option2\n  :result2\nend"
+____CallNode: "value"
+____WhenNode: "when :option1\n  :result1"
+______SymbolNode: ":option1"
+______SymbolNode: ":result1"
+____WhenNode: "when :option2\n  :result2"
+______SymbolNode: ":option2"
+______SymbolNode: ":result2"
