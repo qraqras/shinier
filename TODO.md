@@ -2,8 +2,10 @@
 
 - [ x ] デバッグ用にスナップショットにASTを含める
 - [ x ] Fill実装
-- [ ] %記法
-- [ ] 文字列エスケープ(escape_slash_in_pattern(), escape())
+- [ x ] %記法
+- [ x ] LineSuffix/LineSuffixBoundaryを実装
+- [ ] 空行の制御
+- [ ] コメントの制御
 - [ ] call_nodeの呼び出し(block関連と+=のようなパターン)
 - [ ] build_symbol_without_colon
 - [ ] block_nodeで複数行のときが無効な構文になる(参考: snapshot_test__run@node__forwarding_super_node.rb.snap)

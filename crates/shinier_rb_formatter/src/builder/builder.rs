@@ -1,4 +1,4 @@
-use crate::document::{Document, Group, IfBreak, Indent, Line};
+use crate::document::{Document, Group, IfBreak, Indent, Line, LineSuffix, LineSuffixBoundary};
 use std::cell::Cell;
 
 thread_local! {
@@ -94,6 +94,18 @@ pub fn softline() -> Document {
         hard: false,
         literal: false,
         soft: true,
+    })
+}
+
+pub fn line_suffix(contents: Document) -> Document {
+    Document::LineSuffix(LineSuffix {
+        contents: Box::new(contents),
+    })
+}
+
+pub fn line_suffix_boundary() -> Document {
+    Document::LineSuffixBoundary(LineSuffixBoundary {
+        hardline: Box::new(hardline()),
     })
 }
 

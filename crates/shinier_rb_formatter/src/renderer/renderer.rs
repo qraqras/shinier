@@ -1,3 +1,4 @@
+use crate::builder::builder::hardline;
 use crate::document::Document;
 use std::collections::{HashMap, HashSet};
 
@@ -60,7 +61,7 @@ fn fits(
     next: Command,
     rest_commands: &[Command],
     width: &mut i32,
-    _has_line_suffix: bool,
+    has_line_suffix: &mut bool,
     group_mode_map: &HashMap<usize, Mode>,
     must_be_flat: bool,
 ) -> bool {
@@ -131,6 +132,14 @@ fn fits(
                     *width -= 1;
                 }
             }
+            Document::LineSuffix(_line_suffix) => {
+                *has_line_suffix = true;
+            }
+            Document::LineSuffixBoundary(_line_suffix_boundary) => {
+                if *has_line_suffix {
+                    return false;
+                }
+            }
             Document::None => {}
             Document::String(string) => {
                 *width -= get_string_width(string) as i32;
@@ -146,6 +155,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
     let mut cmds = Vec::from(&[doc.as_cmd(0, Mode::Break)]);
     let mut out = String::new();
     let mut should_remeasure = false;
+    let mut line_suffixes = Vec::new();
 
     let mut group_mode_map = HashMap::new();
 
@@ -166,7 +176,6 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
             }
             Document::BreakParent => {}
             Document::Fill(fill) => {
-                let has_line_suffix = false; // TODO: line_suffix 対応
                 let mut rem = width - pos;
                 let length = fill.parts.len() - offset;
                 if length == 0 {
@@ -179,7 +188,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     content_flat_cmd,
                     &[],
                     &mut rem,
-                    has_line_suffix,
+                    &mut !line_suffixes.is_empty(),
                     &group_mode_map,
                     true,
                 );
@@ -218,7 +227,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     first_and_second_content_flat_cmd,
                     &[],
                     &mut rem,
-                    has_line_suffix,
+                    &mut !line_suffixes.is_empty(),
                     &group_mode_map,
                     true,
                 );
@@ -251,13 +260,13 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                         should_remeasure = false;
                         let next = group.contents.as_cmd(ind, Mode::Flat);
                         let mut rem = width - pos;
-                        let has_line_suffix = false;
+                        let mut has_line_suffix = !line_suffixes.is_empty();
                         if effective_mode == Mode::Flat
                             && fits(
                                 next,
                                 &cmds,
                                 &mut rem,
-                                has_line_suffix,
+                                &mut has_line_suffix,
                                 &group_mode_map,
                                 false,
                             )
@@ -279,7 +288,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                                                 cmd,
                                                 &cmds,
                                                 &mut rem,
-                                                has_line_suffix,
+                                                &mut has_line_suffix,
                                                 &group_mode_map,
                                                 false,
                                             ) {
@@ -332,6 +341,13 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     }
                 }
                 Mode::Break => {
+                    if !line_suffixes.is_empty() {
+                        for line_suffix in line_suffixes.iter().rev() {
+                            cmds.push(*line_suffix);
+                        }
+                        cmds.push(doc.as_cmd(ind, mode));
+                        continue;
+                    }
                     if line.literal {
                         out.push('\n');
                         pos = 0;
@@ -343,6 +359,14 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     }
                 }
             },
+            Document::LineSuffix(line_suffix) => {
+                line_suffixes.push(line_suffix.contents.as_cmd(ind, mode));
+            }
+            Document::LineSuffixBoundary(line_suffix_boundary) => {
+                if !line_suffixes.is_empty() {
+                    line_suffix_boundary.hardline.as_cmd(ind, mode);
+                }
+            }
             Document::None => {}
             Document::String(string) => {
                 out.push_str(string);
@@ -405,6 +429,15 @@ fn propagate_breaks(doc: &Document) -> HashMap<usize, Mode> {
                 visit(&indent.contents, parent_stack, group_break_map, visited);
             }
             Document::Line(_line) => {}
+            Document::LineSuffix(line_suffix) => {
+                visit(
+                    &line_suffix.contents,
+                    parent_stack,
+                    group_break_map,
+                    visited,
+                );
+            }
+            Document::LineSuffixBoundary(_line_suffix_boundary) => {}
             Document::None => {}
             Document::String(_string) => {}
         }
