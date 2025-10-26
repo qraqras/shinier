@@ -1,7 +1,6 @@
 use crate::buildable::{Buildable, BuildableList};
 use crate::builder::builder::{array, group, indent, line, none, softline, string};
 use crate::document::Document;
-use crate::helper::escape::escape_array_element;
 use crate::keyword::{
     BRACKETS, COMMA, PERCENT_LOWER_I, PERCENT_LOWER_W, PERCENT_UPPER_I, PERCENT_UPPER_W,
 };
@@ -115,4 +114,27 @@ fn build_percent_i_elements(elements: &NodeList) -> Vec<Document> {
         }
     }
     documents
+}
+
+fn escape_array_element(input: &[u8]) -> String {
+    let mut result = String::new();
+    for &byte in input {
+        match byte {
+            // TODO: %w(...)のようなときは"\("や"\)"が含まれている可能性がある
+            b'\x5b' => result.push_str("\\["), // array start
+            b'\x5d' => result.push_str("\\]"), // array end
+
+            b'\x09' => result.push_str("\\t"), // tab
+            b'\x0b' => result.push_str("\\v"), // vertical tab
+            b'\x0a' => result.push_str("\\n"), // newline
+            b'\x0d' => result.push_str("\\r"), // carriage return
+            b'\x0c' => result.push_str("\\f"), // form feed
+            b'\x08' => result.push_str("\\b"), // backspace
+            b'\x07' => result.push_str("\\a"), // bell
+            b'\x1b' => result.push_str("\\e"), // escape
+            b'\x20' => result.push_str("\\s"), // space
+            other => result.push(other as char),
+        }
+    }
+    result
 }
