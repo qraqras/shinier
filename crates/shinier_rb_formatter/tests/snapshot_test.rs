@@ -491,19 +491,17 @@ fn run() {
         let contents = std::fs::read_to_string(path).unwrap();
 
         let printer = Printer::new(contents, ());
-        let ast = printer.str_to_ast();
-        let doc = printer.ast_to_doc(&ast);
-        let str = printer.doc_to_str(doc);
+        let (parse_result, formatted) = printer.print();
 
         let mut visitor = Visitor {
             depth: 0,
             debug_strings: Vec::new(),
         };
-        visitor.visit(&ast.node());
+        visitor.visit(&parse_result.node());
 
         let output = format!(
             "****FORMATTED****\n{}\n\n****AST****\n{}",
-            str,
+            formatted,
             visitor.debug_strings.join("\n"),
         );
         assert_snapshot!(output);
