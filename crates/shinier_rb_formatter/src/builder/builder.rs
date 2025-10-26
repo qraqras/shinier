@@ -1,4 +1,4 @@
-use crate::document::{Document, Group, IfBreak, Indent, Line};
+use crate::document::{Document, Group, IfBreak, Indent, Line, LineSuffix, LineSuffixBoundary};
 use std::cell::Cell;
 
 thread_local! {
@@ -17,12 +17,19 @@ pub fn reset_group_id() {
     GROUP_ID_NEXT.with(|next| next.set(0));
 }
 
-pub fn array(contents: &[Document]) -> Document {
-    Document::Array(contents.to_vec())
+pub fn array(parts: &[Document]) -> Document {
+    Document::Array(parts.to_vec())
 }
 
 pub fn break_parent() -> Document {
     Document::BreakParent
+}
+
+pub fn fill(parts: Document) -> Document {
+    match parts {
+        Document::Array(parts) => Document::Fill(crate::document::Fill { parts }),
+        _ => panic!("fill function expects an Array document"),
+    }
 }
 
 pub fn group(contents: Document) -> Document {
@@ -87,6 +94,18 @@ pub fn softline() -> Document {
         hard: false,
         literal: false,
         soft: true,
+    })
+}
+
+pub fn line_suffix(contents: Document) -> Document {
+    Document::LineSuffix(LineSuffix {
+        contents: Box::new(contents),
+    })
+}
+
+pub fn line_suffix_boundary() -> Document {
+    Document::LineSuffixBoundary(LineSuffixBoundary {
+        hardline: Box::new(hardline()),
     })
 }
 

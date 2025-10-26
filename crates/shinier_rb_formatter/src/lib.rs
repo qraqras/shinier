@@ -1,11 +1,3 @@
-macro_rules! println_dbg {
-    ($fmt:expr) => {
-        if cfg!(debug_assertions) {
-            (print!(concat!($fmt, "\n")));
-        }
-    };
-}
-
 mod builder;
 mod document;
 mod formatter;

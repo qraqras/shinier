@@ -1,5 +1,5 @@
 use crate::builder::Buildable;
-use crate::builder::builder::{array, group, indent, line, space, string};
+use crate::builder::builder::{array, group, space, string};
 use crate::document::Document;
 use crate::keyword::ALIAS;
 use ruby_prism::AliasGlobalVariableNode;
@@ -10,11 +10,9 @@ pub fn build_node(node: Option<&AliasGlobalVariableNode>) -> Document {
     let new_name = node.new_name();
     group(array(&[
         string(ALIAS),
-        indent(array(&[
-            line(),
-            old_name.build(),
-            space(),
-            new_name.build(),
-        ])),
+        space(),
+        old_name.build(),
+        space(),
+        new_name.build(),
     ]))
 }

@@ -1,7 +1,7 @@
-use crate::builder::builder::{array, group, indent, line, space, string};
+use crate::buildable::Buildable;
+use crate::builder::builder::{array, group, space, string};
 use crate::document::Document;
-use crate::helper::build_symbol_without_colon::build_symbol_without_colon;
-use crate::keyword::ALIAS;
+use crate::keyword::{ALIAS_METHOD, COMMA};
 use ruby_prism::AliasMethodNode;
 
 pub fn build_node(node: Option<&AliasMethodNode>) -> Document {
@@ -9,12 +9,11 @@ pub fn build_node(node: Option<&AliasMethodNode>) -> Document {
     let old_name = node.old_name();
     let new_name = node.new_name();
     group(array(&[
-        string(ALIAS),
-        indent(array(&[
-            line(),
-            build_symbol_without_colon(&new_name),
-            space(),
-            build_symbol_without_colon(&old_name),
-        ])),
+        string(ALIAS_METHOD),
+        space(),
+        new_name.build(),
+        string(COMMA),
+        space(),
+        old_name.build(),
     ]))
 }

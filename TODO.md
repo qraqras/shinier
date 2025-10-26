@@ -1,8 +1,11 @@
 # TODO
 
-- [ ] デバッグようにスナップショットにASTを含める
-- [ ] %記法
-- [ ] 文字列エスケープ(escape_slash_in_pattern(), escape())
+- [ x ] デバッグ用にスナップショットにASTを含める
+- [ x ] Fill実装
+- [ x ] %記法
+- [ x ] LineSuffix/LineSuffixBoundaryを実装
+- [ ] 空行の制御
+- [ ] コメントの制御
 - [ ] call_nodeの呼び出し(block関連と+=のようなパターン)
 - [ ] build_symbol_without_colon
 - [ ] block_nodeで複数行のときが無効な構文になる(参考: snapshot_test__run@node__forwarding_super_node.rb.snap)
@@ -14,154 +17,155 @@
 - [ ] is_forced_utf8_encoding / is_forced_binary_encoding
 
 
-- [ x ] alias_global_variable_node.rs
-- [ x ] alias_method_node.rs
-- [ x ] alternation_pattern_node.rs
-- [ x ] and_node.rs
-- [ x ] arguments_node.rs
-- [ x ] array_node.rs
-- [ x ] array_pattern_node.rs
-- [ x ] assoc_node.rs
-- [ x ] assoc_splat_node.rs
-- [ x ] back_reference_read_node.rs
-- [ x ] begin_node.rs
-- [ x ] block_argument_node.rs
-- [ x ] block_local_variable_node.rs
-- [ x ] block_node.rs
-- [ x ] block_parameter_node.rs
-- [ x ] block_parameters_node.rs
-- [ x ] break_node.rs
-- [ x ] call_and_write_node.rs
-- [ x ] call_node.rs
-- [ x ] call_operator_write_node.rs
-- [ x ] call_or_write_node.rs
-- [ x ] call_target_node.rs
-- [ x ] capture_pattern_node.rs
-- [ x ] case_match_node.rs
-- [ x ] case_node.rs
-- [ x ] class_node.rs
-- [ x ] class_variable_and_write_node.rs
-- [ x ] class_variable_operator_write_node.rs
-- [ x ] class_variable_or_write_node.rs
-- [ x ] class_variable_read_node.rs
-- [ x ] class_variable_target_node.rs
-- [ x ] class_variable_write_node.rs
-- [ x ] constant_and_write_node.rs
-- [ x ] constant_operator_write_node.rs
-- [ x ] constant_or_write_node.rs
-- [ x ] constant_path_and_write_node.rs
-- [ x ] constant_path_node.rs
-- [ x ] constant_path_operator_write_node.rs
-- [ x ] constant_path_or_write_node.rs
-- [ x ] constant_path_target_node.rs
-- [ x ] constant_path_write_node.rs
-- [ x ] constant_read_node.rs
-- [ x ] constant_target_node.rs
-- [ x ] constant_write_node.rs
-- [ x ] def_node.rs
-- [ x ] defined_node.rs
-- [ x ] else_node.rs
-- [ x ] embedded_statements_node.rs
-- [ x ] embedded_variable_node.rs
-- [ x ] ensure_node.rs
-- [ x ] false_node.rs
-- [ x ] find_pattern_node.rs
-- [ x ] flip_flop_node.rs
-- [ x ] float_node.rs
-- [ x ] for_node.rs
-- [ x ] forwarding_arguments_node.rs
-- [ x ] forwarding_parameter_node.rs
-- [ x ] forwarding_super_node.rs
-- [ x ] global_variable_and_write_node.rs
-- [ x ] global_variable_operator_write_node.rs
-- [ x ] global_variable_or_write_node.rs
-- [ x ] global_variable_read_node.rs
-- [ x ] global_variable_target_node.rs
-- [ x ] global_variable_write_node.rs
-- [ x ] hash_node.rs
-- [ x ] hash_pattern_node.rs
-- [ x ] if_node.rs
-- [ x ] imaginary_node.rs
-- [ x ] implicit_node.rs
-- [ x ] implicit_rest_node.rs
-- [ x ] in_node.rs
-- [ x ] index_and_write_node.rs
-- [ x ] index_operator_write_node.rs
-- [ x ] index_or_write_node.rs
-- [ x ] index_target_node.rs
-- [ x ] instance_variable_and_write_node.rs
-- [ x ] instance_variable_operator_write_node.rs
-- [ x ] instance_variable_or_write_node.rs
-- [ x ] instance_variable_read_node.rs
-- [ x ] instance_variable_target_node.rs
-- [ x ] instance_variable_write_node.rs
-- [ x ] integer_node.rs
-- [ x ] interpolated_match_last_line_node.rs
-- [ x ] interpolated_regular_expression_node.rs
-- [ x ] interpolated_string_node.rs
-- [ x ] interpolated_symbol_node.rs
-- [ x ] interpolated_x_string_node.rs
-- [ x ] it_local_variable_read_node.rs
-- [ x ] it_parameters_node.rs
-- [ x ] keyword_hash_node.rs
-- [ x ] keyword_rest_parameter_node.rs
-- [ x ] lambda_node.rs
-- [ x ] local_variable_and_write_node.rs
-- [ x ] local_variable_operator_write_node.rs
-- [ x ] local_variable_or_write_node.rs
-- [ x ] local_variable_read_node.rs
-- [ x ] local_variable_target_node.rs
-- [ x ] local_variable_write_node.rs
-- [ x ] match_last_line_node.rs
-- [ x ] match_predicate_node.rs
-- [ x ] match_required_node.rs
-- [ x ] match_write_node.rs
-- [ x ] missing_node.rs
-- [ x ] module_node.rs
-- [ x ] multi_target_node.rs
-- [ x ] multi_write_node.rs
-- [ x ] next_node.rs
-- [ x ] nil_node.rs
-- [ x ] no_keywords_parameter_node.rs
-- [ x ] numbered_parameters_node.rs
-- [ x ] numbered_reference_read_node.rs
-- [ x ] optional_keyword_parameter_node.rs
-- [ x ] optional_parameter_node.rs
-- [ x ] or_node.rs
-- [ x ] parameters_node.rs
-- [ x ] parentheses_node.rs
-- [ x ] pinned_expression_node.rs
-- [ x ] pinned_variable_node.rs
-- [ x ] post_execution_node.rs
-- [ x ] pre_execution_node.rs
-- [ x ] program_node.rs
-- [ x ] range_node.rs
-- [ x ] rational_node.rs
-- [ x ] redo_node.rs
-- [ x ] regular_expression_node.rs
-- [ x ] required_keyword_parameter_node.rs
-- [ x ] required_parameter_node.rs
-- [ x ] rescue_modifier_node.rs
-- [ x ] rescue_node.rs
-- [ x ] rest_parameter_node.rs
-- [ x ] retry_node.rs
-- [ x ] return_node.rs
-- [ x ] self_node.rs
-- [ x ] shareable_constant_node.rs
-- [ x ] singleton_class_node.rs
-- [ x ] source_encoding_node.rs
-- [ x ] source_file_node.rs
-- [ x ] source_line_node.rs
-- [ x ] splat_node.rs
-- [ x ] statements_node.rs
-- [ x ] string_node.rs
-- [ x ] super_node.rs
-- [ x ] symbol_node.rs
-- [ x ] true_node.rs
-- [ x ] undef_node.rs
-- [ x ] unless_node.rs
-- [ x ] until_node.rs
-- [ x ] when_node.rs
-- [ x ] while_node.rs
-- [ x ] x_string_node.rs
-- [ x ] yield_node.rs
+# standardrbとの比較
+- [ ] alias_global_variable_node.rs
+- [ ] alias_method_node.rs
+- [ ] alternation_pattern_node.rs
+- [ ] and_node.rs
+- [ ] arguments_node.rs
+- [ ] array_node.rs
+- [ ] array_pattern_node.rs
+- [ ] assoc_node.rs
+- [ ] assoc_splat_node.rs
+- [ ] back_reference_read_node.rs
+- [ ] begin_node.rs
+- [ ] block_argument_node.rs
+- [ ] block_local_variable_node.rs
+- [ ] block_node.rs
+- [ ] block_parameter_node.rs
+- [ ] block_parameters_node.rs
+- [ ] break_node.rs
+- [ ] call_and_write_node.rs
+- [ ] call_node.rs
+- [ ] call_operator_write_node.rs
+- [ ] call_or_write_node.rs
+- [ ] call_target_node.rs
+- [ ] capture_pattern_node.rs
+- [ ] case_match_node.rs
+- [ ] case_node.rs
+- [ ] class_node.rs
+- [ ] class_variable_and_write_node.rs
+- [ ] class_variable_operator_write_node.rs
+- [ ] class_variable_or_write_node.rs
+- [ ] class_variable_read_node.rs
+- [ ] class_variable_target_node.rs
+- [ ] class_variable_write_node.rs
+- [ ] constant_and_write_node.rs
+- [ ] constant_operator_write_node.rs
+- [ ] constant_or_write_node.rs
+- [ ] constant_path_and_write_node.rs
+- [ ] constant_path_node.rs
+- [ ] constant_path_operator_write_node.rs
+- [ ] constant_path_or_write_node.rs
+- [ ] constant_path_target_node.rs
+- [ ] constant_path_write_node.rs
+- [ ] constant_read_node.rs
+- [ ] constant_target_node.rs
+- [ ] constant_write_node.rs
+- [ ] def_node.rs
+- [ ] defined_node.rs
+- [ ] else_node.rs
+- [ ] embedded_statements_node.rs
+- [ ] embedded_variable_node.rs
+- [ ] ensure_node.rs
+- [ ] false_node.rs
+- [ ] find_pattern_node.rs
+- [ ] flip_flop_node.rs
+- [ ] float_node.rs
+- [ ] for_node.rs
+- [ ] forwarding_arguments_node.rs
+- [ ] forwarding_parameter_node.rs
+- [ ] forwarding_super_node.rs
+- [ ] global_variable_and_write_node.rs
+- [ ] global_variable_operator_write_node.rs
+- [ ] global_variable_or_write_node.rs
+- [ ] global_variable_read_node.rs
+- [ ] global_variable_target_node.rs
+- [ ] global_variable_write_node.rs
+- [ ] hash_node.rs
+- [ ] hash_pattern_node.rs
+- [ ] if_node.rs
+- [ ] imaginary_node.rs
+- [ ] implicit_node.rs
+- [ ] implicit_rest_node.rs
+- [ ] in_node.rs
+- [ ] index_and_write_node.rs
+- [ ] index_operator_write_node.rs
+- [ ] index_or_write_node.rs
+- [ ] index_target_node.rs
+- [ ] instance_variable_and_write_node.rs
+- [ ] instance_variable_operator_write_node.rs
+- [ ] instance_variable_or_write_node.rs
+- [ ] instance_variable_read_node.rs
+- [ ] instance_variable_target_node.rs
+- [ ] instance_variable_write_node.rs
+- [ ] integer_node.rs
+- [ ] interpolated_match_last_line_node.rs
+- [ ] interpolated_regular_expression_node.rs
+- [ ] interpolated_string_node.rs
+- [ ] interpolated_symbol_node.rs
+- [ ] interpolated_x_string_node.rs
+- [ ] it_local_variable_read_node.rs
+- [ ] it_parameters_node.rs
+- [ ] keyword_hash_node.rs
+- [ ] keyword_rest_parameter_node.rs
+- [ ] lambda_node.rs
+- [ ] local_variable_and_write_node.rs
+- [ ] local_variable_operator_write_node.rs
+- [ ] local_variable_or_write_node.rs
+- [ ] local_variable_read_node.rs
+- [ ] local_variable_target_node.rs
+- [ ] local_variable_write_node.rs
+- [ ] match_last_line_node.rs
+- [ ] match_predicate_node.rs
+- [ ] match_required_node.rs
+- [ ] match_write_node.rs
+- [ ] missing_node.rs
+- [ ] module_node.rs
+- [ ] multi_target_node.rs
+- [ ] multi_write_node.rs
+- [ ] next_node.rs
+- [ ] nil_node.rs
+- [ ] no_keywords_parameter_node.rs
+- [ ] numbered_parameters_node.rs
+- [ ] numbered_reference_read_node.rs
+- [ ] optional_keyword_parameter_node.rs
+- [ ] optional_parameter_node.rs
+- [ ] or_node.rs
+- [ ] parameters_node.rs
+- [ ] parentheses_node.rs
+- [ ] pinned_expression_node.rs
+- [ ] pinned_variable_node.rs
+- [ ] post_execution_node.rs
+- [ ] pre_execution_node.rs
+- [ ] program_node.rs
+- [ ] range_node.rs
+- [ ] rational_node.rs
+- [ ] redo_node.rs
+- [ ] regular_expression_node.rs
+- [ ] required_keyword_parameter_node.rs
+- [ ] required_parameter_node.rs
+- [ ] rescue_modifier_node.rs
+- [ ] rescue_node.rs
+- [ ] rest_parameter_node.rs
+- [ ] retry_node.rs
+- [ ] return_node.rs
+- [ ] self_node.rs
+- [ ] shareable_constant_node.rs
+- [ ] singleton_class_node.rs
+- [ ] source_encoding_node.rs
+- [ ] source_file_node.rs
+- [ ] source_line_node.rs
+- [ ] splat_node.rs
+- [ ] statements_node.rs
+- [ ] string_node.rs
+- [ ] super_node.rs
+- [ ] symbol_node.rs
+- [ ] true_node.rs
+- [ ] undef_node.rs
+- [ ] unless_node.rs
+- [ ] until_node.rs
+- [ ] when_node.rs
+- [ ] while_node.rs
+- [ ] x_string_node.rs
+- [ ] yield_node.rs

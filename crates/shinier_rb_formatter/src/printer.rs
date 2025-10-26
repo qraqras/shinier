@@ -16,13 +16,22 @@ impl Printer {
         let docs = self.ast_to_doc(&parsed);
         self.doc_to_str(docs)
     }
-    fn str_to_ast(&self) -> ParseResult<'_> {
+    pub fn str_to_ast(&self) -> ParseResult<'_> {
         parse(self.src.as_bytes())
     }
-    fn ast_to_doc(&self, parsed: &ParseResult) -> Document {
+    pub fn ast_to_doc(&self, parsed: &ParseResult) -> Document {
+        // TODO: パースエラー時はフォーマットを実施しないようにする
+        let mut messages = String::new();
+        for diagnostic in parsed.errors() {
+            messages.push_str(diagnostic.message());
+            messages.push_str(format!("\n{:?}\n", diagnostic.location()).as_str());
+        }
+        if messages.len() > 0 {
+            panic!("!!!!パースエラー時の処理は未実装です!!!!: {}", messages);
+        }
         parsed.node().build()
     }
-    fn doc_to_str(&self, doc: Document) -> String {
+    pub fn doc_to_str(&self, doc: Document) -> String {
         const COLUMN_MAX: usize = 40;
         const INDENT_UNIT: &str = "  ";
         let output = print_doc_to_string(&doc, ());

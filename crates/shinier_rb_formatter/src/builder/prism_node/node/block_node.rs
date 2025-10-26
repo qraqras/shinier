@@ -16,7 +16,7 @@ pub fn build_node(node: Option<&BlockNode>) -> Document {
                         parameters
                             .build_with(Some(array(&[line(), string(PIPE)])), Some(string(PIPE))),
                     ),
-                    group(body.build_with(Some(line()), None)),
+                    body.build_with(Some(line()), None),
                 ])),
                 line(),
                 string(BRACES.1),

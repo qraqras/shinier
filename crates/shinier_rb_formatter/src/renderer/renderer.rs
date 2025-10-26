@@ -1,3 +1,4 @@
+use crate::builder::builder::hardline;
 use crate::document::Document;
 use std::collections::{HashMap, HashSet};
 
@@ -6,6 +7,7 @@ struct Command<'a> {
     ind: i32,
     doc: &'a Document,
     mode: Mode,
+    offset: usize,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -38,6 +40,15 @@ impl Document {
             ind,
             doc: self,
             mode,
+            offset: 0,
+        }
+    }
+    fn as_cmd_with_offset<'a>(&'a self, ind: i32, mode: Mode, offset: usize) -> Command<'a> {
+        Command {
+            ind,
+            doc: self,
+            mode,
+            offset,
         }
     }
 }
@@ -50,7 +61,7 @@ fn fits(
     next: Command,
     rest_commands: &[Command],
     width: &mut i32,
-    _has_line_suffix: bool,
+    has_line_suffix: &mut bool,
     group_mode_map: &HashMap<usize, Mode>,
     must_be_flat: bool,
 ) -> bool {
@@ -68,14 +79,19 @@ fn fits(
             cmds.push(rest_commands[rest_idx]);
             continue;
         }
-        let Command { ind, doc, mode } = cmds.pop().unwrap();
+        let Command { ind, doc, mode, .. } = cmds.pop().unwrap();
         match doc {
             Document::Array(array) => {
-                for doc in array.iter().rev() {
-                    cmds.push(doc.as_cmd(ind, mode));
+                for part in array.iter().rev() {
+                    cmds.push(part.as_cmd(ind, mode));
                 }
             }
             Document::BreakParent => {}
+            Document::Fill(fill) => {
+                for part in fill.parts.iter().rev() {
+                    cmds.push(part.as_cmd(ind, mode));
+                }
+            }
             Document::Group(group) => {
                 // group.r#break は書き換わらないため group_mode_map を取得する必要があるのでは？
                 if must_be_flat && group.r#break {
@@ -116,6 +132,14 @@ fn fits(
                     *width -= 1;
                 }
             }
+            Document::LineSuffix(_line_suffix) => {
+                *has_line_suffix = true;
+            }
+            Document::LineSuffixBoundary(_line_suffix_boundary) => {
+                if *has_line_suffix {
+                    return false;
+                }
+            }
             Document::None => {}
             Document::String(string) => {
                 *width -= get_string_width(string) as i32;
@@ -131,19 +155,96 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
     let mut cmds = Vec::from(&[doc.as_cmd(0, Mode::Break)]);
     let mut out = String::new();
     let mut should_remeasure = false;
+    let mut line_suffixes = Vec::new();
 
     let mut group_mode_map = HashMap::new();
 
     let effective_group_mode_map = propagate_breaks(doc);
 
-    while let Some(Command { ind, doc, mode }) = cmds.pop() {
-        match doc {
+    while let Some(Command {
+        ind,
+        doc,
+        mode,
+        offset,
+    }) = cmds.pop()
+    {
+        match &doc {
             Document::Array(array) => {
                 for doc in array.iter().rev() {
                     cmds.push(doc.as_cmd(ind, mode));
                 }
             }
             Document::BreakParent => {}
+            Document::Fill(fill) => {
+                let mut rem = width - pos;
+                let length = fill.parts.len() - offset;
+                if length == 0 {
+                    continue;
+                }
+                let content = fill.parts.get(offset + 0).unwrap();
+                let content_flat_cmd = content.as_cmd(ind, Mode::Flat);
+                let content_break_cmd = content.as_cmd(ind, Mode::Break);
+                let content_fits = fits(
+                    content_flat_cmd,
+                    &[],
+                    &mut rem,
+                    &mut !line_suffixes.is_empty(),
+                    &group_mode_map,
+                    true,
+                );
+                if length == 1 {
+                    if content_fits {
+                        cmds.push(content_flat_cmd);
+                    } else {
+                        cmds.push(content_break_cmd);
+                    }
+                    continue;
+                }
+                let whitespace = fill.parts.get(offset + 1).unwrap();
+                let whitespace_flat_cmd = whitespace.as_cmd(ind, Mode::Flat);
+                let whitespace_break_cmd = whitespace.as_cmd(ind, Mode::Break);
+                if length == 2 {
+                    if content_fits {
+                        cmds.push(whitespace_flat_cmd);
+                        cmds.push(content_flat_cmd);
+                    } else {
+                        cmds.push(whitespace_break_cmd);
+                        cmds.push(content_break_cmd);
+                    }
+                    continue;
+                }
+                let second_content = fill.parts.get(offset + 2).unwrap();
+
+                let remaining_cmd = doc.as_cmd_with_offset(ind, mode, offset + 2);
+                let first_and_second_content_array = Document::Array(Vec::from([
+                    content.clone(),
+                    whitespace.clone(),
+                    second_content.clone(),
+                ]));
+                let first_and_second_content_flat_cmd =
+                    first_and_second_content_array.as_cmd(ind, Mode::Flat);
+                let first_and_second_content_fits = fits(
+                    first_and_second_content_flat_cmd,
+                    &[],
+                    &mut rem,
+                    &mut !line_suffixes.is_empty(),
+                    &group_mode_map,
+                    true,
+                );
+                if first_and_second_content_fits {
+                    cmds.push(remaining_cmd.clone());
+                    cmds.push(whitespace_flat_cmd);
+                    cmds.push(content_flat_cmd);
+                } else if content_fits {
+                    cmds.push(remaining_cmd.clone());
+                    cmds.push(whitespace_break_cmd);
+                    cmds.push(content_flat_cmd);
+                } else {
+                    cmds.push(remaining_cmd.clone());
+                    cmds.push(whitespace_break_cmd);
+                    cmds.push(content_break_cmd);
+                }
+            }
             Document::Group(group) => {
                 let effective_mode = effective_group_mode_map
                     .get(&group.id)
@@ -159,13 +260,13 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                         should_remeasure = false;
                         let next = group.contents.as_cmd(ind, Mode::Flat);
                         let mut rem = width - pos;
-                        let has_line_suffix = false;
+                        let mut has_line_suffix = !line_suffixes.is_empty();
                         if effective_mode == Mode::Flat
                             && fits(
                                 next,
                                 &cmds,
                                 &mut rem,
-                                has_line_suffix,
+                                &mut has_line_suffix,
                                 &group_mode_map,
                                 false,
                             )
@@ -187,7 +288,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                                                 cmd,
                                                 &cmds,
                                                 &mut rem,
-                                                has_line_suffix,
+                                                &mut has_line_suffix,
                                                 &group_mode_map,
                                                 false,
                                             ) {
@@ -240,6 +341,13 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     }
                 }
                 Mode::Break => {
+                    if !line_suffixes.is_empty() {
+                        for line_suffix in line_suffixes.iter().rev() {
+                            cmds.push(*line_suffix);
+                        }
+                        cmds.push(doc.as_cmd(ind, mode));
+                        continue;
+                    }
                     if line.literal {
                         out.push('\n');
                         pos = 0;
@@ -251,6 +359,14 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     }
                 }
             },
+            Document::LineSuffix(line_suffix) => {
+                line_suffixes.push(line_suffix.contents.as_cmd(ind, mode));
+            }
+            Document::LineSuffixBoundary(line_suffix_boundary) => {
+                if !line_suffixes.is_empty() {
+                    line_suffix_boundary.hardline.as_cmd(ind, mode);
+                }
+            }
             Document::None => {}
             Document::String(string) => {
                 out.push_str(string);
@@ -271,13 +387,18 @@ fn propagate_breaks(doc: &Document) -> HashMap<usize, Mode> {
     ) {
         match doc {
             Document::Array(array) => {
-                for doc in array {
-                    visit(doc, parent_stack, group_break_map, visited);
+                for part in array {
+                    visit(part, parent_stack, group_break_map, visited);
                 }
             }
             Document::BreakParent => {
                 if let Some(&parent) = parent_stack.last() {
                     group_break_map.insert(parent, Mode::Break);
+                }
+            }
+            Document::Fill(fill) => {
+                for part in &fill.parts {
+                    visit(part, parent_stack, group_break_map, visited);
                 }
             }
             Document::Group(group) => {
@@ -308,6 +429,15 @@ fn propagate_breaks(doc: &Document) -> HashMap<usize, Mode> {
                 visit(&indent.contents, parent_stack, group_break_map, visited);
             }
             Document::Line(_line) => {}
+            Document::LineSuffix(line_suffix) => {
+                visit(
+                    &line_suffix.contents,
+                    parent_stack,
+                    group_break_map,
+                    visited,
+                );
+            }
+            Document::LineSuffixBoundary(_line_suffix_boundary) => {}
             Document::None => {}
             Document::String(_string) => {}
         }
