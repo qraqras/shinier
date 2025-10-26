@@ -1,0 +1,13 @@
+# Docs.rs
+alias $foo $bar
+
+# unnecessary line break
+alias
+$foo $bar
+
+# long expression
+alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+
+# long expression with unnecessary line break
+alias
+$foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar

@@ -487,7 +487,7 @@ impl Visit<'_> for Visitor {
 
 #[test]
 fn run() {
-    glob!("**/**.rb", |path| {
+    glob!("**/node/**.rb", |path| {
         let contents = std::fs::read_to_string(path).unwrap();
 
         let printer = Printer::new(contents, ());

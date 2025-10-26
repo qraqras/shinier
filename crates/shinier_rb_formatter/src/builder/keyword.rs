@@ -58,6 +58,7 @@ pub const ROCKET: &str = "=>";
 pub const SAFE_NAVIGATION_OPERATOR: &str = "&.";
 pub const SELF: &str = "self";
 pub const SEMI_COLON: &str = ";";
+pub const SINGLE_QUOTE: &str = "'";
 pub const SINGLETON: &str = "<<";
 pub const SLASH: &str = "/";
 pub const SPLAT: &str = "**";
