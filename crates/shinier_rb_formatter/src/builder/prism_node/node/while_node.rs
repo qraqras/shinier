@@ -5,8 +5,9 @@ use ruby_prism::Comments;
 use crate::keyword::{END, WHILE};
 use ruby_prism::WhileNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
-pub fn build_node(node: Option<&WhileNode>, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&WhileNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
     let node = node.unwrap();
     let is_begin_modifier = node.is_begin_modifier();
     let predicate = node.predicate();

@@ -4,8 +4,9 @@ use ruby_prism::Comments;
 use crate::helper::build_write::build_write;
 use ruby_prism::ConstantPathWriteNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
-pub fn build_node(node: Option<&ConstantPathWriteNode>, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&ConstantPathWriteNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
     let node = node.unwrap();
     let target = node.target();
     let value = node.value();

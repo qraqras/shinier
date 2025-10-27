@@ -4,10 +4,11 @@ use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::Comments;
 use ruby_prism::IntegerNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&IntegerNode>,
-    comments: &mut Comments,
+    comments: &mut Peekable<Comments>,
     option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     match node {

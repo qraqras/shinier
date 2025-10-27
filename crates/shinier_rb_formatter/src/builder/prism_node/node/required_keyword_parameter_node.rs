@@ -5,8 +5,9 @@ use ruby_prism::Comments;
 use crate::keyword::{ASTERISK, COLON};
 use ruby_prism::RequiredKeywordParameterNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
-pub fn build_node(node: Option<&RequiredKeywordParameterNode>, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&RequiredKeywordParameterNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
     let node = node.unwrap();
     let is_repeated_parameter = node.is_repeated_parameter();
     let name = node.name();

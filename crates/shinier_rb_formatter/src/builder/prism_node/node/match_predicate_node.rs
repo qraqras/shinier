@@ -5,8 +5,9 @@ use ruby_prism::Comments;
 use crate::keyword::IN;
 use ruby_prism::MatchPredicateNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
-pub fn build_node(node: Option<&MatchPredicateNode>, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&MatchPredicateNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
     let node = node.unwrap();
     let value = node.value();
     let pattern = node.pattern();

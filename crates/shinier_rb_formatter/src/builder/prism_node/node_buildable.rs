@@ -2,40 +2,57 @@ use crate::builder::prism_node::node::*;
 use crate::document::Document;
 use ruby_prism::{Comments, Node};
 use std::collections::HashMap;
+use std::io::Read;
+use std::iter::Peekable;
 
 pub trait BuildPrismNode {
     //
     #[rustfmt::skip]
-    fn _build(&self, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document;
+    fn _build(&self, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document;
     //
     #[rustfmt::skip]
-    fn build(&self, comments: &mut Comments) -> Document {
+    fn build(&self, comments: &mut Peekable<Comments>) -> Document {
         self._build(comments, None)
     }
     //
     #[rustfmt::skip]
     fn build_with(
-        &self, comments: &mut Comments, before: Option<Document>, after: Option<Document>) -> Document {
+        &self, comments: &mut Peekable<Comments>, before: Option<Document>, after: Option<Document>) -> Document {
         let before = before.unwrap_or(Document::None);
         let after = after.unwrap_or(Document::None);
         Document::Array(Vec::from([before, self.build(comments), after]))
     }
     //
     #[rustfmt::skip]
-    fn build_optional(&self, comments: &mut Comments, option: &HashMap<&str, bool>) -> Document {
+    fn build_optional(&self, comments: &mut Peekable<Comments>, option: &HashMap<&str, bool>) -> Document {
         self._build(comments, Some(option))
     }
     //
     #[rustfmt::skip]
-    fn build_optional_with(&self, comments: &mut Comments, option: &HashMap<&str, bool>, before: Document, after: Document) -> Document {
+    fn build_optional_with(&self, comments: &mut Peekable<Comments>, option: &HashMap<&str, bool>, before: Document, after: Document) -> Document {
         Document::Array(Vec::from([before, self.build_optional(comments, option), after]))
     }
 }
 
 impl BuildPrismNode for Node<'_> {
     #[rustfmt::skip]
-    fn _build(&self, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
-         match self {
+    fn _build(&self, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+        let mut vec = Vec::new();
+
+        // Leading comments
+        while let Some(comment) = comments.peek() {
+            if comment.location().start_offset() < self.location().start_offset() {
+                let comment = comments.next().unwrap();
+                let mut buf = String::new();
+                comment.text().read_to_string(&mut buf).unwrap();
+                buf.push_str("\n"); // TODO: 改行の扱いを見直す
+                vec.push(Document::String(buf));
+            } else {
+                break;
+            }
+        }
+
+        let built_node = match self {
             Node::AliasGlobalVariableNode { .. } => {
                 alias_global_variable_node::build_node(self.as_alias_global_variable_node().as_ref(), comments, option)
             }
@@ -489,12 +506,22 @@ impl BuildPrismNode for Node<'_> {
             Node::YieldNode { .. } => {
                 yield_node::build_node(self.as_yield_node().as_ref(), comments, option)
             }
-        }
+        };
+        vec.push(built_node);
+
+
+
+        Document::Array(Vec::from(vec))
+
     }
 }
 
 impl BuildPrismNode for Option<Node<'_>> {
-    fn _build(&self, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
+    fn _build(
+        &self,
+        comments: &mut Peekable<Comments>,
+        option: Option<&HashMap<&str, bool>>,
+    ) -> Document {
         match self {
             Some(node) => node._build(comments, option),
             None => Document::None,

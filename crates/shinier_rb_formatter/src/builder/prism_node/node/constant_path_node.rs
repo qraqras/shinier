@@ -5,10 +5,11 @@ use crate::document::Document;
 use crate::keyword::DOUBLE_COLON;
 use ruby_prism::{Comments, ConstantPathNode};
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&ConstantPathNode>,
-    comments: &mut Comments,
+    comments: &mut Peekable<Comments>,
     option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     let node = node.unwrap();

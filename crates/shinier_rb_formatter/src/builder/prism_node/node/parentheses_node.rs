@@ -5,8 +5,9 @@ use ruby_prism::Comments;
 use crate::keyword::PARENTHESES;
 use ruby_prism::ParenthesesNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
-pub fn build_node(node: Option<&ParenthesesNode>, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&ParenthesesNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
     let node = node.unwrap();
     let body = node.body();
     group(array(&[

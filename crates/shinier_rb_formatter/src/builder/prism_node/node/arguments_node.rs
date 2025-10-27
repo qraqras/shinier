@@ -4,10 +4,11 @@ use crate::keyword::COMMA;
 use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::{ArgumentsNode, Comments};
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&ArgumentsNode>,
-    comments: &mut Comments,
+    comments: &mut Peekable<Comments>,
     option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     match node {

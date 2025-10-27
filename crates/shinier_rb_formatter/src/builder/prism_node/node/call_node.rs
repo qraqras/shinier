@@ -59,10 +59,11 @@ const SELF_ASSIGNABLE_METHODS: &[&str] = &[
     "||", // ...
 ];
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&CallNode>,
-    comments: &mut Comments,
+    comments: &mut Peekable<Comments>,
     option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     let node = node.unwrap();
@@ -79,7 +80,7 @@ pub fn build_node(
     group(array(&[doc_name, doc_arguments, doc_block]))
 }
 
-fn build_name(node: &CallNode, comments: &mut Comments) -> Document {
+fn build_name(node: &CallNode, comments: &mut Peekable<Comments>) -> Document {
     // TODO: オペレータ個別の処理を追加
     let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();
@@ -93,7 +94,7 @@ fn build_name(node: &CallNode, comments: &mut Comments) -> Document {
     }
 }
 
-fn build_arguments(node: &CallNode, comments: &mut Comments) -> Document {
+fn build_arguments(node: &CallNode, comments: &mut Peekable<Comments>) -> Document {
     let arguments = node.arguments();
     let block = node.block();
     let block_argument = block.and_then(|node| node.as_block_argument_node());
@@ -116,7 +117,7 @@ fn build_arguments(node: &CallNode, comments: &mut Comments) -> Document {
     }
 }
 
-fn build_block(node: &CallNode, comments: &mut Comments) -> Document {
+fn build_block(node: &CallNode, comments: &mut Peekable<Comments>) -> Document {
     let block = node.block();
     block.build(comments)
 }

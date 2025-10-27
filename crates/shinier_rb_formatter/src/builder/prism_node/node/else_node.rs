@@ -5,10 +5,11 @@ use crate::keyword::ELSE;
 use ruby_prism::Comments;
 use ruby_prism::ElseNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&ElseNode>,
-    comments: &mut Comments,
+    comments: &mut Peekable<Comments>,
     option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     match node {

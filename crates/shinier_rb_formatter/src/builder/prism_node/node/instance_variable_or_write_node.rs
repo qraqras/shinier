@@ -5,8 +5,9 @@ use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
 use ruby_prism::InstanceVariableOrWriteNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
-pub fn build_node(node: Option<&InstanceVariableOrWriteNode>, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&InstanceVariableOrWriteNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
     let node = node.unwrap();
     let name = node.name();
     let value = node.value();

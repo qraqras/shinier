@@ -7,10 +7,11 @@ use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::CallAndWriteNode;
 use ruby_prism::Comments;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&CallAndWriteNode>,
-    comments: &mut Comments,
+    comments: &mut Peekable<Comments>,
     option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     let node = node.unwrap();

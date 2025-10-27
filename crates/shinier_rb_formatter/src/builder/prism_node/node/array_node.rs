@@ -7,10 +7,11 @@ use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::Comments;
 use ruby_prism::{ArrayNode, NodeList};
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&ArrayNode>,
-    comments: &mut Comments,
+    comments: &mut Peekable<Comments>,
     option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     let node = node.unwrap();
@@ -73,7 +74,7 @@ pub fn build_node(
 }
 
 /// 配列要素が文字列または式展開を含む文字列の場合のDocumentを生成する
-fn build_percent_w_elements(elements: &NodeList, comments: &mut Comments) -> Vec<Document> {
+fn build_percent_w_elements(elements: &NodeList, comments: &mut Peekable<Comments>) -> Vec<Document> {
     let mut documents = Vec::new();
     for (i, element) in elements.iter().enumerate() {
         if i > 0 {
@@ -98,7 +99,7 @@ fn build_percent_w_elements(elements: &NodeList, comments: &mut Comments) -> Vec
 }
 
 /// 配列要素がシンボルまたは式展開を含むシンボルの場合のDocumentを生成する
-fn build_percent_i_elements(elements: &NodeList, comments: &mut Comments) -> Vec<Document> {
+fn build_percent_i_elements(elements: &NodeList, comments: &mut Peekable<Comments>) -> Vec<Document> {
     let mut documents = Vec::new();
     for (i, element) in elements.iter().enumerate() {
         if i > 0 {

@@ -5,10 +5,11 @@ use crate::keyword::NEXT;
 use ruby_prism::Comments;
 use ruby_prism::NextNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&NextNode>,
-    comments: &mut Comments,
+    comments: &mut Peekable<Comments>,
     option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     let node = node.unwrap();

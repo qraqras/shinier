@@ -5,10 +5,11 @@ use crate::helper::regex::{escape_slash_in_pattern, flags_string};
 use crate::keyword::SLASH;
 use ruby_prism::MatchLastLineNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&MatchLastLineNode>,
-    comments: &mut Comments, option: Option<&HashMap<&str, bool>>,
+    comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     let node = node.unwrap();
     let is_ignore_case = node.is_ignore_case();

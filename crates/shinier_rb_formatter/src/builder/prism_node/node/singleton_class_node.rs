@@ -5,10 +5,11 @@ use crate::keyword::{CLASS, END, SINGLETON};
 use ruby_prism::Comments;
 use ruby_prism::SingletonClassNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&SingletonClassNode>,
-    comments: &mut Comments,
+    comments: &mut Peekable<Comments>,
     option: Option<&HashMap<&str, bool>>,
 ) -> Document {
     let node = node.unwrap();

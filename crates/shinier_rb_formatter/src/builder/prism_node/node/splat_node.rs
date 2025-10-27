@@ -5,8 +5,9 @@ use ruby_prism::Comments;
 use crate::keyword::ASTERISK;
 use ruby_prism::SplatNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
-pub fn build_node(node: Option<&SplatNode>, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&SplatNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
     match node {
         Some(node) => {
             let expression = node.expression();

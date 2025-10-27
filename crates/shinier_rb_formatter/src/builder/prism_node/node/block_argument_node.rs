@@ -5,8 +5,9 @@ use ruby_prism::Comments;
 use crate::keyword::PROC_AND;
 use ruby_prism::BlockArgumentNode;
 use std::collections::HashMap;
+use std::iter::Peekable;
 
-pub fn build_node(node: Option<&BlockArgumentNode>, comments: &mut Comments, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&BlockArgumentNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
     match node {
         Some(node) => {
             let expression = node.expression();
