@@ -1,10 +1,16 @@
 use crate::builder::builder::{array, group, hardline, indent, line, none, space, string};
-use crate::builder::{Buildable, BuildableList};
 use crate::document::Document;
 use crate::keyword::{COMMA, RESCUE, ROCKET};
+use crate::{BuildPrismNode, BuildPrismNodeList};
+use ruby_prism::Comments;
 use ruby_prism::RescueNode;
+use std::collections::HashMap;
 
-pub fn build_node(node: Option<&RescueNode>) -> Document {
+pub fn build_node(
+    node: Option<&RescueNode>,
+    comments: &mut Comments,
+    option: Option<&HashMap<&str, bool>>,
+) -> Document {
     match node {
         Some(node) => {
             let exceptions = node.exceptions();
@@ -15,14 +21,14 @@ pub fn build_node(node: Option<&RescueNode>) -> Document {
                 group(array(&[
                     string(RESCUE),
                     space(),
-                    exceptions.build(array(&[string(COMMA), line()])),
+                    exceptions.build(&array(&[string(COMMA), line()]), comments),
                     match reference {
-                        Some(r) => array(&[space(), string(ROCKET), line(), r.build()]),
+                        Some(r) => array(&[space(), string(ROCKET), line(), r.build(comments)]),
                         None => none(),
                     },
                 ])),
-                indent(statements.build_with(Some(hardline()), None)),
-                subsequent.build_with(Some(hardline()), None),
+                indent(statements.build_with(comments, Some(hardline()), None)),
+                subsequent.build_with(comments, Some(hardline()), None),
             ]))
         }
         None => none(),

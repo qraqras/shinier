@@ -1,12 +1,18 @@
-use crate::builder::Buildable;
 use crate::builder::builder::array;
 use crate::document::Document;
 use crate::helper::build_receiver::build_receiver;
 use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
+use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::CallAndWriteNode;
+use ruby_prism::Comments;
+use std::collections::HashMap;
 
-pub fn build_node(node: Option<&CallAndWriteNode>) -> Document {
+pub fn build_node(
+    node: Option<&CallAndWriteNode>,
+    comments: &mut Comments,
+    option: Option<&HashMap<&str, bool>>,
+) -> Document {
     let node = node.unwrap();
     let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();
@@ -14,10 +20,10 @@ pub fn build_node(node: Option<&CallAndWriteNode>) -> Document {
     let value = node.value();
     build_logical_write(
         array(&[
-            build_receiver(receiver.as_ref(), is_safe_navigation),
-            read_name.build(),
+            build_receiver(receiver.as_ref(), is_safe_navigation, comments),
+            read_name.build(comments),
         ]),
-        value.build(),
+        value.build(comments),
         LogicalOperator::And,
     )
 }

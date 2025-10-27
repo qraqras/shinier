@@ -1,20 +1,21 @@
-use crate::builder::builder::*;
-use crate::builder::{Buildable, BuildableList};
+use crate::builder::builder::array;
 use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
-use ruby_prism::{Node, NodeList};
+use crate::{BuildPrismNode, BuildPrismNodeList};
+use ruby_prism::{Comments, Node, NodeList};
 
 pub fn build_rest(
     lefts: NodeList,
     rest: Option<Node>,
     rights: NodeList,
     separator: &Document,
+    comments: &mut Comments,
 ) -> Document {
     array(&separate_docs(
         &[
-            lefts.build(separator.clone()),
-            rest.build(),
-            rights.build(separator.clone()),
+            lefts.build(&separator, comments),
+            rest.build(comments),
+            rights.build(&separator, comments),
         ],
         separator.clone(),
     ))

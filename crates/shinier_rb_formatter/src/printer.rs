@@ -1,4 +1,4 @@
-use crate::buildable::Buildable;
+use crate::BuildPrismNode;
 use crate::builder::comment::attach_comments;
 use crate::document::*;
 use crate::renderer::print_doc_to_string;
@@ -33,8 +33,8 @@ impl<'a> Printer<'a> {
             panic!("!!!!パースエラー時の処理は未実装です!!!!: {}", messages);
         }
 
-        let map = attach_comments(&parse_result);
-        let doc = parse_result.node().build();
+        // let map = attach_comments(&parse_result);
+        let doc = parse_result.node().build(&mut parse_result.comments());
 
         let output = print_doc_to_string(&doc, ());
         (parse_result, output)

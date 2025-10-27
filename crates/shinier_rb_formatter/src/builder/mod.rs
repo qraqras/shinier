@@ -11,3 +11,6 @@ pub use comment::*;
 pub use keyword::*;
 pub use prism_node::*;
 pub use prism_non_node::*;
+
+pub use prism_node::BuildPrismNode;
+pub use prism_non_node::BuildPrismNodeList;

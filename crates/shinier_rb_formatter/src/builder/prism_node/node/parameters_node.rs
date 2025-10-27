@@ -1,11 +1,17 @@
 use crate::builder::builder::{array, group, line, none, string};
-use crate::builder::{Buildable, BuildableList};
 use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
 use crate::keyword::COMMA;
+use crate::{BuildPrismNode, BuildPrismNodeList};
+use ruby_prism::Comments;
 use ruby_prism::ParametersNode;
+use std::collections::HashMap;
 
-pub fn build_node(node: Option<&ParametersNode>) -> Document {
+pub fn build_node(
+    node: Option<&ParametersNode>,
+    comments: &mut Comments,
+    option: Option<&HashMap<&str, bool>>,
+) -> Document {
     match node {
         Some(node) => {
             let requireds = node.requireds();
@@ -19,13 +25,13 @@ pub fn build_node(node: Option<&ParametersNode>) -> Document {
             let separator = array(&[string(COMMA), line()]);
             group(array(&separate_docs(
                 &[
-                    requireds.build(separator.clone()),
-                    optionals.build(separator.clone()),
-                    rest.build(),
-                    posts.build(separator.clone()),
-                    keywords.build(separator.clone()),
-                    keyword_rest.build(),
-                    block.build(),
+                    requireds.build(&separator, comments),
+                    optionals.build(&separator, comments),
+                    rest.build(comments),
+                    posts.build(&separator, comments),
+                    keywords.build(&separator, comments),
+                    keyword_rest.build(comments),
+                    block.build(comments),
                 ],
                 separator,
             )))

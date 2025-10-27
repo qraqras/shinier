@@ -1,11 +1,40 @@
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, none};
-use crate::builder::{Buildable, BuildableList};
 use crate::document::Document;
-use ruby_prism::NodeList;
+use ruby_prism::{Comments, NodeList};
+use std::collections::HashMap;
 
-impl<'a> BuildableList<'_> for NodeList<'_> {
-    fn build(&self, separator: Document) -> Document {
-        if self.is_empty() {
+pub trait BuildPrismNodeList {
+    fn _build(
+        &self,
+        separator: &Document,
+        comments: &mut Comments,
+        option: Option<&HashMap<&str, bool>>,
+    ) -> Document;
+    fn build(&self, separator: &Document, comments: &mut Comments) -> Document {
+        self._build(separator, comments, None)
+    }
+    fn build_with(
+        &self,
+        separator: &Document,
+        comments: &mut Comments,
+        before: Option<Document>,
+        after: Option<Document>,
+    ) -> Document {
+        let before = before.unwrap_or(Document::None);
+        let after = after.unwrap_or(Document::None);
+        Document::Array(Vec::from(&[before, self.build(separator, comments), after]))
+    }
+}
+
+impl BuildPrismNodeList for NodeList<'_> {
+    fn _build(
+        &self,
+        separator: &Document,
+        comments: &mut Comments,
+        option: Option<&HashMap<&str, bool>>,
+    ) -> Document {
+        if self.iter().next().is_none() {
             return none();
         }
         let mut vec = Vec::new();
@@ -13,11 +42,22 @@ impl<'a> BuildableList<'_> for NodeList<'_> {
             if i > 0 {
                 vec.push(separator.clone());
             }
-            vec.push(node.build());
+            vec.push(node._build(comments, option));
         }
         array(&vec)
     }
-    fn is_empty(&self) -> bool {
-        self.iter().next().is_none()
+}
+
+impl<'a> BuildPrismNodeList for Option<NodeList<'_>> {
+    fn _build(
+        &self,
+        separator: &Document,
+        comments: &mut Comments,
+        option: Option<&HashMap<&str, bool>>,
+    ) -> Document {
+        match self {
+            Some(node) => node._build(separator, comments, option),
+            None => none(),
+        }
     }
 }

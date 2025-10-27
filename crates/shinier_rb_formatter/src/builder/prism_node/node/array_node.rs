@@ -1,12 +1,18 @@
-use crate::buildable::{Buildable, BuildableList};
 use crate::builder::builder::{array, group, indent, line, none, softline, string};
 use crate::document::Document;
 use crate::keyword::{
     BRACKETS, COMMA, PERCENT_LOWER_I, PERCENT_LOWER_W, PERCENT_UPPER_I, PERCENT_UPPER_W,
 };
+use crate::{BuildPrismNode, BuildPrismNodeList};
+use ruby_prism::Comments;
 use ruby_prism::{ArrayNode, NodeList};
+use std::collections::HashMap;
 
-pub fn build_node(node: Option<&ArrayNode>) -> Document {
+pub fn build_node(
+    node: Option<&ArrayNode>,
+    comments: &mut Comments,
+    option: Option<&HashMap<&str, bool>>,
+) -> Document {
     let node = node.unwrap();
     let elements = node.elements();
 
@@ -46,9 +52,9 @@ pub fn build_node(node: Option<&ArrayNode>) -> Document {
     }
     // 配列の要素をDocumentに変換する
     let elements_array = match (should_percent_w, should_percent_i) {
-        (true, _) => array(&build_percent_w_elements(&elements)),
-        (_, true) => array(&build_percent_i_elements(&elements)),
-        _ => elements.build(array(&[string(COMMA), line()])),
+        (true, _) => array(&build_percent_w_elements(&elements, comments)),
+        (_, true) => array(&build_percent_i_elements(&elements, comments)),
+        _ => elements.build(&array(&[string(COMMA), line()]), comments),
     };
     // 全体をDocumentにする
     group(array(&[
@@ -67,7 +73,7 @@ pub fn build_node(node: Option<&ArrayNode>) -> Document {
 }
 
 /// 配列要素が文字列または式展開を含む文字列の場合のDocumentを生成する
-fn build_percent_w_elements(elements: &NodeList) -> Vec<Document> {
+fn build_percent_w_elements(elements: &NodeList, comments: &mut Comments) -> Vec<Document> {
     let mut documents = Vec::new();
     for (i, element) in elements.iter().enumerate() {
         if i > 0 {
@@ -82,7 +88,7 @@ fn build_percent_w_elements(elements: &NodeList) -> Vec<Document> {
                 if let Some(string_node) = part.as_string_node() {
                     parts.push(string(escape_array_element(string_node.unescaped())));
                 } else {
-                    parts.push(part.build());
+                    parts.push(part.build(comments));
                 }
             }
             documents.push(array(&parts));
@@ -92,7 +98,7 @@ fn build_percent_w_elements(elements: &NodeList) -> Vec<Document> {
 }
 
 /// 配列要素がシンボルまたは式展開を含むシンボルの場合のDocumentを生成する
-fn build_percent_i_elements(elements: &NodeList) -> Vec<Document> {
+fn build_percent_i_elements(elements: &NodeList, comments: &mut Comments) -> Vec<Document> {
     let mut documents = Vec::new();
     for (i, element) in elements.iter().enumerate() {
         if i > 0 {
@@ -107,7 +113,7 @@ fn build_percent_i_elements(elements: &NodeList) -> Vec<Document> {
                 if let Some(string_node) = part.as_string_node() {
                     parts.push(string(escape_array_element(string_node.unescaped())));
                 } else {
-                    parts.push(part.build());
+                    parts.push(part.build(comments));
                 }
             }
             documents.push(array(&parts));

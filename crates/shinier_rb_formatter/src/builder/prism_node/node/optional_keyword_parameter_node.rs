@@ -1,10 +1,16 @@
-use crate::builder::Buildable;
 use crate::builder::builder::{array, group, none, space, string};
 use crate::document::Document;
 use crate::keyword::{ASTERISK, COLON};
+use crate::{BuildPrismNode, BuildPrismNodeList};
+use ruby_prism::Comments;
 use ruby_prism::OptionalKeywordParameterNode;
+use std::collections::HashMap;
 
-pub fn build_node(node: Option<&OptionalKeywordParameterNode>) -> Document {
+pub fn build_node(
+    node: Option<&OptionalKeywordParameterNode>,
+    comments: &mut Comments,
+    option: Option<&HashMap<&str, bool>>,
+) -> Document {
     let node = node.unwrap();
     let is_repeated_parameter = node.is_repeated_parameter();
     let name = node.name();
@@ -14,9 +20,9 @@ pub fn build_node(node: Option<&OptionalKeywordParameterNode>) -> Document {
             true => string(ASTERISK),
             false => none(),
         },
-        name.build(),
+        name.build(comments),
         string(COLON),
         space(),
-        value.build(),
+        value.build(comments),
     ]))
 }

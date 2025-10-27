@@ -1,11 +1,17 @@
-use crate::buildable::{Buildable, BuildableList};
 use crate::builder::builder::{array, group, indent, line, softline, string};
 use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{BRACES, BRACKETS, COMMA};
-use ruby_prism::*;
+use crate::{BuildPrismNode, BuildPrismNodeList};
+use ruby_prism::Comments;
+use ruby_prism::HashPatternNode;
+use std::collections::HashMap;
 
-pub fn build_node(node: Option<&HashPatternNode>) -> Document {
+pub fn build_node(
+    node: Option<&HashPatternNode>,
+    comments: &mut Comments,
+    option: Option<&HashMap<&str, bool>>,
+) -> Document {
     let node = node.unwrap();
     let constant = node.constant();
     let elements = node.elements();
@@ -15,12 +21,12 @@ pub fn build_node(node: Option<&HashPatternNode>) -> Document {
 
     match constant {
         Some(constant) => group(array(&[
-            constant.build(),
+            constant.build(comments),
             string(BRACKETS.0),
             indent(array(&[
                 softline(),
                 array(&separate_docs(
-                    &[elements.build(separator.clone()), rest.build()],
+                    &[elements.build(&separator, comments), rest.build(comments)],
                     separator.clone(),
                 )),
             ])),
@@ -32,7 +38,7 @@ pub fn build_node(node: Option<&HashPatternNode>) -> Document {
             indent(array(&[
                 line(),
                 array(&separate_docs(
-                    &[elements.build(separator.clone()), rest.build()],
+                    &[elements.build(&separator, comments), rest.build(comments)],
                     separator.clone(),
                 )),
             ])),

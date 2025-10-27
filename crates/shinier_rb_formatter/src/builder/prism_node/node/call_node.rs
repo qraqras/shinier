@@ -1,10 +1,12 @@
-use crate::builder::Buildable;
+use crate::buildable::Buildable;
 use crate::builder::builder::*;
 use crate::builder::helper::separate_docs::separate_docs;
 use crate::builder::prism_node::node::{arguments_node, block_argument_node};
 use crate::document::Document;
 use crate::helper::build_receiver::build_receiver;
+use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::CallNode;
+use ruby_prism::Comments;
 
 const OPEN_PAREN: &str = "(";
 const CLOSE_PAREN: &str = ")";
@@ -56,13 +58,18 @@ const SELF_ASSIGNABLE_METHODS: &[&str] = &[
     "&&", // ...
     "||", // ...
 ];
+use std::collections::HashMap;
 
-pub fn build_node(node: Option<&CallNode>) -> Document {
+pub fn build_node(
+    node: Option<&CallNode>,
+    comments: &mut Comments,
+    option: Option<&HashMap<&str, bool>>,
+) -> Document {
     let node = node.unwrap();
 
-    let doc_name = build_name(node);
-    let doc_arguments = build_arguments(node);
-    let doc_block = build_block(node);
+    let doc_name = build_name(node, comments);
+    let doc_arguments = build_arguments(node, comments);
+    let doc_block = build_block(node, comments);
 
     // 変数呼び出しの場合
     if node.is_variable_call() {
@@ -72,26 +79,26 @@ pub fn build_node(node: Option<&CallNode>) -> Document {
     group(array(&[doc_name, doc_arguments, doc_block]))
 }
 
-fn build_name(node: &CallNode) -> Document {
+fn build_name(node: &CallNode, comments: &mut Comments) -> Document {
     // TODO: オペレータ個別の処理を追加
     let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();
     let name = node.name();
     match receiver {
         Some(_) => array(&[
-            build_receiver(receiver.as_ref(), is_safe_navigation),
-            name.build(),
+            build_receiver(receiver.as_ref(), is_safe_navigation, comments),
+            name.build(comments),
         ]),
-        None => name.build(),
+        None => name.build(comments),
     }
 }
 
-fn build_arguments(node: &CallNode) -> Document {
+fn build_arguments(node: &CallNode, comments: &mut Comments) -> Document {
     let arguments = node.arguments();
     let block = node.block();
     let block_argument = block.and_then(|node| node.as_block_argument_node());
-    let doc_arguments = arguments_node::build_node(arguments.as_ref());
-    let doc_block_argument = block_argument_node::build_node(block_argument.as_ref());
+    let doc_arguments = arguments.build(comments);
+    let doc_block_argument = block_argument.build(comments);
     match (arguments, block_argument) {
         (None, None) => none(),
         _ => group(array(&[
@@ -109,7 +116,7 @@ fn build_arguments(node: &CallNode) -> Document {
     }
 }
 
-fn build_block(node: &CallNode) -> Document {
+fn build_block(node: &CallNode, comments: &mut Comments) -> Document {
     let block = node.block();
-    block.build()
+    block.build(comments)
 }

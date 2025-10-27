@@ -1,10 +1,16 @@
-use crate::buildable::Buildable;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, hardline, none, string};
 use crate::document::Document;
 use crate::keyword::ShareableConstantComment;
+use ruby_prism::Comments;
 use ruby_prism::ShareableConstantNode;
+use std::collections::HashMap;
 
-pub fn build_node(node: Option<&ShareableConstantNode>) -> Document {
+pub fn build_node(
+    node: Option<&ShareableConstantNode>,
+    comments: &mut Comments,
+    option: Option<&HashMap<&str, bool>>,
+) -> Document {
     let node = node.unwrap();
     let is_literal = node.is_literal();
     let is_experimental_everything = node.is_experimental_everything();
@@ -27,6 +33,6 @@ pub fn build_node(node: Option<&ShareableConstantNode>) -> Document {
             ]),
             _ => none(),
         },
-        write.build(),
+        write.build(comments),
     ]))
 }
