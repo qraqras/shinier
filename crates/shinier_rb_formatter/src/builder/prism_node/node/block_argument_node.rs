@@ -1,14 +1,15 @@
-use crate::builder::Buildable;
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, none, string};
 use crate::document::Document;
 use crate::keyword::PROC_AND;
 use ruby_prism::BlockArgumentNode;
 
-pub fn build_node(node: Option<&BlockArgumentNode>) -> Document {
+pub fn build_node(node: Option<&BlockArgumentNode>, context: &mut BuildContext) -> Document {
     match node {
         Some(node) => {
             let expression = node.expression();
-            group(array(&[string(PROC_AND), expression.build()]))
+            group(array(&[string(PROC_AND), expression.build(context)]))
         }
         None => none(),
     }

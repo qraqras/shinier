@@ -1,9 +1,10 @@
-use crate::builder::Buildable;
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, hardline, none};
 use crate::document::Document;
 use ruby_prism::StatementsNode;
 
-pub fn build_node(node: Option<&StatementsNode>) -> Document {
+pub fn build_node(node: Option<&StatementsNode>, context: &mut BuildContext) -> Document {
     match node {
         Some(node) => {
             let body = node.body();
@@ -12,7 +13,7 @@ pub fn build_node(node: Option<&StatementsNode>) -> Document {
                 if i > 0 {
                     vec.push(hardline());
                 }
-                vec.push(group(s.build()));
+                vec.push(group(s.build(context)));
             }
             array(&vec)
         }

@@ -1,10 +1,14 @@
-use crate::builder::Buildable;
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, none, space, string};
 use crate::document::Document;
 use crate::keyword::{ASTERISK, COLON};
 use ruby_prism::OptionalKeywordParameterNode;
 
-pub fn build_node(node: Option<&OptionalKeywordParameterNode>) -> Document {
+pub fn build_node(
+    node: Option<&OptionalKeywordParameterNode>,
+    context: &mut BuildContext,
+) -> Document {
     let node = node.unwrap();
     let is_repeated_parameter = node.is_repeated_parameter();
     let name = node.name();
@@ -14,9 +18,9 @@ pub fn build_node(node: Option<&OptionalKeywordParameterNode>) -> Document {
             true => string(ASTERISK),
             false => none(),
         },
-        name.build(),
+        name.build(context),
         string(COLON),
         space(),
-        value.build(),
+        value.build(context),
     ]))
 }

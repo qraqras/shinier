@@ -1,10 +1,11 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::helper::regex::{escape_slash_in_pattern, flags_string};
 use crate::keyword::SLASH;
 use ruby_prism::MatchLastLineNode;
 
-pub fn build_node(node: Option<&MatchLastLineNode>) -> Document {
+pub fn build_node(node: Option<&MatchLastLineNode>, _context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let is_ignore_case = node.is_ignore_case();
     let is_extended = node.is_extended();

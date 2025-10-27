@@ -1,40 +1,44 @@
-use crate::buildable::Buildable;
-use crate::document::*;
 use crate::renderer::print_doc_to_string;
+use crate::{BuildContext, BuildPrismNode};
 use ruby_prism::*;
+use std::collections::HashMap;
 
-pub struct Printer {
-    src: String,
+pub struct Printer<'a> {
+    source: String,
+    parse_result: Option<ParseResult<'a>>,
+    map: Option<HashMap<usize, Comment<'a>>>,
     option: (),
 }
-impl Printer {
-    pub fn new(src: String, option: ()) -> Self {
-        Self { src, option }
+impl<'a> Printer<'a> {
+    pub fn new(source: String, option: ()) -> Self {
+        Self {
+            source,
+            parse_result: None,
+            map: None,
+            option,
+        }
     }
-    pub fn print(&self) -> String {
-        let parsed = self.str_to_ast();
-        let docs = self.ast_to_doc(&parsed);
-        self.doc_to_str(docs)
-    }
-    pub fn str_to_ast(&self) -> ParseResult<'_> {
-        parse(self.src.as_bytes())
-    }
-    pub fn ast_to_doc(&self, parsed: &ParseResult) -> Document {
+    pub fn print(&self) -> (ParseResult, String) {
+        let parse_result = parse(self.source.as_bytes());
+
         // TODO: パースエラー時はフォーマットを実施しないようにする
         let mut messages = String::new();
-        for diagnostic in parsed.errors() {
+        for diagnostic in parse_result.errors() {
             messages.push_str(diagnostic.message());
             messages.push_str(format!("\n{:?}\n", diagnostic.location()).as_str());
         }
         if messages.len() > 0 {
             panic!("!!!!パースエラー時の処理は未実装です!!!!: {}", messages);
         }
-        parsed.node().build()
-    }
-    pub fn doc_to_str(&self, doc: Document) -> String {
-        const COLUMN_MAX: usize = 40;
-        const INDENT_UNIT: &str = "  ";
+
+        let mut context = BuildContext {
+            source: self.source.as_bytes(),
+            prev_end: 0,
+            comments: &mut parse_result.comments().peekable(),
+        };
+        let doc = parse_result.node().build(&mut context);
+
         let output = print_doc_to_string(&doc, ());
-        output
+        (parse_result, output)
     }
 }

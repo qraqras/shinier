@@ -1,11 +1,15 @@
-use crate::buildable::Buildable;
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::helper::escape::escape;
 use crate::keyword::SLASH;
 use ruby_prism::InterpolatedMatchLastLineNode;
 
-pub fn build_node(node: Option<&InterpolatedMatchLastLineNode>) -> Document {
+pub fn build_node(
+    node: Option<&InterpolatedMatchLastLineNode>,
+    context: &mut BuildContext,
+) -> Document {
     let node = node.unwrap();
     let parts = node.parts();
 
@@ -17,7 +21,7 @@ pub fn build_node(node: Option<&InterpolatedMatchLastLineNode>) -> Document {
                 vec.push(string(escape(unescaped)));
             }
             None => {
-                vec.push(part.build());
+                vec.push(part.build(context));
             }
         }
     }

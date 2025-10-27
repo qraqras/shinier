@@ -12,3 +12,5 @@ pub mod magic_comments_buildable;
 pub mod node_list_buildable;
 pub mod node_list_iter_buildable;
 pub mod parse_result_buildable;
+
+pub use node_list_buildable::BuildPrismNodeList;

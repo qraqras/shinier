@@ -1,10 +1,11 @@
-use crate::builder::Buildable;
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, hardline, indent, space, string};
 use crate::document::Document;
 use crate::keyword::{END, IF};
 use ruby_prism::IfNode;
 
-pub fn build_node(node: Option<&IfNode>) -> Document {
+pub fn build_node(node: Option<&IfNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let predicate = node.predicate();
     let statements = node.statements();
@@ -12,9 +13,9 @@ pub fn build_node(node: Option<&IfNode>) -> Document {
     group(array(&[
         string(IF),
         space(),
-        predicate.build(),
-        indent(statements.build_with(Some(hardline()), None)),
-        subsequent.build_with(Some(hardline()), None),
+        predicate.build(context),
+        indent(statements.build_with(context, Some(hardline()), None)),
+        subsequent.build_with(context, Some(hardline()), None),
         hardline(),
         string(END),
     ]))

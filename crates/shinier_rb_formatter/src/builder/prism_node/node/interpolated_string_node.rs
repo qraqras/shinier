@@ -1,11 +1,12 @@
-use crate::buildable::Buildable;
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::helper::escape::escape;
 use crate::keyword::DOUBLE_QUOTE;
 use ruby_prism::InterpolatedStringNode;
 
-pub fn build_node(node: Option<&InterpolatedStringNode>) -> Document {
+pub fn build_node(node: Option<&InterpolatedStringNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let parts = node.parts();
 
@@ -17,7 +18,7 @@ pub fn build_node(node: Option<&InterpolatedStringNode>) -> Document {
                 vec.push(string(escape(unescaped)));
             }
             None => {
-                vec.push(part.build());
+                vec.push(part.build(context));
             }
         }
     }

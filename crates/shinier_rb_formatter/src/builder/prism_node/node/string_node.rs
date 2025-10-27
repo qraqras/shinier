@@ -1,9 +1,10 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::keyword::{DOUBLE_QUOTE, SINGLE_QUOTE};
 use ruby_prism::StringNode;
 
-pub fn build_node(node: Option<&StringNode>) -> Document {
+pub fn build_node(node: Option<&StringNode>, _context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let unescaped = node.unescaped();
 

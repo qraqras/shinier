@@ -1,4 +1,5 @@
-use crate::builder::Buildable;
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, line, string};
 use crate::document::Document;
 use crate::helper::build_index::build_index;
@@ -7,7 +8,7 @@ use crate::helper::separate_docs::separate_docs;
 use crate::keyword::COMMA;
 use ruby_prism::IndexOperatorWriteNode;
 
-pub fn build_node(node: Option<&IndexOperatorWriteNode>) -> Document {
+pub fn build_node(node: Option<&IndexOperatorWriteNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let receiver = node.receiver();
     let arguments = node.arguments();
@@ -18,9 +19,10 @@ pub fn build_node(node: Option<&IndexOperatorWriteNode>) -> Document {
     let name = array(&[build_index(
         receiver.as_ref(),
         &separate_docs(
-            &[arguments.build(), block.build()],
+            &[arguments.build(context), block.build(context)],
             array(&[string(COMMA), line()]),
         ),
+        context,
     )]);
-    build_operator_write(name, value.build(), binary_operator.build())
+    build_operator_write(name, value.build(context), binary_operator.build(context))
 }

@@ -1,8 +1,11 @@
-use crate::builder::Buildable;
+use crate::BuildPrismNode;
 use crate::document::Document;
+
 use ruby_prism::ConstantReadNode;
 
-pub fn build_node(node: Option<&ConstantReadNode>) -> Document {
+use crate::BuildContext;
+
+pub fn build_node(node: Option<&ConstantReadNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
-    node.name().build()
+    node.name().build(context)
 }

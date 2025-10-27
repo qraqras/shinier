@@ -1,9 +1,12 @@
-use crate::builder::Buildable;
+use crate::BuildPrismNode;
 use crate::document::Document;
+
 use ruby_prism::ClassVariableReadNode;
 
-pub fn build_node(node: Option<&ClassVariableReadNode>) -> Document {
+use crate::BuildContext;
+
+pub fn build_node(node: Option<&ClassVariableReadNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let name = node.name();
-    name.build()
+    name.build(context)
 }

@@ -1,11 +1,12 @@
-use crate::builder::Buildable;
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, space, string};
 use crate::document::Document;
 use crate::helper::build_symbol_without_colon::build_symbol_without_colon;
 use crate::keyword::{COLON, ROCKET};
 use ruby_prism::AssocNode;
 
-pub fn build_node(node: Option<&AssocNode>) -> Document {
+pub fn build_node(node: Option<&AssocNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let key = node.key();
     let value = node.value();
@@ -14,12 +15,12 @@ pub fn build_node(node: Option<&AssocNode>) -> Document {
             build_symbol_without_colon(&symbol_node.as_node()),
             string(COLON),
             space(),
-            value.build(),
+            value.build(context),
         ])),
         None => group(array(&[
-            key.build(),
+            key.build(context),
             array(&[space(), string(ROCKET), space()]),
-            value.build(),
+            value.build(context),
         ])),
     }
 }

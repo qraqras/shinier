@@ -1,21 +1,23 @@
-use crate::buildable::{Buildable, BuildableList};
+use crate::BuildContext;
 use crate::builder::builder::{array, group, none, space, string};
 use crate::builder::node::parameters_node;
 use crate::document::Document;
 use crate::keyword::{COMMA, SEMI_COLON};
+use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::BlockParametersNode;
 
-pub fn build_node(node: Option<&BlockParametersNode>) -> Document {
+pub fn build_node(node: Option<&BlockParametersNode>, context: &mut BuildContext) -> Document {
     match node {
         Some(node) => {
             let parameters = node.parameters();
             let locals = node.locals();
             group(array(&[
-                parameters.build(),
-                match locals.is_empty() {
+                parameters.build(context),
+                match locals.iter().next().is_none() {
                     true => none(),
                     false => locals.build_with(
-                        array(&[string(COMMA), space()]),
+                        context,
+                        &array(&[string(COMMA), space()]),
                         Some(array(&[string(SEMI_COLON), space()])),
                         None,
                     ),

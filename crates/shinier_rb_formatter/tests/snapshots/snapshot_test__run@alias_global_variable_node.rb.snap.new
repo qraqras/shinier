@@ -1,0 +1,30 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 507
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node/alias_global_variable_node.rb
+---
+****FORMATTED****
+# Docs.rs
+alias $bar $foo
+# unnecessary line break
+alias $bar $foo
+# long expression
+alias $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo
+# long expression with unnecessary line break
+alias $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo
+
+****AST****
+ProgramNode: "alias $foo $bar\n\n# unnecessary line break\nalias\n$foo $bar\n\n# long expression\nalias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\n\n# long expression with unnecessary line break\nalias\n$foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+__AliasGlobalVariableNode: "alias $foo $bar"
+____GlobalVariableReadNode: "$foo"
+____GlobalVariableReadNode: "$bar"
+__AliasGlobalVariableNode: "alias\n$foo $bar"
+____GlobalVariableReadNode: "$foo"
+____GlobalVariableReadNode: "$bar"
+__AliasGlobalVariableNode: "alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____GlobalVariableReadNode: "$foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+____GlobalVariableReadNode: "$barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+__AliasGlobalVariableNode: "alias\n$foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____GlobalVariableReadNode: "$foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+____GlobalVariableReadNode: "$barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"

@@ -1,11 +1,12 @@
-use crate::buildable::{Buildable, BuildableList};
+use crate::BuildContext;
 use crate::builder::builder::{array, group, indent, line, softline, string};
 use crate::builder::helper::separate_docs::separate_docs;
 use crate::document::Document;
 use crate::keyword::{COMMA, PARENTHESES};
+use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::MultiTargetNode;
 
-pub fn build_node(node: Option<&MultiTargetNode>) -> Document {
+pub fn build_node(node: Option<&MultiTargetNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let lefts = node.lefts();
     let rest = node.rest();
@@ -18,9 +19,9 @@ pub fn build_node(node: Option<&MultiTargetNode>) -> Document {
             softline(),
             group(array(&separate_docs(
                 &[
-                    lefts.build(separator.clone()),
-                    rest.build(),
-                    rights.build(separator.clone()),
+                    lefts.build(context, &separator),
+                    rest.build(context),
+                    rights.build(context, &separator),
                 ],
                 separator.clone(),
             ))),

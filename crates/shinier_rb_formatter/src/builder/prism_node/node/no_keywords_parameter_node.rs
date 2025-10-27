@@ -1,8 +1,12 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::keyword::{NIL, SPLAT};
 use ruby_prism::NoKeywordsParameterNode;
 
-pub fn build_node(_node: Option<&NoKeywordsParameterNode>) -> Document {
+pub fn build_node(
+    _node: Option<&NoKeywordsParameterNode>,
+    _context: &mut BuildContext,
+) -> Document {
     array(&[string(SPLAT), string(NIL)])
 }
