@@ -1,11 +1,11 @@
-use crate::{BuildPrismNode, BuildPrismNodeList};
+use crate::BuildPrismNode;
 use crate::document::Document;
-use ruby_prism::Comments;
-use ruby_prism::ConstantReadNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(node: Option<&ConstantReadNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+use ruby_prism::ConstantReadNode;
+
+use crate::BuildContext;
+
+pub fn build_node(node: Option<&ConstantReadNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
-    node.name().build(comments)
+    node.name().build(context)
 }

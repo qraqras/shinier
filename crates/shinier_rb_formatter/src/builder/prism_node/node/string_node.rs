@@ -1,12 +1,10 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
-use ruby_prism::Comments;
 use crate::keyword::{DOUBLE_QUOTE, SINGLE_QUOTE};
 use ruby_prism::StringNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(node: Option<&StringNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&StringNode>, _context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let unescaped = node.unescaped();
 

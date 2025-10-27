@@ -1,21 +1,15 @@
+use crate::BuildContext;
 use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, space, string};
 use crate::document::Document;
 use crate::keyword::YIELD;
-use ruby_prism::Comments;
 use ruby_prism::YieldNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&YieldNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&YieldNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     group(array(&[
         string(YIELD),
         space(),
-        node.arguments().build(comments),
+        node.arguments().build(context),
     ]))
 }

@@ -1,18 +1,12 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, group, indent, line, softline, string};
 use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{BRACKETS, COMMA};
 use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::ArrayPatternNode;
-use ruby_prism::Comments;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&ArrayPatternNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&ArrayPatternNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let constant = node.constant();
     let requireds = node.requireds();
@@ -21,16 +15,16 @@ pub fn build_node(
 
     let separator = array(&[string(COMMA), line()]);
 
-    let separated_requireds = requireds.build(&separator, comments);
-    let separated_posts = posts.build(&separator, comments);
+    let separated_requireds = requireds.build(context, &separator);
+    let separated_posts = posts.build(context, &separator);
 
     group(array(&[
-        constant.build(comments),
+        constant.build(context),
         string(BRACKETS.0),
         indent(array(&[
             softline(),
             group(array(&separate_docs(
-                &[separated_requireds, rest.build(comments), separated_posts],
+                &[separated_requireds, rest.build(context), separated_posts],
                 separator.clone(),
             ))),
         ])),

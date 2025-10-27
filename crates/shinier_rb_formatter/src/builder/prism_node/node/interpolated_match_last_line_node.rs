@@ -1,17 +1,14 @@
+use crate::BuildContext;
 use crate::BuildPrismNode;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::helper::escape::escape;
 use crate::keyword::SLASH;
-use ruby_prism::Comments;
 use ruby_prism::InterpolatedMatchLastLineNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&InterpolatedMatchLastLineNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
+    context: &mut BuildContext,
 ) -> Document {
     let node = node.unwrap();
     let parts = node.parts();
@@ -24,7 +21,7 @@ pub fn build_node(
                 vec.push(string(escape(unescaped)));
             }
             None => {
-                vec.push(part.build(comments));
+                vec.push(part.build(context));
             }
         }
     }

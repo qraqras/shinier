@@ -1,18 +1,17 @@
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, indent, none, softline, string};
 use crate::document::Document;
 use crate::keyword::BRACKETS;
-use ruby_prism::{Comments, Node};
-use std::iter::Peekable;
+use crate::{BuildContext, BuildPrismNode};
+use ruby_prism::Node;
 
 pub fn build_index(
     receiver_node: Option<&Node>,
     arguments: &[Document],
-    comments: &mut Peekable<Comments>,
+    context: &mut BuildContext,
 ) -> Document {
     match receiver_node {
         Some(receiver) => group(array(&[
-            receiver.build(comments),
+            receiver.build(context),
             string(BRACKETS.0),
             indent(array(&[softline(), array(arguments)])),
             softline(),

@@ -1,24 +1,18 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, group, hardline, indent, space, string};
 use crate::document::Document;
 use crate::keyword::WHEN;
 use crate::{BuildPrismNode, BuildPrismNodeList};
-use ruby_prism::Comments;
 use ruby_prism::WhenNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&WhenNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&WhenNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let conditions = node.conditions();
     let statements = node.statements();
     group(array(&[
         string(WHEN),
         space(),
-        conditions.build(&hardline(), comments),
-        indent(statements.build_with(comments, Some(hardline()), None)),
+        conditions.build(context, &hardline()),
+        indent(statements.build_with(context, Some(hardline()), None)),
     ]))
 }

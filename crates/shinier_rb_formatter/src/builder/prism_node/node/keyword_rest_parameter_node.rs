@@ -1,14 +1,12 @@
-use crate::{BuildPrismNode, BuildPrismNodeList};
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
-use ruby_prism::Comments;
 use crate::keyword::SPLAT;
 use ruby_prism::KeywordRestParameterNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(node: Option<&KeywordRestParameterNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&KeywordRestParameterNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let name = node.name();
-    array(&[string(SPLAT), name.build(comments)])
+    array(&[string(SPLAT), name.build(context)])
 }

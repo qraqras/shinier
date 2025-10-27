@@ -1,15 +1,19 @@
-use crate::{BuildPrismNode, BuildPrismNodeList};
+use crate::BuildPrismNode;
 use crate::document::Document;
-use ruby_prism::Comments;
+
 use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
 use ruby_prism::ConstantPathOrWriteNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(node: Option<&ConstantPathOrWriteNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+use crate::BuildContext;
+
+pub fn build_node(node: Option<&ConstantPathOrWriteNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let target = node.target();
     let value = node.value();
-    build_logical_write(target.as_node().build(comments), value.build(comments), LogicalOperator::Or)
+    build_logical_write(
+        target.as_node().build(context),
+        value.build(context),
+        LogicalOperator::Or,
+    )
 }

@@ -1,40 +1,28 @@
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, none};
 use crate::document::Document;
-use ruby_prism::{Comments, NodeList};
-use std::collections::HashMap;
-use std::iter::Peekable;
+use crate::{BuildContext, BuildPrismNode};
+use ruby_prism::NodeList;
 
 pub trait BuildPrismNodeList {
-    fn _build(
-        &self,
-        separator: &Document,
-        comments: &mut Peekable<Comments>,
-        option: Option<&HashMap<&str, bool>>,
-    ) -> Document;
-    fn build(&self, separator: &Document, comments: &mut Peekable<Comments>) -> Document {
-        self._build(separator, comments, None)
+    fn _build(&self, context: &mut BuildContext, separator: &Document) -> Document;
+    fn build(&self, context: &mut BuildContext, separator: &Document) -> Document {
+        self._build(context, separator)
     }
     fn build_with(
         &self,
+        context: &mut BuildContext,
         separator: &Document,
-        comments: &mut Peekable<Comments>,
         before: Option<Document>,
         after: Option<Document>,
     ) -> Document {
         let before = before.unwrap_or(Document::None);
         let after = after.unwrap_or(Document::None);
-        Document::Array(Vec::from(&[before, self.build(separator, comments), after]))
+        Document::Array(Vec::from(&[before, self.build(context, separator), after]))
     }
 }
 
 impl BuildPrismNodeList for NodeList<'_> {
-    fn _build(
-        &self,
-        separator: &Document,
-        comments: &mut Peekable<Comments>,
-        option: Option<&HashMap<&str, bool>>,
-    ) -> Document {
+    fn _build(&self, context: &mut BuildContext, separator: &Document) -> Document {
         if self.iter().next().is_none() {
             return none();
         }
@@ -43,21 +31,16 @@ impl BuildPrismNodeList for NodeList<'_> {
             if i > 0 {
                 vec.push(separator.clone());
             }
-            vec.push(node._build(comments, option));
+            vec.push(node._build(context));
         }
         array(&vec)
     }
 }
 
 impl<'a> BuildPrismNodeList for Option<NodeList<'_>> {
-    fn _build(
-        &self,
-        separator: &Document,
-        comments: &mut Peekable<Comments>,
-        option: Option<&HashMap<&str, bool>>,
-    ) -> Document {
+    fn _build(&self, context: &mut BuildContext, separator: &Document) -> Document {
         match self {
-            Some(node) => node._build(separator, comments, option),
+            Some(node) => node._build(context, separator),
             None => none(),
         }
     }

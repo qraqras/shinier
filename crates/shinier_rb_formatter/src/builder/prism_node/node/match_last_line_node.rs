@@ -1,16 +1,11 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
-use ruby_prism::Comments;
 use crate::helper::regex::{escape_slash_in_pattern, flags_string};
 use crate::keyword::SLASH;
 use ruby_prism::MatchLastLineNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&MatchLastLineNode>,
-    comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&MatchLastLineNode>, _context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let is_ignore_case = node.is_ignore_case();
     let is_extended = node.is_extended();

@@ -1,14 +1,14 @@
-use crate::{BuildPrismNode, BuildPrismNodeList};
+use crate::BuildPrismNode;
 use crate::document::Document;
-use ruby_prism::Comments;
+
 use crate::helper::build_write::build_write;
 use ruby_prism::ConstantPathWriteNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(node: Option<&ConstantPathWriteNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+use crate::BuildContext;
+
+pub fn build_node(node: Option<&ConstantPathWriteNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let target = node.target();
     let value = node.value();
-    build_write(target.as_node().build(comments), value.build(comments))
+    build_write(target.as_node().build(context), value.build(context))
 }

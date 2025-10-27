@@ -1,17 +1,11 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, group, hardline, indent, line, none, space, string};
 use crate::document::Document;
 use crate::keyword::{COMMA, RESCUE, ROCKET};
 use crate::{BuildPrismNode, BuildPrismNodeList};
-use ruby_prism::Comments;
 use ruby_prism::RescueNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&RescueNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&RescueNode>, context: &mut BuildContext) -> Document {
     match node {
         Some(node) => {
             let exceptions = node.exceptions();
@@ -22,14 +16,14 @@ pub fn build_node(
                 group(array(&[
                     string(RESCUE),
                     space(),
-                    exceptions.build(&array(&[string(COMMA), line()]), comments),
+                    exceptions.build(context, &array(&[string(COMMA), line()])),
                     match reference {
-                        Some(r) => array(&[space(), string(ROCKET), line(), r.build(comments)]),
+                        Some(r) => array(&[space(), string(ROCKET), line(), r.build(context)]),
                         None => none(),
                     },
                 ])),
-                indent(statements.build_with(comments, Some(hardline()), None)),
-                subsequent.build_with(comments, Some(hardline()), None),
+                indent(statements.build_with(context, Some(hardline()), None)),
+                subsequent.build_with(context, Some(hardline()), None),
             ]))
         }
         None => none(),

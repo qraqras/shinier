@@ -1,17 +1,11 @@
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, indent, line, none, string};
 use crate::document::Document;
 use crate::keyword::{BRACES, PIPE};
-use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::BlockNode;
-use ruby_prism::Comments;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&BlockNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&BlockNode>, context: &mut BuildContext) -> Document {
     match node {
         Some(node) => {
             let parameters = node.parameters();
@@ -20,11 +14,11 @@ pub fn build_node(
                 string(BRACES.0),
                 indent(array(&[
                     group(parameters.build_with(
-                        comments,
+                        context,
                         Some(array(&[line(), string(PIPE)])),
                         Some(string(PIPE)),
                     )),
-                    body.build_with(comments, Some(line()), None),
+                    body.build_with(context, Some(line()), None),
                 ])),
                 line(),
                 string(BRACES.1),

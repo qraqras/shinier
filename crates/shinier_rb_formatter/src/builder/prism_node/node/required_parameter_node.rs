@@ -1,13 +1,11 @@
-use crate::{BuildPrismNode, BuildPrismNodeList};
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, none, string};
 use crate::document::Document;
-use ruby_prism::Comments;
 use crate::keyword::ASTERISK;
 use ruby_prism::RequiredParameterNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(node: Option<&RequiredParameterNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&RequiredParameterNode>, context: &mut BuildContext) -> Document {
     match node {
         Some(node) => {
             let is_repeated_parameter = node.is_repeated_parameter();
@@ -17,7 +15,7 @@ pub fn build_node(node: Option<&RequiredParameterNode>, comments: &mut Peekable<
                     true => string(ASTERISK),
                     false => none(),
                 },
-                name.build(comments),
+                name.build(context),
             ]))
         }
         None => none(),

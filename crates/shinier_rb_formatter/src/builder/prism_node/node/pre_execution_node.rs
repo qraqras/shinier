@@ -1,17 +1,11 @@
+use crate::BuildContext;
 use crate::BuildPrismNode;
-use crate::builder::builder::*;
+use crate::builder::builder::{array, group, indent, line, space, string};
 use crate::document::Document;
 use crate::keyword::{BRACES, PRE_EXECUTION};
-use ruby_prism::Comments;
 use ruby_prism::*;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&PreExecutionNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&PreExecutionNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let statements = node.statements();
     group(array(&[
@@ -19,7 +13,7 @@ pub fn build_node(
         space(),
         group(array(&[
             string(BRACES.0),
-            indent(array(&[line(), statements.build(comments)])),
+            indent(array(&[line(), statements.build(context)])),
             line(),
             string(BRACES.1),
         ])),

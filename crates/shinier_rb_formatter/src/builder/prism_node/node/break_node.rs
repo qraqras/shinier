@@ -1,21 +1,15 @@
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, line, string};
 use crate::document::Document;
 use crate::keyword::BREAK;
-use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::BreakNode;
-use ruby_prism::Comments;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&BreakNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&BreakNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let arguments = node.arguments();
     group(array(&[
         string(BREAK),
-        arguments.build_with(comments, Some(line()), None),
+        arguments.build_with(context, Some(line()), None),
     ]))
 }

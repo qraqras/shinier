@@ -1,16 +1,10 @@
+use crate::BuildContext;
 use crate::BuildPrismNode;
 use crate::document::Document;
-use ruby_prism::Comments;
 use ruby_prism::RationalNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&RationalNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&RationalNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let location = node.location();
-    location.build(comments)
+    location.build(context)
 }

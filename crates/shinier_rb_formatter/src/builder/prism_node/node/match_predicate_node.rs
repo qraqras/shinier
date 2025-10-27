@@ -1,21 +1,19 @@
-use crate::{BuildPrismNode, BuildPrismNodeList};
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, space, string};
 use crate::document::Document;
-use ruby_prism::Comments;
 use crate::keyword::IN;
 use ruby_prism::MatchPredicateNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(node: Option<&MatchPredicateNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&MatchPredicateNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let value = node.value();
     let pattern = node.pattern();
     group(array(&[
-        value.build(comments),
+        value.build(context),
         space(),
         string(IN),
         space(),
-        pattern.build(comments),
+        pattern.build(context),
     ]))
 }

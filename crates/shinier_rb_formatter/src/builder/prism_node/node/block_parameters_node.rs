@@ -1,29 +1,23 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, group, none, space, string};
 use crate::builder::node::parameters_node;
 use crate::document::Document;
 use crate::keyword::{COMMA, SEMI_COLON};
 use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::BlockParametersNode;
-use ruby_prism::Comments;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&BlockParametersNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&BlockParametersNode>, context: &mut BuildContext) -> Document {
     match node {
         Some(node) => {
             let parameters = node.parameters();
             let locals = node.locals();
             group(array(&[
-                parameters.build(comments),
+                parameters.build(context),
                 match locals.iter().next().is_none() {
                     true => none(),
                     false => locals.build_with(
+                        context,
                         &array(&[string(COMMA), space()]),
-                        comments,
                         Some(array(&[string(SEMI_COLON), space()])),
                         None,
                     ),

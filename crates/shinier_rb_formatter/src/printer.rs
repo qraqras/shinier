@@ -1,5 +1,5 @@
-use crate::BuildPrismNode;
 use crate::renderer::print_doc_to_string;
+use crate::{BuildContext, BuildPrismNode};
 use ruby_prism::*;
 use std::collections::HashMap;
 
@@ -31,9 +31,12 @@ impl<'a> Printer<'a> {
             panic!("!!!!パースエラー時の処理は未実装です!!!!: {}", messages);
         }
 
-        let doc = parse_result
-            .node()
-            .build(&mut parse_result.comments().peekable());
+        let mut context = BuildContext {
+            source: self.source.as_bytes(),
+            prev_end: 0,
+            comments: &mut parse_result.comments().peekable(),
+        };
+        let doc = parse_result.node().build(&mut context);
 
         let output = print_doc_to_string(&doc, ());
         (parse_result, output)

@@ -1,15 +1,20 @@
-use crate::{BuildPrismNode, BuildPrismNodeList};
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::document::Document;
-use ruby_prism::Comments;
 use crate::helper::build_write::build_operator_write;
 use ruby_prism::ClassVariableOperatorWriteNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(node: Option<&ClassVariableOperatorWriteNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(
+    node: Option<&ClassVariableOperatorWriteNode>,
+    context: &mut BuildContext,
+) -> Document {
     let node = node.unwrap();
     let name = node.name();
     let value = node.value();
     let binary_operator = node.binary_operator();
-    build_operator_write(name.build(comments), value.build(comments), binary_operator.build(comments))
+    build_operator_write(
+        name.build(context),
+        value.build(context),
+        binary_operator.build(context),
+    )
 }

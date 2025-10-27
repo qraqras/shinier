@@ -1,12 +1,10 @@
-use crate::{BuildPrismNode, BuildPrismNodeList};
+use crate::BuildContext;
+use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, hardline, none};
 use crate::document::Document;
-use ruby_prism::Comments;
 use ruby_prism::StatementsNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(node: Option<&StatementsNode>, comments: &mut Peekable<Comments>, option: Option<&HashMap<&str, bool>>) -> Document {
+pub fn build_node(node: Option<&StatementsNode>, context: &mut BuildContext) -> Document {
     match node {
         Some(node) => {
             let body = node.body();
@@ -15,7 +13,7 @@ pub fn build_node(node: Option<&StatementsNode>, comments: &mut Peekable<Comment
                 if i > 0 {
                     vec.push(hardline());
                 }
-                vec.push(group(s.build(comments)));
+                vec.push(group(s.build(context)));
             }
             array(&vec)
         }

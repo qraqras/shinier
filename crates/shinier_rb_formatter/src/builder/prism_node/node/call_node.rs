@@ -6,7 +6,7 @@ use crate::document::Document;
 use crate::helper::build_receiver::build_receiver;
 use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::CallNode;
-use ruby_prism::Comments;
+
 
 const OPEN_PAREN: &str = "(";
 const CLOSE_PAREN: &str = ")";
@@ -58,19 +58,15 @@ const SELF_ASSIGNABLE_METHODS: &[&str] = &[
     "&&", // ...
     "||", // ...
 ];
-use std::collections::HashMap;
-use std::iter::Peekable;
+use crate::BuildContext;
 
-pub fn build_node(
-    node: Option<&CallNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+
+pub fn build_node(node: Option<&CallNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
 
-    let doc_name = build_name(node, comments);
-    let doc_arguments = build_arguments(node, comments);
-    let doc_block = build_block(node, comments);
+    let doc_name = build_name(context, node);
+    let doc_arguments = build_arguments(context, node);
+    let doc_block = build_block(context, node);
 
     // 変数呼び出しの場合
     if node.is_variable_call() {
@@ -80,26 +76,26 @@ pub fn build_node(
     group(array(&[doc_name, doc_arguments, doc_block]))
 }
 
-fn build_name(node: &CallNode, comments: &mut Peekable<Comments>) -> Document {
+fn build_name(context: &mut BuildContext, node: &CallNode) -> Document {
     // TODO: オペレータ個別の処理を追加
     let is_safe_navigation = node.is_safe_navigation();
     let receiver = node.receiver();
     let name = node.name();
     match receiver {
         Some(_) => array(&[
-            build_receiver(receiver.as_ref(), is_safe_navigation, comments),
-            name.build(comments),
+            build_receiver(receiver.as_ref(), is_safe_navigation, context),
+            name.build(context),
         ]),
-        None => name.build(comments),
+        None => name.build(context),
     }
 }
 
-fn build_arguments(node: &CallNode, comments: &mut Peekable<Comments>) -> Document {
+fn build_arguments(context: &mut BuildContext, node: &CallNode) -> Document {
     let arguments = node.arguments();
     let block = node.block();
     let block_argument = block.and_then(|node| node.as_block_argument_node());
-    let doc_arguments = arguments.build(comments);
-    let doc_block_argument = block_argument.build(comments);
+    let doc_arguments = arguments.build(context);
+    let doc_block_argument = block_argument.build(context);
     match (arguments, block_argument) {
         (None, None) => none(),
         _ => group(array(&[
@@ -117,7 +113,7 @@ fn build_arguments(node: &CallNode, comments: &mut Peekable<Comments>) -> Docume
     }
 }
 
-fn build_block(node: &CallNode, comments: &mut Peekable<Comments>) -> Document {
+fn build_block(context: &mut BuildContext, node: &CallNode) -> Document {
     let block = node.block();
-    block.build(comments)
+    block.build(context)
 }

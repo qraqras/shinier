@@ -1,16 +1,13 @@
+use crate::BuildContext;
 use crate::BuildPrismNode;
 use crate::document::Document;
-use ruby_prism::Comments;
 use ruby_prism::InstanceVariableTargetNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
 pub fn build_node(
     node: Option<&InstanceVariableTargetNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
+    context: &mut BuildContext,
 ) -> Document {
     let node = node.unwrap();
     let name = node.name();
-    name.build(comments)
+    name.build(context)
 }

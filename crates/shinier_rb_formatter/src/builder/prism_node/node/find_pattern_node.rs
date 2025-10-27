@@ -1,18 +1,12 @@
+use crate::BuildContext;
 use crate::builder::builder::{array, group, indent, line, string};
 use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{BRACKETS, COMMA, PARENTHESES};
 use crate::{BuildPrismNode, BuildPrismNodeList};
-use ruby_prism::Comments;
 use ruby_prism::FindPatternNode;
-use std::collections::HashMap;
-use std::iter::Peekable;
 
-pub fn build_node(
-    node: Option<&FindPatternNode>,
-    comments: &mut Peekable<Comments>,
-    option: Option<&HashMap<&str, bool>>,
-) -> Document {
+pub fn build_node(node: Option<&FindPatternNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let constant = node.constant();
     let left = node.left();
@@ -22,15 +16,15 @@ pub fn build_node(
     let separator = array(&[string(COMMA), line()]);
     let elements = separate_docs(
         &[
-            left.as_node().build(comments),
-            requireds.build(&separator, comments),
-            right.build(comments),
+            left.as_node().build(context),
+            requireds.build(context, &separator),
+            right.build(context),
         ],
         separator.clone(),
     );
     match constant {
         Some(constant) => group(array(&[
-            constant.build(comments),
+            constant.build(context),
             string(PARENTHESES.0),
             indent(array(&[group(array(&elements))])),
             string(PARENTHESES.1),
