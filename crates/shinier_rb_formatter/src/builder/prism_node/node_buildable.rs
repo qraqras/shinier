@@ -1,7 +1,6 @@
 use crate::builder::prism_node::node::*;
 use crate::document::Document;
 use ruby_prism::{Comments, Node};
-use std::io::Read;
 use std::iter::Peekable;
 
 pub struct BuildContext<'a> {
@@ -34,18 +33,35 @@ impl BuildPrismNode for Node<'_> {
     fn _build(&self, context: &mut BuildContext) -> Document {
         let mut vec = Vec::new();
 
-        // Leading comments
-        while let Some(comment) = context.comments.peek() {
-            if comment.location().start_offset() < self.location().start_offset() {
-                let comment = context.comments.next().unwrap();
-                let mut buf = String::new();
-                comment.text().read_to_string(&mut buf).unwrap();
-                buf.push_str("\n"); // TODO: 改行の扱いを見直す
-                vec.push(Document::String(buf));
-            } else {
-                break;
+
+        let mut gap_str = String::new();
+        if context.prev_end < self.location().start_offset() {
+            let start = context.prev_end;
+            let end = self.location().start_offset().min(context.source.len());
+            if start < end {
+                let n = context.source[start..end].iter().filter(|&&b| b == b'\n').count();
+                if n > 0 {
+                    gap_str = "\n".repeat(n);
+                }
             }
+            context.prev_end = self.location().end_offset().min(context.source.len());
         }
+        if !gap_str.is_empty() {
+            vec.push(Document::String(gap_str));
+        }
+
+        // // Leading comments
+        // while let Some(comment) = context.comments.peek() {
+        //     if comment.location().start_offset() < self.location().start_offset() {
+        //         let comment = context.comments.next().unwrap();
+        //         let mut buf = String::new();
+        //         comment.text().read_to_string(&mut buf).unwrap();
+        //         buf.push_str("\n"); // TODO: 改行の扱いを見直す
+        //         vec.push(Document::String(buf));
+        //     } else {
+        //         break;
+        //     }
+        // }
 
         let built_node = match self {
             Node::AliasGlobalVariableNode { .. } => {
@@ -504,6 +520,8 @@ impl BuildPrismNode for Node<'_> {
         };
         vec.push(built_node);
 
+
+        context.prev_end = self.location().end_offset().min(context.source.len());
 
 
         Document::Array(Vec::from(vec))
