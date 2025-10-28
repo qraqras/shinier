@@ -5,19 +5,10 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/arguments_node.rb
 ---
 ****FORMATTED****
-
 return foo, bar, baz
 
-
-
-return foo, bar, 
-baz
-
-return foo, 
-bar, 
-baz
-
-
+return foo, bar, baz
+return foo, bar, baz
 
 return foo,
   bar,

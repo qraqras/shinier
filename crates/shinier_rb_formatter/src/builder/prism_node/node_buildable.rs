@@ -1,3 +1,4 @@
+use crate::builder::builder::hardline;
 use crate::builder::prism_node::node::*;
 use crate::document::Document;
 use ruby_prism::{Comments, Node};
@@ -34,21 +35,35 @@ impl BuildPrismNode for Node<'_> {
         let mut vec = Vec::new();
 
 
-        let mut gap_str = String::new();
-        if context.prev_end < self.location().start_offset() {
+        // 前の空行を出力
+       if context.prev_end < self.location().start_offset() {
             let start = context.prev_end;
             let end = self.location().start_offset().min(context.source.len());
             if start < end {
-                let n = context.source[start..end].iter().filter(|&&b| b == b'\n').count();
-                if n > 0 {
-                    gap_str = "\n".repeat(n);
+                let mut i = start;
+                let mut run = 0usize;
+                while i < end {
+                    if context.source[i] == b'\n' {
+                        run += 1;
+                    } else {
+                        if run >= 2 {
+                            for _ in 0..(run).div_ceil(2) {
+                                vec.push(hardline());
+                            }
+                        }
+                        run = 0;
+                    }
+                    i += 1;
+                }
+                if run >= 2 {
+                    for _ in 0..(run).div_ceil(2) {
+                        vec.push(hardline());
+                    }
                 }
             }
-            context.prev_end = self.location().end_offset().min(context.source.len());
+            context.prev_end = self.location().start_offset().min(context.source.len());
         }
-        if !gap_str.is_empty() {
-            vec.push(Document::String(gap_str));
-        }
+
 
         // // Leading comments
         // while let Some(comment) = context.comments.peek() {
@@ -521,7 +536,34 @@ impl BuildPrismNode for Node<'_> {
         vec.push(built_node);
 
 
-        context.prev_end = self.location().end_offset().min(context.source.len());
+        // 後ろの空行を出力
+        if context.prev_end < self.location().end_offset() {
+            let start = context.prev_end;
+            let end = self.location().end_offset().min(context.source.len());
+            if start < end {
+                let mut i = start;
+                let mut run = 0usize;
+                while i < end {
+                    if context.source[i] == b'\n' {
+                        run += 1;
+                    } else {
+                        if run >= 2 {
+                            for _ in 0..run {
+                                vec.push(hardline());
+                            }
+                        }
+                        run = 0;
+                    }
+                    i += 1;
+                }
+                if run >= 2 {
+                    for _ in 0..run {
+                        vec.push(hardline());
+                    }
+                }
+            }
+            context.prev_end = self.location().end_offset().min(context.source.len());
+        }
 
 
         Document::Array(Vec::from(vec))

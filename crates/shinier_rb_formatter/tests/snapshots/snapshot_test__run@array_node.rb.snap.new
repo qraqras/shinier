@@ -5,26 +5,15 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
 ---
 ****FORMATTED****
-
 [1, 2, 3]
-
-
 
 []
 
-
+[1]
 
 [1]
 
-
-
 [1]
-
-
-
-[1]
-
-
 
 [
   1000,
@@ -50,41 +39,22 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
 ]
 
 
-
-
 %w[foo bar]
-
 %W[foo #{bar}]
-
 %i[foo bar]
-
 %I[foo #{bar}]
 
-
-
 []
-
 %w[foo, bar]
-
 []
-
 %i[foo, bar]
 
-
-
 %w[foo bar]
-
 %i[foo bar]
 
-
-
 ['foo']
-
 [:foo]
-
 ['foo', :bar]
-
-
 
 %w[foo\sbar\t baz\n]
 

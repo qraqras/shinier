@@ -5,27 +5,16 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/alternation_pattern_node.rb
 ---
 ****FORMATTED****
-
 foo => bar | baz
 
-
-
-foo => 
-bar | baz
-
-foo => bar | 
-baz
-
-
+foo => bar | baz
+foo => bar | baz
 
 foo =>
   bar | barbar | barbarbarbar | barbarbarbarbar | barbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar
 
-
-
 foo =>
-  bar | barbar | barbarbarbar | barbarbarbarbar | 
-barbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar
+  bar | barbar | barbarbarbar | barbarbarbarbar | barbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar
 
 ****AST****
 ProgramNode: "foo => bar | baz\n\n# unnecessary line break\nfoo =>\nbar | baz\nfoo => bar |\nbaz\n\n# long expression\nfoo => bar | barbar | barbarbarbar | barbarbarbarbar | barbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar\n\n# long expression with unnecessary line break\nfoo => bar | barbar | barbarbarbar | barbarbarbarbar |\nbarbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar"

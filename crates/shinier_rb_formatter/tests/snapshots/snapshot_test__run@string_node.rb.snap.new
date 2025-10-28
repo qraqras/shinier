@@ -5,39 +5,20 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/string_node.rb
 ---
 ****FORMATTED****
-
 'foo'
-
 ['foo']
-
 "foo #{bar} baz"
 
-
-
 'foo'
-
-
 'foo'
-
-
 
 "foo'bar'baz"
-
-
 'foo"bar"baz'
 
-
-
 'f\\o\\o'
-
-
 'f\\o\\o'
-
-
 
 '\\t'
-
-
 "\t"
 
 ****AST****
