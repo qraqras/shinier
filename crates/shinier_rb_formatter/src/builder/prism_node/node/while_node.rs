@@ -1,9 +1,15 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, hardline, indent, line, space, string};
 use crate::document::Document;
 use crate::keyword::{END, WHILE};
 use ruby_prism::WhileNode;
+
+impl<'sh> Build for Option<&WhileNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&WhileNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
@@ -12,7 +18,7 @@ pub fn build_node(node: Option<&WhileNode>, context: &mut BuildContext) -> Docum
     let statements = node.statements();
     match is_begin_modifier {
         true => group(array(&[
-            statements.build(context),
+            statements.as_ref().build(context),
             space(),
             string(WHILE),
             space(),
@@ -22,7 +28,7 @@ pub fn build_node(node: Option<&WhileNode>, context: &mut BuildContext) -> Docum
             string(WHILE),
             space(),
             predicate.build(context),
-            indent(array(&[hardline(), statements.build(context)])),
+            indent(array(&[hardline(), statements.as_ref().build(context)])),
             line(),
             string(END),
         ])),

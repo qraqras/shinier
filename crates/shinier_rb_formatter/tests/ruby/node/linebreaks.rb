@@ -22,3 +22,7 @@ a =
 
 
 10
+
+for i in 1..5 do
+  # comment
+end

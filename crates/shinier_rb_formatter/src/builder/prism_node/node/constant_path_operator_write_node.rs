@@ -1,10 +1,14 @@
-use crate::BuildPrismNode;
+use crate::Build;
+use crate::BuildContext;
 use crate::document::Document;
-
 use crate::helper::build_write::build_operator_write;
 use ruby_prism::ConstantPathOperatorWriteNode;
 
-use crate::BuildContext;
+impl<'sh> Build for Option<&ConstantPathOperatorWriteNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(
     node: Option<&ConstantPathOperatorWriteNode>,

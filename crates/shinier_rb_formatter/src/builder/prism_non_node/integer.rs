@@ -1,11 +1,12 @@
-use crate::builder::Buildable;
-use crate::builder::builder::*;
+use crate::Build;
+use crate::BuildContext;
+use crate::builder::builder::string;
 use crate::document::Document;
 use num_bigint::{BigInt, Sign};
 use ruby_prism::Integer;
 
-impl Buildable<'_> for Integer<'_> {
-    fn build(&self) -> Document {
+impl<'sh> Build for Integer<'sh> {
+    fn __build__(&self, _context: &mut BuildContext) -> Document {
         let (negative, digits) = self.to_u32_digits();
 
         if digits.is_empty() {

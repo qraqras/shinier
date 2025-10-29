@@ -1,9 +1,15 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, none, string};
 use crate::document::Document;
 use crate::keyword::{ASTERISK, COLON};
 use ruby_prism::RequiredKeywordParameterNode;
+
+impl<'sh> Build for Option<&RequiredKeywordParameterNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(
     node: Option<&RequiredKeywordParameterNode>,

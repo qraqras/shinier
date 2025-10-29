@@ -1,8 +1,15 @@
 use crate::BuildContext;
+use crate::Build;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::keyword::{DOUBLE_QUOTE, SINGLE_QUOTE};
 use ruby_prism::StringNode;
+
+impl<'sh> Build for Option<&StringNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&StringNode>, _context: &mut BuildContext) -> Document {
     let node = node.unwrap();

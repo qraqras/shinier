@@ -1,9 +1,15 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, string};
 use crate::document::Document;
 use crate::keyword::{DOUBLE_DOT, TRIPLE_DOT};
 use ruby_prism::RangeNode;
+
+impl<'sh> Build for Option<&RangeNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&RangeNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();

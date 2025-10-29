@@ -1,10 +1,17 @@
+use crate::Build;
 use crate::BuildContext;
+use crate::ListBuild;
 use crate::builder::builder::{array, group, indent, line, softline, string};
 use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{BRACES, BRACKETS, COMMA};
-use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::HashPatternNode;
+
+impl<'sh> Build for Option<&HashPatternNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&HashPatternNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();

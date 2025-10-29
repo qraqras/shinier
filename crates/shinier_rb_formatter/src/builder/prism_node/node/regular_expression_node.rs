@@ -1,9 +1,16 @@
 use crate::BuildContext;
+use crate::Build;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::helper::regex::{escape_slash_in_pattern, flags_string};
 use crate::keyword::SLASH;
 use ruby_prism::RegularExpressionNode;
+
+impl<'sh> Build for Option<&RegularExpressionNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&RegularExpressionNode>, _context: &mut BuildContext) -> Document {
     let node = node.unwrap();

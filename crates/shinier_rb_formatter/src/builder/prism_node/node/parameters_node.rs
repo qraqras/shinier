@@ -1,10 +1,17 @@
+use crate::Build;
 use crate::BuildContext;
+use crate::ListBuild;
 use crate::builder::builder::{array, group, line, none, string};
 use crate::document::Document;
 use crate::helper::separate_docs::separate_docs;
 use crate::keyword::COMMA;
-use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::ParametersNode;
+
+impl<'sh> Build for Option<&ParametersNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&ParametersNode>, context: &mut BuildContext) -> Document {
     match node {
@@ -26,7 +33,7 @@ pub fn build_node(node: Option<&ParametersNode>, context: &mut BuildContext) -> 
                     posts.build(context, &separator),
                     keywords.build(context, &separator),
                     keyword_rest.build(context),
-                    block.build(context),
+                    block.as_ref().build(context),
                 ],
                 separator,
             )))

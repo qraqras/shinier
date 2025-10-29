@@ -1,9 +1,15 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::document::Document;
 use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
 use ruby_prism::LocalVariableOrWriteNode;
+
+impl<'sh> Build for Option<&LocalVariableOrWriteNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&LocalVariableOrWriteNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();

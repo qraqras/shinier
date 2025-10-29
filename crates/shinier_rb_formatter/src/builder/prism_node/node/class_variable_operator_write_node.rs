@@ -1,8 +1,14 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::document::Document;
 use crate::helper::build_write::build_operator_write;
 use ruby_prism::ClassVariableOperatorWriteNode;
+
+impl<'sh> Build for Option<&ClassVariableOperatorWriteNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(
     node: Option<&ClassVariableOperatorWriteNode>,

@@ -1,10 +1,16 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::helper::escape::escape;
 use crate::keyword::BACK_QUOTE;
 use ruby_prism::InterpolatedXStringNode;
+
+impl<'sh> Build for Option<&InterpolatedXStringNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&InterpolatedXStringNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();

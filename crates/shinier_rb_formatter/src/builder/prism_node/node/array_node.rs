@@ -1,11 +1,18 @@
+use crate::Build;
 use crate::BuildContext;
+use crate::ListBuild;
 use crate::builder::builder::{array, group, indent, line, none, softline, string};
 use crate::document::Document;
 use crate::keyword::{
     BRACKETS, COMMA, PERCENT_LOWER_I, PERCENT_LOWER_W, PERCENT_UPPER_I, PERCENT_UPPER_W,
 };
-use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::{ArrayNode, NodeList};
+
+impl<'sh> Build for Option<&ArrayNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&ArrayNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();

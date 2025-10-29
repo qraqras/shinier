@@ -1,17 +1,18 @@
-use crate::BuildPrismNode;
+use crate::Build;
+use crate::BuildContext;
 use crate::builder::builder::{array, group, indent, line, none, softline, space, string};
 use crate::builder::node::block_parameters_node;
 use crate::document::Document;
 use crate::keyword::{ARROW, BRACES, PARENTHESES};
-
 use ruby_prism::LambdaNode;
 
-use crate::BuildContext;
+impl<'sh> Build for Option<&LambdaNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
-pub fn build_node(
-    node: Option<&LambdaNode>,
-context: &mut BuildContext
-) -> Document {
+pub fn build_node(node: Option<&LambdaNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
     let parameters = node.parameters();
     let body = node.body();

@@ -1,5 +1,5 @@
 use crate::renderer::print_doc_to_string;
-use crate::{BuildContext, BuildPrismNode};
+use crate::{Build, BuildContext, ListBuild};
 use ruby_prism::*;
 use std::collections::HashMap;
 
@@ -35,7 +35,8 @@ impl<'a> Printer<'a> {
             source: self.source.as_bytes(),
             built_end: 0,
             comments: &mut parse_result.comments().peekable(),
-            is_statement: true,
+            inner_comment: Vec::new(),
+            leading_line_breaks: true,
         };
         let doc = parse_result.node().build(&mut context);
 

@@ -1,7 +1,8 @@
+use crate::Build;
+use crate::BuildContext;
 use crate::builder::builder::{array, group, indent, none, softline, string};
 use crate::document::Document;
 use crate::keyword::BRACKETS;
-use crate::{BuildContext, BuildPrismNode};
 use ruby_prism::Node;
 
 pub fn build_index(

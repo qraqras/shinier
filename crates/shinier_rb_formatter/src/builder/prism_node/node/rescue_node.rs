@@ -1,9 +1,16 @@
+use crate::Build;
 use crate::BuildContext;
+use crate::ListBuild;
 use crate::builder::builder::{array, group, hardline, indent, line, none, space, string};
 use crate::document::Document;
 use crate::keyword::{COMMA, RESCUE, ROCKET};
-use crate::{BuildPrismNode, BuildPrismNodeList};
 use ruby_prism::RescueNode;
+
+impl<'sh> Build for Option<&RescueNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&RescueNode>, context: &mut BuildContext) -> Document {
     match node {
@@ -22,8 +29,14 @@ pub fn build_node(node: Option<&RescueNode>, context: &mut BuildContext) -> Docu
                         None => none(),
                     },
                 ])),
-                indent(statements.build_with(context, Some(hardline()), None)),
-                subsequent.build_with(context, Some(hardline()), None),
+                indent(
+                    statements
+                        .as_ref()
+                        .build_with(context, Some(hardline()), None),
+                ),
+                subsequent
+                    .as_ref()
+                    .build_with(context, Some(hardline()), None),
             ]))
         }
         None => none(),

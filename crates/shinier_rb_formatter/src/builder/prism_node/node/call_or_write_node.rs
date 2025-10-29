@@ -1,11 +1,17 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::builder::builder::array;
 use crate::document::Document;
 use crate::helper::build_receiver::build_receiver;
 use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
 use ruby_prism::CallOrWriteNode;
+
+impl<'sh> Build for Option<&CallOrWriteNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&CallOrWriteNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();

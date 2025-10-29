@@ -16,15 +16,16 @@ for i in 1..5 do
     #break
 
     break
-  end
+  end # end 1
 end
 
-# end 1
 # end 2
 a = 10
 
+for i in 1..5 do  end
+
 ****AST****
-ProgramNode: "for i in 1..5 do\n\n    # puts\n    puts i\n\n    if i == 3\n\n    #break\n\n        break\n\n\n\n    end # end 1\n\n\n# end 2\nend\n\na =\n\n\n10"
+ProgramNode: "for i in 1..5 do\n\n    # puts\n    puts i\n\n    if i == 3\n\n    #break\n\n        break\n\n\n\n    end # end 1\n\n\n# end 2\nend\n\na =\n\n\n10\n\nfor i in 1..5 do\n  # comment\nend"
 __ForNode: "for i in 1..5 do\n\n    # puts\n    puts i\n\n    if i == 3\n\n    #break\n\n        break\n\n\n\n    end # end 1\n\n\n# end 2\nend"
 ____LocalVariableTargetNode: "i"
 ____RangeNode: "1..5"
@@ -39,3 +40,8 @@ ________IntegerNode: "3"
 ______BreakNode: "break"
 __LocalVariableWriteNode: "a =\n\n\n10"
 ____IntegerNode: "10"
+__ForNode: "for i in 1..5 do\n  # comment\nend"
+____LocalVariableTargetNode: "i"
+____RangeNode: "1..5"
+______IntegerNode: "1"
+______IntegerNode: "5"

@@ -1,9 +1,15 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, indent, line, space, string};
 use crate::document::Document;
 use crate::keyword::{DO, END, FOR, IN};
 use ruby_prism::ForNode;
+
+impl<'sh> Build for Option<&ForNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&ForNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
@@ -18,7 +24,11 @@ pub fn build_node(node: Option<&ForNode>, context: &mut BuildContext) -> Documen
         string(IN),
         space(),
         collection.build(context),
-        indent(statements.build_with(context, Some(array(&[space(), string(DO), line()])), None)),
+        indent(statements.as_ref().build_with(
+            context,
+            Some(array(&[space(), string(DO), line()])),
+            None,
+        )),
         line(),
         string(END),
     ]))

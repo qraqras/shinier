@@ -10,6 +10,5 @@ pub use formatter::*;
 pub use printer::*;
 pub use renderer::*;
 
-use builder::BuildContext;
-use builder::BuildPrismNode;
-use builder::BuildPrismNodeList;
+use builder::{Build, BuildContext, ListBuild};
+use document::Document;

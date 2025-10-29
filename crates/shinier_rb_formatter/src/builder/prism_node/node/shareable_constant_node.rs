@@ -1,9 +1,15 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, hardline, none, string};
 use crate::document::Document;
 use crate::keyword::ShareableConstantComment;
 use ruby_prism::ShareableConstantNode;
+
+impl<'sh> Build for Option<&ShareableConstantNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&ShareableConstantNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();

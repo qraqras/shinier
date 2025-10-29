@@ -1,9 +1,15 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, group, hardline, indent, line, softline, space, string};
 use crate::document::Document;
 use crate::keyword::{DEF, DOT_OPERATOR, END, PARENTHESES};
 use ruby_prism::DefNode;
+
+impl<'sh> Build for Option<&DefNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(node: Option<&DefNode>, context: &mut BuildContext) -> Document {
     let node = node.unwrap();
@@ -16,7 +22,7 @@ pub fn build_node(node: Option<&DefNode>, context: &mut BuildContext) -> Documen
         space(),
         receiver.build_with(context, None, Some(string(DOT_OPERATOR))),
         name.build(context),
-        group(indent(parameters.build_with(
+        group(indent(parameters.as_ref().build_with(
             context,
             Some(array(&[string(PARENTHESES.0), softline()])),
             Some(array(&[softline(), string(PARENTHESES.1)])),

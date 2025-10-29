@@ -1,10 +1,16 @@
+use crate::Build;
 use crate::BuildContext;
-use crate::BuildPrismNode;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
 use crate::helper::escape::escape;
 use crate::keyword::SLASH;
 use ruby_prism::InterpolatedRegularExpressionNode;
+
+impl<'sh> Build for Option<&InterpolatedRegularExpressionNode<'sh>> {
+    fn __build__(&self, context: &mut BuildContext) -> Document {
+        build_node(*self, context)
+    }
+}
 
 pub fn build_node(
     node: Option<&InterpolatedRegularExpressionNode>,
