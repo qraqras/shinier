@@ -2,7 +2,7 @@ use crate::builder::builder::hardline;
 use crate::builder::prism_node::node::*;
 use crate::document::Document;
 use ruby_prism::{Comments, Node};
-use std::iter::Peekable;
+use std::{io::Read, iter::Peekable};
 
 pub struct BuildContext<'a> {
     pub source: &'a [u8],
@@ -32,8 +32,8 @@ pub trait BuildPrismNode {
 
 fn build_leading_line_breaks(
     context: &mut BuildContext,
-    node: &Node,
-    max: usize,
+    start_offset: usize,
+    max_line_breaks: usize,
 ) -> Option<Document> {
     fn is_indent_char(c: &u8) -> bool {
         matches!(c, b' ' | b'\t')
@@ -42,7 +42,7 @@ fn build_leading_line_breaks(
         matches!(c, b'\n')
     }
     let gap_start = context.built_end;
-    let gap_end = node.location().start_offset();
+    let gap_end = start_offset;
     if gap_start < gap_end {
         let mut i = gap_start;
         let mut break_lines = 0usize;
@@ -54,7 +54,7 @@ fn build_leading_line_breaks(
                 }
                 if j < gap_end && is_line_break_char(&context.source[j]) {
                     break_lines += 1;
-                    if break_lines >= max {
+                    if break_lines >= max_line_breaks {
                         break;
                     }
                     i = j;
@@ -65,6 +65,7 @@ fn build_leading_line_breaks(
             i += 1;
         }
         if break_lines > 0 {
+            context.built_end = gap_end.min(context.source.len());
             return Some(Document::Array(vec![hardline(); break_lines]));
         }
     }
@@ -78,29 +79,42 @@ impl BuildPrismNode for Node<'_> {
 
 
         if context.is_statement {
-            if let Some(breaks) = build_leading_line_breaks(context, &self, 1usize) {
+            if let Some(breaks) = build_leading_line_breaks(context, self.location().start_offset(), 1usize) {
                 vec.push(breaks);
             }
         }
-
         let prev_is_statement = context.is_statement;
         context.is_statement = match self {
             Node::StatementsNode { .. } => true,
+            Node::ProgramNode { .. } => true,
             _ => false,
         };
 
-        // // Leading comments
-        // while let Some(comment) = context.comments.peek() {
-        //     if comment.location().start_offset() < self.location().start_offset() {
-        //         let comment = context.comments.next().unwrap();
-        //         let mut buf = String::new();
-        //         comment.text().read_to_string(&mut buf).unwrap();
-        //         buf.push_str("\n"); // TODO: 改行の扱いを見直す
-        //         vec.push(Document::String(buf));
-        //     } else {
-        //         break;
-        //     }
-        // }
+
+        loop {
+            let next_comment_start = context.comments.peek().map(|c| c.location().start_offset());
+            match next_comment_start {
+                Some(start) => {
+                    // Leading comments
+                    if start < self.location().start_offset() {
+                        if let Some(breaks) = build_leading_line_breaks(context, start, 2usize) {
+                            vec.push(breaks);
+                        }
+                        let comment = context.comments.next().unwrap();
+                        let mut buf = String::new();
+                        comment.text().read_to_string(&mut buf).unwrap();
+                        vec.push(Document::String(buf));
+                        vec.push(hardline());
+                    } else {
+                        break;
+                    }
+                }
+                None => break,
+            }
+
+        }
+
+
 
         let built_node = match self {
             Node::AliasGlobalVariableNode { .. } => {

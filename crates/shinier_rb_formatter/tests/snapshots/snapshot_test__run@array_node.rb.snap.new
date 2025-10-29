@@ -5,16 +5,22 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
 ---
 ****FORMATTED****
+# Docs.rs
 [1, 2, 3]
 
+# empty array
 []
 
+# single element array
 [1]
 
+# unnecessary commas
 [1]
 
+# unnecessary line breaks
 [1]
 
+# long array
 [
   1000,
   2000,
@@ -38,23 +44,28 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
   20000
 ]
 
+# percent literal arrays
 %w[foo bar]
 %W[foo #{bar}]
 %i[foo bar]
 %I[foo #{bar}]
 
+# excessive percent literal arrays
 []
 %w[foo, bar]
 []
 %i[foo, bar]
 
+# recommended percent literal arrays
 %w[foo bar]
 %i[foo bar]
 
+# not recommended percent literal arrays
 ['foo']
 [:foo]
 ['foo', :bar]
 
+# escape sequences in percent literal arrays
 %w[foo\sbar\t baz\n]
 
 ****AST****

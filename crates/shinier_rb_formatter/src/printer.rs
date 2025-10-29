@@ -35,7 +35,7 @@ impl<'a> Printer<'a> {
             source: self.source.as_bytes(),
             built_end: 0,
             comments: &mut parse_result.comments().peekable(),
-            is_statement: false,
+            is_statement: true,
         };
         let doc = parse_result.node().build(&mut context);
 

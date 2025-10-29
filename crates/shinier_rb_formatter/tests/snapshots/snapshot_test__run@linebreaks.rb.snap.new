@@ -5,28 +5,34 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node/linebreaks.rb
 ---
 ****FORMATTED****
+# for
 for i in 1..5 do
 
+  # puts
   puts(i)
 
   if i.==(3)
+
+    #break
 
     break
   end
 end
 
+# end 1
+# end 2
 a = 10
 
 ****AST****
-ProgramNode: "for i in 1..5 do\n\n    puts i\n\n    if i == 3\n\n\n        break\n\n\n\n    end\n\n\nend\n\na =\n\n\n10"
-__ForNode: "for i in 1..5 do\n\n    puts i\n\n    if i == 3\n\n\n        break\n\n\n\n    end\n\n\nend"
+ProgramNode: "for i in 1..5 do\n\n    # puts\n    puts i\n\n    if i == 3\n\n    #break\n\n        break\n\n\n\n    end # end 1\n\n\n# end 2\nend\n\na =\n\n\n10"
+__ForNode: "for i in 1..5 do\n\n    # puts\n    puts i\n\n    if i == 3\n\n    #break\n\n        break\n\n\n\n    end # end 1\n\n\n# end 2\nend"
 ____LocalVariableTargetNode: "i"
 ____RangeNode: "1..5"
 ______IntegerNode: "1"
 ______IntegerNode: "5"
 ____CallNode: "puts i"
 ______LocalVariableReadNode: "i"
-____IfNode: "if i == 3\n\n\n        break\n\n\n\n    end"
+____IfNode: "if i == 3\n\n    #break\n\n        break\n\n\n\n    end"
 ______CallNode: "i == 3"
 ________LocalVariableReadNode: "i"
 ________IntegerNode: "3"
