@@ -2,6 +2,8 @@ use crate::BuildContext;
 use crate::builder::builder::{hardline, string};
 use crate::builder::prism::build_leading_line_breaks;
 use crate::document::Document;
+use ruby_prism::Node;
+use std::io::Read;
 
 pub fn build_leading_comments(node: &Node, context: &mut BuildContext) -> Option<Document> {
     let mut vec = Vec::new();
@@ -9,7 +11,7 @@ pub fn build_leading_comments(node: &Node, context: &mut BuildContext) -> Option
         let next_comment_start = context.comments.peek().map(|c| c.location().start_offset());
         match next_comment_start {
             Some(start) => {
-                if start < self.location().start_offset() {
+                if start < node.location().start_offset() {
                     if let Some(breaks) = build_leading_line_breaks(context, start, 2usize) {
                         vec.push(breaks);
                     }
@@ -39,7 +41,7 @@ pub fn build_trailing_comments(node: &Node, context: &mut BuildContext) -> Optio
         let next_comment_start = context.comments.peek().map(|c| c.location().start_offset());
         match next_comment_start {
             Some(start) => {
-                let node_end = self.location().end_offset();
+                let node_end = node.location().end_offset();
                 // node_end から行末（次の '\n' またはソース終端）を探す
                 let mut line_end = node_end;
                 while line_end < context.source.len() && context.source[line_end] != b'\n' {

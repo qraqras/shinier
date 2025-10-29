@@ -1,5 +1,16 @@
-use crate::{BuildContext, Document};
+use crate::Document;
+use crate::builder::comments_builder::{build_leading_comments, build_trailing_comments};
+use crate::builder::line_breaks_builder::build_leading_line_breaks;
 use ruby_prism::*;
+use std::iter::Peekable;
+
+pub struct BuildContext<'a> {
+    pub source: &'a [u8],
+    pub built_end: usize,
+    pub comments: &'a mut Peekable<Comments<'a>>,
+    pub inner_comment: Vec<Comment<'a>>,
+    pub leading_line_breaks: bool,
+}
 
 pub trait Build {
     fn __build__(&self, context: &mut BuildContext) -> Document;
@@ -37,7 +48,6 @@ pub trait ListBuild {
 }
 
 impl<'sh> Build for Node<'sh> {
-    #[rustfmt::skip]
     fn __build__(&self, context: &mut BuildContext) -> Document {
         #[rustfmt::skip]
         fn build_node(node: &Node, context: &mut BuildContext) -> Document {
@@ -195,7 +205,30 @@ impl<'sh> Build for Node<'sh> {
                 Node::YieldNode                         { .. } => node.as_yield_node().as_ref().build(context),
             }
         }
-        build_node(self, context)
+        let mut vec = Vec::new();
+        if context.leading_line_breaks {
+            if let Some(line_breaks) =
+                build_leading_line_breaks(context, self.location().start_offset(), 1)
+            {
+                vec.push(line_breaks);
+            }
+        }
+        if let Some(leading_comments) = build_leading_comments(self, context) {
+            vec.push(leading_comments);
+        }
+        let prev_is_statement = context.leading_line_breaks;
+        context.leading_line_breaks = match self {
+            Node::StatementsNode { .. } => true,
+            Node::ProgramNode { .. } => true,
+            _ => false,
+        };
+        vec.push(build_node(self, context));
+        if let Some(trailing_comments) = build_trailing_comments(self, context) {
+            vec.push(trailing_comments);
+        }
+        context.leading_line_breaks = prev_is_statement;
+        context.built_end = context.built_end.max(self.location().end_offset());
+        Document::Array(vec)
     }
 }
 

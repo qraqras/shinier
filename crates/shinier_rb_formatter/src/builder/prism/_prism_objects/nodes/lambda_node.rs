@@ -1,7 +1,7 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, group, indent, line, none, softline, space, string};
-use crate::builder::node::block_parameters_node;
+use crate::builder::prism::nodes::block_parameters_node;
 use crate::document::Document;
 use crate::keyword::{ARROW, BRACES, PARENTHESES};
 use ruby_prism::LambdaNode;
