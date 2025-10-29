@@ -1,15 +1,13 @@
 pub mod buildable;
 pub mod builder;
+pub mod comment;
 pub mod keyword;
-pub mod prism_node;
-pub mod prism_non_node;
+pub mod prism;
 
 pub use buildable::*;
 pub use builder::*;
 pub use keyword::*;
-pub use prism_node::*;
-pub use prism_non_node::*;
+pub use prism::*;
 
-pub use prism_node::BuildContext;
-pub use prism_node::BuildPrismNode;
-pub use prism_non_node::BuildPrismNodeList;
+pub use prism::BuildContext;
+pub use prism::{Build, ListBuild};

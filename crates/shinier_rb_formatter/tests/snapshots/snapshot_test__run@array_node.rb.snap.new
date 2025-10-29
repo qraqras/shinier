@@ -7,14 +7,19 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
 ****FORMATTED****
 # Docs.rs
 [1, 2, 3]
+
 # empty array
 []
+
 # single element array
 [1]
+
 # unnecessary commas
 [1]
+
 # unnecessary line breaks
 [1]
+
 # long array
 [
   1000,
@@ -38,33 +43,30 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
   19000,
   20000
 ]
+
 # percent literal arrays
 %w[foo bar]
 %W[foo #{bar}]
 %i[foo bar]
 %I[foo #{bar}]
+
 # excessive percent literal arrays
 []
 %w[foo, bar]
 []
 %i[foo, bar]
+
 # recommended percent literal arrays
-%w[
-  foo
-  bar
-]
+%w[foo bar]
 %i[foo bar]
+
 # not recommended percent literal arrays
-[
-  'foo'
-]
+['foo']
 [:foo]
 ['foo', :bar]
+
 # escape sequences in percent literal arrays
-%w[
-  foo\sbar\t
-  baz\n
-]
+%w[foo\sbar\t baz\n]
 
 ****AST****
 ProgramNode: "[1, 2, 3]\n\n# empty array\n[]\n\n# single element array\n[1]\n\n# unnecessary commas\n[1,]\n\n# unnecessary line breaks\n[\n  1\n]\n\n# long array\n[1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000]\n\n\n# percent literal arrays\n%w(foo bar)\n%W[foo #{bar}]\n%i{foo bar}\n%I\\foo #{bar}\\\n\n# excessive percent literal arrays\n%w()\n%W(foo, bar)\n%i()\n%I(foo, bar)\n\n# recommended percent literal arrays\n[\"foo\", \"bar\"]\n[:foo, :bar]\n\n# not recommended percent literal arrays\n[\"foo\"]\n[:foo]\n[\"foo\", :bar]\n\n# escape sequences in percent literal arrays\n%w(foo\\ bar\\t baz\\n)"

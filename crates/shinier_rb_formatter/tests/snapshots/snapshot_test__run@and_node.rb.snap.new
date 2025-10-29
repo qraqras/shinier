@@ -7,10 +7,13 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/and_node.rb
 ****FORMATTED****
 # Docs.rs
 left && right
+
 # unnecessary line break
 left && right
+
 # long expression
 foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz
+
 # long expression with unnecessary line breaks
 foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz
 

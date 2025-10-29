@@ -7,10 +7,13 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/alias_global_variable_no
 ****FORMATTED****
 # Docs.rs
 alias $bar $foo
+
 # unnecessary line break
 alias $bar $foo
+
 # long expression
 alias $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo
+
 # long expression with unnecessary line break
 alias $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo
 

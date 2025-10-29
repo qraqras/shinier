@@ -1,4 +1,3 @@
-use crate::builder::builder::hardline;
 use crate::document::Document;
 use std::collections::{HashMap, HashSet};
 
@@ -55,6 +54,20 @@ impl Document {
 
 pub fn get_string_width(string: &String) -> usize {
     string.chars().count()
+}
+
+pub fn trim(out: &mut String) -> i32 {
+    let mut trim_count: i32 = 0;
+
+    while let Some(char) = out.chars().last() {
+        if [' ', '\t'].contains(&char) {
+            out.pop();
+            trim_count += 1;
+        } else {
+            break;
+        }
+    }
+    trim_count
 }
 
 fn fits(
@@ -352,6 +365,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                         out.push('\n');
                         pos = 0;
                     } else {
+                        pos -= trim(&mut out);
                         out.push('\n');
                         let indent_str = "  ".repeat(ind as usize);
                         out.push_str(&indent_str);

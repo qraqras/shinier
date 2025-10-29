@@ -18,6 +18,9 @@ pub fn reset_group_id() {
 }
 
 pub fn array(parts: &[Document]) -> Document {
+    if parts.is_empty() {
+        return Document::None;
+    }
     Document::Array(parts.to_vec())
 }
 
