@@ -38,7 +38,6 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
   20000
 ]
 
-
 %w[foo bar]
 %W[foo #{bar}]
 %i[foo bar]

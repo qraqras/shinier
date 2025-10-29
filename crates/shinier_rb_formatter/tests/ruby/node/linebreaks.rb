@@ -7,7 +7,14 @@ for i in 1..5 do
 
         break
 
+
+
     end
 
 
 end
+
+a =
+
+
+10

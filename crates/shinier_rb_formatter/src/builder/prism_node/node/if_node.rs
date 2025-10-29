@@ -1,6 +1,6 @@
 use crate::BuildContext;
 use crate::BuildPrismNode;
-use crate::builder::builder::{array, group, hardline, indent, space, string};
+use crate::builder::builder::{array, group, hardline, indent, line, space, string};
 use crate::document::Document;
 use crate::keyword::{END, IF};
 use ruby_prism::IfNode;
@@ -16,7 +16,7 @@ pub fn build_node(node: Option<&IfNode>, context: &mut BuildContext) -> Document
         predicate.build(context),
         indent(statements.build_with(context, Some(hardline()), None)),
         subsequent.build_with(context, Some(hardline()), None),
-        hardline(),
+        line(),
         string(END),
     ]))
 }

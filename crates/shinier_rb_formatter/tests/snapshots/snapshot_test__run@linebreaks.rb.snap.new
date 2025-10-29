@@ -11,28 +11,25 @@ for i in 1..5 do
 
   if i.==(3)
 
-
     break
-
   end
-
-
 end
 
-
-
+a = 10
 
 ****AST****
-ProgramNode: "for i in 1..5 do\n\n    puts i\n\n    if i == 3\n\n\n        break\n\n    end\n\n\nend"
-__ForNode: "for i in 1..5 do\n\n    puts i\n\n    if i == 3\n\n\n        break\n\n    end\n\n\nend"
+ProgramNode: "for i in 1..5 do\n\n    puts i\n\n    if i == 3\n\n\n        break\n\n\n\n    end\n\n\nend\n\na =\n\n\n10"
+__ForNode: "for i in 1..5 do\n\n    puts i\n\n    if i == 3\n\n\n        break\n\n\n\n    end\n\n\nend"
 ____LocalVariableTargetNode: "i"
 ____RangeNode: "1..5"
 ______IntegerNode: "1"
 ______IntegerNode: "5"
 ____CallNode: "puts i"
 ______LocalVariableReadNode: "i"
-____IfNode: "if i == 3\n\n\n        break\n\n    end"
+____IfNode: "if i == 3\n\n\n        break\n\n\n\n    end"
 ______CallNode: "i == 3"
 ________LocalVariableReadNode: "i"
 ________IntegerNode: "3"
 ______BreakNode: "break"
+__LocalVariableWriteNode: "a =\n\n\n10"
+____IntegerNode: "10"

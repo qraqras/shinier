@@ -8,6 +8,7 @@ pub fn build_node(node: Option<&StatementsNode>, context: &mut BuildContext) -> 
     match node {
         Some(node) => {
             let body = node.body();
+            // body.build(context, &none())
             let mut vec = Vec::new();
             for (i, s) in body.iter().enumerate() {
                 if i > 0 {

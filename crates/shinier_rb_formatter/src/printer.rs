@@ -33,8 +33,9 @@ impl<'a> Printer<'a> {
 
         let mut context = BuildContext {
             source: self.source.as_bytes(),
-            prev_end: 0,
+            built_end: 0,
             comments: &mut parse_result.comments().peekable(),
+            is_statement: false,
         };
         let doc = parse_result.node().build(&mut context);
 

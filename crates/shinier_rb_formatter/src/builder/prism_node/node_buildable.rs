@@ -6,8 +6,9 @@ use std::iter::Peekable;
 
 pub struct BuildContext<'a> {
     pub source: &'a [u8],
-    pub prev_end: usize,
+    pub built_end: usize,
     pub comments: &'a mut Peekable<Comments<'a>>,
+    pub is_statement: bool,
 }
 
 pub trait BuildPrismNode {
@@ -29,41 +30,64 @@ pub trait BuildPrismNode {
     }
 }
 
+fn build_leading_line_breaks(
+    context: &mut BuildContext,
+    node: &Node,
+    max: usize,
+) -> Option<Document> {
+    fn is_indent_char(c: &u8) -> bool {
+        matches!(c, b' ' | b'\t')
+    }
+    fn is_line_break_char(c: &u8) -> bool {
+        matches!(c, b'\n')
+    }
+    let gap_start = context.built_end;
+    let gap_end = node.location().start_offset();
+    if gap_start < gap_end {
+        let mut i = gap_start;
+        let mut break_lines = 0usize;
+        while i < gap_end {
+            if is_line_break_char(&context.source[i]) {
+                let mut j = i + 1;
+                while j < gap_end && is_indent_char(&context.source[j]) {
+                    j += 1;
+                }
+                if j < gap_end && is_line_break_char(&context.source[j]) {
+                    break_lines += 1;
+                    if break_lines >= max {
+                        break;
+                    }
+                    i = j;
+                    continue;
+                }
+                i = j;
+            }
+            i += 1;
+        }
+        if break_lines > 0 {
+            return Some(Document::Array(vec![hardline(); break_lines]));
+        }
+    }
+    None
+}
+
 impl BuildPrismNode for Node<'_> {
     #[rustfmt::skip]
     fn _build(&self, context: &mut BuildContext) -> Document {
         let mut vec = Vec::new();
 
 
-        // 前の空行を出力
-       if context.prev_end < self.location().start_offset() {
-            let start = context.prev_end;
-            let end = self.location().start_offset().min(context.source.len());
-            if start < end {
-                let mut i = start;
-                let mut run = 0usize;
-                while i < end {
-                    if context.source[i] == b'\n' {
-                        run += 1;
-                    } else {
-                        if run >= 2 {
-                            for _ in 0..(run).div_ceil(2) {
-                                vec.push(hardline());
-                            }
-                        }
-                        run = 0;
-                    }
-                    i += 1;
-                }
-                if run >= 2 {
-                    for _ in 0..(run).div_ceil(2) {
-                        vec.push(hardline());
-                    }
-                }
+        if context.is_statement {
+            if let Some(breaks) = build_leading_line_breaks(context, &self, 1usize) {
+                vec.push(breaks);
             }
-            context.prev_end = self.location().start_offset().min(context.source.len());
         }
 
+        let prev_is_statement = context.is_statement;
+        context.is_statement = match self {
+            Node::StatementsNode { .. } => true,
+            _ => false,
+        };
 
         // // Leading comments
         // while let Some(comment) = context.comments.peek() {
@@ -536,37 +560,10 @@ impl BuildPrismNode for Node<'_> {
         vec.push(built_node);
 
 
-        // 後ろの空行を出力
-        if context.prev_end < self.location().end_offset() {
-            let start = context.prev_end;
-            let end = self.location().end_offset().min(context.source.len());
-            if start < end {
-                let mut i = start;
-                let mut run = 0usize;
-                while i < end {
-                    if context.source[i] == b'\n' {
-                        run += 1;
-                    } else {
-                        if run >= 2 {
-                            for _ in 0..run {
-                                vec.push(hardline());
-                            }
-                        }
-                        run = 0;
-                    }
-                    i += 1;
-                }
-                if run >= 2 {
-                    for _ in 0..run {
-                        vec.push(hardline());
-                    }
-                }
-            }
-            context.prev_end = self.location().end_offset().min(context.source.len());
-        }
+        context.is_statement = prev_is_statement;
+        context.built_end = context.built_end.max(self.location().end_offset());
 
-
-        Document::Array(Vec::from(vec))
+        Document::Array(vec)
 
     }
 }
@@ -575,6 +572,23 @@ impl BuildPrismNode for Option<Node<'_>> {
     fn _build(&self, context: &mut BuildContext) -> Document {
         match self {
             Some(node) => node._build(context),
+            None => Document::None,
+        }
+    }
+    fn build(&self, context: &mut BuildContext) -> Document {
+        match self {
+            Some(node) => node.build(context),
+            None => Document::None,
+        }
+    }
+    fn build_with(
+        &self,
+        context: &mut BuildContext,
+        before: Option<Document>,
+        after: Option<Document>,
+    ) -> Document {
+        match self {
+            Some(node) => node.build_with(context, before, after),
             None => Document::None,
         }
     }
