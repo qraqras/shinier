@@ -1,8 +1,8 @@
 use crate::Build;
 use crate::builder::builder::*;
-use crate::builder::helper::separate_docs::separate_docs;
+use crate::builder::prism::helper::layout::build_receiver;
+use crate::builder::prism::helper::layout::separate_docs;
 use crate::document::Document;
-use crate::helper::build_receiver::build_receiver;
 use ruby_prism::CallNode;
 
 impl<'sh> Build for CallNode<'sh> {

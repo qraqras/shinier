@@ -2,7 +2,7 @@ use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
-use crate::helper::regex::{escape_slash_in_pattern, flags_string};
+use crate::builder::prism::helper::regex::{escape_slash_in_pattern, flags_string};
 use crate::keyword::SLASH;
 use ruby_prism::RegularExpressionNode;
 

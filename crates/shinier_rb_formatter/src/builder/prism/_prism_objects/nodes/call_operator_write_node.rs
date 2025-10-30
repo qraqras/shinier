@@ -1,9 +1,9 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::array;
+use crate::builder::prism::helper::layout::build_operator_write;
+use crate::builder::prism::helper::layout::build_receiver;
 use crate::document::Document;
-use crate::helper::build_receiver::build_receiver;
-use crate::helper::build_write::build_operator_write;
 use ruby_prism::CallOperatorWriteNode;
 
 impl<'sh> Build for CallOperatorWriteNode<'sh> {

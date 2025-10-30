@@ -1,7 +1,7 @@
 use crate::Build;
 use crate::BuildContext;
+use crate::builder::prism::helper::layout::build_operator_write;
 use crate::document::Document;
-use crate::helper::build_write::build_operator_write;
 use ruby_prism::ConstantOperatorWriteNode;
 
 impl<'sh> Build for ConstantOperatorWriteNode<'sh> {

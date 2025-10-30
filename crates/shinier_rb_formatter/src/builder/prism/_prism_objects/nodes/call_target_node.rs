@@ -1,8 +1,8 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::array;
+use crate::builder::prism::helper::layout::build_receiver;
 use crate::document::Document;
-use crate::helper::build_receiver::build_receiver;
 use ruby_prism::CallTargetNode;
 
 impl<'sh> Build for CallTargetNode<'sh> {

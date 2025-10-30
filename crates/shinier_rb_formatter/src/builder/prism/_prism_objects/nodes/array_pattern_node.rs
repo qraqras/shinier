@@ -2,7 +2,7 @@ use crate::Build;
 use crate::BuildContext;
 use crate::ListBuild;
 use crate::builder::builder::{array, group, indent, line, softline, string};
-use crate::builder::prism::helper::separate_docs::separate_docs;
+use crate::builder::prism::helper::layout::separate_docs;
 use crate::document::Document;
 use crate::keyword::{BRACKETS, COMMA};
 use ruby_prism::ArrayPatternNode;

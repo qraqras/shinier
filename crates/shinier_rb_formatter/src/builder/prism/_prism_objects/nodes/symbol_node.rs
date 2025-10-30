@@ -1,8 +1,8 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, string};
+use crate::builder::prism::helper::escape::escape;
 use crate::document::Document;
-use crate::helper::escape::escape;
 use crate::keyword::COLON;
 use ruby_prism::SymbolNode;
 

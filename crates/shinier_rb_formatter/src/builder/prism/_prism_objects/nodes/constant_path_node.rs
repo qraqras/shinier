@@ -1,7 +1,7 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, string};
-use crate::builder::helper::separate_docs::separate_docs;
+use crate::builder::prism::helper::layout::separate_docs;
 use crate::document::Document;
 use crate::keyword::DOUBLE_COLON;
 use ruby_prism::ConstantPathNode;

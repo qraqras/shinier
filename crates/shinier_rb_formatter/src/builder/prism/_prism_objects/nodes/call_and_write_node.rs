@@ -1,9 +1,9 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::array;
+use crate::builder::helper::layout::build_logical_write;
+use crate::builder::helper::layout::build_receiver;
 use crate::document::Document;
-use crate::helper::build_receiver::build_receiver;
-use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
 use ruby_prism::CallAndWriteNode;
 

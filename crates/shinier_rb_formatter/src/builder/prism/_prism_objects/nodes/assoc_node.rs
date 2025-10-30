@@ -1,8 +1,8 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, group, space, string};
+use crate::builder::prism::helper::layout::build_symbol_without_colon;
 use crate::document::Document;
-use crate::helper::build_symbol_without_colon::build_symbol_without_colon;
 use crate::keyword::{COLON, ROCKET};
 use ruby_prism::AssocNode;
 

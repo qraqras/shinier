@@ -1,7 +1,8 @@
 use crate::Document;
 use crate::builder::NodeVariant;
-use crate::builder::comments_builder::{build_leading_comments, build_trailing_comments};
-use crate::builder::line_breaks_builder::build_leading_line_breaks;
+use crate::builder::prism::helper::build_leading_comments;
+use crate::builder::prism::helper::build_leading_line_breaks;
+use crate::builder::prism::helper::build_trailing_comments;
 use ruby_prism::*;
 use std::iter::Peekable;
 

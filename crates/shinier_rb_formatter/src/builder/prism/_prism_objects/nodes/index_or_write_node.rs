@@ -1,10 +1,10 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, line, string};
+use crate::builder::prism::helper::layout::build_index;
+use crate::builder::prism::helper::layout::build_logical_write;
+use crate::builder::prism::helper::layout::separate_docs;
 use crate::document::Document;
-use crate::helper::build_index::build_index;
-use crate::helper::build_write::build_logical_write;
-use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{COMMA, LogicalOperator};
 use ruby_prism::IndexOrWriteNode;
 

@@ -1,8 +1,9 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::Document;
-use crate::builder::comments_builder::{build_leading_comments, build_trailing_comments};
-use crate::builder::line_breaks_builder::build_leading_line_breaks;
+use crate::builder::prism::helper::build_leading_comments;
+use crate::builder::prism::helper::build_leading_line_breaks;
+use crate::builder::prism::helper::build_trailing_comments;
 use ruby_prism::*;
 
 pub trait NodeVariant<'sh>: Build {
@@ -11,36 +12,39 @@ pub trait NodeVariant<'sh>: Build {
     fn build(&self, context: &mut BuildContext) -> Document {
         self.__build__(context)
     }
-}
-
-fn build_node<'sh>(node: &impl NodeVariant<'sh>, context: &mut BuildContext) -> Document {
-    let mut vec = Vec::new();
-    if context.leading_line_breaks {
-        if let Some(line_breaks) =
-            build_leading_line_breaks(context, node.location().start_offset(), 1)
-        {
-            vec.push(line_breaks);
+    fn execute_build(&self, context: &mut BuildContext) -> Document {
+        let mut vec = Vec::new();
+        // Build leading line breaks
+        if context.leading_line_breaks {
+            if let Some(line_breaks) =
+                build_leading_line_breaks(context, self.location().start_offset(), 1)
+            {
+                vec.push(line_breaks);
+            }
         }
+        // Build leading comments
+        if let Some(leading_comments) = build_leading_comments(&self.as_node(), context) {
+            vec.push(leading_comments);
+        }
+        let prev_is_statement = context.leading_line_breaks;
+        context.leading_line_breaks = match self.as_node() {
+            Node::StatementsNode { .. } => true,
+            Node::ProgramNode { .. } => true,
+            _ => false,
+        };
+        // Build the node itself
+        vec.push(self.__build__(context));
+        // Build trailing comments
+        if let Some(trailing_comments) = build_trailing_comments(&self.as_node(), context) {
+            vec.push(trailing_comments);
+        }
+        context.built_end = context.built_end.max(self.location().end_offset());
+        context.leading_line_breaks = prev_is_statement;
+        Document::Array(vec)
     }
-    if let Some(leading_comments) = build_leading_comments(&node.as_node(), context) {
-        vec.push(leading_comments);
-    }
-    let prev_is_statement = context.leading_line_breaks;
-    context.leading_line_breaks = match node.as_node() {
-        Node::StatementsNode { .. } => true,
-        Node::ProgramNode { .. } => true,
-        _ => false,
-    };
-    vec.push(node.__build__(context));
-    if let Some(trailing_comments) = build_trailing_comments(&node.as_node(), context) {
-        vec.push(trailing_comments);
-    }
-    context.built_end = context.built_end.max(node.location().end_offset());
-    context.leading_line_breaks = prev_is_statement;
-    Document::Array(vec)
 }
 
-macro_rules! impl_as_node {
+macro_rules! impl_node_variant {
     ($($typ:ident),* $(,)?) => {
         $(
             impl<'sh> NodeVariant<'sh> for $typ<'sh> {
@@ -51,7 +55,7 @@ macro_rules! impl_as_node {
                     <$typ<'sh>>::location(self)
                 }
                 fn build(&self, context: &mut BuildContext) -> Document {
-                    build_node(self, context)
+                    self.execute_build(context)
                 }
             }
             impl<'sh> NodeVariant<'sh> for Option<$typ<'sh>> {
@@ -63,7 +67,7 @@ macro_rules! impl_as_node {
                 }
                 fn build(&self, context: &mut BuildContext) -> Document {
                     match self {
-                        Some(node) => build_node(node, context),
+                        Some(node) => node.execute_build(context),
                         None => Document::None,
                     }
                 }
@@ -72,7 +76,7 @@ macro_rules! impl_as_node {
     };
 }
 
-impl_as_node!(
+impl_node_variant!(
     AliasGlobalVariableNode,
     AliasMethodNode,
     AlternationPatternNode,

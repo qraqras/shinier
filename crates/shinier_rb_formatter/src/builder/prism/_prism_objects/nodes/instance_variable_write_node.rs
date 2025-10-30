@@ -1,6 +1,6 @@
 use crate::Build;
 use crate::BuildContext;
-use crate::builder::helper::build_write::build_write;
+use crate::builder::helper::layout::build_write;
 use crate::document::Document;
 use ruby_prism::InstanceVariableWriteNode;
 

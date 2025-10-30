@@ -1,6 +1,6 @@
 use crate::Build;
+use crate::builder::prism::helper::layout::build_logical_write;
 use crate::document::Document;
-use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
 use ruby_prism::ConstantPathAndWriteNode;
 

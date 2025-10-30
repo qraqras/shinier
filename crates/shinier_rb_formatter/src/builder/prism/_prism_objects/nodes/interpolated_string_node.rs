@@ -2,7 +2,7 @@ use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
-use crate::helper::escape::escape;
+use crate::builder::prism::helper::escape::escape;
 use crate::keyword::DOUBLE_QUOTE;
 use ruby_prism::InterpolatedStringNode;
 

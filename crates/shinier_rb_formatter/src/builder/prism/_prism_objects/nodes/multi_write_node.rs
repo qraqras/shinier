@@ -1,8 +1,8 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, group, line, space, string};
+use crate::builder::prism::helper::layout::build_rest;
 use crate::document::Document;
-use crate::helper::build_rest::build_rest;
 use crate::keyword::{COMMA, WRITE_OPERATOR};
 use ruby_prism::MultiWriteNode;
 
