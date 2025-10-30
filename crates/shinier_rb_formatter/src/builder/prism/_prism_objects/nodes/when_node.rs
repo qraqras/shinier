@@ -6,24 +6,19 @@ use crate::document::Document;
 use crate::keyword::WHEN;
 use ruby_prism::WhenNode;
 
-impl<'sh> Build for Option<&WhenNode<'sh>> {
+impl<'sh> Build for WhenNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&WhenNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &WhenNode, context: &mut BuildContext) -> Document {
     let conditions = node.conditions();
     let statements = node.statements();
     group(array(&[
         string(WHEN),
         space(),
         conditions.build(context, &hardline()),
-        indent(
-            statements
-                .as_ref()
-                .build_with(context, Some(hardline()), None),
-        ),
+        indent(statements.build_with(context, Some(hardline()), None)),
     ]))
 }

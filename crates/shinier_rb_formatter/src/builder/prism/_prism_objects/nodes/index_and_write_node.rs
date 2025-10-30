@@ -8,14 +8,13 @@ use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{COMMA, LogicalOperator};
 use ruby_prism::IndexAndWriteNode;
 
-impl<'sh> Build for Option<&IndexAndWriteNode<'sh>> {
+impl<'sh> Build for IndexAndWriteNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&IndexAndWriteNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &IndexAndWriteNode, context: &mut BuildContext) -> Document {
     let receiver = node.receiver();
     let arguments = node.arguments();
     let block = node.block();
@@ -24,10 +23,7 @@ pub fn build_node(node: Option<&IndexAndWriteNode>, context: &mut BuildContext) 
     let name = array(&[build_index(
         receiver.as_ref(),
         &separate_docs(
-            &[
-                arguments.as_ref().build(context),
-                block.as_ref().build(context),
-            ],
+            &[arguments.build(context), block.build(context)],
             array(&[string(COMMA), line()]),
         ),
         context,

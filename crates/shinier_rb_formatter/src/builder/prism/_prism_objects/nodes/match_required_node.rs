@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::ROCKET;
 use ruby_prism::MatchRequiredNode;
 
-impl<'sh> Build for Option<&MatchRequiredNode<'sh>> {
+impl<'sh> Build for MatchRequiredNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&MatchRequiredNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &MatchRequiredNode, context: &mut BuildContext) -> Document {
     let value = node.value();
     let pattern = node.pattern();
     group(array(&[

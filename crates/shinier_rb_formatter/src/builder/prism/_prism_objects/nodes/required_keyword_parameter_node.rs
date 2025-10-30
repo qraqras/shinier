@@ -5,17 +5,13 @@ use crate::document::Document;
 use crate::keyword::{ASTERISK, COLON};
 use ruby_prism::RequiredKeywordParameterNode;
 
-impl<'sh> Build for Option<&RequiredKeywordParameterNode<'sh>> {
+impl<'sh> Build for RequiredKeywordParameterNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(
-    node: Option<&RequiredKeywordParameterNode>,
-    context: &mut BuildContext,
-) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &RequiredKeywordParameterNode, context: &mut BuildContext) -> Document {
     let is_repeated_parameter = node.is_repeated_parameter();
     let name = node.name();
     group(array(&[

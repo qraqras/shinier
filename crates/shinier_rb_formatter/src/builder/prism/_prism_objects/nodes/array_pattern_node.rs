@@ -7,14 +7,13 @@ use crate::document::Document;
 use crate::keyword::{BRACKETS, COMMA};
 use ruby_prism::ArrayPatternNode;
 
-impl<'sh> Build for Option<&ArrayPatternNode<'sh>> {
+impl<'sh> Build for ArrayPatternNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ArrayPatternNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ArrayPatternNode, context: &mut BuildContext) -> Document {
     let constant = node.constant();
     let requireds = node.requireds();
     let rest = node.rest();

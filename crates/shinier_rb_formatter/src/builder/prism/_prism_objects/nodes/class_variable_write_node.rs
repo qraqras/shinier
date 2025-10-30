@@ -4,14 +4,13 @@ use crate::document::Document;
 use crate::helper::build_write::build_write;
 use ruby_prism::ClassVariableWriteNode;
 
-impl<'sh> Build for Option<&ClassVariableWriteNode<'sh>> {
+impl<'sh> Build for ClassVariableWriteNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ClassVariableWriteNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ClassVariableWriteNode, context: &mut BuildContext) -> Document {
     let name = node.name();
     let value = node.value();
     build_write(name.build(context), value.build(context))

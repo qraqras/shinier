@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::{CLASS, END, INHERITES};
 use ruby_prism::ClassNode;
 
-impl<'sh> Build for Option<&ClassNode<'sh>> {
+impl<'sh> Build for ClassNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ClassNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ClassNode, context: &mut BuildContext) -> Document {
     let constant_path = node.constant_path();
     let super_class = node.superclass();
     let body = node.body();

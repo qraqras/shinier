@@ -6,14 +6,13 @@ use crate::document::Document;
 use crate::keyword::DOUBLE_COLON;
 use ruby_prism::ConstantPathNode;
 
-impl<'sh> Build for Option<&ConstantPathNode<'sh>> {
+impl<'sh> Build for ConstantPathNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ConstantPathNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ConstantPathNode, context: &mut BuildContext) -> Document {
     let parent = node.parent();
     let name = node.name();
     array(&separate_docs(

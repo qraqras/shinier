@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::{DEF, DOT_OPERATOR, END, PARENTHESES};
 use ruby_prism::DefNode;
 
-impl<'sh> Build for Option<&DefNode<'sh>> {
+impl<'sh> Build for DefNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&DefNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &DefNode, context: &mut BuildContext) -> Document {
     let receiver = node.receiver();
     let name = node.name();
     let parameters = node.parameters();
@@ -22,7 +21,7 @@ pub fn build_node(node: Option<&DefNode>, context: &mut BuildContext) -> Documen
         space(),
         receiver.build_with(context, None, Some(string(DOT_OPERATOR))),
         name.build(context),
-        group(indent(parameters.as_ref().build_with(
+        group(indent(parameters.build_with(
             context,
             Some(array(&[string(PARENTHESES.0), softline()])),
             Some(array(&[softline(), string(PARENTHESES.1)])),

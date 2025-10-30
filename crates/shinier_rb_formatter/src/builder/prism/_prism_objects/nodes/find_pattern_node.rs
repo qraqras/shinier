@@ -7,14 +7,13 @@ use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{BRACKETS, COMMA, PARENTHESES};
 use ruby_prism::FindPatternNode;
 
-impl<'sh> Build for Option<&FindPatternNode<'sh>> {
+impl<'sh> Build for FindPatternNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&FindPatternNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &FindPatternNode, context: &mut BuildContext) -> Document {
     let constant = node.constant();
     let left = node.left();
     let requireds = node.requireds();

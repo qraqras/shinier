@@ -8,14 +8,13 @@ use crate::keyword::{
 };
 use ruby_prism::{ArrayNode, NodeList};
 
-impl<'sh> Build for Option<&ArrayNode<'sh>> {
+impl<'sh> Build for ArrayNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ArrayNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ArrayNode, context: &mut BuildContext) -> Document {
     let elements = node.elements();
 
     let mut should_percent_w = true;

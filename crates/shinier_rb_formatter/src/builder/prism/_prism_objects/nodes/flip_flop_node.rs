@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::{DOUBLE_DOT, TRIPLE_DOT};
 use ruby_prism::FlipFlopNode;
 
-impl<'sh> Build for Option<&FlipFlopNode<'sh>> {
+impl<'sh> Build for FlipFlopNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&FlipFlopNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &FlipFlopNode, context: &mut BuildContext) -> Document {
     let is_exclude_end = node.is_exclude_end();
     let left = node.left();
     let right = node.right();

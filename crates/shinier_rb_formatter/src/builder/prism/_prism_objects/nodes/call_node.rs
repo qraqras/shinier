@@ -1,15 +1,13 @@
 use crate::Build;
-use crate::ListBuild;
-use crate::buildable::Buildable;
 use crate::builder::builder::*;
 use crate::builder::helper::separate_docs::separate_docs;
 use crate::document::Document;
 use crate::helper::build_receiver::build_receiver;
 use ruby_prism::CallNode;
 
-impl<'sh> Build for Option<&CallNode<'sh>> {
+impl<'sh> Build for CallNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
@@ -65,9 +63,7 @@ const SELF_ASSIGNABLE_METHODS: &[&str] = &[
 ];
 use crate::BuildContext;
 
-pub fn build_node(node: Option<&CallNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
-
+pub fn build_node(node: &CallNode, context: &mut BuildContext) -> Document {
     let doc_name = build_name(context, node);
     let doc_arguments = build_arguments(context, node);
     let doc_block = build_block(context, node);
@@ -98,8 +94,8 @@ fn build_arguments(context: &mut BuildContext, node: &CallNode) -> Document {
     let arguments = node.arguments();
     let block = node.block();
     let block_argument = block.and_then(|node| node.as_block_argument_node());
-    let doc_arguments = arguments.as_ref().build(context);
-    let doc_block_argument = block_argument.as_ref().build(context);
+    let doc_arguments = arguments.build(context);
+    let doc_block_argument = block_argument.build(context);
     match (arguments, block_argument) {
         (None, None) => none(),
         _ => group(array(&[

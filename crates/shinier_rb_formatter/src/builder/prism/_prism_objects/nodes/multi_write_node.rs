@@ -6,14 +6,13 @@ use crate::helper::build_rest::build_rest;
 use crate::keyword::{COMMA, WRITE_OPERATOR};
 use ruby_prism::MultiWriteNode;
 
-impl<'sh> Build for Option<&MultiWriteNode<'sh>> {
+impl<'sh> Build for MultiWriteNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&MultiWriteNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &MultiWriteNode, context: &mut BuildContext) -> Document {
     let lefts = node.lefts();
     let rest = node.rest();
     let rights = node.rights();

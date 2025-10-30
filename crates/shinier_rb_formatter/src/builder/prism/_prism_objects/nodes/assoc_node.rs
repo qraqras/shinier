@@ -6,14 +6,13 @@ use crate::helper::build_symbol_without_colon::build_symbol_without_colon;
 use crate::keyword::{COLON, ROCKET};
 use ruby_prism::AssocNode;
 
-impl<'sh> Build for Option<&AssocNode<'sh>> {
+impl<'sh> Build for AssocNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&AssocNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &AssocNode, context: &mut BuildContext) -> Document {
     let key = node.key();
     let value = node.value();
     match key.as_symbol_node() {

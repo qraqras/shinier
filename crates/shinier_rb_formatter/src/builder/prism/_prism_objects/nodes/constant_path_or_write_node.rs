@@ -5,14 +5,13 @@ use crate::helper::build_write::build_logical_write;
 use crate::keyword::LogicalOperator;
 use ruby_prism::ConstantPathOrWriteNode;
 
-impl<'sh> Build for Option<&ConstantPathOrWriteNode<'sh>> {
+impl<'sh> Build for ConstantPathOrWriteNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ConstantPathOrWriteNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ConstantPathOrWriteNode, context: &mut BuildContext) -> Document {
     let target = node.target();
     let value = node.value();
     build_logical_write(

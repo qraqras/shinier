@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::IMAGINARY;
 use ruby_prism::ImaginaryNode;
 
-impl<'sh> Build for Option<&ImaginaryNode<'sh>> {
+impl<'sh> Build for ImaginaryNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ImaginaryNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ImaginaryNode, context: &mut BuildContext) -> Document {
     let numeric = node.numeric();
     array(&[numeric.build(context), string(IMAGINARY)])
 }

@@ -1,0 +1,227 @@
+use crate::Build;
+use crate::BuildContext;
+use crate::Document;
+use crate::builder::comments_builder::{build_leading_comments, build_trailing_comments};
+use crate::builder::line_breaks_builder::build_leading_line_breaks;
+use ruby_prism::*;
+
+pub trait NodeVariant<'sh>: Build {
+    fn as_node(&self) -> Node<'sh>;
+    fn location(&self) -> Location<'sh>;
+    fn build(&self, context: &mut BuildContext) -> Document {
+        self.__build__(context)
+    }
+}
+
+fn build_node<'sh>(node: &impl NodeVariant<'sh>, context: &mut BuildContext) -> Document {
+    let mut vec = Vec::new();
+    if context.leading_line_breaks {
+        if let Some(line_breaks) =
+            build_leading_line_breaks(context, node.location().start_offset(), 1)
+        {
+            vec.push(line_breaks);
+        }
+    }
+    if let Some(leading_comments) = build_leading_comments(&node.as_node(), context) {
+        vec.push(leading_comments);
+    }
+    let prev_is_statement = context.leading_line_breaks;
+    context.leading_line_breaks = match node.as_node() {
+        Node::StatementsNode { .. } => true,
+        Node::ProgramNode { .. } => true,
+        _ => false,
+    };
+    vec.push(node.__build__(context));
+    if let Some(trailing_comments) = build_trailing_comments(&node.as_node(), context) {
+        vec.push(trailing_comments);
+    }
+    context.built_end = context.built_end.max(node.location().end_offset());
+    context.leading_line_breaks = prev_is_statement;
+    Document::Array(vec)
+}
+
+macro_rules! impl_as_node {
+    ($($typ:ident),* $(,)?) => {
+        $(
+            impl<'sh> NodeVariant<'sh> for $typ<'sh> {
+                fn as_node(&self) -> Node<'sh> {
+                    <$typ<'sh>>::as_node(self)
+                }
+                fn location(&self) -> Location<'sh> {
+                    <$typ<'sh>>::location(self)
+                }
+                fn build(&self, context: &mut BuildContext) -> Document {
+                    build_node(self, context)
+                }
+            }
+            impl<'sh> NodeVariant<'sh> for Option<$typ<'sh>> {
+                fn as_node(&self) -> Node<'sh> {
+                    unimplemented!()
+                }
+                fn location(&self) -> Location<'sh> {
+                    unimplemented!()
+                }
+                fn build(&self, context: &mut BuildContext) -> Document {
+                    match self {
+                        Some(node) => build_node(node, context),
+                        None => Document::None,
+                    }
+                }
+            }
+        )*
+    };
+}
+
+impl_as_node!(
+    AliasGlobalVariableNode,
+    AliasMethodNode,
+    AlternationPatternNode,
+    AndNode,
+    ArgumentsNode,
+    ArrayNode,
+    ArrayPatternNode,
+    AssocNode,
+    AssocSplatNode,
+    BackReferenceReadNode,
+    BeginNode,
+    BlockArgumentNode,
+    BlockLocalVariableNode,
+    BlockNode,
+    BlockParameterNode,
+    BlockParametersNode,
+    BreakNode,
+    CallAndWriteNode,
+    CallNode,
+    CallOperatorWriteNode,
+    CallOrWriteNode,
+    CallTargetNode,
+    CapturePatternNode,
+    CaseMatchNode,
+    CaseNode,
+    ClassNode,
+    ClassVariableAndWriteNode,
+    ClassVariableOperatorWriteNode,
+    ClassVariableOrWriteNode,
+    ClassVariableReadNode,
+    ClassVariableTargetNode,
+    ClassVariableWriteNode,
+    ConstantAndWriteNode,
+    ConstantOperatorWriteNode,
+    ConstantOrWriteNode,
+    ConstantPathAndWriteNode,
+    ConstantPathNode,
+    ConstantPathOperatorWriteNode,
+    ConstantPathOrWriteNode,
+    ConstantPathTargetNode,
+    ConstantPathWriteNode,
+    ConstantReadNode,
+    ConstantTargetNode,
+    ConstantWriteNode,
+    DefNode,
+    DefinedNode,
+    ElseNode,
+    EmbeddedStatementsNode,
+    EmbeddedVariableNode,
+    EnsureNode,
+    FalseNode,
+    FindPatternNode,
+    FlipFlopNode,
+    FloatNode,
+    ForNode,
+    ForwardingArgumentsNode,
+    ForwardingParameterNode,
+    ForwardingSuperNode,
+    GlobalVariableAndWriteNode,
+    GlobalVariableOperatorWriteNode,
+    GlobalVariableOrWriteNode,
+    GlobalVariableReadNode,
+    GlobalVariableTargetNode,
+    GlobalVariableWriteNode,
+    HashNode,
+    HashPatternNode,
+    IfNode,
+    ImaginaryNode,
+    ImplicitNode,
+    ImplicitRestNode,
+    InNode,
+    IndexAndWriteNode,
+    IndexOperatorWriteNode,
+    IndexOrWriteNode,
+    IndexTargetNode,
+    InstanceVariableAndWriteNode,
+    InstanceVariableOperatorWriteNode,
+    InstanceVariableOrWriteNode,
+    InstanceVariableReadNode,
+    InstanceVariableTargetNode,
+    InstanceVariableWriteNode,
+    IntegerNode,
+    InterpolatedMatchLastLineNode,
+    InterpolatedRegularExpressionNode,
+    InterpolatedStringNode,
+    InterpolatedSymbolNode,
+    InterpolatedXStringNode,
+    ItLocalVariableReadNode,
+    ItParametersNode,
+    KeywordHashNode,
+    KeywordRestParameterNode,
+    LambdaNode,
+    LocalVariableAndWriteNode,
+    LocalVariableOperatorWriteNode,
+    LocalVariableOrWriteNode,
+    LocalVariableReadNode,
+    LocalVariableTargetNode,
+    LocalVariableWriteNode,
+    MatchLastLineNode,
+    MatchPredicateNode,
+    MatchRequiredNode,
+    MatchWriteNode,
+    MissingNode,
+    ModuleNode,
+    MultiTargetNode,
+    MultiWriteNode,
+    NextNode,
+    NilNode,
+    NoKeywordsParameterNode,
+    NumberedParametersNode,
+    NumberedReferenceReadNode,
+    OptionalKeywordParameterNode,
+    OptionalParameterNode,
+    OrNode,
+    ParametersNode,
+    ParenthesesNode,
+    PinnedExpressionNode,
+    PinnedVariableNode,
+    PostExecutionNode,
+    PreExecutionNode,
+    ProgramNode,
+    RangeNode,
+    RationalNode,
+    RedoNode,
+    RegularExpressionNode,
+    RequiredKeywordParameterNode,
+    RequiredParameterNode,
+    RescueModifierNode,
+    RescueNode,
+    RestParameterNode,
+    RetryNode,
+    ReturnNode,
+    SelfNode,
+    ShareableConstantNode,
+    SingletonClassNode,
+    SourceEncodingNode,
+    SourceFileNode,
+    SourceLineNode,
+    SplatNode,
+    StatementsNode,
+    StringNode,
+    SuperNode,
+    SymbolNode,
+    TrueNode,
+    UndefNode,
+    UnlessNode,
+    UntilNode,
+    WhenNode,
+    WhileNode,
+    XStringNode,
+    YieldNode,
+);

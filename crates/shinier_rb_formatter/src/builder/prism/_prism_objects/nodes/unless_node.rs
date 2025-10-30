@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::{END, UNLESS};
 use ruby_prism::UnlessNode;
 
-impl<'sh> Build for Option<&UnlessNode<'sh>> {
+impl<'sh> Build for UnlessNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&UnlessNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &UnlessNode, context: &mut BuildContext) -> Document {
     let predicate = node.predicate();
     let statements = node.statements();
     let else_clause = node.else_clause();
@@ -20,14 +19,8 @@ pub fn build_node(node: Option<&UnlessNode>, context: &mut BuildContext) -> Docu
         string(UNLESS),
         space(),
         predicate.build(context),
-        indent(
-            statements
-                .as_ref()
-                .build_with(context, Some(hardline()), None),
-        ),
-        else_clause
-            .as_ref()
-            .build_with(context, Some(hardline()), None),
+        indent(statements.build_with(context, Some(hardline()), None)),
+        else_clause.build_with(context, Some(hardline()), None),
         line(),
         string(END),
     ]))

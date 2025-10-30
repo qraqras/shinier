@@ -6,14 +6,13 @@ use crate::document::Document;
 use crate::keyword::{BRACES, COMMA};
 use ruby_prism::HashNode;
 
-impl<'sh> Build for Option<&HashNode<'sh>> {
+impl<'sh> Build for HashNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&HashNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &HashNode, context: &mut BuildContext) -> Document {
     let elements = node.elements();
     group(array(&[
         string(BRACES.0),

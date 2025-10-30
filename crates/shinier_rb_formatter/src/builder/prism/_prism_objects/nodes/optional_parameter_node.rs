@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::WRITE_OPERATOR;
 use ruby_prism::OptionalParameterNode;
 
-impl<'sh> Build for Option<&OptionalParameterNode<'sh>> {
+impl<'sh> Build for OptionalParameterNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&OptionalParameterNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &OptionalParameterNode, context: &mut BuildContext) -> Document {
     let name = node.name();
     let value = node.value();
     group(array(&[

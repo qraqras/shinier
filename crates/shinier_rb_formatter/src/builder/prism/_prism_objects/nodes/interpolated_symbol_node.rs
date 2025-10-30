@@ -6,14 +6,13 @@ use crate::helper::escape::escape;
 use crate::keyword::{COLON, DOUBLE_QUOTE};
 use ruby_prism::InterpolatedSymbolNode;
 
-impl<'sh> Build for Option<&InterpolatedSymbolNode<'sh>> {
+impl<'sh> Build for InterpolatedSymbolNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&InterpolatedSymbolNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &InterpolatedSymbolNode, context: &mut BuildContext) -> Document {
     let parts = node.parts();
 
     let mut vec = Vec::new();

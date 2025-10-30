@@ -7,14 +7,13 @@ use crate::document::Document;
 use crate::keyword::{COMMA, PARENTHESES};
 use ruby_prism::MultiTargetNode;
 
-impl<'sh> Build for Option<&MultiTargetNode<'sh>> {
+impl<'sh> Build for MultiTargetNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&MultiTargetNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &MultiTargetNode, context: &mut BuildContext) -> Document {
     let lefts = node.lefts();
     let rest = node.rest();
     let rights = node.rights();

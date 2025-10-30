@@ -4,17 +4,13 @@ use crate::document::Document;
 use crate::helper::build_write::build_operator_write;
 use ruby_prism::ConstantOperatorWriteNode;
 
-impl<'sh> Build for Option<&ConstantOperatorWriteNode<'sh>> {
+impl<'sh> Build for ConstantOperatorWriteNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(
-    node: Option<&ConstantOperatorWriteNode>,
-    context: &mut BuildContext,
-) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ConstantOperatorWriteNode, context: &mut BuildContext) -> Document {
     let name = node.name();
     let value = node.value();
     let binary_operator = node.binary_operator();
