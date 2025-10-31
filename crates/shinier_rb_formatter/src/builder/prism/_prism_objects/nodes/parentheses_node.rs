@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::PARENTHESES;
 use ruby_prism::ParenthesesNode;
 
-impl<'sh> Build for Option<&ParenthesesNode<'sh>> {
+impl<'sh> Build for ParenthesesNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ParenthesesNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ParenthesesNode, context: &mut BuildContext) -> Document {
     let body = node.body();
     group(array(&[
         string(PARENTHESES.0),

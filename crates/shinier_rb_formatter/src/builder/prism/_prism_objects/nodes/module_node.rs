@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::{END, MODULE};
 use ruby_prism::ModuleNode;
 
-impl<'sh> Build for Option<&ModuleNode<'sh>> {
+impl<'sh> Build for ModuleNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ModuleNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ModuleNode, context: &mut BuildContext) -> Document {
     let constant_path = node.constant_path();
     let body = node.body();
     group(array(&[

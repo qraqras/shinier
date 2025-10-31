@@ -5,20 +5,19 @@ use crate::document::Document;
 use crate::keyword::{END, UNTIL};
 use ruby_prism::UntilNode;
 
-impl<'sh> Build for Option<&UntilNode<'sh>> {
+impl<'sh> Build for UntilNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&UntilNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &UntilNode, context: &mut BuildContext) -> Document {
     let is_begin_modifier = node.is_begin_modifier();
     let predicate = node.predicate();
     let statements = node.statements();
     match is_begin_modifier {
         true => group(array(&[
-            statements.as_ref().build(context),
+            statements.build(context),
             space(),
             string(UNTIL),
             space(),
@@ -28,7 +27,7 @@ pub fn build_node(node: Option<&UntilNode>, context: &mut BuildContext) -> Docum
             string(UNTIL),
             space(),
             predicate.build(context),
-            indent(array(&[hardline(), statements.as_ref().build(context)])),
+            indent(array(&[hardline(), statements.build(context)])),
             line(),
             string(END),
         ])),

@@ -5,18 +5,13 @@ use crate::document::Document;
 use crate::keyword::NEXT;
 use ruby_prism::NextNode;
 
-impl<'sh> Build for Option<&NextNode<'sh>> {
+impl<'sh> Build for NextNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&NextNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &NextNode, context: &mut BuildContext) -> Document {
     let arguments = node.arguments();
-    group(array(&[
-        string(NEXT),
-        space(),
-        arguments.as_ref().build(context),
-    ]))
+    group(array(&[string(NEXT), space(), arguments.build(context)]))
 }

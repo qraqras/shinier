@@ -355,10 +355,11 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                 }
                 Mode::Break => {
                     if !line_suffixes.is_empty() {
-                        for line_suffix in line_suffixes.iter().rev() {
+                        cmds.push(doc.as_cmd(ind, mode));
+                        let pending = std::mem::take(&mut line_suffixes);
+                        for line_suffix in pending.iter().rev() {
                             cmds.push(*line_suffix);
                         }
-                        cmds.push(doc.as_cmd(ind, mode));
                         continue;
                     }
                     if line.literal {
@@ -378,7 +379,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
             }
             Document::LineSuffixBoundary(line_suffix_boundary) => {
                 if !line_suffixes.is_empty() {
-                    line_suffix_boundary.hardline.as_cmd(ind, mode);
+                    cmds.push(line_suffix_boundary.hardline.as_cmd(ind, mode));
                 }
             }
             Document::None => {}

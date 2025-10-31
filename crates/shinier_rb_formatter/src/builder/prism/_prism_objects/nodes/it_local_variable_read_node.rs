@@ -5,15 +5,12 @@ use crate::document::Document;
 use crate::keyword::IT;
 use ruby_prism::ItLocalVariableReadNode;
 
-impl<'sh> Build for Option<&ItLocalVariableReadNode<'sh>> {
+impl<'sh> Build for ItLocalVariableReadNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(
-    _node: Option<&ItLocalVariableReadNode>,
-    _context: &mut BuildContext,
-) -> Document {
+pub fn build_node(_node: &ItLocalVariableReadNode, _context: &mut BuildContext) -> Document {
     string(IT)
 }

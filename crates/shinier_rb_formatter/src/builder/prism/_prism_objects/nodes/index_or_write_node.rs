@@ -1,21 +1,20 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, line, string};
+use crate::builder::prism::helper::layout::build_index;
+use crate::builder::prism::helper::layout::build_logical_write;
+use crate::builder::prism::helper::layout::separate_docs;
 use crate::document::Document;
-use crate::helper::build_index::build_index;
-use crate::helper::build_write::build_logical_write;
-use crate::helper::separate_docs::separate_docs;
 use crate::keyword::{COMMA, LogicalOperator};
 use ruby_prism::IndexOrWriteNode;
 
-impl<'sh> Build for Option<&IndexOrWriteNode<'sh>> {
+impl<'sh> Build for IndexOrWriteNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&IndexOrWriteNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &IndexOrWriteNode, context: &mut BuildContext) -> Document {
     let receiver = node.receiver();
     let arguments = node.arguments();
     let block = node.block();
@@ -24,10 +23,7 @@ pub fn build_node(node: Option<&IndexOrWriteNode>, context: &mut BuildContext) -
     let name = array(&[build_index(
         receiver.as_ref(),
         &separate_docs(
-            &[
-                arguments.as_ref().build(context),
-                block.as_ref().build(context),
-            ],
+            &[arguments.build(context), block.build(context)],
             array(&[string(COMMA), line()]),
         ),
         context,

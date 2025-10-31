@@ -2,21 +2,20 @@ use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, string};
 use crate::document::Document;
-use crate::helper::escape::escape;
+use crate::builder::prism::helper::escape::escape;
 use crate::keyword::SLASH;
 use ruby_prism::InterpolatedRegularExpressionNode;
 
-impl<'sh> Build for Option<&InterpolatedRegularExpressionNode<'sh>> {
+impl<'sh> Build for InterpolatedRegularExpressionNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
 pub fn build_node(
-    node: Option<&InterpolatedRegularExpressionNode>,
+    node: &InterpolatedRegularExpressionNode,
     context: &mut BuildContext,
 ) -> Document {
-    let node = node.unwrap();
     let parts = node.parts();
 
     let mut vec = Vec::new();

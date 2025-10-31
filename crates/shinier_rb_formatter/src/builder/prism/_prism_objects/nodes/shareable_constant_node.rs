@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::ShareableConstantComment;
 use ruby_prism::ShareableConstantNode;
 
-impl<'sh> Build for Option<&ShareableConstantNode<'sh>> {
+impl<'sh> Build for ShareableConstantNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&ShareableConstantNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &ShareableConstantNode, context: &mut BuildContext) -> Document {
     let is_literal = node.is_literal();
     let is_experimental_everything = node.is_experimental_everything();
     let is_experimental_copy = node.is_experimental_copy();

@@ -1,20 +1,16 @@
 use crate::Build;
 use crate::BuildContext;
+use crate::builder::prism::helper::layout::build_operator_write;
 use crate::document::Document;
-use crate::helper::build_write::build_operator_write;
 use ruby_prism::GlobalVariableOperatorWriteNode;
 
-impl<'sh> Build for Option<&GlobalVariableOperatorWriteNode<'sh>> {
+impl<'sh> Build for GlobalVariableOperatorWriteNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(
-    node: Option<&GlobalVariableOperatorWriteNode>,
-    context: &mut BuildContext,
-) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &GlobalVariableOperatorWriteNode, context: &mut BuildContext) -> Document {
     let name = node.name();
     let value = node.value();
     let binary_operator = node.binary_operator();

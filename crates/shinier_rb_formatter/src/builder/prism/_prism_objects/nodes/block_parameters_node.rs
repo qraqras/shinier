@@ -7,32 +7,27 @@ use crate::document::Document;
 use crate::keyword::{COMMA, SEMI_COLON};
 use ruby_prism::BlockParametersNode;
 
-impl<'sh> Build for Option<&BlockParametersNode<'sh>> {
+impl<'sh> Build for BlockParametersNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&BlockParametersNode>, context: &mut BuildContext) -> Document {
-    match node {
-        Some(node) => {
-            let parameters = node.parameters();
-            let locals = node.locals();
-            group(array(&[
-                parameters.as_ref().build(context),
-                match locals.iter().next().is_none() {
-                    true => none(),
-                    false => locals.build_with(
-                        context,
-                        &array(&[string(COMMA), space()]),
-                        Some(array(&[string(SEMI_COLON), space()])),
-                        None,
-                    ),
-                },
-            ]))
-        }
-        None => none(),
-    }
+pub fn build_node(node: &BlockParametersNode, context: &mut BuildContext) -> Document {
+    let parameters = node.parameters();
+    let locals = node.locals();
+    group(array(&[
+        parameters.build(context),
+        match locals.iter().next().is_none() {
+            true => none(),
+            false => locals.build_with(
+                context,
+                &array(&[string(COMMA), space()]),
+                Some(array(&[string(SEMI_COLON), space()])),
+                None,
+            ),
+        },
+    ]))
 }
 
 pub fn has_parameters(node: Option<&BlockParametersNode>) -> bool {

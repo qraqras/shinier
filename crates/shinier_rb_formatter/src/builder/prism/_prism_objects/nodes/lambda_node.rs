@@ -6,14 +6,13 @@ use crate::document::Document;
 use crate::keyword::{ARROW, BRACES, PARENTHESES};
 use ruby_prism::LambdaNode;
 
-impl<'sh> Build for Option<&LambdaNode<'sh>> {
+impl<'sh> Build for LambdaNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&LambdaNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &LambdaNode, context: &mut BuildContext) -> Document {
     let parameters = node.parameters();
     let body = node.body();
     group(array(&[

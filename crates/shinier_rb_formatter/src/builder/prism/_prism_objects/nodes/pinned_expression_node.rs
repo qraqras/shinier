@@ -5,14 +5,13 @@ use crate::document::Document;
 use crate::keyword::{CARET, PARENTHESES};
 use ruby_prism::PinnedExpressionNode;
 
-impl<'sh> Build for Option<&PinnedExpressionNode<'sh>> {
+impl<'sh> Build for PinnedExpressionNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(*self, context)
+        build_node(self, context)
     }
 }
 
-pub fn build_node(node: Option<&PinnedExpressionNode>, context: &mut BuildContext) -> Document {
-    let node = node.unwrap();
+pub fn build_node(node: &PinnedExpressionNode, context: &mut BuildContext) -> Document {
     let expression = node.expression();
     group(array(&[
         string(CARET),

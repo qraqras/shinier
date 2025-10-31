@@ -9,12 +9,3 @@ impl<'a> Build for ConstantId<'_> {
         string(String::from_utf8(self.as_slice().to_vec()).unwrap())
     }
 }
-
-impl<'a> Build for Option<ConstantId<'_>> {
-    fn __build__(&self, _context: &mut BuildContext) -> Document {
-        match self {
-            Some(node) => node.__build__(_context),
-            None => none(),
-        }
-    }
-}
