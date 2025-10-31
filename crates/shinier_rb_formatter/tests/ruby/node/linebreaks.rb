@@ -26,3 +26,8 @@ a =
 for i in 1..5 do
   # comment
 end
+
+arr = [1,
+  2, # comment
+  3,
+]

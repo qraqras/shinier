@@ -9,9 +9,7 @@ use ruby_prism::*;
 pub trait NodeVariant<'sh>: Build {
     fn as_node(&self) -> Node<'sh>;
     fn location(&self) -> Location<'sh>;
-    fn build(&self, context: &mut BuildContext) -> Document {
-        self.__build__(context)
-    }
+    fn build(&self, context: &mut BuildContext) -> Document;
     fn execute_build(&self, context: &mut BuildContext) -> Document {
         let mut vec = Vec::new();
         // Build leading line breaks
