@@ -1,2 +1,2 @@
-pub mod nodes;
-pub mod others;
+pub mod node_likes;
+pub mod node_variants;

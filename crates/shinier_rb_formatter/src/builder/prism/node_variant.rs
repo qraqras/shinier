@@ -1,9 +1,9 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::Document;
-use crate::builder::prism::helper::build_leading_comments;
-use crate::builder::prism::helper::build_leading_line_breaks;
-use crate::builder::prism::helper::build_trailing_comments;
+use crate::builder::prism::helper::leading_comments;
+use crate::builder::prism::helper::leading_line_breaks;
+use crate::builder::prism::helper::trailing_comments;
 use ruby_prism::*;
 
 pub trait NodeVariant<'sh>: Build {
@@ -14,16 +14,14 @@ pub trait NodeVariant<'sh>: Build {
         let mut vec = Vec::new();
         // Build leading line breaks
         if context.leading_line_breaks {
-            if let Some(line_breaks) =
-                build_leading_line_breaks(context, self.location().start_offset(), 1)
-            {
-                vec.push(line_breaks);
-            }
+            vec.push(leading_line_breaks(
+                context,
+                self.location().start_offset(),
+                1,
+            ));
         }
         // Build leading comments
-        if let Some(leading_comments) = build_leading_comments(&self.as_node(), context) {
-            vec.push(leading_comments);
-        }
+        vec.push(leading_comments(&self.as_node(), context));
         let prev_is_statement = context.leading_line_breaks;
         context.leading_line_breaks = match self.as_node() {
             Node::StatementsNode { .. } => true,
@@ -33,9 +31,7 @@ pub trait NodeVariant<'sh>: Build {
         // Build the node itself
         vec.push(self.__build__(context));
         // Build trailing comments
-        if let Some(trailing_comments) = build_trailing_comments(&self.as_node(), context) {
-            vec.push(trailing_comments);
-        }
+        vec.push(trailing_comments(&self.as_node(), context));
         context.built_end = context.built_end.max(self.location().end_offset());
         context.leading_line_breaks = prev_is_statement;
         Document::Array(vec)

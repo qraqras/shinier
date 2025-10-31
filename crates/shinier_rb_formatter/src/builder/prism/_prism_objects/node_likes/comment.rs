@@ -1,3 +1,4 @@
+/*
 use crate::Build;
 use crate::builder::builder::string;
 use crate::document::Document;
@@ -11,3 +12,4 @@ impl<'sh> Build for Comment<'sh> {
         string(buf)
     }
 }
+*/
