@@ -1,33 +1,61 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 509
+assertion_line: 206
 expression: output
-input_file: crates/shinier_rb_formatter/tests/ruby/node/alternation_pattern_node.rb
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/alternation_pattern_node.rb
 ---
 ****FORMATTED****
 foo => bar | baz
+
+# unnecessary line break
 foo => bar | baz
 foo => bar | baz
+
+# long expression
 foo =>
-  bar | barbar | barbarbarbar | barbarbarbarbar | barbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar
+  bar |
+  barbar |
+  barbarbarbar |
+  barbarbarbarbar |
+  barbarbarbarbarbar |
+  barbarbarbarbarbarbar |
+  barbarbarbarbarbarbarbar
+
+# long expression with unnecessary line break
 foo =>
-  bar | barbar | barbarbarbar | barbarbarbarbar | barbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar
+  bar |
+  barbar |
+  barbarbarbar |
+  barbarbarbarbar |
+  barbarbarbarbarbar |
+  barbarbarbarbarbarbar |
+  barbarbarbarbarbarbarbar
+
+foo =>
+  # leading comment
+  bar | baz
+foo =>
+  bar | # trailing comment 1
+  # leading comment 1
+  # leading comment 2
+  baz # trailing comment 2
+
 
 ****AST****
-ProgramNode: "foo => bar | baz\n\n# unnecessary line break\nfoo =>\nbar | baz\nfoo => bar |\nbaz\n\n# long expression\nfoo => bar | barbar | barbarbarbar | barbarbarbarbar | barbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar\n\n# long expression with unnecessary line break\nfoo => bar | barbar | barbarbarbar | barbarbarbarbar |\nbarbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar"
+ProgramNode: "foo => bar | baz\n\n# unnecessary line break\nfoo =>\n  bar | baz\nfoo => bar |\n  baz\n\n# long expression\nfoo => bar | barbar | barbarbarbar | barbarbarbarbar | barbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar\n\n# long expression with unnecessary line break\nfoo => bar | barbar | barbarbarbar | barbarbarbarbar |\nbarbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar\n\nfoo =>\n  # leading comment\n  bar | baz\nfoo => bar | # trailing comment 1\n  # leading comment 1\n  # leading comment 2\n  baz"
 __MatchRequiredNode: "foo => bar | baz"
 ____CallNode: "foo"
 ____AlternationPatternNode: "bar | baz"
 ______LocalVariableTargetNode: "bar"
 ______LocalVariableTargetNode: "baz"
-__MatchRequiredNode: "foo =>\nbar | baz"
+__MatchRequiredNode: "foo =>\n  bar | baz"
 ____CallNode: "foo"
 ____AlternationPatternNode: "bar | baz"
 ______LocalVariableTargetNode: "bar"
 ______LocalVariableTargetNode: "baz"
-__MatchRequiredNode: "foo => bar |\nbaz"
+__MatchRequiredNode: "foo => bar |\n  baz"
 ____CallNode: "foo"
-____AlternationPatternNode: "bar |\nbaz"
+____AlternationPatternNode: "bar |\n  baz"
 ______LocalVariableTargetNode: "bar"
 ______LocalVariableTargetNode: "baz"
 __MatchRequiredNode: "foo => bar | barbar | barbarbarbar | barbarbarbarbar | barbarbarbarbarbar | barbarbarbarbarbarbar | barbarbarbarbarbarbarbar"
@@ -60,3 +88,13 @@ ____________LocalVariableTargetNode: "barbarbarbarbar"
 __________LocalVariableTargetNode: "barbarbarbarbarbar"
 ________LocalVariableTargetNode: "barbarbarbarbarbarbar"
 ______LocalVariableTargetNode: "barbarbarbarbarbarbarbar"
+__MatchRequiredNode: "foo =>\n  # leading comment\n  bar | baz"
+____CallNode: "foo"
+____AlternationPatternNode: "bar | baz"
+______LocalVariableTargetNode: "bar"
+______LocalVariableTargetNode: "baz"
+__MatchRequiredNode: "foo => bar | # trailing comment 1\n  # leading comment 1\n  # leading comment 2\n  baz"
+____CallNode: "foo"
+____AlternationPatternNode: "bar | # trailing comment 1\n  # leading comment 1\n  # leading comment 2\n  baz"
+______LocalVariableTargetNode: "bar"
+______LocalVariableTargetNode: "baz"

@@ -2,7 +2,7 @@ use crate::Build;
 use crate::BuildContext;
 use crate::ListBuild;
 use crate::builder::builder::{array, group, none, space, string};
-use crate::builder::prism::nodes::parameters_node;
+use crate::builder::prism::node_variants::parameters_node;
 use crate::document::Document;
 use crate::keyword::{COMMA, SEMI_COLON};
 use ruby_prism::BlockParametersNode;

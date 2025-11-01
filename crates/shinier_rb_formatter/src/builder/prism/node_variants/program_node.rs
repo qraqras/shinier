@@ -1,5 +1,7 @@
 use crate::Build;
 use crate::BuildContext;
+use crate::builder::builder::{array, literalline};
+use crate::builder::prism::helper::rest_comments;
 use crate::document::Document;
 use ruby_prism::ProgramNode;
 
@@ -11,5 +13,9 @@ impl<'sh> Build for ProgramNode<'sh> {
 
 pub fn build_node(node: &ProgramNode, context: &mut BuildContext) -> Document {
     let statements = node.statements();
-    statements.as_node().build(context)
+    array(&[
+        statements.build(context),
+        rest_comments(context),
+        literalline(),
+    ])
 }

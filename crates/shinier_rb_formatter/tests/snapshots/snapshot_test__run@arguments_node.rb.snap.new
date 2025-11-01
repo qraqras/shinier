@@ -1,8 +1,8 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 507
+assertion_line: 206
 expression: output
-input_file: crates/shinier_rb_formatter/tests/ruby/node/arguments_node.rb
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/arguments_node.rb
 ---
 ****FORMATTED****
 # Docs.rs
@@ -37,6 +37,7 @@ return foo,
   foo,
   bar,
   baz
+
 
 ****AST****
 ProgramNode: "return foo, bar, baz\n\n# unnecessary line breaks\nreturn foo, bar,\nbaz\nreturn foo,\nbar,\nbaz\n\n# long argument list\nreturn foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz"

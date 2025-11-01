@@ -34,10 +34,10 @@ impl<'a> Printer<'a> {
 
         let mut context = BuildContext {
             source: self.source.as_bytes(),
-            built_end: 0,
+            root: parse_result.node(),
+            built_end: 0usize,
             comments: &mut parse_result.comments().peekable(),
-            inner_comment: Vec::new(),
-            leading_line_breaks: true,
+            max_leading_line_breaks: 0usize,
         };
         let doc = parse_result.node().build(&mut context);
 
