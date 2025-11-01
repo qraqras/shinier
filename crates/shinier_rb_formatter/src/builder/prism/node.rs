@@ -1,15 +1,7 @@
 use crate::Document;
+use crate::builder::BuildContext;
 use crate::builder::NodeVariant;
 use ruby_prism::*;
-use std::iter::Peekable;
-
-pub struct BuildContext<'a> {
-    pub source: &'a [u8],
-    pub built_end: usize,
-    pub comments: &'a mut Peekable<Comments<'a>>,
-    pub inner_comment: Vec<Comment<'a>>,
-    pub leading_line_breaks: bool,
-}
 
 pub trait Build {
     fn __build__(&self, context: &mut BuildContext) -> Document;
@@ -214,7 +206,7 @@ impl<T: Build> Build for Option<T> {
     }
 }
 
-impl ListBuild for NodeList<'_> {
+impl<'sh> ListBuild for NodeList<'sh> {
     fn __build__(&self, context: &mut BuildContext, separator: &Document) -> Document {
         if self.iter().next().is_none() {
             return Document::None;
@@ -230,7 +222,7 @@ impl ListBuild for NodeList<'_> {
     }
 }
 
-impl<'sh> ListBuild for Option<NodeList<'sh>> {
+impl<T: ListBuild> ListBuild for Option<T> {
     fn __build__(&self, context: &mut BuildContext, separator: &Document) -> Document {
         match self {
             Some(node) => node.build(context, separator),

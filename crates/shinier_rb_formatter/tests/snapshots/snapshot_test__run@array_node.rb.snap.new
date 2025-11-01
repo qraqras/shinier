@@ -1,8 +1,8 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 507
+assertion_line: 206
 expression: output
-input_file: crates/shinier_rb_formatter/tests/ruby/node/array_node.rb
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/array_node.rb
 ---
 ****FORMATTED****
 # Docs.rs
