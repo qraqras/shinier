@@ -34,6 +34,7 @@ impl<'a> Printer<'a> {
 
         let mut context = BuildContext {
             source: self.source.as_bytes(),
+            root: parse_result.node(),
             built_end: 0usize,
             comments: &mut parse_result.comments().peekable(),
             max_leading_line_breaks: 0usize,

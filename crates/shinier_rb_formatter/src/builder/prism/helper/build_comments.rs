@@ -5,6 +5,39 @@ use crate::document::Document;
 use ruby_prism::Comment;
 use ruby_prism::CommentType;
 use ruby_prism::Node;
+use ruby_prism::Visit;
+
+struct TrailingVisitor {
+    pub node_end_offset: usize,
+    pub line_end_offset: usize,
+    pub has_node_between: bool,
+}
+
+impl<'sh> Visit<'sh> for TrailingVisitor {
+    fn visit_branch_node_enter(&mut self, node: Node<'sh>) {
+        if self.has_node_between {
+            return;
+        }
+        let start = node.location().start_offset();
+        let end = node.location().end_offset();
+        if end <= self.node_end_offset || start >= self.line_end_offset {
+            return;
+        }
+        if self.node_end_offset < start && start < self.line_end_offset {
+            self.has_node_between = true;
+        }
+    }
+
+    fn visit_leaf_node_enter(&mut self, node: Node<'sh>) {
+        if self.has_node_between {
+            return;
+        }
+        let start = node.location().start_offset();
+        if self.node_end_offset < start && start < self.line_end_offset {
+            self.has_node_between = true;
+        }
+    }
+}
 
 /// Builds leading comments for a given node.
 /// ```ruby
@@ -91,6 +124,18 @@ pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
                 {
                     line_end_offset += 1;
                 }
+
+                // TODO: パフォーマンス改善の余地あり
+                let mut visitor = TrailingVisitor {
+                    node_end_offset: node.location().end_offset(),
+                    line_end_offset,
+                    has_node_between: false,
+                };
+                visitor.visit(&context.root);
+                if visitor.has_node_between {
+                    break;
+                }
+
                 if comment_start_offset >= node.location().end_offset()
                     && comment_start_offset < line_end_offset
                 {
@@ -105,6 +150,35 @@ pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
             }
             None => break,
         }
+    }
+    array(&documents)
+}
+
+/// Builds the rest of the comments in the source code.
+/// ```ruby
+/// # rest comment
+/// EOF
+///```
+pub fn rest_comments(context: &mut BuildContext) -> Document {
+    let mut documents = Vec::new();
+    loop {
+        match context.comments.next() {
+            Some(comment) => {
+                documents.push(leading_line_breaks(
+                    context,
+                    comment.location().start_offset(),
+                    1usize,
+                ));
+                documents.push(build_comment(&comment));
+                documents.push(hardline());
+                continue;
+            }
+            None => break,
+        }
+    }
+    if !documents.is_empty() {
+        // remove last hardline
+        documents.pop();
     }
     array(&documents)
 }

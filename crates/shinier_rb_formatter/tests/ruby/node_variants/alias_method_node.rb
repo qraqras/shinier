@@ -1,13 +1,23 @@
-# Docs.rs
 alias foo bar
 
 # unnecessary line break
 alias
-foo bar
+  foo bar
 
 # long expression
 alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
 
-# long expression with unnecessary line break
 alias
-foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+  # owning comment
+  foo bar
+alias
+  # owning comment 1
+  # owning comment 2
+  foo bar
+alias
+=begin
+  block comment 1
+  block comment 2
+=end
+  foo bar
+alias foo bar # trailing comment
