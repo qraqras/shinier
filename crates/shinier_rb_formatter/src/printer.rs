@@ -36,7 +36,7 @@ impl<'a> Printer<'a> {
             source: self.source.as_bytes(),
             built_end: 0usize,
             comments: &mut parse_result.comments().peekable(),
-            leading_line_breaks: 0usize,
+            max_leading_line_breaks: 0usize,
         };
         let doc = parse_result.node().build(&mut context);
 

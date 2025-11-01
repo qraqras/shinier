@@ -1,7 +1,7 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::Document;
-use crate::builder::builder::{array, none};
+use crate::builder::builder::{array, group, none};
 use crate::builder::prism::helper::leading_comments;
 use crate::builder::prism::helper::leading_line_breaks;
 use crate::builder::prism::helper::trailing_comments;
@@ -17,25 +17,27 @@ pub trait NodeVariant<'sh>: Build {
         // Build leading comments
         vec.push(leading_comments(&self.as_node(), context));
         // Build leading line breaks
-        if context.leading_line_breaks > 0 {
+        if context.max_leading_line_breaks > 0 {
             vec.push(leading_line_breaks(
                 context,
                 self.location().start_offset(),
-                context.leading_line_breaks,
+                context.max_leading_line_breaks,
             ));
         }
-        let prev_is_statement = context.leading_line_breaks;
-        context.leading_line_breaks = match self.as_node() {
+        let prev_max_leading_line_breaks = context.max_leading_line_breaks;
+        context.max_leading_line_breaks = match self.as_node() {
             Node::StatementsNode { .. } => 1usize,
             Node::ProgramNode { .. } => 1usize,
             _ => 0usize,
         };
-        // Build the node itself
-        vec.push(self.__build__(context));
-        // Build trailing comments
-        vec.push(trailing_comments(&self.as_node(), context));
+        vec.push(group(array(&[
+            // Build the node itself
+            self.__build__(context),
+            // Build trailing comments
+            trailing_comments(&self.as_node(), context),
+        ])));
         context.built_end = context.built_end.max(self.location().end_offset());
-        context.leading_line_breaks = prev_is_statement;
+        context.max_leading_line_breaks = prev_max_leading_line_breaks;
         array(&vec)
     }
 }

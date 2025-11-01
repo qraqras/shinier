@@ -39,8 +39,19 @@ pub fn group(contents: Document) -> Document {
     Document::Group(Group {
         id: generate_group_id(),
         contents: Box::new(contents),
-        expanded_states: None,
         r#break: false,
+        propagate_break: true,
+        expanded_states: None,
+    })
+}
+
+pub fn group_no_propagation(contents: Document) -> Document {
+    Document::Group(Group {
+        id: generate_group_id(),
+        contents: Box::new(contents),
+        r#break: false,
+        propagate_break: false,
+        expanded_states: None,
     })
 }
 

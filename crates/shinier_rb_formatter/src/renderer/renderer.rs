@@ -421,7 +421,9 @@ fn propagate_breaks(doc: &Document) -> HashMap<usize, Mode> {
                     return;
                 }
                 parent_stack.push(group.id);
-                group_break_map.insert(group.id, Mode::from(group.r#break));
+                group_break_map
+                    .entry(group.id)
+                    .or_insert_with(|| Mode::from(group.r#break));
                 if let Some(expanded_states) = &group.expanded_states {
                     for state in expanded_states {
                         visit(state, parent_stack, group_break_map, visited);
@@ -430,9 +432,11 @@ fn propagate_breaks(doc: &Document) -> HashMap<usize, Mode> {
                     visit(&group.contents, parent_stack, group_break_map, visited);
                 }
                 parent_stack.pop();
-                if group.r#break {
-                    if let Some(&parent_id) = parent_stack.last() {
-                        group_break_map.insert(parent_id, Mode::Break);
+                if group.propagate_break {
+                    if group_break_map.get(&group.id) == Some(&Mode::Break) {
+                        if let Some(&parent_id) = parent_stack.last() {
+                            group_break_map.insert(parent_id, Mode::Break);
+                        }
                     }
                 }
             }
