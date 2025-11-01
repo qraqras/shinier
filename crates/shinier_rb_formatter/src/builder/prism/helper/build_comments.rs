@@ -2,6 +2,8 @@ use crate::BuildContext;
 use crate::builder::builder::{array, break_parent, hardline, line_suffix, string};
 use crate::builder::prism::leading_line_breaks;
 use crate::document::Document;
+use ruby_prism::Comment;
+use ruby_prism::CommentType;
 use ruby_prism::Node;
 
 /// Builds leading comments for a given node.
@@ -18,8 +20,7 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
                 if comment.location().start_offset() < node.location().start_offset() {
                     documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
                     let comment = context.comments.next().unwrap();
-                    let text = std::str::from_utf8(comment.text()).unwrap();
-                    documents.push(string(text));
+                    documents.push(build_comment(&comment));
                     documents.push(hardline());
                     context.built_end = comment.location().end_offset();
                     continue;
@@ -38,7 +39,8 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
 ///   # owning comment
 /// end
 /// ```
-pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Document {
+pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Option<Document> {
+    let mut linebreaks = Vec::new();
     let mut documents = Vec::new();
     loop {
         match context.comments.peek() {
@@ -47,11 +49,14 @@ pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Document {
                 if comment_start_offset >= node.location().start_offset()
                     && comment_start_offset < node.location().end_offset()
                 {
-                    documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
+                    if context.built_end == comment_start_offset - 1 {
+                        linebreaks.push(hardline());
+                    } else {
+                        documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
+                    }
                     let comment = context.comments.next().unwrap();
-                    let text = std::str::from_utf8(comment.text()).unwrap();
-                    documents.push(string(text));
-                    documents.push(break_parent());
+                    documents.push(build_comment(&comment));
+                    documents.push(hardline());
                     context.built_end = comment.location().end_offset();
                     continue;
                 }
@@ -60,7 +65,13 @@ pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Document {
             None => break,
         }
     }
-    array(&documents)
+    if !documents.is_empty() {
+        // remove last hardline and add break parent
+        documents.pop();
+        documents.push(break_parent());
+        return Some(array(&documents));
+    }
+    None
 }
 
 /// Builds trailing comments for a given node.
@@ -96,4 +107,35 @@ pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
         }
     }
     array(&documents)
+}
+
+/// Builds a Document for a given comment.
+/// If the comment is an embedded document comment (=begin ... =end),
+/// it formats it as multiple lines with '#' prefixes.
+fn build_comment(comment: &Comment) -> Document {
+    let text = std::str::from_utf8(comment.text()).unwrap();
+    match comment.type_() {
+        CommentType::EmbDocComment => {
+            let mut lines: Vec<&str> = text.lines().collect();
+            if let Some(first) = lines.first() {
+                if first.trim_start().starts_with("=begin") {
+                    lines.remove(0);
+                }
+            }
+            if let Some(last) = lines.last() {
+                if last.trim_start().starts_with("=end") {
+                    lines.pop();
+                }
+            }
+            let mut documents = Vec::new();
+            for (i, line) in lines.iter().enumerate() {
+                if i > 0 {
+                    documents.push(hardline());
+                }
+                documents.push(string(format!("# {}", line)));
+            }
+            array(&documents)
+        }
+        CommentType::InlineComment => string(text),
+    }
 }

@@ -30,6 +30,7 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/string_node.rb
 # double quotes with escaped tab
 "\t"
 
+
 ****AST****
 ProgramNode: "\"foo\"\n%w[foo]\n\"foo #{bar} baz\"\n\n# single quotes\n\'foo\'\n# double quotes\n\"foo\"\n\n# single quotes with escaped single quote\n\'foo\\\'bar\\\'baz\'\n# double quotes with escaped double quote\n\"foo\\\"bar\\\"baz\"\n\n# single quotes with escaped backslash\n\'f\\o\\o\'\n# double quotes with escaped backslash\n\"f\\\\o\\\\o\"\n\n# single quotes with escaped tab\n\'\\t\'\n# double quotes with escaped tab\n\"\\t\""
 __StringNode: "\"foo\""

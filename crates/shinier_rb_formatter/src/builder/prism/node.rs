@@ -3,6 +3,7 @@ use crate::builder::BuildContext;
 use crate::builder::NodeVariant;
 use ruby_prism::*;
 
+/// Trait for building documents.
 pub trait Build {
     fn __build__(&self, context: &mut BuildContext) -> Document;
     fn build(&self, context: &mut BuildContext) -> Document {
@@ -20,6 +21,7 @@ pub trait Build {
     }
 }
 
+/// Trait for building lists of documents.
 pub trait ListBuild {
     fn __build__(&self, context: &mut BuildContext, separator: &Document) -> Document;
     fn build(&self, context: &mut BuildContext, separator: &Document) -> Document {

@@ -1,6 +1,7 @@
 use crate::Build;
 use crate::BuildContext;
-use crate::builder::builder::{array, group, space, string};
+use crate::builder::builder::{array, group, hardline, indent, line, none, space, string};
+use crate::builder::prism::helper::owning_comments;
 use crate::document::Document;
 use crate::keyword::ALIAS;
 use ruby_prism::AliasGlobalVariableNode;
@@ -16,9 +17,17 @@ pub fn build_node(node: &AliasGlobalVariableNode, context: &mut BuildContext) ->
     let new_name = node.new_name();
     group(array(&[
         string(ALIAS),
-        space(),
-        old_name.build(context),
-        space(),
-        new_name.build(context),
+        indent(group(array(&[
+            line(),
+            match owning_comments(&node.as_node(), context) {
+                Some(comment) => array(&[comment, hardline()]),
+                None => none(),
+            },
+            group(array(&[
+                old_name.build(context),
+                space(),
+                new_name.build(context),
+            ])),
+        ]))),
     ]))
 }

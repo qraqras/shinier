@@ -38,6 +38,7 @@ return foo,
   bar,
   baz
 
+
 ****AST****
 ProgramNode: "return foo, bar, baz\n\n# unnecessary line breaks\nreturn foo, bar,\nbaz\nreturn foo,\nbar,\nbaz\n\n# long argument list\nreturn foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz"
 __ReturnNode: "return foo, bar, baz"

@@ -17,6 +17,7 @@ alias_method :foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo, :bar
 # long expression with unnecessary line break
 alias_method :foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo, :barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
 
+
 ****AST****
 ProgramNode: "alias foo bar\n\n# unnecessary line break\nalias\nfoo bar\n\n# long expression\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\n\n# long expression with unnecessary line break\nalias\nfoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
 __AliasMethodNode: "alias foo bar"

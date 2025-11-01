@@ -1,6 +1,6 @@
 use crate::Build;
 use crate::BuildContext;
-use crate::builder::builder::{array, group, indent, line, space, string};
+use crate::builder::builder::{array, group, indent, line, none, space, string};
 use crate::builder::prism::helper::owning_comments;
 use crate::document::Document;
 use crate::keyword::{DO, END, FOR, IN};
@@ -25,7 +25,7 @@ pub fn build_node(node: &ForNode, context: &mut BuildContext) -> Document {
         space(),
         collection.build(context),
         indent(statements.build_with(context, Some(array(&[space(), string(DO), line()])), None)),
-        indent(owning_comments(&node.as_node(), context)),
+        indent(owning_comments(&node.as_node(), context).unwrap_or(none())),
         line(),
         string(END),
     ]))
