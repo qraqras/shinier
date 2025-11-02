@@ -7,35 +7,174 @@ use ruby_prism::CommentType;
 use ruby_prism::Node;
 use ruby_prism::Visit;
 
-struct TrailingVisitor {
-    pub node_end_offset: usize,
-    pub line_end_offset: usize,
-    pub has_node_between: bool,
+/// Metadata about comments used for advanced placement logic.
+pub struct CommentMetadata {
+    pub comment_start_offset: usize,
+    pub preceding_node_location: Option<NodeLocation>,
+    pub enclosing_node_location: Option<NodeLocation>,
+    pub following_node_location: Option<NodeLocation>,
+    pub placement: CommentPlacement,
 }
 
-impl<'sh> Visit<'sh> for TrailingVisitor {
+/// Location information for a node.
+#[derive(Clone, Copy, Debug)]
+pub struct NodeLocation {
+    pub start_offset: usize,
+    pub end_offset: usize,
+}
+
+/// Enum representing comment placement types.
+#[derive(Debug)]
+pub enum CommentPlacement {
+    EndOfLine,
+    OwnLine,
+    Remaining,
+}
+
+/// Visitor for collecting node locations.
+struct NodeLocationCollector<'sh> {
+    node_locations: &'sh mut Vec<NodeLocation>,
+}
+
+/// Implementation of the visitor pattern for collecting node locations.
+impl<'sh> Visit<'sh> for NodeLocationCollector<'sh> {
     fn visit_branch_node_enter(&mut self, node: Node<'sh>) {
-        if self.has_node_between {
-            return;
+        self.node_locations.push(NodeLocation {
+            start_offset: node.location().start_offset(),
+            end_offset: node.location().end_offset(),
+        });
+    }
+    fn visit_leaf_node_enter(&mut self, node: Node<'sh>) {
+        self.node_locations.push(NodeLocation {
+            start_offset: node.location().start_offset(),
+            end_offset: node.location().end_offset(),
+        });
+    }
+}
+
+/// Collect node locations in sorted order.
+pub fn collect_sorted_node_locations<'sh>(root: &Node<'sh>) -> Vec<NodeLocation> {
+    let mut node_locations = Vec::new();
+    let mut collector = NodeLocationCollector {
+        node_locations: &mut node_locations,
+    };
+    collector.visit(root);
+    node_locations.sort_unstable_by_key(|loc| loc.start_offset);
+    node_locations
+}
+
+/// Decorates a comment with metadata for placement decisions.
+pub fn decorate_comment<'sh>(
+    comment: &'sh Comment<'sh>,
+    sorted_node_locations: &'sh Vec<NodeLocation>,
+    source: &'sh [u8],
+) -> CommentMetadata {
+    let comment_start_offset = comment.location().start_offset();
+    let comment_end_offset = comment.location().end_offset();
+    // metadata fields
+    let mut preceding_node_location: Option<NodeLocation> = None;
+    let mut enclosing_node_location: Option<NodeLocation> = None;
+    let mut following_node_location: Option<NodeLocation> = None;
+    // scan sorted node locations
+    for node_location in sorted_node_locations.iter() {
+        let node_start_offset = node_location.start_offset;
+        let node_end_offset = node_location.end_offset;
+        // node_start <= comment_start <= comment_end <= node_end
+        if node_start_offset <= comment_start_offset && comment_end_offset <= node_end_offset {
+            let should_update = match enclosing_node_location {
+                Some(prev_enclosing) => {
+                    prev_enclosing.start_offset < node_start_offset
+                        && node_end_offset < prev_enclosing.end_offset
+                }
+                None => true,
+            };
+            if should_update {
+                enclosing_node_location = Some(*node_location);
+            }
         }
-        let start = node.location().start_offset();
-        let end = node.location().end_offset();
-        if end <= self.node_end_offset || start >= self.line_end_offset {
-            return;
+        // node_start <= node_end <= comment_start <= comment_end
+        if node_end_offset <= comment_start_offset {
+            let should_update = match preceding_node_location {
+                Some(prev_preceding) => {
+                    if prev_preceding.end_offset < node_end_offset {
+                        true
+                    } else if prev_preceding.end_offset == node_end_offset {
+                        prev_preceding.start_offset < node_start_offset
+                    } else {
+                        false
+                    }
+                }
+                None => true,
+            };
+            if should_update {
+                preceding_node_location = Some(*node_location);
+            }
         }
-        if self.node_end_offset < start && start < self.line_end_offset {
-            self.has_node_between = true;
+        // comment_start <= comment_end <= node_start <= node_end
+        if comment_end_offset <= node_start_offset {
+            let should_update = match following_node_location {
+                Some(prev_following) => {
+                    if node_start_offset < prev_following.start_offset {
+                        true
+                    } else if prev_following.start_offset == node_start_offset {
+                        node_end_offset < prev_following.end_offset
+                    } else {
+                        false
+                    }
+                }
+                None => true,
+            };
+            if should_update {
+                following_node_location = Some(*node_location);
+            }
         }
     }
+    let placement = determine_placement(
+        comment,
+        preceding_node_location.as_ref(),
+        following_node_location.as_ref(),
+        source,
+    );
+    CommentMetadata {
+        comment_start_offset,
+        preceding_node_location,
+        enclosing_node_location,
+        following_node_location,
+        placement,
+    }
+}
 
-    fn visit_leaf_node_enter(&mut self, node: Node<'sh>) {
-        if self.has_node_between {
-            return;
+/// Determines the placement of a comment based on surrounding nodes and source code.
+pub fn determine_placement(
+    comment: &Comment,
+    preceding_node_location: Option<&NodeLocation>,
+    following_node_location: Option<&NodeLocation>,
+    source: &[u8],
+) -> CommentPlacement {
+    fn has_newline_in_range(source: &[u8], start_offset: usize, end_offset: usize) -> bool {
+        let end = end_offset.min(source.len());
+        source[start_offset..end].iter().any(|&b| b == b'\n')
+    }
+    let comment_start_offset = comment.location().start_offset();
+    let comment_end_offset = comment.location().end_offset();
+    let has_newline_before = preceding_node_location.map_or(true, |loc| {
+        has_newline_in_range(source, loc.end_offset, comment_start_offset)
+    });
+    let has_newline_after = following_node_location.map_or(true, |loc| {
+        // block comments contain newlines at the end
+        match comment.type_() {
+            CommentType::EmbDocComment => {
+                has_newline_in_range(source, comment_end_offset - 1, loc.start_offset)
+            }
+            CommentType::InlineComment => {
+                has_newline_in_range(source, comment_end_offset, loc.start_offset)
+            }
         }
-        let start = node.location().start_offset();
-        if self.node_end_offset < start && start < self.line_end_offset {
-            self.has_node_between = true;
-        }
+    });
+    match (has_newline_before, has_newline_after) {
+        (true, true) => CommentPlacement::OwnLine,
+        (false, true) => CommentPlacement::EndOfLine,
+        (_, _) => CommentPlacement::Remaining,
     }
 }
 
@@ -73,20 +212,15 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
 /// end
 /// ```
 pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Option<Document> {
-    let mut linebreaks = Vec::new();
     let mut documents = Vec::new();
     loop {
         match context.comments.peek() {
             Some(comment) => {
                 let comment_start_offset = comment.location().start_offset();
-                if comment_start_offset >= node.location().start_offset()
-                    && comment_start_offset < node.location().end_offset()
-                {
-                    if context.built_end == comment_start_offset - 1 {
-                        linebreaks.push(hardline());
-                    } else {
-                        documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
-                    }
+                let node_start = node.location().start_offset();
+                let node_end = node.location().end_offset();
+                if comment_start_offset >= node_start && comment_start_offset < node_end {
+                    documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
                     let comment = context.comments.next().unwrap();
                     documents.push(build_comment(&comment));
                     documents.push(hardline());
@@ -116,37 +250,35 @@ pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
     loop {
         match context.comments.peek() {
             Some(comment) => {
-                let comment_start_offset = comment.location().start_offset();
-                // scan to the end of the line
-                let mut line_end_offset = node.location().end_offset();
-                while line_end_offset < context.source.len()
-                    && context.source[line_end_offset] != b'\n'
-                {
-                    line_end_offset += 1;
-                }
-
-                // TODO: パフォーマンス改善の余地あり
-                let mut visitor = TrailingVisitor {
-                    node_end_offset: node.location().end_offset(),
-                    line_end_offset,
-                    has_node_between: false,
+                let metadata = context
+                    .comment_metadata
+                    .get(&comment.location().start_offset());
+                let is_trailing = match metadata {
+                    Some(metadata) => {
+                        if matches!(metadata.placement, CommentPlacement::EndOfLine) {
+                            metadata.preceding_node_location.map_or(
+                                false,
+                                |preceding_node_location| {
+                                    let node_start_offset = node.location().start_offset();
+                                    let node_end_offset = node.location().end_offset();
+                                    preceding_node_location.start_offset == node_start_offset
+                                        && preceding_node_location.end_offset == node_end_offset
+                                },
+                            )
+                        } else {
+                            false
+                        }
+                    }
+                    None => false,
                 };
-                visitor.visit(&context.root);
-                if visitor.has_node_between {
+                if !is_trailing {
                     break;
                 }
-
-                if comment_start_offset >= node.location().end_offset()
-                    && comment_start_offset < line_end_offset
-                {
-                    let comment = context.comments.next().unwrap();
-                    let text = std::str::from_utf8(comment.text()).unwrap();
-                    documents.push(line_suffix(string(format!(" {}", text))));
-                    documents.push(break_parent());
-                    context.built_end = comment.location().end_offset();
-                    continue;
-                }
-                break;
+                let comment = context.comments.next().unwrap();
+                let text = std::str::from_utf8(comment.text()).unwrap();
+                documents.push(line_suffix(string(format!(" {}", text.trim_start()))));
+                documents.push(break_parent());
+                context.built_end = comment.location().end_offset();
             }
             None => break,
         }
