@@ -83,8 +83,8 @@ pub fn decorate_comment<'sh>(
         if node_start_offset <= comment_start_offset && comment_end_offset <= node_end_offset {
             let should_update = match enclosing_node_location {
                 Some(prev_enclosing) => {
-                    prev_enclosing.start_offset < node_start_offset
-                        && node_end_offset < prev_enclosing.end_offset
+                    prev_enclosing.start_offset <= node_start_offset
+                        && node_end_offset <= prev_enclosing.end_offset
                 }
                 None => true,
             };
@@ -161,7 +161,12 @@ pub fn determine_placement(
         has_newline_in_range(source, loc.end_offset, comment_start_offset)
     });
     let has_newline_after = following_node_location.map_or(true, |loc| {
-        // block comments contain newlines at the end
+        // block comments contain \n at the end of the comment text, so we need to adjust the range accordingly
+        // ``````
+        // =begin
+        // block comment
+        // =end\n
+        // ```
         match comment.type_() {
             CommentType::EmbDocComment => {
                 has_newline_in_range(source, comment_end_offset - 1, loc.start_offset)
@@ -189,15 +194,37 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
         match context.comments.peek() {
             Some(comment) => {
                 let comment_start_offset = comment.location().start_offset();
-                if comment.location().start_offset() < node.location().start_offset() {
-                    documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
-                    let comment = context.comments.next().unwrap();
-                    documents.push(build_comment(&comment));
-                    documents.push(hardline());
-                    context.built_end = comment.location().end_offset();
-                    continue;
+                // comment is not before the node start
+                if comment_start_offset >= node.location().start_offset() {
+                    break;
                 }
-                break;
+                let metadata = context.comment_metadata.get(&comment_start_offset);
+                let is_leading = match metadata {
+                    Some(metadata) => match metadata.placement {
+                        CommentPlacement::OwnLine => {
+                            metadata.following_node_location.map_or(true, |following| {
+                                following.start_offset == node.location().start_offset()
+                            })
+                        }
+                        CommentPlacement::EndOfLine => false,
+                        CommentPlacement::Remaining => unimplemented!(
+                            "remaining comments are not supported as leading comments"
+                        ),
+                    },
+                    None => {
+                        unimplemented!(
+                            "comments without metadata are not supported as leading comments"
+                        )
+                    }
+                };
+                if !is_leading {
+                    break;
+                }
+                documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
+                let comment = context.comments.next().unwrap();
+                documents.push(build_comment(&comment));
+                documents.push(hardline());
+                context.built_end = comment.location().end_offset();
             }
             None => break,
         }
@@ -219,15 +246,45 @@ pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Option<Docume
                 let comment_start_offset = comment.location().start_offset();
                 let node_start = node.location().start_offset();
                 let node_end = node.location().end_offset();
-                if comment_start_offset >= node_start && comment_start_offset < node_end {
-                    documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
-                    let comment = context.comments.next().unwrap();
-                    documents.push(build_comment(&comment));
-                    documents.push(hardline());
-                    context.built_end = comment.location().end_offset();
-                    continue;
+                // comment is outside the node range
+                if comment_start_offset < node_start || node_end < comment_start_offset {
+                    break;
                 }
-                break;
+                let metadata = context.comment_metadata.get(&comment_start_offset);
+                let is_owning = match metadata {
+                    Some(metadata) => match metadata.placement {
+                        CommentPlacement::OwnLine => {
+                            metadata.enclosing_node_location.map_or(true, |enclosing| {
+                                enclosing.start_offset == node_start
+                                    && enclosing.end_offset == node_end
+                            })
+                        }
+                        CommentPlacement::EndOfLine => {
+                            metadata.preceding_node_location.map_or(true, |preceding| {
+                                preceding.start_offset != node_start
+                                    || preceding.end_offset != node_end
+                            })
+                        }
+                        CommentPlacement::Remaining => {
+                            unimplemented!(
+                                "remaining comments are not supported as owning comments"
+                            )
+                        }
+                    },
+                    None => {
+                        unimplemented!(
+                            "comments without metadata are not supported as owning comments"
+                        )
+                    }
+                };
+                if !is_owning {
+                    break;
+                }
+                documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
+                let comment = context.comments.next().unwrap();
+                documents.push(build_comment(&comment));
+                documents.push(hardline());
+                context.built_end = comment.location().end_offset();
             }
             None => break,
         }
