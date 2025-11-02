@@ -86,7 +86,7 @@ pub fn decorate_comment<'sh>(
     let following_node_location = find_following_node(&sorted_node_locations, comment_end_offset);
     // Find enclosing node - needs to scan all candidates
     let enclosing_node_location = find_enclosing_node(
-        &sorted_node_locations.by_start,
+        &sorted_node_locations,
         comment_start_offset,
         comment_end_offset,
     );
@@ -111,19 +111,21 @@ fn find_preceding_node(
     comment_start: usize,
 ) -> Option<NodeLocation> {
     let sorted = &sorted_node_locations.by_end;
-    let idx = sorted.partition_point(|node| node.end_offset < comment_start) - 1;
-    if idx <= 0 {
+    let idx = sorted.partition_point(|node| node.end_offset < comment_start);
+    if idx == 0 {
         return None;
     }
-    let mut result: NodeLocation = sorted[idx];
-    for node in sorted[..idx].iter().rev() {
+
+    let end_idx = idx - 1;
+    let mut result = sorted[end_idx];
+    for node in sorted[..end_idx].iter().rev() {
         if node.end_offset == result.end_offset {
             if result.start_offset < node.start_offset {
                 result = *node;
             }
-            continue;
+        } else {
+            break;
         }
-        break;
     }
     Some(result)
 }
@@ -138,8 +140,9 @@ fn find_following_node(
     if idx >= sorted.len() {
         return None;
     }
-    let mut result = sorted[idx];
-    for node in sorted[idx + 1..].iter() {
+    let start_idx = idx;
+    let mut result = sorted[start_idx];
+    for node in sorted[start_idx + 1..].iter() {
         if node.start_offset == result.start_offset {
             if node.end_offset < result.end_offset {
                 result = *node;
@@ -152,51 +155,29 @@ fn find_following_node(
 }
 
 /// Finds the smallest enclosing node (node_start <= comment_start <= comment_end <= node_end).
-/// This requires checking all nodes, but we can optimize by using binary search for candidates.
 fn find_enclosing_node(
-    sorted_node_locations: &[NodeLocation],
+    sorted_node_locations: &SortedNodeLocations,
     comment_start: usize,
     comment_end: usize,
 ) -> Option<NodeLocation> {
-    // Binary search to find where nodes could start containing the comment
-    let start_idx = sorted_node_locations.partition_point(|node| node.start_offset < comment_start);
-
+    let sorted = &sorted_node_locations.by_start;
+    let idx = sorted.partition_point(|node| node.start_offset <= comment_start);
     let mut result: Option<NodeLocation> = None;
-
-    // Check nodes starting before or at comment_start
-    // We need to go backwards from start_idx because nodes with earlier starts might enclose
-    for i in (0..=start_idx.min(sorted_node_locations.len().saturating_sub(1))).rev() {
-        if i >= sorted_node_locations.len() {
-            continue;
-        }
-        let node = sorted_node_locations[i];
-
-        // Node must start before or at comment start
-        if node.start_offset > comment_start {
-            continue;
-        }
-
-        // Node must end after or at comment end
+    for node in sorted[..idx].iter().rev() {
         if node.end_offset < comment_end {
-            break; // Earlier nodes will also not contain the comment
+            break;
         }
-
-        // This node encloses the comment
-        if node.start_offset <= comment_start && comment_end <= node.end_offset {
-            match result {
-                Some(prev) => {
-                    // Prefer smaller (more specific) enclosing node
-                    let prev_size = prev.end_offset - prev.start_offset;
-                    let curr_size = node.end_offset - node.start_offset;
-                    if curr_size < prev_size {
-                        result = Some(node);
-                    }
+        match result {
+            Some(prev) => {
+                let prev_size = prev.end_offset - prev.start_offset;
+                let curr_size = node.end_offset - node.start_offset;
+                if curr_size < prev_size {
+                    result = Some(*node);
                 }
-                None => result = Some(node),
             }
+            None => result = Some(*node),
         }
     }
-
     result
 }
 
