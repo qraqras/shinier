@@ -1,5 +1,7 @@
 use crate::Build;
 use crate::BuildContext;
+use crate::builder::prism::helper::collect_sorted_node_locations;
+use crate::builder::prism::helper::decorate_comment;
 use crate::renderer::print_doc_to_string;
 use ruby_prism::*;
 use std::collections::HashMap;
@@ -32,9 +34,18 @@ impl<'a> Printer<'a> {
             panic!("!!!!パースエラー時の処理は未実装です!!!!: {}", messages);
         }
 
+        let sorted_node_locations = collect_sorted_node_locations(&parse_result.node());
+        let mut comment_metadata = HashMap::new();
+        for comment in parse_result.comments() {
+            let metadata =
+                decorate_comment(&comment, &sorted_node_locations, self.source.as_bytes());
+            comment_metadata.insert(metadata.comment_start_offset, metadata);
+        }
+
         let mut context = BuildContext {
             source: self.source.as_bytes(),
-            root: parse_result.node(),
+            root: &parse_result.node(),
+            comment_metadata: comment_metadata,
             built_end: 0usize,
             comments: &mut parse_result.comments().peekable(),
             max_leading_line_breaks: 0usize,

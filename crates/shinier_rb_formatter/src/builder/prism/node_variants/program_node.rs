@@ -15,7 +15,7 @@ pub fn build_node(node: &ProgramNode, context: &mut BuildContext) -> Document {
     let statements = node.statements();
     array(&[
         statements.build(context),
-        rest_comments(context),
+        rest_comments(context), // TODO: dedent_to_root
         literalline(),
     ])
 }
