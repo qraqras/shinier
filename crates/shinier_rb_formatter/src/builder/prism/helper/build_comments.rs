@@ -71,70 +71,27 @@ pub fn decorate_comment<'sh>(
 ) -> CommentMetadata {
     let comment_start_offset = comment.location().start_offset();
     let comment_end_offset = comment.location().end_offset();
-    // metadata fields
-    let mut preceding_node_location: Option<NodeLocation> = None;
-    let mut enclosing_node_location: Option<NodeLocation> = None;
-    let mut following_node_location: Option<NodeLocation> = None;
-    // scan sorted node locations
-    for node_location in sorted_node_locations.iter() {
-        let node_start_offset = node_location.start_offset;
-        let node_end_offset = node_location.end_offset;
-        // node_start <= comment_start <= comment_end <= node_end
-        if node_start_offset <= comment_start_offset && comment_end_offset <= node_end_offset {
-            let should_update = match enclosing_node_location {
-                Some(prev_enclosing) => {
-                    prev_enclosing.start_offset <= node_start_offset
-                        && node_end_offset <= prev_enclosing.end_offset
-                }
-                None => true,
-            };
-            if should_update {
-                enclosing_node_location = Some(*node_location);
-            }
-        }
-        // node_start <= node_end <= comment_start <= comment_end
-        if node_end_offset <= comment_start_offset {
-            let should_update = match preceding_node_location {
-                Some(prev_preceding) => {
-                    if prev_preceding.end_offset < node_end_offset {
-                        true
-                    } else if prev_preceding.end_offset == node_end_offset {
-                        prev_preceding.start_offset < node_start_offset
-                    } else {
-                        false
-                    }
-                }
-                None => true,
-            };
-            if should_update {
-                preceding_node_location = Some(*node_location);
-            }
-        }
-        // comment_start <= comment_end <= node_start <= node_end
-        if comment_end_offset <= node_start_offset {
-            let should_update = match following_node_location {
-                Some(prev_following) => {
-                    if node_start_offset < prev_following.start_offset {
-                        true
-                    } else if prev_following.start_offset == node_start_offset {
-                        node_end_offset < prev_following.end_offset
-                    } else {
-                        false
-                    }
-                }
-                None => true,
-            };
-            if should_update {
-                following_node_location = Some(*node_location);
-            }
-        }
-    }
+
+    // Find preceding node - binary search for nodes ending before comment
+    let preceding_node_location = find_preceding_node(sorted_node_locations, comment_start_offset);
+
+    // Find following node - binary search for nodes starting after comment
+    let following_node_location = find_following_node(sorted_node_locations, comment_end_offset);
+
+    // Find enclosing node - needs to scan all candidates
+    let enclosing_node_location = find_enclosing_node(
+        sorted_node_locations,
+        comment_start_offset,
+        comment_end_offset,
+    );
+
     let placement = determine_placement(
         comment,
         preceding_node_location.as_ref(),
         following_node_location.as_ref(),
         source,
     );
+
     CommentMetadata {
         comment_start_offset,
         preceding_node_location,
@@ -142,6 +99,117 @@ pub fn decorate_comment<'sh>(
         following_node_location,
         placement,
     }
+}
+
+/// Finds the preceding node (node_end <= comment_start).
+/// Uses binary search to find candidates, then scans to find the best match.
+/// Matches original logic: largest end_offset, then largest start_offset (less specific node).
+fn find_preceding_node(
+    sorted_node_locations: &[NodeLocation],
+    comment_start: usize,
+) -> Option<NodeLocation> {
+    let mut result: Option<NodeLocation> = None;
+
+    // Scan all nodes to find the best preceding node
+    for node in sorted_node_locations.iter() {
+        if node.end_offset <= comment_start {
+            match result {
+                Some(prev) => {
+                    if node.end_offset > prev.end_offset {
+                        // This node ends closer to the comment
+                        result = Some(*node);
+                    } else if node.end_offset == prev.end_offset {
+                        // Same end_offset, prefer larger (less specific) node
+                        // Original logic: prev_preceding.start_offset < node_start_offset
+                        if prev.start_offset < node.start_offset {
+                            result = Some(*node);
+                        }
+                    }
+                }
+                None => result = Some(*node),
+            }
+        }
+    }
+    result
+}
+
+/// Finds the following node (comment_end <= node_start).
+/// Uses binary search to find the first node starting after comment.
+fn find_following_node(
+    sorted_node_locations: &[NodeLocation],
+    comment_end: usize,
+) -> Option<NodeLocation> {
+    // Binary search for the first node that starts at or after comment_end
+    let idx = sorted_node_locations.partition_point(|node| node.start_offset < comment_end);
+
+    if idx >= sorted_node_locations.len() {
+        return None;
+    }
+
+    let mut result = sorted_node_locations[idx];
+
+    // Check subsequent nodes with the same start_offset
+    // Prefer smaller (more specific) nodes
+    for i in (idx + 1)..sorted_node_locations.len() {
+        let node = sorted_node_locations[i];
+        if node.start_offset != result.start_offset {
+            break;
+        }
+        if node.end_offset < result.end_offset {
+            result = node;
+        }
+    }
+
+    Some(result)
+}
+
+/// Finds the smallest enclosing node (node_start <= comment_start <= comment_end <= node_end).
+/// This requires checking all nodes, but we can optimize by using binary search for candidates.
+fn find_enclosing_node(
+    sorted_node_locations: &[NodeLocation],
+    comment_start: usize,
+    comment_end: usize,
+) -> Option<NodeLocation> {
+    // Binary search to find where nodes could start containing the comment
+    let start_idx = sorted_node_locations.partition_point(|node| node.start_offset < comment_start);
+
+    let mut result: Option<NodeLocation> = None;
+
+    // Check nodes starting before or at comment_start
+    // We need to go backwards from start_idx because nodes with earlier starts might enclose
+    for i in (0..=start_idx.min(sorted_node_locations.len().saturating_sub(1))).rev() {
+        if i >= sorted_node_locations.len() {
+            continue;
+        }
+        let node = sorted_node_locations[i];
+
+        // Node must start before or at comment start
+        if node.start_offset > comment_start {
+            continue;
+        }
+
+        // Node must end after or at comment end
+        if node.end_offset < comment_end {
+            break; // Earlier nodes will also not contain the comment
+        }
+
+        // This node encloses the comment
+        if node.start_offset <= comment_start && comment_end <= node.end_offset {
+            match result {
+                Some(prev) => {
+                    // Prefer smaller (more specific) enclosing node
+                    let prev_size = prev.end_offset - prev.start_offset;
+                    let curr_size = node.end_offset - node.start_offset;
+                    if curr_size < prev_size {
+                        result = Some(node);
+                    }
+                }
+                None => result = Some(node),
+            }
+        }
+    }
+
+    result
 }
 
 /// Determines the placement of a comment based on surrounding nodes and source code.
