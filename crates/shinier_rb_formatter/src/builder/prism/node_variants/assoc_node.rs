@@ -1,7 +1,6 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, group, space, string};
-use crate::builder::prism::helper::layout::build_symbol_without_colon;
 use crate::document::Document;
 use crate::keyword::{COLON, ROCKET};
 use ruby_prism::AssocNode;
@@ -17,7 +16,7 @@ pub fn build_node(node: &AssocNode, context: &mut BuildContext) -> Document {
     let value = node.value();
     match key.as_symbol_node() {
         Some(symbol_node) => group(array(&[
-            build_symbol_without_colon(&symbol_node.as_node()),
+            symbol_node.build(context),
             string(COLON),
             space(),
             value.build(context),
