@@ -4,7 +4,7 @@ use std::rc::Rc;
 
 #[derive(Clone, Debug)]
 struct Command<'sh> {
-    ind: &'sh Ind,
+    ind: Rc<Ind>,
     doc: &'sh Document,
     mode: Mode,
     offset: usize,
@@ -61,36 +61,37 @@ impl Ind {
             root: None,
         }
     }
-    fn make_indent(&mut self) -> Self {
-        self.generate_indent(IndType::Indent)
+    fn make_indent(ind: &Ind) -> Self {
+        Ind::generate_indent(ind, IndType::Indent)
     }
-    fn make_align_number(&mut self, width: i32) -> Self {
+    fn make_align_number(ind: &Ind, width: i32) -> Self {
         if width == i32::MIN {
-            if let Some(root) = &self.root {
+            if let Some(root) = &ind.root {
                 return *root.clone();
             } else {
-                return Ind::root_indent(self.tab_width);
+                return Ind::root_indent(ind.tab_width);
             }
         }
         if width < 0 {
-            return self.generate_indent(IndType::Dedent);
+            return Ind::generate_indent(ind, IndType::Dedent);
         }
         if width == 0 {
-            return self.clone();
+            return ind.clone();
         }
-        self.generate_indent(IndType::AlignNumber(width as usize))
+        Ind::generate_indent(ind, IndType::AlignNumber(width as usize))
     }
-    fn make_align_string(&mut self, s: &String) -> Self {
+    fn make_align_string(ind: &Ind, s: &String) -> Self {
         if s.is_empty() {
-            return self.clone();
+            return ind.clone();
         }
-        self.generate_indent(IndType::AlignString(s.clone()))
+        Ind::generate_indent(ind, IndType::AlignString(s.clone()))
     }
-    fn make_align_root(&mut self) -> Self {
-        self.root = Some(Box::new(self.clone()));
-        self.clone()
+    fn make_align_root(ind: &Ind) -> Self {
+        let mut ind = ind.clone();
+        ind.root = Some(Box::new(ind.clone()));
+        ind
     }
-    fn generate_indent(&mut self, new_part: IndType) -> Self {
+    fn generate_indent(ind: &Ind, new_part: IndType) -> Self {
         fn add_tabs(ind: &Ind, value: &mut String, length: &mut usize, count: usize) {
             *value += "\t".repeat(count).as_str();
             *length += ind.tab_width * count;
@@ -140,20 +141,21 @@ impl Ind {
             *last_tabs = 0;
             *last_spaces = 0;
         }
-        const USE_TABS: bool = true; // TODO: オプション化
+        const USE_TABS: bool = false; // TODO: オプション化
+        let mut queue = ind.queue.clone();
         match new_part {
             IndType::Dedent => {
-                self.queue.pop();
+                queue.pop();
             }
             _ => {
-                self.queue.push(new_part);
+                queue.push(new_part);
             }
         };
         let mut value = String::new();
         let mut length = 0usize;
         let mut last_tabs = 0usize;
         let mut last_spaces = 0usize;
-        for part in &self.queue {
+        for part in &queue {
             match part {
                 IndType::AlignNumber(n) => {
                     last_tabs += 1;
@@ -161,7 +163,7 @@ impl Ind {
                 }
                 IndType::AlignString(s) => {
                     flush(
-                        self,
+                        ind,
                         &mut value,
                         &mut length,
                         &mut last_tabs,
@@ -172,22 +174,22 @@ impl Ind {
                 }
                 IndType::Indent => {
                     flush(
-                        self,
+                        ind,
                         &mut value,
                         &mut length,
                         &mut last_tabs,
                         &mut last_spaces,
                     );
                     match USE_TABS {
-                        true => add_tabs(self, &mut value, &mut length, 1),
-                        false => add_spaces(self, &mut value, &mut length, self.tab_width),
+                        true => add_tabs(ind, &mut value, &mut length, 1),
+                        false => add_spaces(ind, &mut value, &mut length, ind.tab_width),
                     };
                 }
                 _ => {}
             };
         }
         flush_spaces(
-            self,
+            ind,
             &mut value,
             &mut length,
             &mut last_tabs,
@@ -196,15 +198,15 @@ impl Ind {
         Self {
             value,
             length,
-            queue: self.queue.clone(),
-            tab_width: self.tab_width,
-            root: self.root.clone(),
+            queue,
+            tab_width: ind.tab_width,
+            root: ind.root.clone(),
         }
     }
 }
 
 impl Document {
-    fn as_cmd<'sh>(&'sh self, ind: &'sh Ind, mode: Mode) -> Command<'sh> {
+    fn as_cmd<'sh>(&'sh self, ind: Rc<Ind>, mode: Mode) -> Command<'sh> {
         Command {
             ind,
             doc: self,
@@ -212,12 +214,7 @@ impl Document {
             offset: 0,
         }
     }
-    fn as_cmd_with_offset<'sh>(
-        &'sh self,
-        ind: &'sh Ind,
-        mode: Mode,
-        offset: usize,
-    ) -> Command<'sh> {
+    fn as_cmd_with_offset<'sh>(&'sh self, ind: Rc<Ind>, mode: Mode, offset: usize) -> Command<'sh> {
         Command {
             ind,
             doc: self,
@@ -270,17 +267,17 @@ fn fits(
         let Command { ind, doc, mode, .. } = cmds.pop().unwrap();
         match doc {
             Document::Align(align) => {
-                cmds.push(align.contents.as_cmd(&ind, mode));
+                cmds.push(align.contents.as_cmd(ind.clone(), mode));
             }
             Document::Array(array) => {
                 for part in array.iter().rev() {
-                    cmds.push(part.as_cmd(&ind, mode));
+                    cmds.push(part.as_cmd(ind.clone(), mode));
                 }
             }
             Document::BreakParent => {}
             Document::Fill(fill) => {
                 for part in fill.parts.iter().rev() {
-                    cmds.push(part.as_cmd(&ind, mode));
+                    cmds.push(part.as_cmd(ind.clone(), mode));
                 }
             }
             Document::Group(group) => {
@@ -299,7 +296,7 @@ fn fits(
                 } else {
                     &group.contents
                 };
-                cmds.push(contents.as_cmd(&ind, mode));
+                cmds.push(contents.as_cmd(ind.clone(), mode));
             }
             Document::IfBreak(if_break) => {
                 let group_mode = match if_break.group_id {
@@ -310,10 +307,10 @@ fn fits(
                     Mode::Break => &if_break.r#break,
                     Mode::Flat => &if_break.flat,
                 };
-                cmds.push(contents.as_cmd(&ind, mode));
+                cmds.push(contents.as_cmd(ind.clone(), mode));
             }
             Document::Indent(indent) => {
-                cmds.push(indent.contents.as_cmd(&ind, mode));
+                cmds.push(indent.contents.as_cmd(ind.clone(), mode));
             }
             Document::Line(line) => {
                 if mode == Mode::Break || line.hard {
@@ -343,7 +340,7 @@ fn fits(
 pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
     let width = 40; // TODO: オプション化
     let mut pos = 0;
-    let mut cmds = Vec::from(&[doc.as_cmd(&Ind::root_indent(2), Mode::Break)]);
+    let mut cmds = Vec::from(&[doc.as_cmd(Rc::new(Ind::root_indent(2)), Mode::Break)]);
     let mut out = String::new();
     let mut should_remeasure = false;
     let mut line_suffixes: Vec<Command<'_>> = Vec::new();
@@ -365,7 +362,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
             }
             Document::Array(array) => {
                 for doc in array.iter().rev() {
-                    cmds.push(doc.as_cmd(&ind, mode));
+                    cmds.push(doc.as_cmd(ind.clone(), mode));
                 }
             }
             Document::BreakParent => {}
@@ -376,8 +373,8 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     continue;
                 }
                 let content = fill.parts.get(offset + 0).unwrap();
-                let content_flat_cmd = content.as_cmd(&ind, Mode::Flat);
-                let content_break_cmd = content.as_cmd(&ind, Mode::Break);
+                let content_flat_cmd = content.as_cmd(ind.clone(), Mode::Flat);
+                let content_break_cmd = content.as_cmd(ind.clone(), Mode::Break);
                 let content_fits = fits(
                     &content_flat_cmd,
                     &[],
@@ -395,8 +392,8 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     continue;
                 }
                 let whitespace = fill.parts.get(offset + 1).unwrap();
-                let whitespace_flat_cmd = whitespace.as_cmd(&ind, Mode::Flat);
-                let whitespace_break_cmd = whitespace.as_cmd(&ind, Mode::Break);
+                let whitespace_flat_cmd = whitespace.as_cmd(ind.clone(), Mode::Flat);
+                let whitespace_break_cmd = whitespace.as_cmd(ind.clone(), Mode::Break);
                 if length == 2 {
                     if content_fits {
                         cmds.push(whitespace_flat_cmd);
@@ -409,14 +406,14 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                 }
                 let second_content = fill.parts.get(offset + 2).unwrap();
 
-                let remaining_cmd = doc.as_cmd_with_offset(&ind, mode, offset + 2);
+                let remaining_cmd = doc.as_cmd_with_offset(ind.clone(), mode, offset + 2);
                 let first_and_second_content_array = Document::Array(Vec::from([
                     content.clone(),
                     whitespace.clone(),
                     second_content.clone(),
                 ]));
                 let first_and_second_content_flat_cmd =
-                    first_and_second_content_array.as_cmd(&ind, Mode::Flat);
+                    first_and_second_content_array.as_cmd(ind.clone(), Mode::Flat);
                 let first_and_second_content_fits = fits(
                     &first_and_second_content_flat_cmd,
                     &[],
@@ -447,12 +444,12 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                 match mode {
                     Mode::Flat => {
                         if !should_remeasure {
-                            cmds.push(group.contents.as_cmd(&ind, effective_mode));
+                            cmds.push(group.contents.as_cmd(ind.clone(), effective_mode));
                         }
                     }
                     Mode::Break => {
                         should_remeasure = false;
-                        let next = group.contents.as_cmd(&ind, Mode::Flat);
+                        let next = group.contents.as_cmd(ind.clone(), Mode::Flat);
                         let mut rem = width - pos;
                         let mut has_line_suffix = !line_suffixes.is_empty();
                         if effective_mode == Mode::Flat
@@ -470,14 +467,16 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                             if let Some(expanded_states) = &group.expanded_states {
                                 let most_expanded = expanded_states.last().unwrap();
                                 if effective_mode == Mode::Break {
-                                    cmds.push(most_expanded.as_cmd(&ind, Mode::Break));
+                                    cmds.push(most_expanded.as_cmd(ind.clone(), Mode::Break));
                                 } else {
                                     for (i, state) in expanded_states.iter().enumerate() {
                                         if i >= expanded_states.len() {
-                                            cmds.push(most_expanded.as_cmd(&ind, Mode::Break));
+                                            cmds.push(
+                                                most_expanded.as_cmd(ind.clone(), Mode::Break),
+                                            );
                                             break;
                                         } else {
-                                            let cmd = state.as_cmd(&ind, Mode::Flat);
+                                            let cmd = state.as_cmd(ind.clone(), Mode::Flat);
                                             if fits(
                                                 &cmd,
                                                 &cmds,
@@ -493,7 +492,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                                     }
                                 }
                             } else {
-                                cmds.push(group.contents.as_cmd(&ind, Mode::Break));
+                                cmds.push(group.contents.as_cmd(ind.clone(), Mode::Break));
                             }
                         }
                         group_mode_map.insert(group.id, cmds.last().unwrap().mode);
@@ -509,10 +508,14 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     Mode::Break => &if_break.r#break,
                     Mode::Flat => &if_break.flat,
                 };
-                cmds.push(contents.as_cmd(&ind, mode));
+                cmds.push(contents.as_cmd(ind.clone(), mode));
             }
             Document::Indent(indent) => {
-                cmds.push(indent.contents.as_cmd(&ind.make_indent(), mode));
+                cmds.push(
+                    indent
+                        .contents
+                        .as_cmd(Rc::new(Ind::make_indent(&ind)), mode),
+                );
             }
             Document::Line(line) => match mode {
                 Mode::Flat => {
@@ -527,7 +530,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                     }
                     // TODO: Mode::Breakの処理と同じ(fallthrough)
                     if !line_suffixes.is_empty() {
-                        cmds.push(doc.as_cmd(&ind, mode));
+                        cmds.push(doc.as_cmd(ind.clone(), mode));
                         let pending = std::mem::take(&mut line_suffixes);
                         for line_suffix in pending.iter().rev() {
                             cmds.push(line_suffix.clone());
@@ -552,7 +555,7 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                 }
                 Mode::Break => {
                     if !line_suffixes.is_empty() {
-                        cmds.push(doc.as_cmd(&ind, mode));
+                        cmds.push(doc.as_cmd(ind.clone(), mode));
                         let pending = std::mem::take(&mut line_suffixes);
                         for line_suffix in pending.iter().rev() {
                             cmds.push(line_suffix.clone());
@@ -577,11 +580,11 @@ pub fn print_doc_to_string(doc: &Document, _options: ()) -> String {
                 }
             },
             Document::LineSuffix(line_suffix) => {
-                line_suffixes.push(line_suffix.contents.as_cmd(&ind, mode));
+                line_suffixes.push(line_suffix.contents.as_cmd(ind.clone(), mode));
             }
             Document::LineSuffixBoundary(line_suffix_boundary) => {
                 if !line_suffixes.is_empty() {
-                    cmds.push(line_suffix_boundary.hardline.as_cmd(&ind, mode));
+                    cmds.push(line_suffix_boundary.hardline.as_cmd(ind.clone(), mode));
                 }
             }
             Document::None => {}
