@@ -1,5 +1,6 @@
 #[derive(Clone, Debug)]
 pub enum Document {
+    Align(Align),                           //
     Array(Vec<Document>),                   //
     BreakParent,                            //
     Fill(Fill),                             //
@@ -11,6 +12,11 @@ pub enum Document {
     LineSuffixBoundary(LineSuffixBoundary), //
     None,                                   //
     String(String),                         //
+}
+
+#[derive(Clone, Debug)]
+pub struct Align {
+    pub contents: Box<Document>,
 }
 
 #[derive(Clone, Debug)]
