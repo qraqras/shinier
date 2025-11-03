@@ -17,6 +17,8 @@ pub enum Document {
 #[derive(Clone, Debug)]
 pub struct Align {
     pub contents: Box<Document>,
+    pub n: Option<i32>,
+    pub s: Option<String>,
 }
 
 #[derive(Clone, Debug)]
