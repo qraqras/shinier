@@ -50,9 +50,9 @@ impl<'a> Printer<'a> {
             comments: &mut parse_result.comments().peekable(),
             max_leading_line_breaks: 0usize,
         };
-        let doc = parse_result.node().build(&mut context);
+        let mut doc = parse_result.node().build(&mut context);
 
-        let output = print_doc_to_string(&doc, ());
+        let output = print_doc_to_string(&mut doc, ());
         (parse_result, output)
     }
 }
