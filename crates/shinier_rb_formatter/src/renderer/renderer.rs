@@ -20,7 +20,7 @@ enum Mode {
 struct Ind {
     value: String,
     length: usize,
-    queue: Vec<IndType>,
+    queue: Vec<Rc<IndType>>,
     tab_width: usize,
     root: Option<Rc<Ind>>,
 }
@@ -137,21 +137,25 @@ impl Ind {
             *last_spaces = 0;
         }
         const USE_TABS: bool = false; // TODO: オプション化
-        let mut queue = self.queue.clone();
-        match new_part {
+        let queue = match new_part {
             IndType::Dedent => {
-                queue.pop();
+                let mut new_queue = self.queue.clone();
+                new_queue.pop();
+                new_queue
             }
             _ => {
-                queue.push(new_part);
+                let mut new_queue = self.queue.clone();
+                new_queue.push(Rc::new(new_part));
+                new_queue
             }
         };
-        let mut value = String::new();
+        let estimated_size = queue.len() * self.tab_width + 32;
+        let mut value = String::with_capacity(estimated_size);
         let mut length = 0usize;
         let mut last_tabs = 0usize;
         let mut last_spaces = 0usize;
-        for part in &queue {
-            match part {
+        for part in queue.iter() {
+            match part.as_ref() {
                 IndType::AlignNumber(n) => {
                     last_tabs += 1;
                     last_spaces += n;
@@ -164,7 +168,7 @@ impl Ind {
                         &mut last_tabs,
                         &mut last_spaces,
                     );
-                    value += s;
+                    value.push_str(s);
                     length += s.len();
                 }
                 IndType::Indent => {
