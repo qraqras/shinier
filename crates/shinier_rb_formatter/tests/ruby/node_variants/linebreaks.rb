@@ -31,3 +31,8 @@ arr = [1,
   2, # comment
   3,
 ]
+
+alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+# rest_comment
+
+# rest_comment

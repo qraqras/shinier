@@ -385,7 +385,7 @@ pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
 /// # rest comment
 /// EOF
 ///```
-pub fn rest_comments(context: &mut BuildContext) -> Document {
+pub fn dangling_comments(context: &mut BuildContext) -> Option<Document> {
     let mut documents = Vec::new();
     loop {
         match context.comments.next() {
@@ -405,8 +405,9 @@ pub fn rest_comments(context: &mut BuildContext) -> Document {
     if !documents.is_empty() {
         // remove last hardline
         documents.pop();
+        return Some(array(&documents));
     }
-    array(&documents)
+    None
 }
 
 /// Builds a Document for a given comment.

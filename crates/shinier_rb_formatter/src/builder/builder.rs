@@ -1,4 +1,6 @@
-use crate::document::{Document, Group, IfBreak, Indent, Line, LineSuffix, LineSuffixBoundary};
+use crate::document::{
+    Align, Document, Group, IfBreak, Indent, Line, LineSuffix, LineSuffixBoundary,
+};
 use std::cell::Cell;
 
 thread_local! {
@@ -15,6 +17,22 @@ fn generate_group_id() -> usize {
 
 pub fn reset_group_id() {
     GROUP_ID_NEXT.with(|next| next.set(0));
+}
+
+pub fn align_number(n: i32, content: Document) -> Document {
+    Document::Align(Align {
+        contents: Box::new(content),
+        n: Some(n),
+        s: None,
+    })
+}
+
+pub fn align_string(s: String, content: Document) -> Document {
+    Document::Align(Align {
+        contents: Box::new(content),
+        n: None,
+        s: Some(s),
+    })
 }
 
 pub fn array(parts: &[Document]) -> Document {
@@ -67,6 +85,14 @@ pub fn indent(contents: Document) -> Document {
     Document::Indent(Indent {
         contents: Box::new(contents),
     })
+}
+
+pub fn dedent(contents: Document) -> Document {
+    align_number(-1, contents)
+}
+
+pub fn dedent_to_root(contents: Document) -> Document {
+    align_number(i32::MIN, contents)
 }
 
 pub fn none() -> Document {
