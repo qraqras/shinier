@@ -294,7 +294,11 @@ fn fits(
                 let contents = if let Some(expanded_states) = &group.expanded_states
                     && group_mode == Mode::Break
                 {
-                    expanded_states.first().unwrap()
+                    assert!(
+                        !expanded_states.is_empty(),
+                        "conditional_group requires at least one state"
+                    );
+                    expanded_states.last().unwrap()
                 } else {
                     &group.contents
                 };
@@ -445,17 +449,19 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                     cmds.push(content_break_cmd);
                 }
             }
-            Document::Group(group) => match mode {
-                Mode::Flat => {
+            Document::Group(group) => {
+                let mut fallthrough = true;
+                if matches!(mode, Mode::Flat) {
                     if !should_remeasure {
                         cmds.push(
                             group
                                 .contents
                                 .as_cmd(Rc::clone(&ind), Mode::from(group.r#break)),
                         );
+                        fallthrough = false;
                     }
                 }
-                Mode::Break => {
+                if matches!(mode, Mode::Break) || fallthrough {
                     should_remeasure = false;
                     let next = group.contents.as_cmd(Rc::clone(&ind), Mode::Flat);
                     let mut rem = width - pos;
@@ -473,12 +479,16 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                         cmds.push(next.clone());
                     } else {
                         if let Some(expanded_states) = &group.expanded_states {
+                            assert!(
+                                !expanded_states.is_empty(),
+                                "conditional_group requires at least one state"
+                            );
                             let most_expanded = expanded_states.last().unwrap();
                             if Mode::from(group.r#break) == Mode::Break {
                                 cmds.push(most_expanded.as_cmd(Rc::clone(&ind), Mode::Break));
                             } else {
                                 for (i, state) in expanded_states.iter().enumerate() {
-                                    if i >= expanded_states.len() {
+                                    if i >= expanded_states.len() - 1 {
                                         cmds.push(
                                             most_expanded.as_cmd(Rc::clone(&ind), Mode::Break),
                                         );
@@ -505,7 +515,7 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                     }
                     group_mode_map.insert(group.id, cmds.last().unwrap().mode);
                 }
-            },
+            }
             Document::IfBreak(if_break) => {
                 let group_mode = if_break
                     .group_id
@@ -520,68 +530,47 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
             Document::Indent(indent) => {
                 cmds.push(indent.contents.as_cmd(Rc::new(ind.make_indent()), mode));
             }
-            Document::Line(line) => match mode {
-                Mode::Flat => {
+            Document::Line(line) => {
+                let mut fallthrough = true;
+                if matches!(mode, Mode::Flat) {
                     if !line.hard {
                         if !line.soft {
                             out.push(' ');
                             pos += 1;
                         }
-                        continue;
+                        fallthrough = false;
                     } else {
                         should_remeasure = true;
                     }
-                    // TODO: Mode::Breakの処理と同じ(fallthrough)
+                }
+                if matches!(mode, Mode::Break) || fallthrough {
                     if !line_suffixes.is_empty() {
                         cmds.push(doc.as_cmd(Rc::clone(&ind), mode));
                         let pending = std::mem::take(&mut line_suffixes);
                         for line_suffix in pending.iter().rev() {
                             cmds.push(line_suffix.clone());
                         }
-                        continue;
+                        fallthrough = false;
                     }
-                    if line.literal {
-                        if let Some(root) = &ind.root {
-                            out.push('\n');
-                            out.push_str(&root.value);
-                            pos = root.length as i32;
+                    if fallthrough {
+                        if line.literal {
+                            if let Some(root) = &ind.root {
+                                out.push('\n');
+                                out.push_str(&root.value);
+                                pos = root.length as i32;
+                            } else {
+                                out.push('\n');
+                                pos = 0;
+                            }
                         } else {
+                            pos -= trim(&mut out).max(0);
                             out.push('\n');
-                            pos = 0;
+                            out.push_str(&ind.value);
+                            pos = ind.length as i32;
                         }
-                    } else {
-                        pos -= trim(&mut out);
-                        out.push('\n');
-                        out.push_str(&ind.value);
-                        pos = ind.length as i32;
                     }
                 }
-                Mode::Break => {
-                    if !line_suffixes.is_empty() {
-                        cmds.push(doc.as_cmd(Rc::clone(&ind), mode));
-                        let pending = std::mem::take(&mut line_suffixes);
-                        for line_suffix in pending.iter().rev() {
-                            cmds.push(line_suffix.clone());
-                        }
-                        continue;
-                    }
-                    if line.literal {
-                        if let Some(root) = &ind.root {
-                            out.push('\n');
-                            out.push_str(&root.value);
-                            pos = root.length as i32;
-                        } else {
-                            out.push('\n');
-                            pos = 0;
-                        }
-                    } else {
-                        pos -= trim(&mut out).max(0);
-                        out.push('\n');
-                        out.push_str(&ind.value);
-                        pos = ind.length as i32;
-                    }
-                }
-            },
+            }
             Document::LineSuffix(line_suffix) => {
                 line_suffixes.push(line_suffix.contents.as_cmd(Rc::clone(&ind), mode));
             }
@@ -603,7 +592,9 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
 fn break_parent_group(group_stack: &mut Vec<*mut Group>) {
     if let Some(&parent_group) = group_stack.last() {
         unsafe {
-            (*parent_group).r#break = true;
+            if (*parent_group).expanded_states.is_none() && !(*parent_group).r#break {
+                (*parent_group).r#break = true;
+            }
         }
     }
 }
@@ -646,8 +637,8 @@ fn propagate_breaks(doc: &mut Document) {
     }
     traverse_doc(
         doc,
-        propagate_breaks_on_enter_fn,
-        propagate_breaks_on_exit_fn,
+        Some(propagate_breaks_on_enter_fn),
+        Some(propagate_breaks_on_exit_fn),
         true,
         &mut already_visited_set,
         &mut group_stack,
@@ -655,18 +646,17 @@ fn propagate_breaks(doc: &mut Document) {
 }
 fn traverse_doc(
     doc: &mut Document,
-    on_enter: fn(&mut Document, &mut HashSet<usize>, &mut Vec<*mut Group>) -> bool,
-    on_exit: fn(&mut Document, &mut Vec<*mut Group>),
+    on_enter: Option<fn(&mut Document, &mut HashSet<usize>, &mut Vec<*mut Group>) -> bool>,
+    on_exit: Option<fn(&mut Document, &mut Vec<*mut Group>)>,
     should_traverse_conditional_groups: bool,
     already_visited_set: &mut HashSet<usize>,
     group_stack: &mut Vec<*mut Group>,
 ) {
-    // on_enterを実行し、falseが返されたら早期リターン
-    if !on_enter(doc, already_visited_set, group_stack) {
-        return;
+    if let Some(on_enter) = on_enter {
+        if !on_enter(doc, already_visited_set, group_stack) {
+            return;
+        }
     }
-
-    // 子要素を再帰的に走査
     match doc {
         Document::Align(align) => {
             traverse_doc(
@@ -690,6 +680,7 @@ fn traverse_doc(
                 );
             }
         }
+        Document::BreakParent => {}
         Document::Fill(fill) => {
             for part in fill.parts.iter_mut() {
                 traverse_doc(
@@ -755,6 +746,8 @@ fn traverse_doc(
                 group_stack,
             );
         }
+        Document::Line(_) => {}
+        Document::LineSuffixBoundary(_) => {}
         Document::LineSuffix(line_suffix) => {
             traverse_doc(
                 &mut line_suffix.contents,
@@ -765,13 +758,10 @@ fn traverse_doc(
                 group_stack,
             );
         }
-        Document::BreakParent
-        | Document::Line(_)
-        | Document::LineSuffixBoundary(_)
-        | Document::None
-        | Document::String(_) => {}
+        Document::None => {}
+        Document::String(_) => {}
     }
-
-    // 子要素の走査後にon_exitを実行
-    on_exit(doc, group_stack);
+    if let Some(on_exit) = on_exit {
+        on_exit(doc, group_stack);
+    }
 }

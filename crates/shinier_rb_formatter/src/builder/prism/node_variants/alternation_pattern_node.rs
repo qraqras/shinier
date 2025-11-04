@@ -1,7 +1,6 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::builder::builder::{array, group, line, space, string};
-use crate::builder::prism::helper::owning_comments;
 use crate::document::Document;
 use crate::keyword::ALTERNATION;
 use ruby_prism::AlternationPatternNode;

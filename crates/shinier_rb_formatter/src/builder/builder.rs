@@ -39,7 +39,7 @@ pub fn array(parts: &[Document]) -> Document {
     if parts.is_empty() {
         return Document::None;
     }
-    Document::Array(parts.to_vec())
+    Document::Array(Vec::from(parts))
 }
 
 pub fn break_parent() -> Document {
@@ -56,20 +56,22 @@ pub fn fill(parts: Document) -> Document {
 pub fn group(contents: Document) -> Document {
     Document::Group(Group {
         id: generate_group_id(),
-        contents: Box::new(contents),
+        contents: Box::new(contents.clone()),
         r#break: false,
-        propagate_break: true,
         expanded_states: None,
     })
 }
 
-pub fn group_no_propagation(contents: Document) -> Document {
+pub fn conditional_group(states: &[Document]) -> Document {
+    assert!(
+        !states.is_empty(),
+        "conditional_group requires at least one state"
+    );
     Document::Group(Group {
         id: generate_group_id(),
-        contents: Box::new(contents),
+        contents: Box::new(states.first().unwrap().clone()),
         r#break: false,
-        propagate_break: false,
-        expanded_states: None,
+        expanded_states: Some(Vec::from(states)),
     })
 }
 

@@ -115,7 +115,6 @@ fn find_preceding_node(
     if idx == 0 {
         return None;
     }
-
     let end_idx = idx - 1;
     let mut result = sorted[end_idx];
     for node in sorted[..end_idx].iter().rev() {

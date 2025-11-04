@@ -31,7 +31,6 @@ pub struct Group {
     pub id: usize,
     pub contents: Box<Document>,
     pub r#break: bool,
-    pub propagate_break: bool,
     pub expanded_states: Option<Vec<Document>>,
 }
 
