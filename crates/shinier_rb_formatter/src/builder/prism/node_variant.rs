@@ -1,7 +1,9 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::Document;
-use crate::builder::builder::{array, group, none};
+use crate::builder::builder::array;
+use crate::builder::builder::group;
+use crate::builder::builder::none;
 use crate::builder::prism::helper::leading_comments;
 use crate::builder::prism::helper::leading_line_breaks;
 use crate::builder::prism::helper::trailing_comments;

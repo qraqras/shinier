@@ -16,14 +16,14 @@ alias
   foo bar
 alias
 =begin
-  block comment 1
-  block comment 2
+block comment 1
+block comment 2
 =end
   foo bar
 alias
 =begin
-  block comment 1
-  block comment 2
+block comment 1
+block comment 2
 =end
   foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
 alias foo bar # trailing comment
