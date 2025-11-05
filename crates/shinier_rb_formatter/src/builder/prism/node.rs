@@ -15,9 +15,15 @@ pub trait Build {
         before: Option<Document>,
         after: Option<Document>,
     ) -> Document {
-        let before = before.unwrap_or(Document::None);
-        let after = after.unwrap_or(Document::None);
-        Document::Array(Vec::from([before, self.build(context), after]))
+        let mut documents = Vec::new();
+        if let Some(before) = before {
+            documents.push(before);
+        }
+        documents.push(self.build(context));
+        if let Some(after) = after {
+            documents.push(after);
+        }
+        Document::Array(documents)
     }
 }
 
@@ -34,9 +40,15 @@ pub trait ListBuild {
         before: Option<Document>,
         after: Option<Document>,
     ) -> Document {
-        let before = before.unwrap_or(Document::None);
-        let after = after.unwrap_or(Document::None);
-        Document::Array(Vec::from(&[before, self.build(context, separator), after]))
+        let mut documents = Vec::new();
+        if let Some(before) = before {
+            documents.push(before);
+        }
+        documents.push(self.build(context, separator));
+        if let Some(after) = after {
+            documents.push(after);
+        }
+        Document::Array(documents)
     }
 }
 
@@ -225,11 +237,20 @@ impl<'sh> ListBuild for NodeList<'sh> {
             return Document::None;
         }
         let mut vec = Vec::new();
+        let mut was_none = false;
         for (i, node) in self.iter().enumerate() {
-            if i > 0 {
+            if i > 0 && !was_none {
                 vec.push(separator.clone());
             }
-            vec.push(node.build(context));
+            match node.build(context) {
+                Document::None => {
+                    was_none = true;
+                }
+                other => {
+                    was_none = false;
+                    vec.push(other);
+                }
+            }
         }
         Document::Array(vec)
     }

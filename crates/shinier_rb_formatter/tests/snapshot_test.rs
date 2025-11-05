@@ -163,7 +163,12 @@ impl Visitor {
             Node::XStringNode                       { .. } => {debug_string.push_str("XStringNode");                      }
             Node::YieldNode                         { .. } => {debug_string.push_str("YieldNode");                        }
         }
-        debug_string.push_str(&format!(": {:?}", node.location()));
+        debug_string.push_str(&format!(
+            "[{:?}-{:?}]: {:?}",
+            node.location().start_offset(),
+            node.location().end_offset(),
+            node.location(),
+        ));
         self.debug_strings.push(debug_string);
     }
 }
@@ -191,6 +196,13 @@ fn run() {
 
         let printer = Printer::new(contents, ());
         let (parse_result, formatted) = printer.print();
+
+        let printer = Printer::new(formatted.clone(), ());
+        let (reparsed_result, reformatted) = printer.print();
+        assert!(
+            reparsed_result.errors().next().is_none(),
+            "Reparsed has errors"
+        );
 
         let mut visitor = Visitor {
             depth: 0,

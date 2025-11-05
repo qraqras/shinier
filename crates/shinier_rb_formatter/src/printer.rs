@@ -29,6 +29,7 @@ impl<'a> Printer<'a> {
         for diagnostic in parse_result.errors() {
             messages.push_str(diagnostic.message());
             messages.push_str(format!("\n{:?}\n", diagnostic.location()).as_str());
+            messages.push_str(format!("\n{}", &self.source).as_str());
         }
         if messages.len() > 0 {
             panic!("!!!!パースエラー時の処理は未実装です!!!!: {}", messages);

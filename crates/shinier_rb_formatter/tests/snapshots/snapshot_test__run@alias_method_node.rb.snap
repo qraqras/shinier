@@ -1,6 +1,6 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 206
+assertion_line: 211
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/alias_method_node.rb
 ---
@@ -21,25 +21,25 @@ alias_method :foo, :bar # trailing comment
 
 
 ****AST****
-ProgramNode: "alias foo bar\n\n# unnecessary line break\nalias\n  foo bar\n\n# long expression\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\n\nalias\n  # owning comment\n  foo bar\nalias\n  # owning comment 1\n  # owning comment 2\n  foo bar\nalias\n=begin\n  block comment 1\n  block comment 2\n=end\n  foo bar\nalias foo bar"
-__AliasMethodNode: "alias foo bar"
-____SymbolNode: "foo"
-____SymbolNode: "bar"
-__AliasMethodNode: "alias\n  foo bar"
-____SymbolNode: "foo"
-____SymbolNode: "bar"
-__AliasMethodNode: "alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
-____SymbolNode: "foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
-____SymbolNode: "barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
-__AliasMethodNode: "alias\n  # owning comment\n  foo bar"
-____SymbolNode: "foo"
-____SymbolNode: "bar"
-__AliasMethodNode: "alias\n  # owning comment 1\n  # owning comment 2\n  foo bar"
-____SymbolNode: "foo"
-____SymbolNode: "bar"
-__AliasMethodNode: "alias\n=begin\n  block comment 1\n  block comment 2\n=end\n  foo bar"
-____SymbolNode: "foo"
-____SymbolNode: "bar"
-__AliasMethodNode: "alias foo bar"
-____SymbolNode: "foo"
-____SymbolNode: "bar"
+ProgramNode[0-374]: "alias foo bar\n\n# unnecessary line break\nalias\n  foo bar\n\n# long expression\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\n\nalias\n  # owning comment\n  foo bar\nalias\n  # owning comment 1\n  # owning comment 2\n  foo bar\nalias\n=begin\n  block comment 1\n  block comment 2\n=end\n  foo bar\nalias foo bar"
+__AliasMethodNode[0-13]: "alias foo bar"
+____SymbolNode[6-9]: "foo"
+____SymbolNode[10-13]: "bar"
+__AliasMethodNode[40-55]: "alias\n  foo bar"
+____SymbolNode[48-51]: "foo"
+____SymbolNode[52-55]: "bar"
+__AliasMethodNode[75-202]: "alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____SymbolNode[81-141]: "foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+____SymbolNode[142-202]: "barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+__AliasMethodNode[204-238]: "alias\n  # owning comment\n  foo bar"
+____SymbolNode[231-234]: "foo"
+____SymbolNode[235-238]: "bar"
+__AliasMethodNode[239-296]: "alias\n  # owning comment 1\n  # owning comment 2\n  foo bar"
+____SymbolNode[289-292]: "foo"
+____SymbolNode[293-296]: "bar"
+__AliasMethodNode[297-360]: "alias\n=begin\n  block comment 1\n  block comment 2\n=end\n  foo bar"
+____SymbolNode[353-356]: "foo"
+____SymbolNode[357-360]: "bar"
+__AliasMethodNode[361-374]: "alias foo bar"
+____SymbolNode[367-370]: "foo"
+____SymbolNode[371-374]: "bar"

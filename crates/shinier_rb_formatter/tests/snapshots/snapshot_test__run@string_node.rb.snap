@@ -1,6 +1,6 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 206
+assertion_line: 211
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/string_node.rb
 ---
@@ -31,20 +31,20 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/string_node.rb
 
 
 ****AST****
-ProgramNode: "\"foo\"\n%w[foo]\n\"foo #{bar} baz\"\n\n# single quotes\n\'foo\'\n# double quotes\n\"foo\"\n\n# single quotes with escaped single quote\n\'foo\\\'bar\\\'baz\'\n# double quotes with escaped double quote\n\"foo\\\"bar\\\"baz\"\n\n# single quotes with escaped backslash\n\'f\\o\\o\'\n# double quotes with escaped backslash\n\"f\\\\o\\\\o\"\n\n# single quotes with escaped tab\n\'\\t\'\n# double quotes with escaped tab\n\"\\t\""
-__StringNode: "\"foo\""
-__ArrayNode: "%w[foo]"
-____StringNode: "foo"
-__InterpolatedStringNode: "\"foo #{bar} baz\""
-____StringNode: "foo "
-____EmbeddedStatementsNode: "#{bar}"
-______CallNode: "bar"
-____StringNode: " baz"
-__StringNode: "\'foo\'"
-__StringNode: "\"foo\""
-__StringNode: "\'foo\\\'bar\\\'baz\'"
-__StringNode: "\"foo\\\"bar\\\"baz\""
-__StringNode: "\'f\\o\\o\'"
-__StringNode: "\"f\\\\o\\\\o\""
-__StringNode: "\'\\t\'"
-__StringNode: "\"\\t\""
+ProgramNode[0-366]: "\"foo\"\n%w[foo]\n\"foo #{bar} baz\"\n\n# single quotes\n\'foo\'\n# double quotes\n\"foo\"\n\n# single quotes with escaped single quote\n\'foo\\\'bar\\\'baz\'\n# double quotes with escaped double quote\n\"foo\\\"bar\\\"baz\"\n\n# single quotes with escaped backslash\n\'f\\o\\o\'\n# double quotes with escaped backslash\n\"f\\\\o\\\\o\"\n\n# single quotes with escaped tab\n\'\\t\'\n# double quotes with escaped tab\n\"\\t\""
+__StringNode[0-5]: "\"foo\""
+__ArrayNode[6-13]: "%w[foo]"
+____StringNode[9-12]: "foo"
+__InterpolatedStringNode[14-30]: "\"foo #{bar} baz\""
+____StringNode[15-19]: "foo "
+____EmbeddedStatementsNode[19-25]: "#{bar}"
+______CallNode[21-24]: "bar"
+____StringNode[25-29]: " baz"
+__StringNode[48-53]: "\'foo\'"
+__StringNode[70-75]: "\"foo\""
+__StringNode[119-134]: "\'foo\\\'bar\\\'baz\'"
+__StringNode[177-192]: "\"foo\\\"bar\\\"baz\""
+__StringNode[233-240]: "\'f\\o\\o\'"
+__StringNode[280-289]: "\"f\\\\o\\\\o\""
+__StringNode[324-328]: "\'\\t\'"
+__StringNode[362-366]: "\"\\t\""
