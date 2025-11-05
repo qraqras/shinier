@@ -5,21 +5,52 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/and_node.rb
 ---
 ****FORMATTED****
-# Docs.rs
 left && right
 
 # unnecessary line break
 left && right
 
 # long expression
-foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz
+foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz
 
 # long expression with unnecessary line breaks
-foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz
+foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz
+
+left && # trailing comment 1
+  # owinig comment
+  right # trailing comment 2
 
 
 ****AST****
-ProgramNode: "left and right\n\n# unnecessary line break\nleft and\nright\n\n# long expression\nfoo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz\n\n# long expression with unnecessary line breaks\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
+ProgramNode: "left and right\n\n# unnecessary line break\nleft and\nright\n\n# long expression\nfoo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz\n\n# long expression with unnecessary line breaks\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz\n\nleft and # trailing comment 1\n# owinig comment\nright"
 __AndNode: "left and right"
 ____CallNode: "left"
 ____CallNode: "right"
@@ -84,3 +115,6 @@ __________CallNode: "baz"
 ________CallNode: "foo"
 ______CallNode: "bar"
 ____CallNode: "baz"
+__AndNode: "left and # trailing comment 1\n# owinig comment\nright"
+____CallNode: "left"
+____CallNode: "right"

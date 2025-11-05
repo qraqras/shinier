@@ -1,17 +1,22 @@
 use crate::Build;
 use crate::BuildContext;
-use crate::builder::builder::{array, conditional_group, indent, line, space, string};
+use crate::builder::builder::array;
+use crate::builder::builder::conditional_group;
+use crate::builder::builder::indent;
+use crate::builder::builder::line;
+use crate::builder::builder::space;
+use crate::builder::builder::string;
 use crate::builder::prism::helper::owning_comments;
 use crate::document::Document;
-use crate::keyword::{ALIAS_METHOD, COMMA};
+use crate::keyword::ALIAS_METHOD;
+use crate::keyword::COMMA;
 use ruby_prism::AliasMethodNode;
 
 impl<'sh> Build for AliasMethodNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
         let old_name = self.old_name();
         let new_name = self.new_name();
-        // consume owning comments
-        owning_comments(&self.as_node(), context);
+        owning_comments(&self.as_node(), context); // consume owning comments
         conditional_group(&[
             array(&[
                 string(ALIAS_METHOD),
@@ -32,18 +37,5 @@ impl<'sh> Build for AliasMethodNode<'sh> {
                 ])),
             ]),
         ])
-
-        // group(array(&[
-        //     string(ALIAS_METHOD),
-        //     indent(array(&[
-        //         line(),
-        //         group(array(&[
-        //             new_name.build(context),
-        //             string(COMMA),
-        //             space(),
-        //             old_name.build(context),
-        //         ])),
-        //     ])),
-        // ]))
     }
 }
