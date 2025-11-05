@@ -206,6 +206,17 @@ impl<T: Build> Build for Option<T> {
             None => Document::None,
         }
     }
+    fn build_with(
+        &self,
+        context: &mut BuildContext,
+        before: Option<Document>,
+        after: Option<Document>,
+    ) -> Document {
+        match self {
+            Some(node) => node.build_with(context, before, after),
+            None => Document::None,
+        }
+    }
 }
 
 impl<'sh> ListBuild for NodeList<'sh> {

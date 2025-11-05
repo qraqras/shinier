@@ -47,6 +47,7 @@ pub trait NodeVariant<'sh>: Build {
     }
 }
 
+/// Macro to implement NodeVariant for multiple node types.
 macro_rules! impl_node_variant {
     ($($typ:ident),* $(,)?) => {
         $(
@@ -61,24 +62,11 @@ macro_rules! impl_node_variant {
                     self.execute_build(context)
                 }
             }
-            impl<'sh> NodeVariant<'sh> for Option<$typ<'sh>> {
-                fn as_node(&self) -> Node<'sh> {
-                    unimplemented!()
-                }
-                fn location(&self) -> Location<'sh> {
-                    unimplemented!()
-                }
-                fn build(&self, context: &mut BuildContext) -> Document {
-                    match self {
-                        Some(node) => node.execute_build(context),
-                        None => none(),
-                    }
-                }
-            }
         )*
     };
 }
 
+// Implement NodeVariant for multiple node types
 impl_node_variant!(
     AliasGlobalVariableNode,
     AliasMethodNode,
@@ -232,3 +220,19 @@ impl_node_variant!(
     XStringNode,
     YieldNode,
 );
+
+// Implement NodeVariant for Option<T>
+impl<'sh, T: NodeVariant<'sh>> NodeVariant<'sh> for Option<T> {
+    fn as_node(&self) -> Node<'sh> {
+        unimplemented!("as_node is not implemented for Option<NodeVariant>")
+    }
+    fn location(&self) -> Location<'sh> {
+        unimplemented!("location is not implemented for Option<NodeVariant>")
+    }
+    fn build(&self, context: &mut BuildContext) -> Document {
+        match self {
+            Some(node) => node.execute_build(context),
+            None => none(),
+        }
+    }
+}

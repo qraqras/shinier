@@ -16,6 +16,7 @@ pub fn build_node(node: &ForNode, context: &mut BuildContext) -> Document {
     let index = node.index();
     let collection = node.collection();
     let statements = node.statements();
+
     group(array(&[
         string(FOR),
         space(),
@@ -24,11 +25,15 @@ pub fn build_node(node: &ForNode, context: &mut BuildContext) -> Document {
         string(IN),
         space(),
         collection.build(context),
-        indent(statements.build_with(context, Some(array(&[space(), string(DO), line()])), None)),
-        indent(match owning_comments(&node.as_node(), context) {
-            Some(owning_comments) => owning_comments,
-            None => none(),
-        }),
+        space(),
+        string(DO),
+        indent(array(&[
+            statements.build_with(context, Some(line()), None),
+            match owning_comments(&node.as_node(), context) {
+                Some(owning_comments) => array(&[line(), owning_comments]),
+                None => none(),
+            },
+        ])),
         line(),
         string(END),
     ]))
