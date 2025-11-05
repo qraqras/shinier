@@ -30,8 +30,8 @@ alias_method :foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo, :bar
 alias_method :foo, :bar # trailing comment
 alias_method(
   :foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo,
-  :barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar # trailing comment
-)
+  :barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+) # trailing comment
 
 
 ****AST****

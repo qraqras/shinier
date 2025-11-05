@@ -81,7 +81,8 @@ pub fn decorate_comment<'sh>(
     let comment_start_offset = comment.location().start_offset();
     let comment_end_offset = comment.location().end_offset();
     // Find preceding node - binary search for nodes ending before comment
-    let preceding_node_location = find_preceding_node(&sorted_node_locations, comment_start_offset);
+    let preceding_node_location =
+        find_preceding_node(&sorted_node_locations, comment_start_offset, source);
     // Find following node - binary search for nodes starting after comment
     let following_node_location = find_following_node(&sorted_node_locations, comment_end_offset);
     // Find enclosing node - needs to scan all candidates
@@ -109,24 +110,51 @@ pub fn decorate_comment<'sh>(
 fn find_preceding_node(
     sorted_node_locations: &SortedNodeLocations,
     comment_start: usize,
+    source: &[u8],
 ) -> Option<NodeLocation> {
+    fn has_newline_in_range(source: &[u8], start_offset: usize, end_offset: usize) -> bool {
+        let end = end_offset.min(source.len());
+        source[start_offset..end].iter().any(|&b| b == b'\n')
+    }
     let sorted = &sorted_node_locations.by_end;
     let idx = sorted.partition_point(|node| node.end_offset < comment_start);
     if idx == 0 {
         return None;
     }
-    let end_idx = idx - 1;
-    let mut result = sorted[end_idx];
-    for node in sorted[..end_idx].iter().rev() {
-        if node.end_offset == result.end_offset {
-            if result.start_offset < node.start_offset {
-                result = *node;
-            }
-        } else {
+    let mut result: Option<NodeLocation> = None;
+    let mut found_single_line_node = false;
+    for node in sorted[..idx].iter().rev() {
+        // node end and comment start are on different lines
+        if has_newline_in_range(source, node.end_offset, comment_start) {
             break;
         }
+        let mut should_update = false;
+        if result.is_none_or(|r| r.end_offset <= node.end_offset) {
+            // single-line node
+            if !has_newline_in_range(source, node.start_offset, node.end_offset) {
+                should_update = match result {
+                    Some(prev) => node.start_offset < prev.start_offset,
+                    None => true,
+                };
+                found_single_line_node = true;
+            // multi-line node
+            } else {
+                if found_single_line_node {
+                    break;
+                }
+                should_update = match result {
+                    Some(prev) => node.start_offset < prev.start_offset,
+                    None => true,
+                };
+            }
+            if should_update {
+                result = Some(*node);
+            }
+            continue;
+        }
+        break;
     }
-    Some(result)
+    result
 }
 
 /// Finds the following node (comment_end <= node_start).
