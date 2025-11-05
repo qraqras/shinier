@@ -1,4 +1,3 @@
-# Docs.rs
 [1, 2, 3]
 
 # empty array
@@ -18,6 +17,12 @@
 # long array
 [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000]
 
+[
+  1, # trailing comment 1
+  2, # trailing comment 2
+  # owning comment
+  3,
+] # trailing comment 3
 
 # percent literal arrays
 %w(foo bar)

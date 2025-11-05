@@ -8,8 +8,9 @@ use std::iter::Peekable;
 pub struct BuildContext<'sh> {
     pub source: &'sh [u8],
     pub root: &'sh Node<'sh>,
-    pub comment_metadata: HashMap<usize, CommentMetadata>,
     pub built_end: usize,
     pub comments: &'sh mut Peekable<Comments<'sh>>,
+    pub comment_metadata: HashMap<usize, CommentMetadata>,
     pub max_leading_line_breaks: usize,
+    pub percent_literal: bool,
 }

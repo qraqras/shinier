@@ -5,7 +5,6 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/string_node.rb
 ---
 ****FORMATTED****
-# Docs.rs
 'foo'
 ['foo']
 "foo #{bar} baz"

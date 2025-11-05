@@ -5,7 +5,6 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/arguments_node.rb
 ---
 ****FORMATTED****
-# Docs.rs
 return foo, bar, baz
 
 # unnecessary line breaks
@@ -38,9 +37,14 @@ return foo,
   bar,
   baz
 
+return foo,
+  # owning comment
+  bar, # trailing comment 1
+  baz # trailing comment 2
+
 
 ****AST****
-ProgramNode: "return foo, bar, baz\n\n# unnecessary line breaks\nreturn foo, bar,\nbaz\nreturn foo,\nbar,\nbaz\n\n# long argument list\nreturn foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz"
+ProgramNode: "return foo, bar, baz\n\n# unnecessary line breaks\nreturn foo, bar,\nbaz\nreturn foo,\nbar,\nbaz\n\n# long argument list\nreturn foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz\n\nreturn foo,\n  # owning comment\n  bar, # trailing comment 1\n  baz"
 __ReturnNode: "return foo, bar, baz"
 ____CallNode: "foo"
 ____CallNode: "bar"
@@ -75,6 +79,10 @@ ____CallNode: "baz"
 ____CallNode: "foo"
 ____CallNode: "bar"
 ____CallNode: "baz"
+____CallNode: "foo"
+____CallNode: "bar"
+____CallNode: "baz"
+__ReturnNode: "return foo,\n  # owning comment\n  bar, # trailing comment 1\n  baz"
 ____CallNode: "foo"
 ____CallNode: "bar"
 ____CallNode: "baz"

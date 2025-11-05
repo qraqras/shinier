@@ -45,10 +45,11 @@ impl<'a> Printer<'a> {
         let mut context = BuildContext {
             source: self.source.as_bytes(),
             root: &parse_result.node(),
-            comment_metadata: comment_metadata,
             built_end: 0usize,
             comments: &mut parse_result.comments().peekable(),
+            comment_metadata: comment_metadata,
             max_leading_line_breaks: 0usize,
+            percent_literal: false,
         };
         let mut doc = parse_result.node().build(&mut context);
 

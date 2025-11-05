@@ -1,76 +1,83 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::ListBuild;
-use crate::builder::builder::{array, group, indent, line, none, softline, string};
+use crate::builder::builder::array;
+use crate::builder::builder::group;
+use crate::builder::builder::indent;
+use crate::builder::builder::line;
+use crate::builder::builder::none;
+use crate::builder::builder::softline;
+use crate::builder::builder::string;
 use crate::document::Document;
-use crate::keyword::{
-    BRACKETS, COMMA, PERCENT_LOWER_I, PERCENT_LOWER_W, PERCENT_UPPER_I, PERCENT_UPPER_W,
-};
-use ruby_prism::{ArrayNode, NodeList};
+use crate::keyword::BRACKETS;
+use crate::keyword::COMMA;
+use crate::keyword::PERCENT_LOWER_I;
+use crate::keyword::PERCENT_LOWER_W;
+use crate::keyword::PERCENT_UPPER_I;
+use crate::keyword::PERCENT_UPPER_W;
+use ruby_prism::ArrayNode;
+use ruby_prism::NodeList;
 
 impl<'sh> Build for ArrayNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(self, context)
-    }
-}
-
-pub fn build_node(node: &ArrayNode, context: &mut BuildContext) -> Document {
-    let elements = node.elements();
-
-    let mut should_percent_w = true;
-    let mut should_percent_i = true;
-    let mut should_percent_lower = true;
-    // 要素数が0または1の配列は%記法を使用しない
-    // TODO: 要素がN個以上の配列で%記法を有効にするオプションを検討する
-    if elements.iter().count() <= 1 {
-        (should_percent_w, should_percent_i) = (false, false);
-    }
-    // あらかじめすべての要素を判定して最小限の%記法を選択する
-    for element in elements.iter() {
-        if should_percent_w {
-            (should_percent_w, should_percent_lower) = match (
-                element.as_string_node().is_some(),
-                element.as_interpolated_string_node().is_some(),
-            ) {
-                (true, _) => (should_percent_w, should_percent_lower),
-                (_, true) => (should_percent_w, false),
-                _ => (false, should_percent_lower),
-            };
+        let elements = self.elements();
+        let mut should_percent_w = true;
+        let mut should_percent_i = true;
+        let mut should_percent_lower = true;
+        // 要素数が0または1の配列は%記法を使用しない
+        // TODO: 要素がN個以上の配列で%記法を有効にするオプションを検討する
+        if elements.iter().count() <= 1 {
+            (should_percent_w, should_percent_i) = (false, false);
         }
-        if should_percent_i {
-            (should_percent_i, should_percent_lower) = match (
-                element.as_symbol_node().is_some(),
-                element.as_interpolated_symbol_node().is_some(),
-            ) {
-                (true, _) => (should_percent_i, should_percent_lower),
-                (_, true) => (should_percent_i, false),
-                _ => (false, should_percent_lower),
-            };
+        // 配列の要素を事前に走査して最小限の%記法を選択する
+        for element in elements.iter() {
+            if should_percent_w {
+                (should_percent_w, should_percent_lower) = match (
+                    element.as_string_node().is_some(),
+                    element.as_interpolated_string_node().is_some(),
+                ) {
+                    (true, _) => (should_percent_w, should_percent_lower),
+                    (_, true) => (should_percent_w, false),
+                    (_, _) => (false, should_percent_lower),
+                };
+            }
+            if should_percent_i {
+                (should_percent_i, should_percent_lower) = match (
+                    element.as_symbol_node().is_some(),
+                    element.as_interpolated_symbol_node().is_some(),
+                ) {
+                    (true, _) => (should_percent_i, should_percent_lower),
+                    (_, true) => (should_percent_i, false),
+                    (_, _) => (false, should_percent_lower),
+                };
+            }
+            if !should_percent_w && !should_percent_i {
+                break;
+            }
         }
-        if !should_percent_w && !should_percent_i {
-            break;
-        }
+        // 配列の要素をDocumentに変換する
+        let elements_array = match (should_percent_w, should_percent_i) {
+            (true, true) => unreachable!(),
+            (true, _) => array(&build_percent_w_elements(context, &elements)),
+            (_, true) => array(&build_percent_i_elements(context, &elements)),
+            (_, _) => elements.build(context, &array(&[string(COMMA), line()])),
+        };
+        // 全体をDocumentにする
+        group(array(&[
+            match (should_percent_w, should_percent_i, should_percent_lower) {
+                (true, true, _) => unreachable!(),
+                (true, _, true) => string(PERCENT_LOWER_W),
+                (true, _, false) => string(PERCENT_UPPER_W),
+                (_, true, true) => string(PERCENT_LOWER_I),
+                (_, true, false) => string(PERCENT_UPPER_I),
+                (_, _, _) => none(),
+            },
+            string(BRACKETS.0),
+            indent(array(&[softline(), elements_array])),
+            softline(),
+            string(BRACKETS.1),
+        ]))
     }
-    // 配列の要素をDocumentに変換する
-    let elements_array = match (should_percent_w, should_percent_i) {
-        (true, _) => array(&build_percent_w_elements(context, &elements)),
-        (_, true) => array(&build_percent_i_elements(context, &elements)),
-        _ => elements.build(context, &array(&[string(COMMA), line()])),
-    };
-    // 全体をDocumentにする
-    group(array(&[
-        match (should_percent_w, should_percent_i, should_percent_lower) {
-            (true, _, true) => string(PERCENT_LOWER_W),
-            (true, _, false) => string(PERCENT_UPPER_W),
-            (_, true, true) => string(PERCENT_LOWER_I),
-            (_, true, false) => string(PERCENT_UPPER_I),
-            _ => none(),
-        },
-        string(BRACKETS.0),
-        indent(array(&[softline(), elements_array])),
-        softline(),
-        string(BRACKETS.1),
-    ]))
 }
 
 /// 配列要素が文字列または式展開を含む文字列の場合のDocumentを生成する
@@ -130,7 +137,6 @@ fn escape_array_element(input: &[u8]) -> String {
             // TODO: %w(...)のようなときは"\("や"\)"が含まれている可能性がある
             b'\x5b' => result.push_str("\\["), // array start
             b'\x5d' => result.push_str("\\]"), // array end
-
             b'\x09' => result.push_str("\\t"), // tab
             b'\x0b' => result.push_str("\\v"), // vertical tab
             b'\x0a' => result.push_str("\\n"), // newline
