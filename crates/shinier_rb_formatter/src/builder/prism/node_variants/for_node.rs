@@ -25,7 +25,10 @@ pub fn build_node(node: &ForNode, context: &mut BuildContext) -> Document {
         space(),
         collection.build(context),
         indent(statements.build_with(context, Some(array(&[space(), string(DO), line()])), None)),
-        indent(owning_comments(&node.as_node(), context).unwrap_or(none())),
+        indent(match owning_comments(&node.as_node(), context) {
+            Some(owning_comments) => owning_comments,
+            None => none(),
+        }),
         line(),
         string(END),
     ]))

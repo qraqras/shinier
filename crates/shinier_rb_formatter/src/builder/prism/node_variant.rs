@@ -15,27 +15,32 @@ pub trait NodeVariant<'sh>: Build {
     fn execute_build(&self, context: &mut BuildContext) -> Document {
         let mut vec = Vec::new();
         // Build leading comments
-        vec.push(leading_comments(&self.as_node(), context));
-        // Build leading line breaks
-        if context.max_leading_line_breaks > 0 {
-            vec.push(leading_line_breaks(
-                context,
-                self.location().start_offset(),
-                context.max_leading_line_breaks,
-            ));
+        if let Some(leading_comments) = leading_comments(&self.as_node(), context) {
+            vec.push(leading_comments);
         }
+        // Build leading line breaks
+        if let Some(leading_line_breaks) = leading_line_breaks(
+            context,
+            self.location().start_offset(),
+            context.max_leading_line_breaks,
+        ) {
+            vec.push(leading_line_breaks);
+        }
+        // propagate max leading line breaks for statements and program nodes
         let prev_max_leading_line_breaks = context.max_leading_line_breaks;
         context.max_leading_line_breaks = match self.as_node() {
             Node::StatementsNode { .. } => 1usize,
             Node::ProgramNode { .. } => 1usize,
             _ => 0usize,
         };
-        vec.push(group(array(&[
-            // Build the node itself
-            self.__build__(context),
-            // Build trailing comments
-            trailing_comments(&self.as_node(), context),
-        ])));
+        // Build the node itself
+        let node = self.__build__(context);
+        // Build trailing comments
+        if let Some(trailing_comments) = trailing_comments(&self.as_node(), context) {
+            vec.push(group(array(&[node, trailing_comments])));
+        } else {
+            vec.push(node);
+        }
         context.built_end = context.built_end.max(self.location().end_offset());
         context.max_leading_line_breaks = prev_max_leading_line_breaks;
         array(&vec)

@@ -224,7 +224,7 @@ pub fn determine_placement(
 /// # leading comment
 /// foo
 /// ```
-pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
+pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Option<Document> {
     let mut documents = Vec::new();
     loop {
         match context.comments.peek() {
@@ -256,7 +256,11 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
                 if !is_leading {
                     break;
                 }
-                documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
+                if let Some(leading_line_breaks) =
+                    leading_line_breaks(context, comment_start_offset, 1usize)
+                {
+                    documents.push(leading_line_breaks);
+                }
                 let comment = context.comments.next().unwrap();
                 documents.push(build_comment(&comment));
                 documents.push(hardline());
@@ -265,7 +269,10 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
             None => break,
         }
     }
-    array(&documents)
+    match documents.is_empty() {
+        true => None,
+        false => Some(array(&documents)),
+    }
 }
 
 /// Builds owning comments for a given node.
@@ -316,7 +323,11 @@ pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Option<Docume
                 if !is_owning {
                     break;
                 }
-                documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
+                if let Some(leading_line_breaks) =
+                    leading_line_breaks(context, comment_start_offset, 1usize)
+                {
+                    documents.push(leading_line_breaks);
+                }
                 let comment = context.comments.next().unwrap();
                 documents.push(build_comment(&comment));
                 documents.push(hardline());
@@ -325,20 +336,21 @@ pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Option<Docume
             None => break,
         }
     }
-    if !documents.is_empty() {
-        // remove last hardline and add break parent
-        documents.pop();
-        documents.push(break_parent());
-        return Some(array(&documents));
+    match documents.is_empty() {
+        true => None,
+        false => {
+            documents.pop(); // remove last hardline
+            documents.push(break_parent()); // ensure proper breaking behavior
+            Some(array(&documents))
+        }
     }
-    None
 }
 
 /// Builds trailing comments for a given node.
 /// ```ruby
 /// foo # trailing comment
 /// ```
-pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
+pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Option<Document> {
     let mut documents = Vec::new();
     loop {
         match context.comments.peek() {
@@ -376,7 +388,10 @@ pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
             None => break,
         }
     }
-    array(&documents)
+    match documents.is_empty() {
+        true => None,
+        false => Some(array(&documents)),
+    }
 }
 
 /// Builds the rest of the comments in the source code.
@@ -389,11 +404,11 @@ pub fn dangling_comments(context: &mut BuildContext) -> Option<Document> {
     loop {
         match context.comments.next() {
             Some(comment) => {
-                documents.push(leading_line_breaks(
-                    context,
-                    comment.location().start_offset(),
-                    1usize,
-                ));
+                if let Some(leading_line_breaks) =
+                    leading_line_breaks(context, comment.location().start_offset(), 1usize)
+                {
+                    documents.push(leading_line_breaks);
+                }
                 documents.push(build_comment(&comment));
                 documents.push(hardline());
                 continue;
@@ -401,12 +416,13 @@ pub fn dangling_comments(context: &mut BuildContext) -> Option<Document> {
             None => break,
         }
     }
-    if !documents.is_empty() {
-        // remove last hardline
-        documents.pop();
-        return Some(array(&documents));
+    match documents.is_empty() {
+        true => None,
+        false => {
+            documents.pop(); // remove last hardline
+            return Some(array(&documents));
+        }
     }
-    None
 }
 
 /// Builds a Document for a given comment.

@@ -11,12 +11,18 @@ pub fn leading_line_breaks(
     context: &mut BuildContext,
     start_offset: usize,
     max_line_breaks: usize,
-) -> Document {
+) -> Option<Document> {
+    // Helper functions to identify indent and line break characters
     fn is_indent_char(c: &u8) -> bool {
         matches!(c, b' ' | b'\t')
     }
+    // Helper function to identify line break characters
     fn is_line_break_char(c: &u8) -> bool {
         matches!(c, b'\n')
+    }
+    // Early return if no line breaks are allowed
+    if max_line_breaks == usize::MIN {
+        return None;
     }
     let mut documents = Vec::new();
     let gap_start = context.built_end;
@@ -30,10 +36,10 @@ pub fn leading_line_breaks(
                     j += 1;
                 }
                 if j < gap_end && is_line_break_char(&context.source[j]) {
-                    documents.push(hardline());
-                    if documents.len() >= max_line_breaks {
+                    if documents.len() + 1 > max_line_breaks {
                         break;
                     }
+                    documents.push(hardline());
                     i = j;
                     continue;
                 }
@@ -43,5 +49,8 @@ pub fn leading_line_breaks(
         }
     }
     context.built_end = gap_end;
-    array(&documents)
+    match documents.is_empty() {
+        true => None,
+        false => Some(array(&documents)),
+    }
 }
