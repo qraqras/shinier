@@ -4,8 +4,8 @@ use crate::Document;
 use crate::builder::builder::array;
 use crate::builder::builder::group;
 use crate::builder::builder::none;
+use crate::builder::prism::helper::blank_lines;
 use crate::builder::prism::helper::leading_comments;
-use crate::builder::prism::helper::leading_line_breaks;
 use crate::builder::prism::helper::trailing_comments;
 use ruby_prism::*;
 
@@ -21,8 +21,9 @@ pub trait NodeVariant<'sh>: Build {
             vec.push(leading_comments);
         }
         // Build leading line breaks
-        if let Some(leading_line_breaks) = leading_line_breaks(
+        if let Some(leading_line_breaks) = blank_lines(
             context,
+            context.built_end,
             self.location().start_offset(),
             context.max_leading_line_breaks,
         ) {

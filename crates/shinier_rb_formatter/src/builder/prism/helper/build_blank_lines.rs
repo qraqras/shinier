@@ -7,9 +7,10 @@ use crate::document::Document;
 ///
 /// foo
 /// ```
-pub fn leading_line_breaks(
+pub fn blank_lines(
     context: &mut BuildContext,
-    start_offset: usize,
+    gap_start_offset: usize,
+    gap_end_offset: usize,
     max_line_breaks: usize,
 ) -> Option<Document> {
     // Helper functions to identify indent and line break characters
@@ -25,17 +26,15 @@ pub fn leading_line_breaks(
         return None;
     }
     let mut documents = Vec::new();
-    let gap_start = context.built_end;
-    let gap_end = start_offset;
-    if gap_start < gap_end {
-        let mut i = gap_start;
-        while i < gap_end {
+    if gap_start_offset < gap_end_offset {
+        let mut i = gap_start_offset;
+        while i < gap_end_offset {
             if is_line_break_char(&context.source[i]) {
                 let mut j = i + 1;
-                while j < gap_end && is_indent_char(&context.source[j]) {
+                while j < gap_end_offset && is_indent_char(&context.source[j]) {
                     j += 1;
                 }
-                if j < gap_end && is_line_break_char(&context.source[j]) {
+                if j < gap_end_offset && is_line_break_char(&context.source[j]) {
                     if documents.len() + 1 > max_line_breaks {
                         break;
                     }
@@ -48,7 +47,7 @@ pub fn leading_line_breaks(
             i += 1;
         }
     }
-    context.built_end = gap_end;
+    context.built_end = gap_end_offset;
     match documents.is_empty() {
         true => None,
         false => Some(array(&documents)),

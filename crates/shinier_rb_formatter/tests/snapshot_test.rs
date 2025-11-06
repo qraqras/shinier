@@ -193,23 +193,30 @@ impl Visit<'_> for Visitor {
 fn run() {
     glob!("**/node_variants/**.rb", |path| {
         let contents = std::fs::read_to_string(path).unwrap();
-
+        // first formatting
         let printer = Printer::new(contents, ());
         let (parse_result, formatted) = printer.print();
-
+        // second formatting
         let printer = Printer::new(formatted.clone(), ());
         let (reparsed_result, reformatted) = printer.print();
+        // parse result should have no errors
+        assert!(reparsed_result.errors().next().is_none(), "parsing errors");
+        // formatting should be idempotent
+        /*
         assert!(
-            reparsed_result.errors().next().is_none(),
-            "Reparsed has errors"
+            formatted == reformatted,
+            "formatting idempotence: first:\n{}----second:\n{}----",
+            formatted,
+            reformatted
         );
-
+        */
+        // build AST debug string
         let mut visitor = Visitor {
             depth: 0,
             debug_strings: Vec::new(),
         };
         visitor.visit(&parse_result.node());
-
+        // snapshot
         let output = format!(
             "****FORMATTED****\n{}\n\n****AST****\n{}",
             formatted,

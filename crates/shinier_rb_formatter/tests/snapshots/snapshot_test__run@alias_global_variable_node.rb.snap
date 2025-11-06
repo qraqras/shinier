@@ -1,33 +1,33 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 218
+assertion_line: 225
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/alias_global_variable_node.rb
 ---
 ****FORMATTED****
-alias $bar $foo
+alias $foo $bar
 
 # unnecessary line break
-alias $bar $foo
+alias $foo $bar
 
 # long expression
 alias
-  $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo
+  $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
 
 alias
   # owning inline comment
-  $bar $foo
+  $foo $bar
 alias
   # owning inline comment 1
   # owning inline comment 2
-  $bar $foo
+  $foo $bar
 alias
   # owning block comment 1
   # owning block comment 2
-  $bar $foo
-alias $bar $foo # trailing comment
+  $foo $bar
+alias $foo $bar # trailing comment
 alias
-  $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo # trailing comment
+  $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar # trailing comment
 
 
 ****AST****

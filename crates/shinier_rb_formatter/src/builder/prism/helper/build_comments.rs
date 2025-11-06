@@ -1,6 +1,6 @@
 use crate::BuildContext;
 use crate::builder::builder::{array, break_parent, hardline, line_suffix, string};
-use crate::builder::prism::leading_line_breaks;
+use crate::builder::prism::blank_lines;
 use crate::document::Document;
 use ruby_prism::Comment;
 use ruby_prism::CommentType;
@@ -128,8 +128,8 @@ fn find_preceding_node(
         if has_newline_in_range(source, node.end_offset, comment_start) {
             break;
         }
-        let mut should_update = false;
         if result.is_none_or(|r| r.end_offset <= node.end_offset) {
+            let mut should_update = false;
             // single-line node
             if !has_newline_in_range(source, node.start_offset, node.end_offset) {
                 should_update = match result {
@@ -143,7 +143,7 @@ fn find_preceding_node(
                     break;
                 }
                 should_update = match result {
-                    Some(prev) => node.start_offset < prev.start_offset,
+                    Some(prev) => prev.start_offset < node.start_offset,
                     None => true,
                 };
             }
@@ -284,10 +284,10 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Option<Docum
                 if !is_leading {
                     break;
                 }
-                if let Some(leading_line_breaks) =
-                    leading_line_breaks(context, comment_start_offset, 1usize)
+                if let Some(blank_lines) =
+                    blank_lines(context, context.built_end, comment_start_offset, 1usize)
                 {
-                    documents.push(leading_line_breaks);
+                    documents.push(blank_lines);
                 }
                 let comment = context.comments.next().unwrap();
                 documents.push(build_comment(&comment));
@@ -306,6 +306,7 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Option<Docum
 /// Builds owning comments for a given node.
 /// ```ruby
 /// if foo then
+///   # owning comment
 ///   # owning comment
 /// end
 /// ```
@@ -351,14 +352,18 @@ pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Option<Docume
                 if !is_owning {
                     break;
                 }
-                if let Some(leading_line_breaks) =
-                    leading_line_breaks(context, comment_start_offset, 1usize)
+                if !documents.is_empty() {
+                    documents.push(hardline());
+                }
+                let gap_start_offset = context.built_end.max(node.location().start_offset());
+                let gap_end_offset = comment_start_offset;
+                if let Some(blank_lines) =
+                    blank_lines(context, gap_start_offset, gap_end_offset, 1usize)
                 {
-                    documents.push(leading_line_breaks);
+                    documents.push(blank_lines);
                 }
                 let comment = context.comments.next().unwrap();
                 documents.push(build_comment(&comment));
-                documents.push(hardline());
                 context.built_end = comment.location().end_offset();
             }
             None => break,
@@ -367,10 +372,38 @@ pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Option<Docume
     match documents.is_empty() {
         true => None,
         false => {
-            documents.pop(); // remove last hardline
             documents.push(break_parent()); // ensure proper breaking behavior
             Some(array(&documents))
         }
+    }
+}
+
+/// Builds owning comments for a given node with optional documents before and after.
+/// ```ruby
+/// if foo then
+///   {before}# owning comment
+///   # owning comment{after}
+/// end
+/// ```
+pub fn owning_comments_with(
+    node: &Node,
+    context: &mut BuildContext,
+    before: Option<Document>,
+    after: Option<Document>,
+) -> Option<Document> {
+    match owning_comments(node, context) {
+        Some(comments) => {
+            let mut documents = Vec::new();
+            if let Some(before) = before {
+                documents.push(before);
+            }
+            documents.push(comments);
+            if let Some(after) = after {
+                documents.push(after);
+            }
+            Some(array(&documents))
+        }
+        None => None,
     }
 }
 
@@ -432,10 +465,13 @@ pub fn dangling_comments(context: &mut BuildContext) -> Option<Document> {
     loop {
         match context.comments.next() {
             Some(comment) => {
-                if let Some(leading_line_breaks) =
-                    leading_line_breaks(context, comment.location().start_offset(), 1usize)
-                {
-                    documents.push(leading_line_breaks);
+                if let Some(blank_lines) = blank_lines(
+                    context,
+                    context.built_end,
+                    comment.location().start_offset(),
+                    1usize,
+                ) {
+                    documents.push(blank_lines);
                 }
                 documents.push(build_comment(&comment));
                 documents.push(hardline());

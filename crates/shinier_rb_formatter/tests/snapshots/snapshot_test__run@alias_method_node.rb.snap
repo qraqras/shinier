@@ -26,7 +26,10 @@ alias_method :foo, :bar
 alias_method :foo, :bar
 # block comment 1
 # block comment 2
-alias_method :foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo, :barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+alias_method(
+  :foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo,
+  :barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+)
 alias_method :foo, :bar # trailing comment
 alias_method(
   :foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo,

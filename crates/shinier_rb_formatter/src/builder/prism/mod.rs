@@ -6,8 +6,8 @@ pub mod node_variant;
 pub mod node_variants;
 
 pub use context::BuildContext;
+pub use helper::blank_lines;
 pub use helper::leading_comments;
-pub use helper::leading_line_breaks;
 pub use helper::trailing_comments;
 pub use node::Build;
 pub use node::ListBuild;
