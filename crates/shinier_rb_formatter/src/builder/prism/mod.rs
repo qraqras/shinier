@@ -4,6 +4,7 @@ pub mod node;
 pub mod node_likes;
 pub mod node_variant;
 pub mod node_variants;
+pub mod scanner;
 
 pub use context::BuildContext;
 pub use helper::blank_lines;
