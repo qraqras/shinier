@@ -1,0 +1,193 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 225
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/assoc_splat_node.rb
+---
+****FORMATTED****
+{ **foo }
+
+# With other keys
+{ a: 1, **foo }
+{ **foo, b: 2 }
+{ a: 1, **foo, b: 2 }
+
+# Multiple splats
+{ **foo, **bar }
+{ a: 1, **foo, b: 2, **bar }
+
+# Nested hashes
+{ **{ a: 1, b: 2 } }
+{ a: 1, **{ nested: value } }
+
+# With hash rocket syntax
+{ key: :value, **foo }
+{ **foo, key: :value }
+
+# Complex expressions
+{ **foo.bar }
+{ **method_call(arg) }
+{ **some_hash.merge(other_hash) }
+
+# Unnecessary line breaks
+{ **foo }
+{ a: 1, **foo }
+
+# Long expressions
+{
+  very_long_key_name: value,
+  **very_long_hash_variable_name
+}
+{
+  **very_long_hash_variable_name,
+  another_very_long_key_name: value
+}
+
+# Comments
+{ **foo } # trailing comment
+{
+  a: 1, # trailing comment 1
+  **foo # trailing comment 2
+}
+{
+  # owning comment
+  **foo
+}
+
+# Multiline
+{ a: 1, **foo, b: 2 }
+
+# Empty hash with splat
+{ **{} }
+
+
+****AST****
+ProgramNode[0-806]: "{ **foo }\n\n# With other keys\n{ a: 1, **foo }\n{ **foo, b: 2 }\n{ a: 1, **foo, b: 2 }\n\n# Multiple splats\n{ **foo, **bar }\n{ a: 1, **foo, b: 2, **bar }\n\n# Nested hashes\n{ **{ a: 1, b: 2 } }\n{ a: 1, **{ nested: value } }\n\n# With hash rocket syntax\n{ :key => :value, **foo }\n{ **foo, :key => :value }\n\n# Complex expressions\n{ **foo.bar }\n{ **method_call(arg) }\n{ **some_hash.merge(other_hash) }\n\n# Unnecessary line breaks\n{\n  **foo\n}\n{ a: 1,\n  **foo }\n\n# Long expressions\n{ very_long_key_name: value, **very_long_hash_variable_name }\n{ **very_long_hash_variable_name, another_very_long_key_name: value }\n\n# Comments\n{ **foo } # trailing comment\n{\n  a: 1, # trailing comment 1\n  **foo # trailing comment 2\n}\n{\n  # owning comment\n  **foo\n}\n\n# Multiline\n{\n  a: 1,\n  **foo,\n  b: 2\n}\n\n# Empty hash with splat\n{ **{} }"
+__HashNode[0-9]: "{ **foo }"
+____AssocSplatNode[2-7]: "**foo"
+______CallNode[4-7]: "foo"
+__HashNode[29-44]: "{ a: 1, **foo }"
+____AssocNode[31-35]: "a: 1"
+______SymbolNode[31-33]: "a:"
+______IntegerNode[34-35]: "1"
+____AssocSplatNode[37-42]: "**foo"
+______CallNode[39-42]: "foo"
+__HashNode[45-60]: "{ **foo, b: 2 }"
+____AssocSplatNode[47-52]: "**foo"
+______CallNode[49-52]: "foo"
+____AssocNode[54-58]: "b: 2"
+______SymbolNode[54-56]: "b:"
+______IntegerNode[57-58]: "2"
+__HashNode[61-82]: "{ a: 1, **foo, b: 2 }"
+____AssocNode[63-67]: "a: 1"
+______SymbolNode[63-65]: "a:"
+______IntegerNode[66-67]: "1"
+____AssocSplatNode[69-74]: "**foo"
+______CallNode[71-74]: "foo"
+____AssocNode[76-80]: "b: 2"
+______SymbolNode[76-78]: "b:"
+______IntegerNode[79-80]: "2"
+__HashNode[102-118]: "{ **foo, **bar }"
+____AssocSplatNode[104-109]: "**foo"
+______CallNode[106-109]: "foo"
+____AssocSplatNode[111-116]: "**bar"
+______CallNode[113-116]: "bar"
+__HashNode[119-147]: "{ a: 1, **foo, b: 2, **bar }"
+____AssocNode[121-125]: "a: 1"
+______SymbolNode[121-123]: "a:"
+______IntegerNode[124-125]: "1"
+____AssocSplatNode[127-132]: "**foo"
+______CallNode[129-132]: "foo"
+____AssocNode[134-138]: "b: 2"
+______SymbolNode[134-136]: "b:"
+______IntegerNode[137-138]: "2"
+____AssocSplatNode[140-145]: "**bar"
+______CallNode[142-145]: "bar"
+__HashNode[165-185]: "{ **{ a: 1, b: 2 } }"
+____AssocSplatNode[167-183]: "**{ a: 1, b: 2 }"
+______HashNode[169-183]: "{ a: 1, b: 2 }"
+________AssocNode[171-175]: "a: 1"
+__________SymbolNode[171-173]: "a:"
+__________IntegerNode[174-175]: "1"
+________AssocNode[177-181]: "b: 2"
+__________SymbolNode[177-179]: "b:"
+__________IntegerNode[180-181]: "2"
+__HashNode[186-215]: "{ a: 1, **{ nested: value } }"
+____AssocNode[188-192]: "a: 1"
+______SymbolNode[188-190]: "a:"
+______IntegerNode[191-192]: "1"
+____AssocSplatNode[194-213]: "**{ nested: value }"
+______HashNode[196-213]: "{ nested: value }"
+________AssocNode[198-211]: "nested: value"
+__________SymbolNode[198-205]: "nested:"
+__________CallNode[206-211]: "value"
+__HashNode[243-268]: "{ :key => :value, **foo }"
+____AssocNode[245-259]: ":key => :value"
+______SymbolNode[245-249]: ":key"
+______SymbolNode[253-259]: ":value"
+____AssocSplatNode[261-266]: "**foo"
+______CallNode[263-266]: "foo"
+__HashNode[269-294]: "{ **foo, :key => :value }"
+____AssocSplatNode[271-276]: "**foo"
+______CallNode[273-276]: "foo"
+____AssocNode[278-292]: ":key => :value"
+______SymbolNode[278-282]: ":key"
+______SymbolNode[286-292]: ":value"
+__HashNode[318-331]: "{ **foo.bar }"
+____AssocSplatNode[320-329]: "**foo.bar"
+______CallNode[322-329]: "foo.bar"
+________CallNode[322-325]: "foo"
+__HashNode[332-354]: "{ **method_call(arg) }"
+____AssocSplatNode[334-352]: "**method_call(arg)"
+______CallNode[336-352]: "method_call(arg)"
+________CallNode[348-351]: "arg"
+__HashNode[355-388]: "{ **some_hash.merge(other_hash) }"
+____AssocSplatNode[357-386]: "**some_hash.merge(other_hash)"
+______CallNode[359-386]: "some_hash.merge(other_hash)"
+________CallNode[359-368]: "some_hash"
+________CallNode[375-385]: "other_hash"
+__HashNode[416-427]: "{\n  **foo\n}"
+____AssocSplatNode[420-425]: "**foo"
+______CallNode[422-425]: "foo"
+__HashNode[428-445]: "{ a: 1,\n  **foo }"
+____AssocNode[430-434]: "a: 1"
+______SymbolNode[430-432]: "a:"
+______IntegerNode[433-434]: "1"
+____AssocSplatNode[438-443]: "**foo"
+______CallNode[440-443]: "foo"
+__HashNode[466-527]: "{ very_long_key_name: value, **very_long_hash_variable_name }"
+____AssocNode[468-493]: "very_long_key_name: value"
+______SymbolNode[468-487]: "very_long_key_name:"
+______CallNode[488-493]: "value"
+____AssocSplatNode[495-525]: "**very_long_hash_variable_name"
+______CallNode[497-525]: "very_long_hash_variable_name"
+__HashNode[528-597]: "{ **very_long_hash_variable_name, another_very_long_key_name: value }"
+____AssocSplatNode[530-560]: "**very_long_hash_variable_name"
+______CallNode[532-560]: "very_long_hash_variable_name"
+____AssocNode[562-595]: "another_very_long_key_name: value"
+______SymbolNode[562-589]: "another_very_long_key_name:"
+______CallNode[590-595]: "value"
+__HashNode[610-619]: "{ **foo }"
+____AssocSplatNode[612-617]: "**foo"
+______CallNode[614-617]: "foo"
+__HashNode[639-700]: "{\n  a: 1, # trailing comment 1\n  **foo # trailing comment 2\n}"
+____AssocNode[643-647]: "a: 1"
+______SymbolNode[643-645]: "a:"
+______IntegerNode[646-647]: "1"
+____AssocSplatNode[672-677]: "**foo"
+______CallNode[674-677]: "foo"
+__HashNode[701-731]: "{\n  # owning comment\n  **foo\n}"
+____AssocSplatNode[724-729]: "**foo"
+______CallNode[726-729]: "foo"
+__HashNode[745-772]: "{\n  a: 1,\n  **foo,\n  b: 2\n}"
+____AssocNode[749-753]: "a: 1"
+______SymbolNode[749-751]: "a:"
+______IntegerNode[752-753]: "1"
+____AssocSplatNode[757-762]: "**foo"
+______CallNode[759-762]: "foo"
+____AssocNode[766-770]: "b: 2"
+______SymbolNode[766-768]: "b:"
+______IntegerNode[769-770]: "2"
+__HashNode[798-806]: "{ **{} }"
+____AssocSplatNode[800-804]: "**{}"
+______HashNode[802-804]: "{}"

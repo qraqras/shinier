@@ -1,0 +1,34 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 225
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/back_reference_read_node.rb
+---
+****FORMATTED****
+# Basic back references
+$&
+$`
+$'
+$+
+
+# Numbered back references
+$1
+$2
+$10
+$99
+
+# Match data
+$~
+
+
+****AST****
+ProgramNode[24-94]: "$&\n$`\n$\'\n$+\n\n# Numbered back references\n$1\n$2\n$10\n$99\n\n# Match data\n$~"
+__BackReferenceReadNode[24-26]: "$&"
+__BackReferenceReadNode[27-29]: "$`"
+__BackReferenceReadNode[30-32]: "$\'"
+__BackReferenceReadNode[33-35]: "$+"
+__NumberedReferenceReadNode[64-66]: "$1"
+__NumberedReferenceReadNode[67-69]: "$2"
+__NumberedReferenceReadNode[70-73]: "$10"
+__NumberedReferenceReadNode[74-77]: "$99"
+__GlobalVariableReadNode[92-94]: "$~"

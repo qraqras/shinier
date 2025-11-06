@@ -49,7 +49,8 @@ impl<'a> Printer<'a> {
             built_end: 0usize,
             comments: &mut parse_result.comments().peekable(),
             comment_metadata: comment_metadata,
-            max_leading_line_breaks: 0usize,
+            max_blank_lines: 0usize,
+            hash_label_style: false,
             percent_literal: false,
         };
         let mut doc = parse_result.node().build(&mut context);

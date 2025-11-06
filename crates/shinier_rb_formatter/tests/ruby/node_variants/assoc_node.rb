@@ -1,22 +1,24 @@
 { a => b }
 {:foo => :bar}
 { "foo" => "bar", }
+{ foo: bar }
 
 # Multiple associations
 { a => b, c => d }
 { :foo => 1, :bar => 2 }
 { "foo" => "1", "bar" => "2" }
+{ foo: 1, bar: 2 }
 
 # Unnecessary line breaks
 { a =>
   b }
 {
-  a =>
-  b
+  :foo =>
+  bar
 }
 {
-  a => b, c =>
-  d
+  "foo" => "1", "bar" =>
+  "2"
 }
 
 # Long associations
@@ -25,12 +27,12 @@
 
 # Nested hashes
 { a => { b => c } }
-{ a => { b => { c => d } } }
+{ a => { :b => { "c" => "d" } } }
 
 # Complex values
 { a => [1, 2, 3] }
-{ a => foo.bar.baz }
-{ a => method_call(arg1, arg2) }
+{ :a => foo.bar.baz }
+{ "a" => method_call(arg1, arg2) }
 
 # Comments
 { a => b } # trailing comment

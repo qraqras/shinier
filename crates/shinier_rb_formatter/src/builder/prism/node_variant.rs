@@ -21,17 +21,17 @@ pub trait NodeVariant<'sh>: Build {
             vec.push(leading_comments);
         }
         // Build leading line breaks
-        if let Some(leading_line_breaks) = blank_lines(
+        if let Some(blank_lines) = blank_lines(
             context,
             context.built_end,
             self.location().start_offset(),
-            context.max_leading_line_breaks,
+            context.max_blank_lines,
         ) {
-            vec.push(leading_line_breaks);
+            vec.push(blank_lines);
         }
         // propagate max leading line breaks for statements and program nodes
-        let prev_max_leading_line_breaks = context.max_leading_line_breaks;
-        context.max_leading_line_breaks = match self.as_node() {
+        let prev_max_blank_lines = context.max_blank_lines;
+        context.max_blank_lines = match self.as_node() {
             Node::StatementsNode { .. } => 1usize,
             Node::ProgramNode { .. } => 1usize,
             _ => 0usize,
@@ -45,7 +45,7 @@ pub trait NodeVariant<'sh>: Build {
             vec.push(node);
         }
         context.built_end = context.built_end.max(self.location().end_offset());
-        context.max_leading_line_breaks = prev_max_leading_line_breaks;
+        context.max_blank_lines = prev_max_blank_lines;
         array(&vec)
     }
 }
