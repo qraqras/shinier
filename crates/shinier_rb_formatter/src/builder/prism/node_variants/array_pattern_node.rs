@@ -54,11 +54,11 @@ fn build_array_pattern_elements(
     // build documents with proper commas
     let mut documents = Vec::new();
     for (i, node) in nodes.iter().enumerate() {
-        let should_comma = match node {
+        let need_comma = match node {
             Node::ImplicitRestNode { .. } => false,
             _ => true,
         };
-        if i > 0 && should_comma {
+        if i > 0 && need_comma {
             documents.push(string(COMMA));
             documents.push(line());
         }

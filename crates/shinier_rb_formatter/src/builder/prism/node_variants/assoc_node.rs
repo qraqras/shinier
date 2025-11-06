@@ -1,30 +1,32 @@
 use crate::Build;
 use crate::BuildContext;
-use crate::builder::builder::{array, group, space, string};
+use crate::builder::builder::array;
+use crate::builder::builder::group;
+use crate::builder::builder::hardline;
+use crate::builder::builder::indent;
+use crate::builder::builder::line;
+use crate::builder::builder::none;
+use crate::builder::builder::space;
+use crate::builder::builder::string;
+use crate::builder::prism::helper::owning_comments_with;
 use crate::document::Document;
-use crate::keyword::{COLON, ROCKET};
+use crate::keyword::ROCKET;
 use ruby_prism::AssocNode;
 
 impl<'sh> Build for AssocNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(self, context)
-    }
-}
-
-pub fn build_node(node: &AssocNode, context: &mut BuildContext) -> Document {
-    let key = node.key();
-    let value = node.value();
-    match key.as_symbol_node() {
-        Some(symbol_node) => group(array(&[
-            symbol_node.build(context),
-            string(COLON),
-            space(),
-            value.build(context),
-        ])),
-        None => group(array(&[
+        let key = self.key();
+        let value = self.value();
+        group(array(&[
             key.build(context),
-            array(&[space(), string(ROCKET), space()]),
-            value.build(context),
-        ])),
+            space(),
+            string(ROCKET),
+            indent(array(&[
+                owning_comments_with(&self.as_node(), context, Some(hardline()), None)
+                    .unwrap_or(none()),
+                line(),
+                value.build(context),
+            ])),
+        ]))
     }
 }
