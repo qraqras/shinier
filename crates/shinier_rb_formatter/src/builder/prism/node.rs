@@ -218,6 +218,12 @@ impl<T: Build> Build for Option<T> {
             None => Document::None,
         }
     }
+    fn build(&self, context: &mut BuildContext) -> Document {
+        match self {
+            Some(node) => node.build(context),
+            None => Document::None,
+        }
+    }
     fn build_with(
         &self,
         context: &mut BuildContext,

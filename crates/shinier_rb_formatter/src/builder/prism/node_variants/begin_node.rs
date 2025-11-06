@@ -1,5 +1,6 @@
 use crate::Build;
 use crate::BuildContext;
+use crate::NodeVariant;
 use crate::builder::builder::array;
 use crate::builder::builder::group;
 use crate::builder::builder::hardline;
@@ -25,13 +26,16 @@ impl<'sh> Build for BeginNode<'sh> {
                 Some(hardline()),
                 None,
             )])),
-            rescue_clause.build_with(context, Some(hardline()), None),
-            else_clause.build_with(context, Some(hardline()), None),
-            ensure_clause.build_with(context, Some(hardline()), None),
-            match owning_comments(&self.as_node(), context) {
-                Some(comments) => array(&[hardline(), comments]),
+            match rescue_clause {
+                Some(rescue) => array(&[hardline(), rescue.as_node().build(context)]),
                 None => none(),
             },
+            else_clause.build_with(context, Some(hardline()), None),
+            ensure_clause.build_with(context, Some(hardline()), None),
+            indent(match owning_comments(&self.as_node(), context) {
+                Some(comments) => array(&[hardline(), comments]),
+                None => none(),
+            }),
             hardline(),
             string(END),
         ]))
