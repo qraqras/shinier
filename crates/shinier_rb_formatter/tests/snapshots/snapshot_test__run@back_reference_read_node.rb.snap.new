@@ -1,6 +1,6 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 225
+assertion_line: 220
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/back_reference_read_node.rb
 ---
@@ -23,12 +23,13 @@ $~
 
 ****AST****
 ProgramNode[24-94]: "$&\n$`\n$\'\n$+\n\n# Numbered back references\n$1\n$2\n$10\n$99\n\n# Match data\n$~"
-__BackReferenceReadNode[24-26]: "$&"
-__BackReferenceReadNode[27-29]: "$`"
-__BackReferenceReadNode[30-32]: "$\'"
-__BackReferenceReadNode[33-35]: "$+"
-__NumberedReferenceReadNode[64-66]: "$1"
-__NumberedReferenceReadNode[67-69]: "$2"
-__NumberedReferenceReadNode[70-73]: "$10"
-__NumberedReferenceReadNode[74-77]: "$99"
-__GlobalVariableReadNode[92-94]: "$~"
+__StatementsNode[24-94]: "$&\n$`\n$\'\n$+\n\n# Numbered back references\n$1\n$2\n$10\n$99\n\n# Match data\n$~"
+____BackReferenceReadNode[24-26]: "$&"
+____BackReferenceReadNode[27-29]: "$`"
+____BackReferenceReadNode[30-32]: "$\'"
+____BackReferenceReadNode[33-35]: "$+"
+____NumberedReferenceReadNode[64-66]: "$1"
+____NumberedReferenceReadNode[67-69]: "$2"
+____NumberedReferenceReadNode[70-73]: "$10"
+____NumberedReferenceReadNode[74-77]: "$99"
+____GlobalVariableReadNode[92-94]: "$~"

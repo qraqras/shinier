@@ -4,7 +4,7 @@ pub mod node;
 pub mod node_likes;
 pub mod node_variant;
 pub mod node_variants;
-pub mod scanner;
+pub mod visit_all;
 
 pub use context::BuildContext;
 pub use helper::blank_lines;
@@ -13,3 +13,4 @@ pub use helper::trailing_comments;
 pub use node::Build;
 pub use node::ListBuild;
 pub use node_variant::NodeVariant;
+pub use visit_all::VisitAll;

@@ -1,11 +1,11 @@
 use crate::BuildContext;
 use crate::builder::builder::{array, break_parent, hardline, line_suffix, string};
+use crate::builder::prism::VisitAll;
 use crate::builder::prism::blank_lines;
 use crate::document::Document;
 use ruby_prism::Comment;
 use ruby_prism::CommentType;
 use ruby_prism::Node;
-use ruby_prism::Visit;
 
 /// Metadata about comments used for advanced placement logic.
 pub struct CommentMetadata {
@@ -37,14 +37,8 @@ struct NodeLocationCollector<'sh> {
 }
 
 /// Implementation of the visitor pattern for collecting node locations.
-impl<'sh> Visit<'sh> for NodeLocationCollector<'sh> {
-    fn visit_branch_node_enter(&mut self, node: Node<'sh>) {
-        self.node_locations.push(NodeLocation {
-            start_offset: node.location().start_offset(),
-            end_offset: node.location().end_offset(),
-        });
-    }
-    fn visit_leaf_node_enter(&mut self, node: Node<'sh>) {
+impl<'sh> VisitAll<'sh> for NodeLocationCollector<'sh> {
+    fn node_enter(&mut self, node: &Node<'sh>) {
         self.node_locations.push(NodeLocation {
             start_offset: node.location().start_offset(),
             end_offset: node.location().end_offset(),

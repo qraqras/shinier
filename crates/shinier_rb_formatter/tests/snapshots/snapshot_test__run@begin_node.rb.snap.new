@@ -1,6 +1,6 @@
 ---
 source: crates/shinier_rb_formatter/tests/snapshot_test.rs
-assertion_line: 225
+assertion_line: 220
 expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/begin_node.rb
 ---
@@ -34,38 +34,57 @@ begin
   # comment 2
   # comment 3
   do_something # comment 4
+# comment 5
+# comment 6
 rescue
-  # comment 5
-  # comment 6
   # comment 7
   # comment 8
   recover # comment 9
 ensure
+  must_to_do
   # comment 10
   # comment 11
-  # comment 12
-  # comment 13
-  must_to_do # comment 14
+end
+# comment 12
+# comment 13
+# comment 14
 # comment 15
 # comment 16
-end
 
 
 ****AST****
 ProgramNode[0-450]: "begin\n  do_something\nend\n\nbegin\n  do_something\nrescue\n  recover\nend\n\nbegin\n  do_something\nensure\n  must_to_do\nend\n\nbegin\n  do_something\nrescue\n  recover\nensure\n  must_to_do\nend\n\n# comment 1\nbegin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\nrescue # comment 7\n  # comment 8\n  recover # comment 9\n  # comment 10\n# comment 11\nensure # comment 12\n  # comment 13\n  must_to_do # comment 14\n  # comment 15\n# comment 16\nend"
-__BeginNode[0-24]: "begin\n  do_something\nend"
-____CallNode[8-20]: "do_something"
-__BeginNode[26-67]: "begin\n  do_something\nrescue\n  recover\nend"
-____CallNode[34-46]: "do_something"
-____CallNode[56-63]: "recover"
-__BeginNode[69-113]: "begin\n  do_something\nensure\n  must_to_do\nend"
-____CallNode[77-89]: "do_something"
-____CallNode[99-109]: "must_to_do"
-__BeginNode[115-176]: "begin\n  do_something\nrescue\n  recover\nensure\n  must_to_do\nend"
-____CallNode[123-135]: "do_something"
-____CallNode[145-152]: "recover"
-____CallNode[162-172]: "must_to_do"
-__BeginNode[190-450]: "begin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\nrescue # comment 7\n  # comment 8\n  recover # comment 9\n  # comment 10\n# comment 11\nensure # comment 12\n  # comment 13\n  must_to_do # comment 14\n  # comment 15\n# comment 16\nend"
-____CallNode[224-236]: "do_something"
-____CallNode[310-317]: "recover"
-____CallNode[395-405]: "must_to_do"
+__StatementsNode[0-450]: "begin\n  do_something\nend\n\nbegin\n  do_something\nrescue\n  recover\nend\n\nbegin\n  do_something\nensure\n  must_to_do\nend\n\nbegin\n  do_something\nrescue\n  recover\nensure\n  must_to_do\nend\n\n# comment 1\nbegin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\nrescue # comment 7\n  # comment 8\n  recover # comment 9\n  # comment 10\n# comment 11\nensure # comment 12\n  # comment 13\n  must_to_do # comment 14\n  # comment 15\n# comment 16\nend"
+____BeginNode[0-24]: "begin\n  do_something\nend"
+______StatementsNode[8-20]: "do_something"
+________CallNode[8-20]: "do_something"
+____BeginNode[26-67]: "begin\n  do_something\nrescue\n  recover\nend"
+______StatementsNode[34-46]: "do_something"
+________CallNode[34-46]: "do_something"
+______RescueNode[47-63]: "rescue\n  recover"
+________StatementsNode[56-63]: "recover"
+__________CallNode[56-63]: "recover"
+____BeginNode[69-113]: "begin\n  do_something\nensure\n  must_to_do\nend"
+______StatementsNode[77-89]: "do_something"
+________CallNode[77-89]: "do_something"
+______EnsureNode[90-113]: "ensure\n  must_to_do\nend"
+________StatementsNode[99-109]: "must_to_do"
+__________CallNode[99-109]: "must_to_do"
+____BeginNode[115-176]: "begin\n  do_something\nrescue\n  recover\nensure\n  must_to_do\nend"
+______StatementsNode[123-135]: "do_something"
+________CallNode[123-135]: "do_something"
+______RescueNode[136-152]: "rescue\n  recover"
+________StatementsNode[145-152]: "recover"
+__________CallNode[145-152]: "recover"
+______EnsureNode[153-176]: "ensure\n  must_to_do\nend"
+________StatementsNode[162-172]: "must_to_do"
+__________CallNode[162-172]: "must_to_do"
+____BeginNode[190-450]: "begin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\nrescue # comment 7\n  # comment 8\n  recover # comment 9\n  # comment 10\n# comment 11\nensure # comment 12\n  # comment 13\n  must_to_do # comment 14\n  # comment 15\n# comment 16\nend"
+______StatementsNode[224-236]: "do_something"
+________CallNode[224-236]: "do_something"
+______RescueNode[275-317]: "rescue # comment 7\n  # comment 8\n  recover"
+________StatementsNode[310-317]: "recover"
+__________CallNode[310-317]: "recover"
+______EnsureNode[358-450]: "ensure # comment 12\n  # comment 13\n  must_to_do # comment 14\n  # comment 15\n# comment 16\nend"
+________StatementsNode[395-405]: "must_to_do"
+__________CallNode[395-405]: "must_to_do"
