@@ -1,6 +1,8 @@
 use crate::BuildContext;
-use crate::builder::builder::{array, hardline};
+use crate::builder::builder::array;
+use crate::builder::builder::hardline;
 use crate::document::Document;
+use ruby_prism::Node;
 
 /// Builds leading line breaks before a given offset, up to a maximum number of line breaks.
 /// ```ruby
@@ -52,4 +54,13 @@ pub fn blank_lines(
         true => None,
         false => Some(array(&documents)),
     }
+}
+
+pub fn leading_blank_lines(node: &Node, context: &mut BuildContext) -> Option<Document> {
+    blank_lines(
+        context,
+        context.built_end,
+        node.location().start_offset(),
+        context.max_blank_lines,
+    )
 }

@@ -513,3 +513,36 @@ fn build_comment(comment: &Comment) -> Document {
         CommentType::InlineComment => string(text),
     }
 }
+
+pub fn keyword_trailing_comments(
+    keyword_end_offset: usize,
+    context: &mut BuildContext,
+) -> Option<Document> {
+    fn has_newline_in_range(source: &[u8], start_offset: usize, end_offset: usize) -> bool {
+        let end = end_offset.min(source.len());
+        source[start_offset..end].iter().any(|&b| b == b'\n')
+    }
+    let mut documents = Vec::new();
+    loop {
+        match context.comments.peek() {
+            Some(comment) => {
+                let comment_start_offset = comment.location().start_offset();
+                if comment_start_offset < keyword_end_offset {
+                    break;
+                }
+                if has_newline_in_range(context.source, keyword_end_offset, comment_start_offset) {
+                    break;
+                }
+                let comment = context.comments.next().unwrap();
+                documents.push(line_suffix(build_comment(&comment)));
+                documents.push(break_parent());
+                context.built_end = comment.location().end_offset();
+            }
+            None => break,
+        }
+    }
+    match documents.is_empty() {
+        true => None,
+        false => Some(array(&documents)),
+    }
+}
