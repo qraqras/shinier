@@ -17,7 +17,7 @@ pub fn build_alias_global_variable_node(
     context: &mut BuildContext,
 ) -> Document {
     let leading_comments = leading_comments(&node.as_node(), context);
-    let blank_lines = leading_blank_lines(&node.as_node(), context);
+    let leading_blank_lines = leading_blank_lines(&node.as_node(), context);
     let alias_keyword = Some(string(ALIAS));
     let trailing_comment_after_alias_keyword =
         keyword_trailing_comments(node.keyword_loc().end_offset(), context);
@@ -27,7 +27,7 @@ pub fn build_alias_global_variable_node(
     let trailing_comment = trailing_comments(&node.as_node(), context);
     layout_alias_global_variable_node(LayoutParamAliasGlobalVariableNode {
         leading_comments,
-        blank_lines,
+        blank_lines: leading_blank_lines,
         alias_keyword,
         trailing_comment_after_alias_keyword,
         owning_comments,

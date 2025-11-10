@@ -35,7 +35,10 @@ pub fn layout_alias_global_variable_node(param: LayoutParamAliasGlobalVariableNo
             param.alias_keyword,
             param.trailing_comment_after_alias_keyword,
             line_opt(),
-            param.owning_comments,
+            match param.owning_comments {
+                Some(owning_comments) => Some(array_opt(&[Some(owning_comments), hardline_opt()])),
+                None => None,
+            },
             indent_opt(array_opt(&[param.new_name, space_opt(), param.old_name])),
         ])),
         param.trailing_comment,
