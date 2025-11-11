@@ -1,5 +1,4 @@
 pub mod builder;
-pub mod comment;
 pub mod keyword;
 pub mod prism;
 

@@ -1,21 +1,20 @@
 use crate::Build;
 use crate::BuildContext;
-use crate::builder::builder::{array, literalline};
-use crate::builder::prism::helper::rest_comments;
+use crate::builder::builder::{array, dedent_to_root, hardline, literalline, none};
+use crate::builder::prism::helper::dangling_comments;
 use crate::document::Document;
 use ruby_prism::ProgramNode;
 
 impl<'sh> Build for ProgramNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(self, context)
+        let statements = self.statements();
+        array(&[
+            statements.build(context),
+            match dangling_comments(context) {
+                Some(comments) => dedent_to_root(array(&[hardline(), comments])),
+                None => none(),
+            },
+            literalline(),
+        ])
     }
-}
-
-pub fn build_node(node: &ProgramNode, context: &mut BuildContext) -> Document {
-    let statements = node.statements();
-    array(&[
-        statements.build(context),
-        rest_comments(context), // TODO: dedent_to_root
-        literalline(),
-    ])
 }

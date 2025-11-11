@@ -29,6 +29,7 @@ impl<'a> Printer<'a> {
         for diagnostic in parse_result.errors() {
             messages.push_str(diagnostic.message());
             messages.push_str(format!("\n{:?}\n", diagnostic.location()).as_str());
+            messages.push_str(format!("\n{}", &self.source).as_str());
         }
         if messages.len() > 0 {
             panic!("!!!!パースエラー時の処理は未実装です!!!!: {}", messages);
@@ -45,14 +46,16 @@ impl<'a> Printer<'a> {
         let mut context = BuildContext {
             source: self.source.as_bytes(),
             root: &parse_result.node(),
-            comment_metadata: comment_metadata,
             built_end: 0usize,
             comments: &mut parse_result.comments().peekable(),
-            max_leading_line_breaks: 0usize,
+            comment_metadata: comment_metadata,
+            max_blank_lines: 0usize,
+            hash_label_style: false,
+            percent_literal: false,
         };
-        let doc = parse_result.node().build(&mut context);
+        let mut doc = parse_result.node().build(&mut context);
 
-        let output = print_doc_to_string(&doc, ());
+        let output = print_doc_to_string(&mut doc, ());
         (parse_result, output)
     }
 }

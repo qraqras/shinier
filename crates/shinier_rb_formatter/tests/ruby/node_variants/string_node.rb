@@ -1,4 +1,3 @@
-# Docs.rs
 "foo"
 %w[foo]
 "foo #{bar} baz"

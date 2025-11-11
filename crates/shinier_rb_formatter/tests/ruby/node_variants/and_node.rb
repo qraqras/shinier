@@ -1,4 +1,3 @@
-# Docs.rs
 left and right
 
 # unnecessary line break
@@ -14,3 +13,7 @@ foo and bar and baz and
 foo and bar and baz and
 foo and bar and baz and
 foo and bar and baz
+
+left and # trailing comment 1
+# owinig comment
+right # trailing comment 2

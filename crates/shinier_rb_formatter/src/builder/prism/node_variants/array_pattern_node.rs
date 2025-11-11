@@ -1,40 +1,68 @@
 use crate::Build;
 use crate::BuildContext;
-use crate::ListBuild;
-use crate::builder::builder::{array, group, indent, line, softline, string};
-use crate::builder::prism::helper::layout::separate_docs;
+use crate::builder::builder::array;
+use crate::builder::builder::group;
+use crate::builder::builder::indent;
+use crate::builder::builder::line;
+use crate::builder::builder::softline;
+use crate::builder::builder::string;
 use crate::document::Document;
-use crate::keyword::{BRACKETS, COMMA};
+use crate::keyword::BRACKETS;
+use crate::keyword::COMMA;
 use ruby_prism::ArrayPatternNode;
+use ruby_prism::Node;
+use ruby_prism::NodeList;
 
 impl<'sh> Build for ArrayPatternNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
-        build_node(self, context)
+        let constant = self.constant();
+        let requireds = self.requireds();
+        let rest = self.rest();
+        let posts = self.posts();
+        group(array(&[
+            constant.build(context),
+            string(BRACKETS.0),
+            indent(array(&[
+                softline(),
+                group(array(&build_array_pattern_elements(
+                    &requireds, rest, &posts, context,
+                ))),
+            ])),
+            softline(),
+            string(BRACKETS.1),
+        ]))
     }
 }
 
-pub fn build_node(node: &ArrayPatternNode, context: &mut BuildContext) -> Document {
-    let constant = node.constant();
-    let requireds = node.requireds();
-    let rest = node.rest();
-    let posts = node.posts();
-
-    let separator = array(&[string(COMMA), line()]);
-
-    let separated_requireds = requireds.build(context, &separator);
-    let separated_posts = posts.build(context, &separator);
-
-    group(array(&[
-        constant.build(context),
-        string(BRACKETS.0),
-        indent(array(&[
-            softline(),
-            group(array(&separate_docs(
-                &[separated_requireds, rest.build(context), separated_posts],
-                separator.clone(),
-            ))),
-        ])),
-        softline(),
-        string(BRACKETS.1),
-    ]))
+fn build_array_pattern_elements(
+    requireds: &NodeList,
+    rest: Option<Node>,
+    posts: &NodeList,
+    context: &mut BuildContext,
+) -> Vec<Document> {
+    // collect all nodes in order
+    let mut nodes = Vec::new();
+    for required in requireds.iter() {
+        nodes.push(required);
+    }
+    if let Some(rest) = rest {
+        nodes.push(rest);
+    }
+    for post in posts.iter() {
+        nodes.push(post);
+    }
+    // build documents with proper commas
+    let mut documents = Vec::new();
+    for (i, node) in nodes.iter().enumerate() {
+        let need_comma = match node {
+            Node::ImplicitRestNode { .. } => false,
+            _ => true,
+        };
+        if i > 0 && need_comma {
+            documents.push(string(COMMA));
+            documents.push(line());
+        }
+        documents.push(node.build(context));
+    }
+    documents
 }

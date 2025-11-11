@@ -1,4 +1,6 @@
-use crate::document::{Document, Group, IfBreak, Indent, Line, LineSuffix, LineSuffixBoundary};
+use crate::document::{
+    Align, Document, Group, IfBreak, Indent, Line, LineSuffix, LineSuffixBoundary,
+};
 use std::cell::Cell;
 
 thread_local! {
@@ -17,11 +19,27 @@ pub fn reset_group_id() {
     GROUP_ID_NEXT.with(|next| next.set(0));
 }
 
+pub fn align_number(n: i32, content: Document) -> Document {
+    Document::Align(Align {
+        contents: Box::new(content),
+        n: Some(n),
+        s: None,
+    })
+}
+
+pub fn align_string(s: String, content: Document) -> Document {
+    Document::Align(Align {
+        contents: Box::new(content),
+        n: None,
+        s: Some(s),
+    })
+}
+
 pub fn array(parts: &[Document]) -> Document {
     if parts.is_empty() {
         return Document::None;
     }
-    Document::Array(parts.to_vec())
+    Document::Array(Vec::from(parts))
 }
 
 pub fn break_parent() -> Document {
@@ -38,20 +56,22 @@ pub fn fill(parts: Document) -> Document {
 pub fn group(contents: Document) -> Document {
     Document::Group(Group {
         id: generate_group_id(),
-        contents: Box::new(contents),
+        contents: Box::new(contents.clone()),
         r#break: false,
-        propagate_break: true,
         expanded_states: None,
     })
 }
 
-pub fn group_no_propagation(contents: Document) -> Document {
+pub fn conditional_group(states: &[Document]) -> Document {
+    assert!(
+        !states.is_empty(),
+        "conditional_group requires at least one state"
+    );
     Document::Group(Group {
         id: generate_group_id(),
-        contents: Box::new(contents),
+        contents: Box::new(states.first().unwrap().clone()),
         r#break: false,
-        propagate_break: false,
-        expanded_states: None,
+        expanded_states: Some(Vec::from(states)),
     })
 }
 
@@ -67,6 +87,14 @@ pub fn indent(contents: Document) -> Document {
     Document::Indent(Indent {
         contents: Box::new(contents),
     })
+}
+
+pub fn dedent(contents: Document) -> Document {
+    align_number(-1, contents)
+}
+
+pub fn dedent_to_root(contents: Document) -> Document {
+    align_number(i32::MIN, contents)
 }
 
 pub fn none() -> Document {
@@ -129,4 +157,75 @@ pub fn string<T: Into<String>>(string: T) -> Document {
 
 pub fn space() -> Document {
     Document::String(" ".to_string())
+}
+
+pub fn array_opt(parts: &[Option<Document>]) -> Document {
+    let filtered: Vec<Document> = parts
+        .iter()
+        .filter_map(|opt| opt.as_ref().cloned())
+        .collect();
+    if filtered.is_empty() {
+        return Document::None;
+    }
+    Document::Array(filtered)
+}
+
+pub fn group_opt(contents: Document) -> Option<Document> {
+    Some(Document::Group(Group {
+        id: generate_group_id(),
+        contents: Box::new(contents.clone()),
+        r#break: false,
+        expanded_states: None,
+    }))
+}
+
+pub fn indent_opt(contents: Document) -> Option<Document> {
+    Some(Document::Indent(Indent {
+        contents: Box::new(contents),
+    }))
+}
+pub fn line_opt() -> Option<Document> {
+    Some(Document::Line(Line {
+        hard: false,
+        literal: false,
+        soft: false,
+    }))
+}
+
+pub fn hardline_opt() -> Option<Document> {
+    Some(array(&[
+        Document::Line(Line {
+            hard: true,
+            literal: false,
+            soft: false,
+        }),
+        Document::BreakParent,
+    ]))
+}
+
+pub fn literalline_opt() -> Option<Document> {
+    Some(array(&[
+        Document::Line(Line {
+            hard: true,
+            literal: true,
+            soft: false,
+        }),
+        Document::BreakParent,
+    ]))
+}
+
+pub fn softline_opt() -> Option<Document> {
+    Some(Document::Line(Line {
+        hard: false,
+        literal: false,
+        soft: true,
+    }))
+}
+
+pub fn string_opt<T: Into<String>>(string: T) -> Option<Document> {
+    Some(Document::String(string.into()))
+}
+
+pub fn space_opt() -> Option<Document> {
+    Some(Document::String(" ".to_string()))
 }

@@ -1,9 +1,11 @@
 use crate::Build;
 use crate::BuildContext;
 use crate::Document;
-use crate::builder::builder::{array, group, none};
+use crate::builder::builder::array;
+use crate::builder::builder::group;
+use crate::builder::builder::none;
+use crate::builder::prism::helper::blank_lines;
 use crate::builder::prism::helper::leading_comments;
-use crate::builder::prism::helper::leading_line_breaks;
 use crate::builder::prism::helper::trailing_comments;
 use ruby_prism::*;
 
@@ -15,33 +17,40 @@ pub trait NodeVariant<'sh>: Build {
     fn execute_build(&self, context: &mut BuildContext) -> Document {
         let mut vec = Vec::new();
         // Build leading comments
-        vec.push(leading_comments(&self.as_node(), context));
-        // Build leading line breaks
-        if context.max_leading_line_breaks > 0 {
-            vec.push(leading_line_breaks(
-                context,
-                self.location().start_offset(),
-                context.max_leading_line_breaks,
-            ));
+        if let Some(leading_comments) = leading_comments(&self.as_node(), context) {
+            vec.push(leading_comments);
         }
-        let prev_max_leading_line_breaks = context.max_leading_line_breaks;
-        context.max_leading_line_breaks = match self.as_node() {
+        // Build leading line breaks
+        if let Some(blank_lines) = blank_lines(
+            context,
+            context.built_end,
+            self.location().start_offset(),
+            context.max_blank_lines,
+        ) {
+            vec.push(blank_lines);
+        }
+        // propagate max leading line breaks for statements and program nodes
+        let prev_max_blank_lines = context.max_blank_lines;
+        context.max_blank_lines = match self.as_node() {
             Node::StatementsNode { .. } => 1usize,
             Node::ProgramNode { .. } => 1usize,
             _ => 0usize,
         };
-        vec.push(group(array(&[
-            // Build the node itself
-            self.__build__(context),
-            // Build trailing comments
-            trailing_comments(&self.as_node(), context),
-        ])));
+        // Build the node itself
+        let node = self.__build__(context);
+        // Build trailing comments
+        if let Some(trailing_comments) = trailing_comments(&self.as_node(), context) {
+            vec.push(group(array(&[node, trailing_comments])));
+        } else {
+            vec.push(node);
+        }
         context.built_end = context.built_end.max(self.location().end_offset());
-        context.max_leading_line_breaks = prev_max_leading_line_breaks;
+        context.max_blank_lines = prev_max_blank_lines;
         array(&vec)
     }
 }
 
+/// Macro to implement NodeVariant for multiple node types.
 macro_rules! impl_node_variant {
     ($($typ:ident),* $(,)?) => {
         $(
@@ -56,24 +65,11 @@ macro_rules! impl_node_variant {
                     self.execute_build(context)
                 }
             }
-            impl<'sh> NodeVariant<'sh> for Option<$typ<'sh>> {
-                fn as_node(&self) -> Node<'sh> {
-                    unimplemented!()
-                }
-                fn location(&self) -> Location<'sh> {
-                    unimplemented!()
-                }
-                fn build(&self, context: &mut BuildContext) -> Document {
-                    match self {
-                        Some(node) => node.execute_build(context),
-                        None => none(),
-                    }
-                }
-            }
         )*
     };
 }
 
+// Implement NodeVariant for multiple node types
 impl_node_variant!(
     AliasGlobalVariableNode,
     AliasMethodNode,
@@ -227,3 +223,19 @@ impl_node_variant!(
     XStringNode,
     YieldNode,
 );
+
+// Implement NodeVariant for Option<T>
+impl<'sh, T: NodeVariant<'sh>> NodeVariant<'sh> for Option<T> {
+    fn as_node(&self) -> Node<'sh> {
+        unimplemented!("as_node is not implemented for Option<NodeVariant>")
+    }
+    fn location(&self) -> Location<'sh> {
+        unimplemented!("location is not implemented for Option<NodeVariant>")
+    }
+    fn build(&self, context: &mut BuildContext) -> Document {
+        match self {
+            Some(node) => node.execute_build(context),
+            None => none(),
+        }
+    }
+}

@@ -20,3 +20,4 @@ owning block comment 2
 =end
   $foo $bar
 alias $foo $bar # trailing comment
+alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar # trailing comment

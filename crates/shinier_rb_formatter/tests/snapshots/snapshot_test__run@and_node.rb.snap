@@ -1,0 +1,121 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/and_node.rb
+---
+****FORMATTED****
+left && right
+
+# unnecessary line break
+left && right
+
+# long expression
+foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz
+
+# long expression with unnecessary line breaks
+foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz &&
+  foo &&
+  bar &&
+  baz
+
+left && # trailing comment 1
+  # owinig comment
+  right # trailing comment 2
+
+
+****AST****
+ProgramNode[0-408]: "left and right\n\n# unnecessary line break\nleft and\nright\n\n# long expression\nfoo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz\n\n# long expression with unnecessary line breaks\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz\n\nleft and # trailing comment 1\n# owinig comment\nright"
+__StatementsNode[0-408]: "left and right\n\n# unnecessary line break\nleft and\nright\n\n# long expression\nfoo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz\n\n# long expression with unnecessary line breaks\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz\n\nleft and # trailing comment 1\n# owinig comment\nright"
+____AndNode[0-14]: "left and right"
+______CallNode[0-4]: "left"
+______CallNode[9-14]: "right"
+____AndNode[41-55]: "left and\nright"
+______CallNode[41-45]: "left"
+______CallNode[50-55]: "right"
+____AndNode[75-190]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz"
+______AndNode[75-182]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar"
+________AndNode[75-174]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo"
+__________AndNode[75-166]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz"
+____________AndNode[75-158]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar"
+______________AndNode[75-150]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo"
+________________AndNode[75-142]: "foo and bar and baz and foo and bar and baz and foo and bar and baz"
+__________________AndNode[75-134]: "foo and bar and baz and foo and bar and baz and foo and bar"
+____________________AndNode[75-126]: "foo and bar and baz and foo and bar and baz and foo"
+______________________AndNode[75-118]: "foo and bar and baz and foo and bar and baz"
+________________________AndNode[75-110]: "foo and bar and baz and foo and bar"
+__________________________AndNode[75-102]: "foo and bar and baz and foo"
+____________________________AndNode[75-94]: "foo and bar and baz"
+______________________________AndNode[75-86]: "foo and bar"
+________________________________CallNode[75-78]: "foo"
+________________________________CallNode[83-86]: "bar"
+______________________________CallNode[91-94]: "baz"
+____________________________CallNode[99-102]: "foo"
+__________________________CallNode[107-110]: "bar"
+________________________CallNode[115-118]: "baz"
+______________________CallNode[123-126]: "foo"
+____________________CallNode[131-134]: "bar"
+__________________CallNode[139-142]: "baz"
+________________CallNode[147-150]: "foo"
+______________CallNode[155-158]: "bar"
+____________CallNode[163-166]: "baz"
+__________CallNode[171-174]: "foo"
+________CallNode[179-182]: "bar"
+______CallNode[187-190]: "baz"
+____AndNode[239-354]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
+______AndNode[239-346]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar"
+________AndNode[239-338]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo"
+__________AndNode[239-330]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
+____________AndNode[239-322]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar"
+______________AndNode[239-314]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo"
+________________AndNode[239-306]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
+__________________AndNode[239-298]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar"
+____________________AndNode[239-290]: "foo and bar and baz and\nfoo and bar and baz and\nfoo"
+______________________AndNode[239-282]: "foo and bar and baz and\nfoo and bar and baz"
+________________________AndNode[239-274]: "foo and bar and baz and\nfoo and bar"
+__________________________AndNode[239-266]: "foo and bar and baz and\nfoo"
+____________________________AndNode[239-258]: "foo and bar and baz"
+______________________________AndNode[239-250]: "foo and bar"
+________________________________CallNode[239-242]: "foo"
+________________________________CallNode[247-250]: "bar"
+______________________________CallNode[255-258]: "baz"
+____________________________CallNode[263-266]: "foo"
+__________________________CallNode[271-274]: "bar"
+________________________CallNode[279-282]: "baz"
+______________________CallNode[287-290]: "foo"
+____________________CallNode[295-298]: "bar"
+__________________CallNode[303-306]: "baz"
+________________CallNode[311-314]: "foo"
+______________CallNode[319-322]: "bar"
+____________CallNode[327-330]: "baz"
+__________CallNode[335-338]: "foo"
+________CallNode[343-346]: "bar"
+______CallNode[351-354]: "baz"
+____AndNode[356-408]: "left and # trailing comment 1\n# owinig comment\nright"
+______CallNode[356-360]: "left"
+______CallNode[403-408]: "right"

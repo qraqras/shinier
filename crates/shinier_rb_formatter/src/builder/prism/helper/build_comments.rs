@@ -1,11 +1,11 @@
 use crate::BuildContext;
 use crate::builder::builder::{array, break_parent, hardline, line_suffix, string};
-use crate::builder::prism::leading_line_breaks;
+use crate::builder::prism::VisitAll;
+use crate::builder::prism::blank_lines;
 use crate::document::Document;
 use ruby_prism::Comment;
 use ruby_prism::CommentType;
 use ruby_prism::Node;
-use ruby_prism::Visit;
 
 /// Metadata about comments used for advanced placement logic.
 pub struct CommentMetadata {
@@ -37,14 +37,8 @@ struct NodeLocationCollector<'sh> {
 }
 
 /// Implementation of the visitor pattern for collecting node locations.
-impl<'sh> Visit<'sh> for NodeLocationCollector<'sh> {
-    fn visit_branch_node_enter(&mut self, node: Node<'sh>) {
-        self.node_locations.push(NodeLocation {
-            start_offset: node.location().start_offset(),
-            end_offset: node.location().end_offset(),
-        });
-    }
-    fn visit_leaf_node_enter(&mut self, node: Node<'sh>) {
+impl<'sh> VisitAll<'sh> for NodeLocationCollector<'sh> {
+    fn node_enter(&mut self, node: &Node<'sh>) {
         self.node_locations.push(NodeLocation {
             start_offset: node.location().start_offset(),
             end_offset: node.location().end_offset(),
@@ -81,7 +75,8 @@ pub fn decorate_comment<'sh>(
     let comment_start_offset = comment.location().start_offset();
     let comment_end_offset = comment.location().end_offset();
     // Find preceding node - binary search for nodes ending before comment
-    let preceding_node_location = find_preceding_node(&sorted_node_locations, comment_start_offset);
+    let preceding_node_location =
+        find_preceding_node(&sorted_node_locations, comment_start_offset, source);
     // Find following node - binary search for nodes starting after comment
     let following_node_location = find_following_node(&sorted_node_locations, comment_end_offset);
     // Find enclosing node - needs to scan all candidates
@@ -109,25 +104,51 @@ pub fn decorate_comment<'sh>(
 fn find_preceding_node(
     sorted_node_locations: &SortedNodeLocations,
     comment_start: usize,
+    source: &[u8],
 ) -> Option<NodeLocation> {
+    fn has_newline_in_range(source: &[u8], start_offset: usize, end_offset: usize) -> bool {
+        let end = end_offset.min(source.len());
+        source[start_offset..end].iter().any(|&b| b == b'\n')
+    }
     let sorted = &sorted_node_locations.by_end;
     let idx = sorted.partition_point(|node| node.end_offset < comment_start);
     if idx == 0 {
         return None;
     }
-
-    let end_idx = idx - 1;
-    let mut result = sorted[end_idx];
-    for node in sorted[..end_idx].iter().rev() {
-        if node.end_offset == result.end_offset {
-            if result.start_offset < node.start_offset {
-                result = *node;
-            }
-        } else {
+    let mut result: Option<NodeLocation> = None;
+    let mut found_single_line_node = false;
+    for node in sorted[..idx].iter().rev() {
+        // node end and comment start are on different lines
+        if has_newline_in_range(source, node.end_offset, comment_start) {
             break;
         }
+        if result.is_none_or(|r| r.end_offset <= node.end_offset) {
+            let mut should_update = false;
+            // single-line node
+            if !has_newline_in_range(source, node.start_offset, node.end_offset) {
+                should_update = match result {
+                    Some(prev) => node.start_offset < prev.start_offset,
+                    None => true,
+                };
+                found_single_line_node = true;
+            // multi-line node
+            } else {
+                if found_single_line_node {
+                    break;
+                }
+                should_update = match result {
+                    Some(prev) => prev.start_offset < node.start_offset,
+                    None => true,
+                };
+            }
+            if should_update {
+                result = Some(*node);
+            }
+            continue;
+        }
+        break;
     }
-    Some(result)
+    result
 }
 
 /// Finds the following node (comment_end <= node_start).
@@ -225,7 +246,7 @@ pub fn determine_placement(
 /// # leading comment
 /// foo
 /// ```
-pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
+pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Option<Document> {
     let mut documents = Vec::new();
     loop {
         match context.comments.peek() {
@@ -257,7 +278,11 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
                 if !is_leading {
                     break;
                 }
-                documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
+                if let Some(blank_lines) =
+                    blank_lines(context, context.built_end, comment_start_offset, 1usize)
+                {
+                    documents.push(blank_lines);
+                }
                 let comment = context.comments.next().unwrap();
                 documents.push(build_comment(&comment));
                 documents.push(hardline());
@@ -266,12 +291,16 @@ pub fn leading_comments(node: &Node, context: &mut BuildContext) -> Document {
             None => break,
         }
     }
-    array(&documents)
+    match documents.is_empty() {
+        true => None,
+        false => Some(array(&documents)),
+    }
 }
 
 /// Builds owning comments for a given node.
 /// ```ruby
 /// if foo then
+///   # owning comment
 ///   # owning comment
 /// end
 /// ```
@@ -317,29 +346,66 @@ pub fn owning_comments(node: &Node, context: &mut BuildContext) -> Option<Docume
                 if !is_owning {
                     break;
                 }
-                documents.push(leading_line_breaks(context, comment_start_offset, 1usize));
+                if !documents.is_empty() {
+                    documents.push(hardline());
+                }
+                let gap_start_offset = context.built_end.max(node.location().start_offset());
+                let gap_end_offset = comment_start_offset;
+                if let Some(blank_lines) =
+                    blank_lines(context, gap_start_offset, gap_end_offset, 1usize)
+                {
+                    documents.push(blank_lines);
+                }
                 let comment = context.comments.next().unwrap();
                 documents.push(build_comment(&comment));
-                documents.push(hardline());
                 context.built_end = comment.location().end_offset();
             }
             None => break,
         }
     }
-    if !documents.is_empty() {
-        // remove last hardline and add break parent
-        documents.pop();
-        documents.push(break_parent());
-        return Some(array(&documents));
+    match documents.is_empty() {
+        true => None,
+        false => {
+            documents.push(break_parent()); // ensure proper breaking behavior
+            Some(array(&documents))
+        }
     }
-    None
+}
+
+/// Builds owning comments for a given node with optional documents before and after.
+/// ```ruby
+/// if foo then
+///   {before}# owning comment
+///   # owning comment{after}
+/// end
+/// ```
+pub fn owning_comments_with(
+    node: &Node,
+    context: &mut BuildContext,
+    before: Option<Document>,
+    after: Option<Document>,
+) -> Option<Document> {
+    match owning_comments(node, context) {
+        Some(comments) => {
+            let mut documents = Vec::new();
+            if let Some(before) = before {
+                documents.push(before);
+            }
+            documents.push(comments);
+            if let Some(after) = after {
+                documents.push(after);
+            }
+            Some(array(&documents))
+        }
+        None => None,
+    }
 }
 
 /// Builds trailing comments for a given node.
 /// ```ruby
 /// foo # trailing comment
 /// ```
-pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
+pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Option<Document> {
     let mut documents = Vec::new();
     loop {
         match context.comments.peek() {
@@ -377,7 +443,10 @@ pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
             None => break,
         }
     }
-    array(&documents)
+    match documents.is_empty() {
+        true => None,
+        false => Some(array(&documents)),
+    }
 }
 
 /// Builds the rest of the comments in the source code.
@@ -385,16 +454,19 @@ pub fn trailing_comments(node: &Node, context: &mut BuildContext) -> Document {
 /// # rest comment
 /// EOF
 ///```
-pub fn rest_comments(context: &mut BuildContext) -> Document {
+pub fn dangling_comments(context: &mut BuildContext) -> Option<Document> {
     let mut documents = Vec::new();
     loop {
         match context.comments.next() {
             Some(comment) => {
-                documents.push(leading_line_breaks(
+                if let Some(blank_lines) = blank_lines(
                     context,
+                    context.built_end,
                     comment.location().start_offset(),
                     1usize,
-                ));
+                ) {
+                    documents.push(blank_lines);
+                }
                 documents.push(build_comment(&comment));
                 documents.push(hardline());
                 continue;
@@ -402,11 +474,13 @@ pub fn rest_comments(context: &mut BuildContext) -> Document {
             None => break,
         }
     }
-    if !documents.is_empty() {
-        // remove last hardline
-        documents.pop();
+    match documents.is_empty() {
+        true => None,
+        false => {
+            documents.pop(); // remove last hardline
+            return Some(array(&documents));
+        }
     }
-    array(&documents)
 }
 
 /// Builds a Document for a given comment.
@@ -437,5 +511,38 @@ fn build_comment(comment: &Comment) -> Document {
             array(&documents)
         }
         CommentType::InlineComment => string(text),
+    }
+}
+
+pub fn keyword_trailing_comments(
+    keyword_end_offset: usize,
+    context: &mut BuildContext,
+) -> Option<Document> {
+    fn has_newline_in_range(source: &[u8], start_offset: usize, end_offset: usize) -> bool {
+        let end = end_offset.min(source.len());
+        source[start_offset..end].iter().any(|&b| b == b'\n')
+    }
+    let mut documents = Vec::new();
+    loop {
+        match context.comments.peek() {
+            Some(comment) => {
+                let comment_start_offset = comment.location().start_offset();
+                if comment_start_offset < keyword_end_offset {
+                    break;
+                }
+                if has_newline_in_range(context.source, keyword_end_offset, comment_start_offset) {
+                    break;
+                }
+                let comment = context.comments.next().unwrap();
+                documents.push(line_suffix(build_comment(&comment)));
+                documents.push(break_parent());
+                context.built_end = comment.location().end_offset();
+            }
+            None => break,
+        }
+    }
+    match documents.is_empty() {
+        true => None,
+        false => Some(array(&documents)),
     }
 }

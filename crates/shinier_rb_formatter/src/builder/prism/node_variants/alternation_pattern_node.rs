@@ -1,7 +1,11 @@
 use crate::Build;
 use crate::BuildContext;
-use crate::builder::builder::{array, group, line, space, string};
-use crate::builder::prism::helper::owning_comments;
+use crate::builder::builder::array;
+use crate::builder::builder::group;
+use crate::builder::builder::indent;
+use crate::builder::builder::line;
+use crate::builder::builder::space;
+use crate::builder::builder::string;
 use crate::document::Document;
 use crate::keyword::ALTERNATION;
 use ruby_prism::AlternationPatternNode;
@@ -10,16 +14,24 @@ use ruby_prism::Node;
 impl<'sh> Build for AlternationPatternNode<'sh> {
     fn __build__(&self, context: &mut BuildContext) -> Document {
         let flatten_node = flatten_alternation_pattern_node(self, context);
-        let mut docs = Vec::new();
+        let mut documents = Vec::new();
         for (i, part) in flatten_node.into_iter().enumerate() {
+            let mut document = Vec::new();
             if i > 0 {
-                docs.push(space());
-                docs.push(string(ALTERNATION));
-                docs.push(line());
+                document.push(space());
+                document.push(string(ALTERNATION));
+                document.push(line());
             }
-            docs.push(part.build(context));
+            document.push(part.build(context));
+            documents.push(array(&document));
         }
-        group(array(&docs))
+        assert!(
+            documents.len() >= 2,
+            "AlternationPatternNode must have at least two parts"
+        );
+        let rhs = documents.split_off(1);
+        let lhs = documents.pop().unwrap();
+        group(array(&[lhs, indent(array(&rhs))]))
     }
 }
 
