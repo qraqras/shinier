@@ -1,35 +1,10 @@
 # TODO
-
-- [ ] 空行を出力したい
-    - [ ] 空行をそのまま出力(入力ソースコードを保持してスライスしてgapを出力する)
-    - [ ] 空行をフォーマット
-- [ ] コメントを出力したい
-    - [ ] LeadingかTrailingかどっち？(コメントの直後に改行があればTrailing??)
-    - [ ] LineSuffix/LineSuffixBoundaryを使用する
-    - [ ] leading-comments
-    - [ ] trailing-comments
-    - [ ] コメント周りの改行
-    - [ ] コメント中の改行
+- [ ] コメントのアタッチのロジックを修正(https://github.com/ruby/prism/blob/main/lib/prism/parse_result/comments.rb#L93)
+- [ ] 大規模リファクタリング
 
 
-- [ x ] デバッグ用にスナップショットにASTを含める
-- [ x ] Fill実装
-- [ x ] %記法
-- [ x ] LineSuffix/LineSuffixBoundaryを実装
-- [ ] 空行の制御
-- [ ] コメントの制御
-- [ ] call_nodeの呼び出し(block関連と+=のようなパターン)
-- [ ] build_symbol_without_colon
-- [ ] block_nodeで複数行のときが無効な構文になる(参考: snapshot_test__run@node__forwarding_super_node.rb.snap)
-- [ ] キーワードの命名整理
-- [ ] インポートの整理
-- [ ] 空行
-- [ ] コメント
-- [ ] doとかthenとか
-- [ ] is_forced_utf8_encoding / is_forced_binary_encoding
 
-
-# standardrbとの比較
+# 再実装
 - [ ] alias_global_variable_node.rs
 - [ ] alias_method_node.rs
 - [ ] alternation_pattern_node.rs
