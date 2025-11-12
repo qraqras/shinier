@@ -2,12 +2,14 @@ use crate::BuildContext;
 use crate::builder::builder::{array, break_parent, hardline, line_suffix, string};
 use crate::builder::prism::VisitAll;
 use crate::builder::prism::blank_lines;
+use crate::builder::prism::helper::build_blank_lines::LineBreakIndex;
 use crate::document::Document;
 use ruby_prism::Comment;
 use ruby_prism::CommentType;
 use ruby_prism::Node;
 
 /// Metadata about comments used for advanced placement logic.
+#[derive(Clone, Debug)]
 pub struct CommentMetadata {
     pub comment_start_offset: usize,
     pub preceding_node_location: Option<NodeLocation>,
@@ -24,7 +26,7 @@ pub struct NodeLocation {
 }
 
 /// Enum representing comment placement types.
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum CommentPlacement {
     EndOfLine,
     OwnLine,
@@ -70,13 +72,16 @@ pub fn collect_sorted_node_locations<'sh>(node: &Node<'sh>) -> SortedNodeLocatio
 pub fn decorate_comment<'sh>(
     comment: &'sh Comment<'sh>,
     sorted_node_locations: &'sh SortedNodeLocations,
-    source: &'sh [u8],
+    line_break_index: &LineBreakIndex,
 ) -> CommentMetadata {
     let comment_start_offset = comment.location().start_offset();
     let comment_end_offset = comment.location().end_offset();
     // Find preceding node - binary search for nodes ending before comment
-    let preceding_node_location =
-        find_preceding_node(&sorted_node_locations, comment_start_offset, source);
+    let preceding_node_location = find_preceding_node(
+        &sorted_node_locations,
+        comment_start_offset,
+        line_break_index,
+    );
     // Find following node - binary search for nodes starting after comment
     let following_node_location = find_following_node(&sorted_node_locations, comment_end_offset);
     // Find enclosing node - needs to scan all candidates
@@ -89,7 +94,7 @@ pub fn decorate_comment<'sh>(
         comment,
         preceding_node_location.as_ref(),
         following_node_location.as_ref(),
-        source,
+        line_break_index,
     );
     CommentMetadata {
         comment_start_offset,
@@ -104,12 +109,8 @@ pub fn decorate_comment<'sh>(
 fn find_preceding_node(
     sorted_node_locations: &SortedNodeLocations,
     comment_start: usize,
-    source: &[u8],
+    line_break_index: &LineBreakIndex,
 ) -> Option<NodeLocation> {
-    fn has_newline_in_range(source: &[u8], start_offset: usize, end_offset: usize) -> bool {
-        let end = end_offset.min(source.len());
-        source[start_offset..end].iter().any(|&b| b == b'\n')
-    }
     let sorted = &sorted_node_locations.by_end;
     let idx = sorted.partition_point(|node| node.end_offset < comment_start);
     if idx == 0 {
@@ -119,13 +120,13 @@ fn find_preceding_node(
     let mut found_single_line_node = false;
     for node in sorted[..idx].iter().rev() {
         // node end and comment start are on different lines
-        if has_newline_in_range(source, node.end_offset, comment_start) {
+        if line_break_index.has_line_break_in_range(node.end_offset, comment_start) {
             break;
         }
         if result.is_none_or(|r| r.end_offset <= node.end_offset) {
             let mut should_update = false;
             // single-line node
-            if !has_newline_in_range(source, node.start_offset, node.end_offset) {
+            if line_break_index.has_line_break_in_range(node.start_offset, node.end_offset) {
                 should_update = match result {
                     Some(prev) => node.start_offset < prev.start_offset,
                     None => true,
@@ -207,16 +208,19 @@ pub fn determine_placement(
     comment: &Comment,
     preceding_node_location: Option<&NodeLocation>,
     following_node_location: Option<&NodeLocation>,
-    source: &[u8],
+    line_break_index: &LineBreakIndex,
 ) -> CommentPlacement {
-    fn has_newline_in_range(source: &[u8], start_offset: usize, end_offset: usize) -> bool {
-        let end = end_offset.min(source.len());
-        source[start_offset..end].iter().any(|&b| b == b'\n')
+    fn has_newline_in_range(
+        line_break_index: &LineBreakIndex,
+        start_offset: usize,
+        end_offset: usize,
+    ) -> bool {
+        line_break_index.has_line_break_in_range(start_offset, end_offset)
     }
     let comment_start_offset = comment.location().start_offset();
     let comment_end_offset = comment.location().end_offset();
     let has_newline_before = preceding_node_location.map_or(true, |loc| {
-        has_newline_in_range(source, loc.end_offset, comment_start_offset)
+        has_newline_in_range(line_break_index, loc.end_offset, comment_start_offset)
     });
     let has_newline_after = following_node_location.map_or(true, |loc| {
         // block comments contain \n at the end of the comment text, so we need to adjust the range accordingly
@@ -227,10 +231,10 @@ pub fn determine_placement(
         // ```
         match comment.type_() {
             CommentType::EmbDocComment => {
-                has_newline_in_range(source, comment_end_offset - 1, loc.start_offset)
+                has_newline_in_range(line_break_index, comment_end_offset - 1, loc.start_offset)
             }
             CommentType::InlineComment => {
-                has_newline_in_range(source, comment_end_offset, loc.start_offset)
+                has_newline_in_range(line_break_index, comment_end_offset, loc.start_offset)
             }
         }
     });
@@ -518,9 +522,12 @@ pub fn keyword_trailing_comments(
     keyword_end_offset: usize,
     context: &mut BuildContext,
 ) -> Option<Document> {
-    fn has_newline_in_range(source: &[u8], start_offset: usize, end_offset: usize) -> bool {
-        let end = end_offset.min(source.len());
-        source[start_offset..end].iter().any(|&b| b == b'\n')
+    fn has_newline_in_range(
+        line_break_index: &LineBreakIndex,
+        start_offset: usize,
+        end_offset: usize,
+    ) -> bool {
+        line_break_index.has_line_break_in_range(start_offset, end_offset)
     }
     let mut documents = Vec::new();
     loop {
@@ -530,7 +537,11 @@ pub fn keyword_trailing_comments(
                 if comment_start_offset < keyword_end_offset {
                     break;
                 }
-                if has_newline_in_range(context.source, keyword_end_offset, comment_start_offset) {
+                if has_newline_in_range(
+                    &context.line_break_index,
+                    keyword_end_offset,
+                    comment_start_offset,
+                ) {
                     break;
                 }
                 let comment = context.comments.next().unwrap();

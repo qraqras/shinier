@@ -4,6 +4,72 @@ use crate::builder::builder::hardline;
 use crate::document::Document;
 use ruby_prism::Node;
 
+/// line break index for efficient line break queries
+pub struct LineBreakIndex {
+    pub positions: Vec<usize>,
+}
+
+impl LineBreakIndex {
+    pub fn new(source: &[u8]) -> Self {
+        let positions = source
+            .iter()
+            .enumerate()
+            .filter_map(|(i, &b)| if b == b'\n' { Some(i) } else { None })
+            .collect();
+        Self { positions }
+    }
+    pub fn has_line_break_in_range(&self, start_offset: usize, end_offset: usize) -> bool {
+        if start_offset >= end_offset {
+            return false;
+        }
+        let idx = self
+            .positions
+            .partition_point(|&position| position < start_offset);
+        self.positions
+            .get(idx)
+            .map_or(false, |&pos| pos < end_offset)
+    }
+    pub fn count_line_breaks_in_range(&self, start_offset: usize, end_offset: usize) -> usize {
+        if start_offset >= end_offset {
+            return 0;
+        }
+        let start_idx = self
+            .positions
+            .partition_point(|&position| position < start_offset);
+        let end_idx = self
+            .positions
+            .partition_point(|&position| position < end_offset);
+        end_idx - start_idx
+    }
+    pub fn line_number_at_offset(&self, offset: usize) -> usize {
+        self.positions
+            .partition_point(|&position| position < offset)
+            + 1
+    }
+    pub fn get_line_start_offset(&self, offset: usize) -> usize {
+        if offset == 0 {
+            return 0;
+        }
+        let idx = self.positions.partition_point(|&pos| pos < offset);
+        if idx == 0 {
+            0
+        } else {
+            self.positions[idx - 1] + 1
+        }
+    }
+    pub fn col_at_offset(&self, offset: usize) -> usize {
+        let line_start_idx = self
+            .positions
+            .partition_point(|&position| position < offset);
+        let line_start_offset = if line_start_idx == 0 {
+            0
+        } else {
+            self.positions[line_start_idx - 1] + 1
+        };
+        offset - line_start_offset + 1
+    }
+}
+
 /// Builds leading line breaks before a given offset, up to a maximum number of line breaks.
 /// ```ruby
 ///

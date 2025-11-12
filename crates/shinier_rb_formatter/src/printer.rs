@@ -1,7 +1,9 @@
 use crate::Build;
 use crate::BuildContext;
-use crate::builder::prism::helper::collect_sorted_node_locations;
-use crate::builder::prism::helper::decorate_comment;
+use crate::builder::prism::helper::build_blank_lines::LineBreakIndex;
+use crate::builder::prism::helper::build_comments::{
+    collect_sorted_node_locations, decorate_comment,
+};
 use crate::renderer::print_doc_to_string;
 use ruby_prism::*;
 use std::collections::HashMap;
@@ -36,10 +38,10 @@ impl<'a> Printer<'a> {
         }
 
         let sorted_node_locations = collect_sorted_node_locations(&parse_result.node());
+        let line_break_index = LineBreakIndex::new(self.source.as_bytes());
         let mut comment_metadata = HashMap::new();
         for comment in parse_result.comments() {
-            let metadata =
-                decorate_comment(&comment, &sorted_node_locations, self.source.as_bytes());
+            let metadata = decorate_comment(&comment, &sorted_node_locations, &line_break_index);
             comment_metadata.insert(metadata.comment_start_offset, metadata);
         }
 
@@ -47,8 +49,9 @@ impl<'a> Printer<'a> {
             source: self.source.as_bytes(),
             root: &parse_result.node(),
             built_end: 0usize,
+            line_break_index: LineBreakIndex::new(self.source.as_bytes()),
             comments: &mut parse_result.comments().peekable(),
-            comment_metadata: comment_metadata,
+            comment_metadata,
             max_blank_lines: 0usize,
             hash_label_style: false,
             percent_literal: false,
