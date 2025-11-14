@@ -1,0 +1,14 @@
+// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/layout_node_variant/block_node.rs
+
+use crate::Document;
+use crate::builder::builder::*;
+use crate::keyword::*;
+
+pub struct LayoutParamBlockNode {
+    pub parameters: Option<Document>,
+    pub body: Option<Document>,
+}
+
+pub fn layout_block_node(param: &LayoutParamBlockNode) -> Document {
+    Document::None
+}

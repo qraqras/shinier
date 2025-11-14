@@ -1,0 +1,20 @@
+// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/back_reference_read_node.rs
+
+use crate::Document;
+use crate::builder::builder::*;
+use crate::builder::prism::build_node::build_constant_id;
+use crate::builder::prism::build_node::build_node;
+use crate::builder::prism::BuildContext;
+use crate::builder::prism::layout_node_variant::back_reference_read_node::{
+    LayoutParamBackReferenceReadNode, layout_back_reference_read_node,
+};
+use crate::keyword::*;
+use ruby_prism::*;
+
+pub fn build_back_reference_read_node(
+    node: &BackReferenceReadNode<'_>,
+    context: &mut BuildContext,
+) -> Document {
+    let name = build_constant_id(&node.name(), context);
+    layout_back_reference_read_node(&LayoutParamBackReferenceReadNode { name })
+}
