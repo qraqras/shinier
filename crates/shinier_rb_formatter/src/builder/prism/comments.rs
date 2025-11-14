@@ -2,8 +2,7 @@
 use ruby_prism::*;
 use std::collections::HashMap;
 
-use crate::{NodeVariant, node_likes::location};
-
+/// attached comment offsets for a target
 pub struct AttachedCommentOffsets {
     pub leading: Vec<usize>,
     pub trailing: Vec<usize>,
@@ -1581,8 +1580,17 @@ pub fn comment_targets_of_or_node<'sh>(node: &OrNode<'sh>) -> (Vec<Location<'sh>
 pub fn comment_targets_of_parameters_node<'sh>(
     node: &ParametersNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
-    let mut locations = Vec::new();
+    let locations = Vec::new();
     let mut nodes = Vec::new();
+    push_nodelist(&mut nodes, node.requireds());
+    push_nodelist(&mut nodes, node.optionals());
+    push_node_opt(&mut nodes, node.rest());
+    push_nodelist(&mut nodes, node.posts());
+    push_nodelist(&mut nodes, node.keywords());
+    push_node_opt(&mut nodes, node.keyword_rest());
+    if let Some(block) = node.block() {
+        push_node(&mut nodes, block.as_node());
+    }
     (locations, nodes)
 }
 pub fn comment_targets_of_parentheses_node<'sh>(
@@ -1590,6 +1598,9 @@ pub fn comment_targets_of_parentheses_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.opening_loc());
+    push_loc(&mut locations, node.closing_loc());
+    push_node_opt(&mut nodes, node.body());
     (locations, nodes)
 }
 pub fn comment_targets_of_pinned_expression_node<'sh>(
@@ -1597,6 +1608,10 @@ pub fn comment_targets_of_pinned_expression_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.operator_loc());
+    push_loc(&mut locations, node.lparen_loc());
+    push_loc(&mut locations, node.rparen_loc());
+    push_node(&mut nodes, node.expression());
     (locations, nodes)
 }
 pub fn comment_targets_of_pinned_variable_node<'sh>(
@@ -1604,6 +1619,8 @@ pub fn comment_targets_of_pinned_variable_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.operator_loc());
+    push_node(&mut nodes, node.variable());
     (locations, nodes)
 }
 pub fn comment_targets_of_post_execution_node<'sh>(
@@ -1611,6 +1628,10 @@ pub fn comment_targets_of_post_execution_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_loc(&mut locations, node.opening_loc());
+    push_loc(&mut locations, node.closing_loc());
+    push_statements_opt(&mut nodes, node.statements());
     (locations, nodes)
 }
 pub fn comment_targets_of_pre_execution_node<'sh>(
@@ -1618,13 +1639,18 @@ pub fn comment_targets_of_pre_execution_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_loc(&mut locations, node.opening_loc());
+    push_loc(&mut locations, node.closing_loc());
+    push_statements_opt(&mut nodes, node.statements());
     (locations, nodes)
 }
 pub fn comment_targets_of_program_node<'sh>(
     node: &ProgramNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
-    let mut locations = Vec::new();
+    let locations = Vec::new();
     let mut nodes = Vec::new();
+    push_node(&mut nodes, node.statements().as_node());
     (locations, nodes)
 }
 pub fn comment_targets_of_range_node<'sh>(
@@ -1632,41 +1658,51 @@ pub fn comment_targets_of_range_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.operator_loc());
+    push_node_opt(&mut nodes, node.left());
+    push_node_opt(&mut nodes, node.right());
     (locations, nodes)
 }
 pub fn comment_targets_of_rational_node<'sh>(
     node: &RationalNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.location());
     (locations, nodes)
 }
 pub fn comment_targets_of_redo_node<'sh>(
     node: &RedoNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.location());
     (locations, nodes)
 }
 pub fn comment_targets_of_regular_expression_node<'sh>(
     node: &RegularExpressionNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.opening_loc());
+    push_loc(&mut locations, node.content_loc());
+    push_loc(&mut locations, node.closing_loc());
     (locations, nodes)
 }
 pub fn comment_targets_of_required_keyword_parameter_node<'sh>(
     node: &RequiredKeywordParameterNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.name_loc());
     (locations, nodes)
 }
 pub fn comment_targets_of_required_parameter_node<'sh>(
     node: &RequiredParameterNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.location());
     (locations, nodes)
 }
 pub fn comment_targets_of_rescue_modifier_node<'sh>(
@@ -1674,6 +1710,9 @@ pub fn comment_targets_of_rescue_modifier_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_node(&mut nodes, node.expression());
+    push_node(&mut nodes, node.rescue_expression());
     (locations, nodes)
 }
 pub fn comment_targets_of_rescue_node<'sh>(
@@ -1681,20 +1720,30 @@ pub fn comment_targets_of_rescue_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_loc_opt(&mut locations, node.operator_loc());
+    push_loc_opt(&mut locations, node.then_keyword_loc());
+    push_nodelist(&mut nodes, node.exceptions());
+    push_node_opt(&mut nodes, node.reference());
+    push_statements_opt(&mut nodes, node.statements());
+    push_rescue_clauses_opt(&mut nodes, node.subsequent());
     (locations, nodes)
 }
 pub fn comment_targets_of_rest_parameter_node<'sh>(
     node: &RestParameterNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc_opt(&mut locations, node.name_loc());
+    push_loc(&mut locations, node.operator_loc());
     (locations, nodes)
 }
 pub fn comment_targets_of_retry_node<'sh>(
     node: &RetryNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.location());
     (locations, nodes)
 }
 pub fn comment_targets_of_return_node<'sh>(
@@ -1702,20 +1751,24 @@ pub fn comment_targets_of_return_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_arguments_opt(&mut nodes, node.arguments());
     (locations, nodes)
 }
 pub fn comment_targets_of_self_node<'sh>(
     node: &SelfNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.location());
     (locations, nodes)
 }
 pub fn comment_targets_of_shareable_constant_node<'sh>(
     node: &ShareableConstantNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
-    let mut locations = Vec::new();
+    let locations = Vec::new();
     let mut nodes = Vec::new();
+    push_node(&mut nodes, node.write());
     (locations, nodes)
 }
 pub fn comment_targets_of_singleton_class_node<'sh>(
@@ -1723,27 +1776,35 @@ pub fn comment_targets_of_singleton_class_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.class_keyword_loc());
+    push_loc(&mut locations, node.operator_loc());
+    push_loc(&mut locations, node.end_keyword_loc());
+    push_node(&mut nodes, node.expression());
+    push_node_opt(&mut nodes, node.body());
     (locations, nodes)
 }
 pub fn comment_targets_of_source_encoding_node<'sh>(
     node: &SourceEncodingNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.location());
     (locations, nodes)
 }
 pub fn comment_targets_of_source_file_node<'sh>(
     node: &SourceFileNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.location());
     (locations, nodes)
 }
 pub fn comment_targets_of_source_line_node<'sh>(
     node: &SourceLineNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.location());
     (locations, nodes)
 }
 pub fn comment_targets_of_splat_node<'sh>(
@@ -1751,20 +1812,26 @@ pub fn comment_targets_of_splat_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.operator_loc());
+    push_node_opt(&mut nodes, node.expression());
     (locations, nodes)
 }
 pub fn comment_targets_of_statements_node<'sh>(
     node: &StatementsNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
-    let mut locations = Vec::new();
+    let locations = Vec::new();
     let mut nodes = Vec::new();
+    push_nodelist(&mut nodes, node.body());
     (locations, nodes)
 }
 pub fn comment_targets_of_string_node<'sh>(
     node: &StringNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc_opt(&mut locations, node.opening_loc());
+    push_loc(&mut locations, node.content_loc());
+    push_loc_opt(&mut locations, node.closing_loc());
     (locations, nodes)
 }
 pub fn comment_targets_of_super_node<'sh>(
@@ -1772,20 +1839,29 @@ pub fn comment_targets_of_super_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_loc_opt(&mut locations, node.lparen_loc());
+    push_loc_opt(&mut locations, node.rparen_loc());
+    push_arguments_opt(&mut nodes, node.arguments());
+    push_node_opt(&mut nodes, node.block());
     (locations, nodes)
 }
 pub fn comment_targets_of_symbol_node<'sh>(
     node: &SymbolNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc_opt(&mut locations, node.opening_loc());
+    push_loc_opt(&mut locations, node.value_loc());
+    push_loc_opt(&mut locations, node.closing_loc());
     (locations, nodes)
 }
 pub fn comment_targets_of_true_node<'sh>(
     node: &TrueNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.location());
     (locations, nodes)
 }
 pub fn comment_targets_of_undef_node<'sh>(
@@ -1793,6 +1869,8 @@ pub fn comment_targets_of_undef_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_nodelist(&mut nodes, node.names());
     (locations, nodes)
 }
 pub fn comment_targets_of_unless_node<'sh>(
@@ -1800,6 +1878,12 @@ pub fn comment_targets_of_unless_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_loc_opt(&mut locations, node.then_keyword_loc());
+    push_loc_opt(&mut locations, node.end_keyword_loc());
+    push_node(&mut nodes, node.predicate());
+    push_statements_opt(&mut nodes, node.statements());
+    push_else_clause_opt(&mut nodes, node.else_clause());
     (locations, nodes)
 }
 pub fn comment_targets_of_until_node<'sh>(
@@ -1807,6 +1891,11 @@ pub fn comment_targets_of_until_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_loc_opt(&mut locations, node.do_keyword_loc());
+    push_loc_opt(&mut locations, node.closing_loc());
+    push_node(&mut nodes, node.predicate());
+    push_statements_opt(&mut nodes, node.statements());
     (locations, nodes)
 }
 pub fn comment_targets_of_when_node<'sh>(
@@ -1814,6 +1903,10 @@ pub fn comment_targets_of_when_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_loc_opt(&mut locations, node.then_keyword_loc());
+    push_nodelist(&mut nodes, node.conditions());
+    push_statements_opt(&mut nodes, node.statements());
     (locations, nodes)
 }
 pub fn comment_targets_of_while_node<'sh>(
@@ -1821,13 +1914,21 @@ pub fn comment_targets_of_while_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_loc_opt(&mut locations, node.do_keyword_loc());
+    push_loc_opt(&mut locations, node.closing_loc());
+    push_node(&mut nodes, node.predicate());
+    push_statements_opt(&mut nodes, node.statements());
     (locations, nodes)
 }
 pub fn comment_targets_of_x_string_node<'sh>(
     node: &XStringNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
-    let mut nodes = Vec::new();
+    let nodes = Vec::new();
+    push_loc(&mut locations, node.opening_loc());
+    push_loc(&mut locations, node.content_loc());
+    push_loc(&mut locations, node.closing_loc());
     (locations, nodes)
 }
 pub fn comment_targets_of_yield_node<'sh>(
@@ -1835,5 +1936,9 @@ pub fn comment_targets_of_yield_node<'sh>(
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+    push_loc(&mut locations, node.keyword_loc());
+    push_loc_opt(&mut locations, node.lparen_loc());
+    push_loc_opt(&mut locations, node.rparen_loc());
+    push_arguments_opt(&mut nodes, node.arguments());
     (locations, nodes)
 }
