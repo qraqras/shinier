@@ -2,10 +2,15 @@
 use ruby_prism::*;
 use std::collections::HashMap;
 
+pub struct CommentStore<'sh> {
+    pub by_location: HashMap<(usize, usize), Comment<'sh>>,
+    pub by_target: HashMap<(usize, usize), CommentPlacement>,
+}
+
 /// attached comment offsets for a target
-pub struct AttachedCommentOffsets {
-    pub leading: Vec<usize>,
-    pub trailing: Vec<usize>,
+pub struct CommentPlacement {
+    pub leading: Vec<(usize, usize)>,
+    pub trailing: Vec<(usize, usize)>,
 }
 
 /// trait for attaching comments to targets
@@ -16,12 +21,12 @@ trait Attach {
     fn leading_comment(
         &self,
         comment: &Comment,
-        map: &mut HashMap<(usize, usize), AttachedCommentOffsets>,
+        map: &mut HashMap<(usize, usize), CommentPlacement>,
     );
     fn trailing_comment(
         &self,
         comment: &Comment,
-        map: &mut HashMap<(usize, usize), AttachedCommentOffsets>,
+        map: &mut HashMap<(usize, usize), CommentPlacement>,
     );
 }
 
@@ -66,65 +71,85 @@ impl Attach for Target {
     fn leading_comment(
         &self,
         comment: &Comment,
-        map: &mut HashMap<(usize, usize), AttachedCommentOffsets>,
+        map: &mut HashMap<(usize, usize), CommentPlacement>,
     ) {
         let key = (self.start_offset(), self.end_offset());
+        let value = (
+            comment.location().start_offset(),
+            comment.location().end_offset(),
+        );
         map.entry(key)
-            .and_modify(|attached| attached.leading.push(comment.location().start_offset()))
-            .or_insert_with(|| AttachedCommentOffsets {
-                leading: Vec::from([comment.location().start_offset()]),
+            .and_modify(|attached| attached.leading.push(value))
+            .or_insert_with(|| CommentPlacement {
+                leading: Vec::from([value]),
                 trailing: Vec::new(),
             });
     }
     fn trailing_comment(
         &self,
         comment: &Comment,
-        map: &mut HashMap<(usize, usize), AttachedCommentOffsets>,
+        map: &mut HashMap<(usize, usize), CommentPlacement>,
     ) {
         let key = (self.start_offset(), self.end_offset());
+        let value = (
+            comment.location().start_offset(),
+            comment.location().end_offset(),
+        );
         map.entry(key)
-            .and_modify(|attached| attached.trailing.push(comment.location().start_offset()))
-            .or_insert_with(|| AttachedCommentOffsets {
+            .and_modify(|attached| attached.trailing.push(value))
+            .or_insert_with(|| CommentPlacement {
                 leading: Vec::new(),
-                trailing: Vec::from([comment.location().start_offset()]),
+                trailing: Vec::from([value]),
             });
     }
 }
 
 /// attach comments to nodes and locations
-pub fn attach<'sh>(
-    parse_result: &'sh ParseResult<'sh>,
-    map: &'sh mut HashMap<(usize, usize), AttachedCommentOffsets>,
-) {
+pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
+    let mut comments_by_location = HashMap::new();
+    let mut comments_by_target = HashMap::new();
     let node = parse_result.node();
     let source = parse_result.source();
     for comment in parse_result.comments() {
         let (preceding, enclosing, following) = nearest_targets(&node, &comment);
         if is_trailing(&comment, source) {
             if let Some(preceding) = preceding {
-                preceding.trailing_comment(&comment, map);
+                preceding.trailing_comment(&comment, &mut comments_by_target);
             } else {
                 if let Some(following) = following {
-                    following.leading_comment(&comment, map);
+                    following.leading_comment(&comment, &mut comments_by_target);
                 } else if let Some(enclosing) = enclosing {
-                    enclosing.leading_comment(&comment, map);
+                    enclosing.leading_comment(&comment, &mut comments_by_target);
                 } else {
-                    Target::from_node(&parse_result.node()).leading_comment(&comment, map);
+                    Target::from_node(&parse_result.node())
+                        .leading_comment(&comment, &mut comments_by_target);
                 }
             }
         } else {
             if let Some(following) = following {
-                following.leading_comment(&comment, map);
+                following.leading_comment(&comment, &mut comments_by_target);
             } else if let Some(preceding) = preceding {
-                preceding.trailing_comment(&comment, map);
+                preceding.trailing_comment(&comment, &mut comments_by_target);
             } else {
                 if let Some(enclosing) = enclosing {
-                    enclosing.leading_comment(&comment, map);
+                    enclosing.leading_comment(&comment, &mut comments_by_target);
                 } else {
-                    Target::from_node(&parse_result.node()).leading_comment(&comment, map);
+                    Target::from_node(&parse_result.node())
+                        .leading_comment(&comment, &mut comments_by_target);
                 }
             }
         }
+        comments_by_location.insert(
+            (
+                comment.location().start_offset(),
+                comment.location().end_offset(),
+            ),
+            comment,
+        );
+    }
+    CommentStore {
+        by_location: comments_by_location,
+        by_target: comments_by_target,
     }
 }
 

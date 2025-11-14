@@ -7,6 +7,7 @@ use ruby_prism::Node;
 /// line break index for efficient line break queries
 pub struct LineBreakIndex {
     pub positions: Vec<usize>,
+    source: Vec<u8>,
 }
 
 impl LineBreakIndex {
@@ -16,7 +17,10 @@ impl LineBreakIndex {
             .enumerate()
             .filter_map(|(i, &b)| if b == b'\n' { Some(i) } else { None })
             .collect();
-        Self { positions }
+        Self {
+            positions,
+            source: source.to_vec(),
+        }
     }
     pub fn has_line_break_in_range(&self, start_offset: usize, end_offset: usize) -> bool {
         if start_offset >= end_offset {
@@ -29,22 +33,16 @@ impl LineBreakIndex {
             .get(idx)
             .map_or(false, |&pos| pos < end_offset)
     }
-    pub fn count_line_breaks_in_range(&self, start_offset: usize, end_offset: usize) -> usize {
-        if start_offset >= end_offset {
-            return 0;
-        }
-        let start_idx = self
+    pub fn line_number_at_offset(&self, start_offset: usize, end_offset: usize) -> (usize, usize) {
+        let start_line = self
             .positions
-            .partition_point(|&position| position < start_offset);
-        let end_idx = self
+            .partition_point(|&position| position < start_offset)
+            + 1;
+        let end_line = self
             .positions
-            .partition_point(|&position| position < end_offset);
-        end_idx - start_idx
-    }
-    pub fn line_number_at_offset(&self, offset: usize) -> usize {
-        self.positions
-            .partition_point(|&position| position < offset)
-            + 1
+            .partition_point(|&position| position < end_offset)
+            + 1;
+        (start_line, end_line)
     }
     pub fn get_line_start_offset(&self, offset: usize) -> usize {
         if offset == 0 {
@@ -67,6 +65,33 @@ impl LineBreakIndex {
             self.positions[line_start_idx - 1] + 1
         };
         offset - line_start_offset + 1
+    }
+    pub fn count_leading_blank_lines(&self, offset: usize) -> usize {
+        let idx = self.positions.partition_point(|&pos| pos < offset);
+        if idx == 0 {
+            return 0;
+        }
+        let mut blank_count = 0;
+        let mut current_idx = idx - 1; // end of the previous line
+        loop {
+            let line_end = self.positions[current_idx];
+            let line_start = if current_idx > 0 {
+                self.positions[current_idx - 1] + 1
+            } else {
+                0
+            };
+            let line_content = &self.source[line_start..line_end];
+            if line_content.iter().all(|&b| b == b' ' || b == b'\t') {
+                blank_count += 1;
+            } else {
+                break;
+            }
+            if current_idx == 0 {
+                break;
+            }
+            current_idx -= 1;
+        }
+        blank_count
     }
 }
 
