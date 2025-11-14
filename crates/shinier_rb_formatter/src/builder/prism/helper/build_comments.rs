@@ -45,31 +45,17 @@ fn base_leading_comments(
     if let Some(comment_placement) = comment_store.by_target.get(&(start_offset, end_offset)) {
         for offsets in &comment_placement.leading {
             if let Some(comment) = comment_store.by_location.get(offsets) {
+                // hardline between comments
+                if !documents.is_empty() {
+                    documents.push(hardline());
+                }
+                // hardlines for blank lines
                 let blank_line_count = context
                     .line_break_index
                     .count_leading_blank_lines(offsets.0)
                     .min(context.max_blank_lines);
-                match documents.is_empty() {
-                    true => {
-                        // hardlines for blank lines
-                        for _ in 0..blank_line_count {
-                            documents.push(hardline());
-                            documents.push(hardline());
-                        }
-                    }
-                    false => {
-                        // hardline between blank lines
-                        documents.push(hardline());
-                        // hardlines for blank lines
-                        for i in 0..blank_line_count {
-                            if i > 0 {
-                                documents.push(hardline());
-                            } else {
-                                documents.push(hardline());
-                                documents.push(hardline());
-                            }
-                        }
-                    }
+                for _ in 0..blank_line_count {
+                    documents.push(hardline());
                 }
                 documents.push(build_comment(comment));
             }

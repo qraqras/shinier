@@ -9,17 +9,18 @@ use std::io::Read;
 
 #[rustfmt::skip]
 pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
+    // Builds comments and blank lines
     let leading_comments = leading_comments_n(&node, context);
     let leading_blank_lines = leading_blank_lines(&node, context);
     let trailing_comments = trailing_comments_n(&node, context);
-
+    // Adjusts max_blank_lines based on node type
     let prev_max_blank_lines = context.max_blank_lines;
     context.max_blank_lines = match node {
         Node::ProgramNode    { .. } => 1,
         Node::StatementsNode { .. } => 1,
         _                           => 0,
     };
-
+    // Builds node variant
     let node = match node {
         Node::AliasGlobalVariableNode           { .. } => alias_global_variable_node::build_alias_global_variable_node                      (&node.as_alias_global_variable_node().unwrap()           , context),
         Node::AliasMethodNode                   { .. } => alias_method_node::build_alias_method_node                                        (&node.as_alias_method_node().unwrap()                    , context),
@@ -173,9 +174,7 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
         Node::XStringNode                       { .. } => x_string_node::build_x_string_node                                                (&node.as_x_string_node().unwrap()                        , context),
         Node::YieldNode                         { .. } => yield_node::build_yield_node                                                      (&node.as_yield_node().unwrap()                           , context),
     };
-
     context.max_blank_lines = prev_max_blank_lines;
-
     array_opt(&[leading_comments, leading_blank_lines, Some(node), trailing_comments])
 }
 
