@@ -2,12 +2,17 @@ use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node_variant::*;
+use crate::builder::prism::helper::build_blank_lines::*;
+use crate::builder::prism::helper::build_comments::*;
 use ruby_prism::*;
 use std::io::Read;
 
 #[rustfmt::skip]
 pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
-    match node {
+    let leading_comments = leading_comments_n(&node, context);
+    let leading_blank_lines = leading_blank_lines(&node, context);
+    let trailing_comments = trailing_comments_n(&node, context);
+    let node = match node {
         Node::AliasGlobalVariableNode           { .. } => alias_global_variable_node::build_alias_global_variable_node                      (&node.as_alias_global_variable_node().unwrap()           , context),
         Node::AliasMethodNode                   { .. } => alias_method_node::build_alias_method_node                                        (&node.as_alias_method_node().unwrap()                    , context),
         Node::AlternationPatternNode            { .. } => alternation_pattern_node::build_alternation_pattern_node                          (&node.as_alternation_pattern_node().unwrap()             , context),
@@ -159,7 +164,8 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
         Node::WhileNode                         { .. } => while_node::build_while_node                                                      (&node.as_while_node().unwrap()                           , context),
         Node::XStringNode                       { .. } => x_string_node::build_x_string_node                                                (&node.as_x_string_node().unwrap()                        , context),
         Node::YieldNode                         { .. } => yield_node::build_yield_node                                                      (&node.as_yield_node().unwrap()                           , context),
-    }
+    };
+    array_opt(&[leading_comments, leading_blank_lines, Some(node), trailing_comments])
 }
 
 pub fn escape(unescaped: &[u8]) -> String {

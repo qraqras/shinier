@@ -1,83 +1,49 @@
 use crate::builder::builder::{array, break_parent, hardline, line_suffix, string};
 use crate::builder::context::BuildContext;
-use crate::builder::prism::comments::CommentStore;
 use crate::document::Document;
 use ruby_prism::Comment;
 use ruby_prism::CommentType;
 use ruby_prism::Location;
 use ruby_prism::Node;
 
-pub fn leading_comment_n(
-    node: &Node,
-    max: usize,
-    comment_store: &CommentStore,
-    context: &mut BuildContext,
-) -> Document {
+pub fn leading_comments_n(node: &Node, context: &mut BuildContext) -> Option<Document> {
     leading_comments(
         node.location().start_offset(),
         node.location().end_offset(),
-        max,
-        comment_store,
         context,
     )
 }
 
-pub fn leading_comment_l(
-    location: &Location,
-    max: usize,
-    comment_store: &CommentStore,
-    context: &mut BuildContext,
-) -> Document {
-    leading_comments(
-        location.start_offset(),
-        location.end_offset(),
-        max,
-        comment_store,
-        context,
-    )
+pub fn leading_comments_l(location: &Location, context: &mut BuildContext) -> Option<Document> {
+    leading_comments(location.start_offset(), location.end_offset(), context)
 }
 
-pub fn trailing_comment_n(
-    node: &Node,
-    comment_store: &CommentStore,
-    context: &mut BuildContext,
-) -> Document {
+pub fn trailing_comments_n(node: &Node, context: &mut BuildContext) -> Option<Document> {
     trailing_comments(
         node.location().start_offset(),
         node.location().end_offset(),
-        comment_store,
         context,
     )
 }
 
-pub fn trailing_comment_l(
-    location: &Location,
-    comment_store: &CommentStore,
-    context: &mut BuildContext,
-) -> Document {
-    trailing_comments(
-        location.start_offset(),
-        location.end_offset(),
-        comment_store,
-        context,
-    )
+pub fn trailing_comments_l(location: &Location, context: &mut BuildContext) -> Option<Document> {
+    trailing_comments(location.start_offset(), location.end_offset(), context)
 }
 
 fn leading_comments(
     start_offset: usize,
     end_offset: usize,
-    max: usize,
-    comment_store: &CommentStore,
     context: &mut BuildContext,
-) -> Document {
+) -> Option<Document> {
     let mut documents = Vec::new();
+    let comment_store = &context.comment_store;
     if let Some(comment_placement) = comment_store.by_target.get(&(start_offset, end_offset)) {
         for offsets in &comment_placement.leading {
             if let Some(comment) = comment_store.by_location.get(offsets) {
                 let blank_line_count = context
                     .line_break_index
                     .count_leading_blank_lines(offsets.0)
-                    .min(max);
+                    .min(context.max_blank_lines);
                 for _ in 0..=blank_line_count {
                     documents.push(hardline());
                 }
@@ -85,16 +51,23 @@ fn leading_comments(
             }
         }
     }
-    array(&documents)
+    match documents.is_empty() {
+        true => None,
+        false => {
+            documents.push(hardline());
+            documents.push(break_parent());
+            Some(array(&documents))
+        }
+    }
 }
 
 fn trailing_comments(
     start_offset: usize,
     end_offset: usize,
-    comment_store: &CommentStore,
-    _context: &mut BuildContext,
-) -> Document {
+    context: &mut BuildContext,
+) -> Option<Document> {
     let mut documents = Vec::new();
+    let comment_store = &context.comment_store;
     if let Some(comment_placement) = comment_store.by_target.get(&(start_offset, end_offset)) {
         for offsets in &comment_placement.trailing {
             if let Some(comment) = comment_store.by_location.get(offsets) {
@@ -102,10 +75,13 @@ fn trailing_comments(
             }
         }
     }
-    if !documents.is_empty() {
-        documents.push(break_parent());
+    match documents.is_empty() {
+        true => None,
+        false => {
+            documents.push(break_parent());
+            Some(array(&documents))
+        }
     }
-    array(&documents)
 }
 
 /// Builds a Document for a given comment.

@@ -25,7 +25,11 @@ pub struct LayoutParamAliasGlobalVariableNode {
 pub fn layout_alias_global_variable_node(param: LayoutParamAliasGlobalVariableNode) -> Document {
     group(array_opt(&[
         param.alias_keyword,
-        line_opt(),
-        indent_opt(array_opt(&[param.new_name, space_opt(), param.old_name])),
+        indent_opt(array_opt(&[
+            line_opt(),
+            param.new_name,
+            space_opt(),
+            param.old_name,
+        ])),
     ]))
 }
