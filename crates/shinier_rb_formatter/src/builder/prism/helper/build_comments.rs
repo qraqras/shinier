@@ -1,4 +1,4 @@
-use crate::builder::builder::{array, break_parent, hardline, line_suffix, string};
+use crate::builder::builder::{array, break_parent, hardline, line_suffix, space, string};
 use crate::builder::context::BuildContext;
 use crate::document::Document;
 use ruby_prism::Comment;
@@ -6,31 +6,36 @@ use ruby_prism::CommentType;
 use ruby_prism::Location;
 use ruby_prism::Node;
 
+/// Builds leading comments for a given node.
 pub fn leading_comments_n(node: &Node, context: &mut BuildContext) -> Option<Document> {
-    leading_comments(
+    base_leading_comments(
         node.location().start_offset(),
         node.location().end_offset(),
         context,
     )
 }
 
+/// Builds leading comments for a given location.
 pub fn leading_comments_l(location: &Location, context: &mut BuildContext) -> Option<Document> {
-    leading_comments(location.start_offset(), location.end_offset(), context)
+    base_leading_comments(location.start_offset(), location.end_offset(), context)
 }
 
+/// Builds trailing comments for a given node.
 pub fn trailing_comments_n(node: &Node, context: &mut BuildContext) -> Option<Document> {
-    trailing_comments(
+    base_trailing_comments(
         node.location().start_offset(),
         node.location().end_offset(),
         context,
     )
 }
 
+/// Builds trailing comments for a given location.
 pub fn trailing_comments_l(location: &Location, context: &mut BuildContext) -> Option<Document> {
-    trailing_comments(location.start_offset(), location.end_offset(), context)
+    base_trailing_comments(location.start_offset(), location.end_offset(), context)
 }
 
-fn leading_comments(
+/// Builds leading comments for a given start and end offset.
+fn base_leading_comments(
     start_offset: usize,
     end_offset: usize,
     context: &mut BuildContext,
@@ -44,8 +49,27 @@ fn leading_comments(
                     .line_break_index
                     .count_leading_blank_lines(offsets.0)
                     .min(context.max_blank_lines);
-                for _ in 0..=blank_line_count {
-                    documents.push(hardline());
+                match documents.is_empty() {
+                    true => {
+                        // hardlines for blank lines
+                        for _ in 0..blank_line_count {
+                            documents.push(hardline());
+                            documents.push(hardline());
+                        }
+                    }
+                    false => {
+                        // hardline between blank lines
+                        documents.push(hardline());
+                        // hardlines for blank lines
+                        for i in 0..blank_line_count {
+                            if i > 0 {
+                                documents.push(hardline());
+                            } else {
+                                documents.push(hardline());
+                                documents.push(hardline());
+                            }
+                        }
+                    }
                 }
                 documents.push(build_comment(comment));
             }
@@ -61,7 +85,8 @@ fn leading_comments(
     }
 }
 
-fn trailing_comments(
+/// Builds trailing comments for a given start and end offset.
+fn base_trailing_comments(
     start_offset: usize,
     end_offset: usize,
     context: &mut BuildContext,
@@ -71,7 +96,7 @@ fn trailing_comments(
     if let Some(comment_placement) = comment_store.by_target.get(&(start_offset, end_offset)) {
         for offsets in &comment_placement.trailing {
             if let Some(comment) = comment_store.by_location.get(offsets) {
-                documents.push(line_suffix(build_comment(comment)));
+                documents.push(line_suffix(array(&[space(), build_comment(comment)])));
             }
         }
     }
@@ -84,7 +109,7 @@ fn trailing_comments(
     }
 }
 
-/// Builds a Document for a given comment.
+/// Builds a comment into a Document.
 /// If the comment is an embedded document comment (=begin ... =end),
 /// it formats it as multiple lines with '#' prefixes.
 fn build_comment(comment: &Comment) -> Document {
