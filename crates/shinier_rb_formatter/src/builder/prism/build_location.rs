@@ -15,10 +15,21 @@ pub fn build_location(location: &Location, context: &mut BuildContext) -> Docume
     array_opt(&[leading_comments, Some(string(buf)), trailing_comments])
 }
 
-/// Builds a Document for the location of a given node.
+// Builds a Document for a given location with custom content, including leading and trailing comments.
+pub fn build_custom_location(
+    location: &Location,
+    context: &mut BuildContext,
+    content: &str,
+) -> Document {
+    let leading_comments = leading_comments_l(location, context);
+    let trailing_comments = trailing_comments_l(location, context);
+    array_opt(&[leading_comments, Some(string(content)), trailing_comments])
+}
+
+/// Builds a Document for the entire source code spanned by the given node.
 /// Comments and blank lines are not included here because they are already processed
 /// when building the node itself in build_node().
-pub fn build_node_location(node: &Node, context: &mut BuildContext) -> Document {
+pub fn build_node_as_location(node: &Node, _context: &mut BuildContext) -> Document {
     let location = &node.location();
     let mut buf = String::new();
     let _ = location.as_slice().read_to_string(&mut buf);

@@ -1,15 +1,35 @@
-// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/and_node.rs
-
 use crate::Document;
 use crate::builder::builder::*;
+use crate::builder::keyword::LOGICAL_AND;
 use crate::builder::prism::BuildContext;
-use crate::keyword::*;
-use ruby_prism::*;
+use crate::builder::prism::build_location::build_custom_location;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::and_node::{layout_and_node, LayoutParamAndNode};
+use ruby_prism::AndNode;
+use ruby_prism::Node;
 
 pub fn build_and_node(node: &AndNode<'_>, context: &mut BuildContext) -> Document {
-    let left = build_node(&node.left(), context);
-    let right = build_node(&node.right(), context);
-    layout_and_node(&LayoutParamAndNode{ left, right })
+    let mut parts = Vec::new();
+    flatten(&node.as_node(), context, &mut parts);
+    assert!(!parts.is_empty());
+    let first = parts.remove(0);
+    group(array(&[first, indent(array(&parts))]))
+}
+
+fn flatten(node: &Node<'_>, context: &mut BuildContext, acc: &mut Vec<Document>) {
+    match node {
+        Node::AndNode { .. } => {
+            let and_node = node.as_and_node().unwrap();
+            let left = and_node.left();
+            let right = and_node.right();
+            let operator = and_node.operator_loc();
+            flatten(&left, context, acc);
+            acc.push(space());
+            acc.push(build_custom_location(&operator, context, LOGICAL_AND));
+            acc.push(line());
+            acc.push(build_node(&right, context));
+        }
+        _ => {
+            acc.push(build_node(node, context));
+        }
+    }
 }
