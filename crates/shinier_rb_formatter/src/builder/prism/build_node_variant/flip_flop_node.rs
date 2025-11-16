@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::flip_flop_node::{layout_flip_flop_node, LayoutParamFlipFlopNode};
+
 
 pub fn build_flip_flop_node(node: &FlipFlopNode<'_>, context: &mut BuildContext) -> Document {
     let left = match &node.left() {
@@ -17,5 +17,5 @@ pub fn build_flip_flop_node(node: &FlipFlopNode<'_>, context: &mut BuildContext)
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };
-    layout_flip_flop_node(&LayoutParamFlipFlopNode { left, right })
+    Document::None
 }

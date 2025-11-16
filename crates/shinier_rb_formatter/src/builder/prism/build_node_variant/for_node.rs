@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::for_node::{layout_for_node, LayoutParamForNode};
+
 
 pub fn build_for_node(node: &ForNode<'_>, context: &mut BuildContext) -> Document {
     let index = build_node(&node.index(), context);
@@ -15,5 +15,5 @@ pub fn build_for_node(node: &ForNode<'_>, context: &mut BuildContext) -> Documen
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_for_node(&LayoutParamForNode { index, collection, statements })
+    Document::None
 }

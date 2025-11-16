@@ -6,12 +6,12 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::block_argument_node::{layout_block_argument_node, LayoutParamBlockArgumentNode};
+
 
 pub fn build_block_argument_node(node: &BlockArgumentNode<'_>, context: &mut BuildContext) -> Document {
     let expression = match &node.expression() {
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };
-    layout_block_argument_node(&LayoutParamBlockArgumentNode { expression })
+    Document::None
 }

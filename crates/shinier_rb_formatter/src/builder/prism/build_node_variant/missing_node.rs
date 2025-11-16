@@ -6,8 +6,8 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::missing_node::{layout_missing_node, LayoutParamMissingNode};
+
 
 pub fn build_missing_node(node: &MissingNode<'_>, context: &mut BuildContext) -> Document {
-    layout_missing_node(&LayoutParamMissingNode {  })
+    Document::None
 }

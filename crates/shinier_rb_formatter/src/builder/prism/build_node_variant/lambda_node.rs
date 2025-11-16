@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::lambda_node::{layout_lambda_node, LayoutParamLambdaNode};
+
 
 pub fn build_lambda_node(node: &LambdaNode<'_>, context: &mut BuildContext) -> Document {
     let parameters = match &node.parameters() {
@@ -17,5 +17,5 @@ pub fn build_lambda_node(node: &LambdaNode<'_>, context: &mut BuildContext) -> D
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };
-    layout_lambda_node(&LayoutParamLambdaNode { parameters, body })
+    Document::None
 }

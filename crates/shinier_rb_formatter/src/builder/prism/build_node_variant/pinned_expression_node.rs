@@ -4,9 +4,6 @@ use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::pinned_expression_node::{
-    LayoutParamPinnedExpressionNode, layout_pinned_expression_node,
-};
 use crate::keyword::*;
 use ruby_prism::*;
 
@@ -15,5 +12,5 @@ pub fn build_pinned_expression_node(
     context: &mut BuildContext,
 ) -> Document {
     let expression = build_node(&node.expression(), context);
-    layout_pinned_expression_node(&LayoutParamPinnedExpressionNode { expression })
+    Document::None
 }

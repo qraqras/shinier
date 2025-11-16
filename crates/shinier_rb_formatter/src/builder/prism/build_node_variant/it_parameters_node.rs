@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::it_parameters_node::{layout_it_parameters_node, LayoutParamItParametersNode};
+
 
 pub fn build_it_parameters_node(node: &ItParametersNode<'_>, context: &mut BuildContext) -> Document {
     // TODO
-    layout_it_parameters_node(&LayoutParamItParametersNode {  })
+    Document::None
 }

@@ -3,12 +3,14 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::instance_variable_operator_write_node::{layout_instance_variable_operator_write_node, LayoutParamInstanceVariableOperatorWriteNode};
 
-pub fn build_instance_variable_operator_write_node(node: &InstanceVariableOperatorWriteNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_instance_variable_operator_write_node(
+    node: &InstanceVariableOperatorWriteNode<'_>,
+    context: &mut BuildContext,
+) -> Document {
     let value = build_node(&node.value(), context);
-    layout_instance_variable_operator_write_node(&LayoutParamInstanceVariableOperatorWriteNode { value })
+    Document::None
 }

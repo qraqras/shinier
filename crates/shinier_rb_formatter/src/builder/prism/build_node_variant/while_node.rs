@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::while_node::{layout_while_node, LayoutParamWhileNode};
+
 
 pub fn build_while_node(node: &WhileNode<'_>, context: &mut BuildContext) -> Document {
     let predicate = build_node(&node.predicate(), context);
@@ -14,5 +14,5 @@ pub fn build_while_node(node: &WhileNode<'_>, context: &mut BuildContext) -> Doc
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_while_node(&LayoutParamWhileNode { predicate, statements })
+    Document::None
 }

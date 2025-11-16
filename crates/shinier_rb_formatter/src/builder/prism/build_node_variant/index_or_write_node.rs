@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::index_or_write_node::{layout_index_or_write_node, LayoutParamIndexOrWriteNode};
+
 
 pub fn build_index_or_write_node(node: &IndexOrWriteNode<'_>, context: &mut BuildContext) -> Document {
     let receiver = match &node.receiver() {
@@ -22,5 +22,5 @@ pub fn build_index_or_write_node(node: &IndexOrWriteNode<'_>, context: &mut Buil
         None => None,
     };
     let value = build_node(&node.value(), context);
-    layout_index_or_write_node(&LayoutParamIndexOrWriteNode { receiver, arguments, block, value })
+    Document::None
 }

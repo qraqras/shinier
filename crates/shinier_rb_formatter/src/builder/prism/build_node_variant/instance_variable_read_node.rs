@@ -7,9 +7,9 @@ use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::build_node::build_constant_id;
-use crate::builder::prism::layout_node_variant::instance_variable_read_node::{layout_instance_variable_read_node, LayoutParamInstanceVariableReadNode};
+
 
 pub fn build_instance_variable_read_node(node: &InstanceVariableReadNode<'_>, context: &mut BuildContext) -> Document {
     let name = build_constant_id(&node.name(), context);
-    layout_instance_variable_read_node(&LayoutParamInstanceVariableReadNode { name })
+    Document::None
 }

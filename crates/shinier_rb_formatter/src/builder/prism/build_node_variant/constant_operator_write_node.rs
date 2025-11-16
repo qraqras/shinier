@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::constant_operator_write_node::{layout_constant_operator_write_node, LayoutParamConstantOperatorWriteNode};
+
 
 pub fn build_constant_operator_write_node(node: &ConstantOperatorWriteNode<'_>, context: &mut BuildContext) -> Document {
     let value = build_node(&node.value(), context);
-    layout_constant_operator_write_node(&LayoutParamConstantOperatorWriteNode { value })
+    Document::None
 }

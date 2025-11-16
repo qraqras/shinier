@@ -6,12 +6,12 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::interpolated_regular_expression_node::{layout_interpolated_regular_expression_node, LayoutParamInterpolatedRegularExpressionNode};
+
 
 pub fn build_interpolated_regular_expression_node(node: &InterpolatedRegularExpressionNode<'_>, context: &mut BuildContext) -> Document {
     let mut parts = Vec::new();
     for node in &node.parts() {
         parts.push(build_node(&node, context));
     }
-    layout_interpolated_regular_expression_node(&LayoutParamInterpolatedRegularExpressionNode { parts })
+    Document::None
 }

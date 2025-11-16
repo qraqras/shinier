@@ -5,13 +5,10 @@ use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_integer;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::integer_node::{
-    LayoutParamIntegerNode, layout_integer_node,
-};
 use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_integer_node(node: &IntegerNode<'_>, context: &mut BuildContext) -> Document {
     let value = build_integer(&node.value(), context);
-    layout_integer_node(&LayoutParamIntegerNode { value })
+    Document::None
 }

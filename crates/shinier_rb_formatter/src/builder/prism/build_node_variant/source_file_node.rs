@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::source_file_node::{layout_source_file_node, LayoutParamSourceFileNode};
+
 
 pub fn build_source_file_node(node: &SourceFileNode<'_>, context: &mut BuildContext) -> Document {
     let keyword = Document::String(FILE.to_string());
-    layout_source_file_node(&LayoutParamSourceFileNode { keyword })
+    Document::None
 }

@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::true_node::{layout_true_node, LayoutParamTrueNode};
+
 
 pub fn build_true_node(node: &TrueNode<'_>, context: &mut BuildContext) -> Document {
     let keyword = Document::String(TRUE.to_string());
-    layout_true_node(&LayoutParamTrueNode { keyword })
+    Document::None
 }

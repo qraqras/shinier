@@ -7,9 +7,9 @@ use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::build_node::build_constant_id;
-use crate::builder::prism::layout_node_variant::global_variable_target_node::{layout_global_variable_target_node, LayoutParamGlobalVariableTargetNode};
+
 
 pub fn build_global_variable_target_node(node: &GlobalVariableTargetNode<'_>, context: &mut BuildContext) -> Document {
     let name = build_constant_id(&node.name(), context);
-    layout_global_variable_target_node(&LayoutParamGlobalVariableTargetNode { name })
+    Document::None
 }

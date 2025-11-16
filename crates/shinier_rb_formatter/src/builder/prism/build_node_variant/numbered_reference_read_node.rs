@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::numbered_reference_read_node::{layout_numbered_reference_read_node, LayoutParamNumberedReferenceReadNode};
+
 
 pub fn build_numbered_reference_read_node(node: &NumberedReferenceReadNode<'_>, context: &mut BuildContext) -> Document {
     let number = Document::String(format!("{}{}", DOLLAR, node.number()));
-    layout_numbered_reference_read_node(&LayoutParamNumberedReferenceReadNode { number })
+    Document::None
 }

@@ -7,10 +7,10 @@ use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::build_node::build_constant_id;
-use crate::builder::prism::layout_node_variant::global_variable_write_node::{layout_global_variable_write_node, LayoutParamGlobalVariableWriteNode};
+
 
 pub fn build_global_variable_write_node(node: &GlobalVariableWriteNode<'_>, context: &mut BuildContext) -> Document {
     let name = build_constant_id(&node.name(), context);
     let value = build_node(&node.value(), context);
-    layout_global_variable_write_node(&LayoutParamGlobalVariableWriteNode { name, value })
+    Document::None
 }

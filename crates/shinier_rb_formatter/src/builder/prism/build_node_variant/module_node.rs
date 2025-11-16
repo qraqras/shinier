@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::module_node::{layout_module_node, LayoutParamModuleNode};
+
 
 pub fn build_module_node(node: &ModuleNode<'_>, context: &mut BuildContext) -> Document {
     let constant_path = build_node(&node.constant_path(), context);
@@ -14,5 +14,5 @@ pub fn build_module_node(node: &ModuleNode<'_>, context: &mut BuildContext) -> D
     if let Some(node) = &node.body() {
         body.push(build_node(&node, context));
     }
-    layout_module_node(&LayoutParamModuleNode { constant_path, body })
+    Document::None
 }

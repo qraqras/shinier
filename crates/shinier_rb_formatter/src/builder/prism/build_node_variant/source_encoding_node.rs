@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::source_encoding_node::{layout_source_encoding_node, LayoutParamSourceEncodingNode};
+
 
 pub fn build_source_encoding_node(node: &SourceEncodingNode<'_>, context: &mut BuildContext) -> Document {
     let keyword = Document::String(ENCODING.to_string());
-    layout_source_encoding_node(&LayoutParamSourceEncodingNode { keyword })
+    Document::None
 }

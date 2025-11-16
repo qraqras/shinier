@@ -2,12 +2,9 @@
 
 use crate::Document;
 use crate::builder::builder::*;
+use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_constant_id;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::BuildContext;
-use crate::builder::prism::layout_node_variant::block_parameter_node::{
-    LayoutParamBlockParameterNode, layout_block_parameter_node,
-};
 use crate::keyword::*;
 use ruby_prism::*;
 
@@ -19,5 +16,5 @@ pub fn build_block_parameter_node(
         Some(id) => Some(build_constant_id(id, context)),
         None => None,
     };
-    layout_block_parameter_node(&LayoutParamBlockParameterNode { name })
+    Document::None
 }

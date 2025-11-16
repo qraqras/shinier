@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::unless_node::{layout_unless_node, LayoutParamUnlessNode};
+
 
 pub fn build_unless_node(node: &UnlessNode<'_>, context: &mut BuildContext) -> Document {
     let predicate = build_node(&node.predicate(), context);
@@ -18,5 +18,5 @@ pub fn build_unless_node(node: &UnlessNode<'_>, context: &mut BuildContext) -> D
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_unless_node(&LayoutParamUnlessNode { predicate, statements, else_clause })
+    Document::None
 }

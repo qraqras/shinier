@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::rational_node::{layout_rational_node, LayoutParamRationalNode};
+
 
 pub fn build_rational_node(node: &RationalNode<'_>, context: &mut BuildContext) -> Document {
     // TODO
-    layout_rational_node(&LayoutParamRationalNode {  })
+    Document::None
 }

@@ -6,10 +6,10 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::constant_path_and_write_node::{layout_constant_path_and_write_node, LayoutParamConstantPathAndWriteNode};
+
 
 pub fn build_constant_path_and_write_node(node: &ConstantPathAndWriteNode<'_>, context: &mut BuildContext) -> Document {
     let target = build_node(&node.target().as_node(), context);
     let value = build_node(&node.value(), context);
-    layout_constant_path_and_write_node(&LayoutParamConstantPathAndWriteNode { target, value })
+    Document::None
 }

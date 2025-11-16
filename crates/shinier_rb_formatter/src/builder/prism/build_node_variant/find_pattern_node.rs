@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::find_pattern_node::{layout_find_pattern_node, LayoutParamFindPatternNode};
+
 
 pub fn build_find_pattern_node(node: &FindPatternNode<'_>, context: &mut BuildContext) -> Document {
     let constant = match &node.constant() {
@@ -19,5 +19,5 @@ pub fn build_find_pattern_node(node: &FindPatternNode<'_>, context: &mut BuildCo
         requireds.push(build_node(&node, context));
     }
     let right = build_node(&node.right(), context);
-    layout_find_pattern_node(&LayoutParamFindPatternNode { constant, left, requireds, right })
+    Document::None
 }

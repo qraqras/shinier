@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::numbered_parameters_node::{layout_numbered_parameters_node, LayoutParamNumberedParametersNode};
+
 
 pub fn build_numbered_parameters_node(node: &NumberedParametersNode<'_>, context: &mut BuildContext) -> Document {
     let maximum = Document::String(node.maximum().to_string());
-    layout_numbered_parameters_node(&LayoutParamNumberedParametersNode { maximum })
+    Document::None
 }

@@ -6,12 +6,12 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::keyword_hash_node::{layout_keyword_hash_node, LayoutParamKeywordHashNode};
+
 
 pub fn build_keyword_hash_node(node: &KeywordHashNode<'_>, context: &mut BuildContext) -> Document {
     let mut elements = Vec::new();
     for node in &node.elements() {
         elements.push(build_node(&node, context));
     }
-    layout_keyword_hash_node(&LayoutParamKeywordHashNode { elements })
+    Document::None
 }

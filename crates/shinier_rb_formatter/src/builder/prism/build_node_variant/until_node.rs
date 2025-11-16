@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::until_node::{layout_until_node, LayoutParamUntilNode};
+
 
 pub fn build_until_node(node: &UntilNode<'_>, context: &mut BuildContext) -> Document {
     let predicate = build_node(&node.predicate(), context);
@@ -14,5 +14,5 @@ pub fn build_until_node(node: &UntilNode<'_>, context: &mut BuildContext) -> Doc
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_until_node(&LayoutParamUntilNode { predicate, statements })
+    Document::None
 }

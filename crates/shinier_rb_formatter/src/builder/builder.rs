@@ -170,62 +170,9 @@ pub fn array_opt(parts: &[Option<Document>]) -> Document {
     Document::Array(filtered)
 }
 
-pub fn group_opt(contents: Document) -> Option<Document> {
-    Some(Document::Group(Group {
-        id: generate_group_id(),
-        contents: Box::new(contents.clone()),
-        r#break: false,
-        expanded_states: None,
-    }))
-}
-
-pub fn indent_opt(contents: Document) -> Option<Document> {
-    Some(Document::Indent(Indent {
-        contents: Box::new(contents),
-    }))
-}
-pub fn line_opt() -> Option<Document> {
-    Some(Document::Line(Line {
-        hard: false,
-        literal: false,
-        soft: false,
-    }))
-}
-
-pub fn hardline_opt() -> Option<Document> {
-    Some(array(&[
-        Document::Line(Line {
-            hard: true,
-            literal: false,
-            soft: false,
-        }),
-        Document::BreakParent,
-    ]))
-}
-
-pub fn literalline_opt() -> Option<Document> {
-    Some(array(&[
-        Document::Line(Line {
-            hard: true,
-            literal: true,
-            soft: false,
-        }),
-        Document::BreakParent,
-    ]))
-}
-
-pub fn softline_opt() -> Option<Document> {
-    Some(Document::Line(Line {
-        hard: false,
-        literal: false,
-        soft: true,
-    }))
-}
-
-pub fn string_opt<T: Into<String>>(string: T) -> Option<Document> {
-    Some(Document::String(string.into()))
-}
-
-pub fn space_opt() -> Option<Document> {
-    Some(Document::String(" ".to_string()))
+pub fn indent_opt(contents: Option<Document>) -> Document {
+    match contents {
+        Some(doc) => indent(doc),
+        None => Document::None,
+    }
 }

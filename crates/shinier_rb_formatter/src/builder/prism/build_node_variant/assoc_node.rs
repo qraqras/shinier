@@ -3,13 +3,12 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::assoc_node::{layout_assoc_node, LayoutParamAssocNode};
 
 pub fn build_assoc_node(node: &AssocNode<'_>, context: &mut BuildContext) -> Document {
     let key = build_node(&node.key(), context);
     let value = build_node(&node.value(), context);
-    layout_assoc_node(&LayoutParamAssocNode { key, value })
+    Document::None
 }

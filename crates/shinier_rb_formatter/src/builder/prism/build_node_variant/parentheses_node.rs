@@ -6,12 +6,12 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::parentheses_node::{layout_parentheses_node, LayoutParamParenthesesNode};
+
 
 pub fn build_parentheses_node(node: &ParenthesesNode<'_>, context: &mut BuildContext) -> Document {
     let body = match &node.body() {
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };
-    layout_parentheses_node(&LayoutParamParenthesesNode { body })
+    Document::None
 }

@@ -7,9 +7,9 @@ use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::build_node::build_constant_id;
-use crate::builder::prism::layout_node_variant::constant_target_node::{layout_constant_target_node, LayoutParamConstantTargetNode};
+
 
 pub fn build_constant_target_node(node: &ConstantTargetNode<'_>, context: &mut BuildContext) -> Document {
     let name = build_constant_id(&node.name(), context);
-    layout_constant_target_node(&LayoutParamConstantTargetNode { name })
+    Document::None
 }

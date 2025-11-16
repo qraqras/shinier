@@ -6,10 +6,10 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::capture_pattern_node::{layout_capture_pattern_node, LayoutParamCapturePatternNode};
+
 
 pub fn build_capture_pattern_node(node: &CapturePatternNode<'_>, context: &mut BuildContext) -> Document {
     let value = build_node(&node.value(), context);
     let target = build_node(&node.target().as_node(), context);
-    layout_capture_pattern_node(&LayoutParamCapturePatternNode { value, target })
+    Document::None
 }

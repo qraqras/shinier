@@ -4,9 +4,6 @@ use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::match_write_node::{
-    LayoutParamMatchWriteNode, layout_match_write_node,
-};
 use crate::keyword::*;
 use ruby_prism::*;
 
@@ -16,5 +13,5 @@ pub fn build_match_write_node(node: &MatchWriteNode<'_>, context: &mut BuildCont
     for node in &node.targets() {
         targets.push(build_node(&node, context));
     }
-    layout_match_write_node(&LayoutParamMatchWriteNode { call, targets })
+    Document::None
 }

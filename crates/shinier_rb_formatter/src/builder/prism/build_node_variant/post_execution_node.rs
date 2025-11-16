@@ -4,9 +4,6 @@ use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::post_execution_node::{
-    LayoutParamPostExecutionNode, layout_post_execution_node,
-};
 use crate::keyword::*;
 use ruby_prism::*;
 
@@ -18,5 +15,5 @@ pub fn build_post_execution_node(
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_post_execution_node(&LayoutParamPostExecutionNode { statements })
+    Document::None
 }

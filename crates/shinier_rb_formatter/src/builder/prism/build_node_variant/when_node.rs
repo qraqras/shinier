@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::when_node::{layout_when_node, LayoutParamWhenNode};
+
 
 pub fn build_when_node(node: &WhenNode<'_>, context: &mut BuildContext) -> Document {
     let mut conditions = Vec::new();
@@ -17,5 +17,5 @@ pub fn build_when_node(node: &WhenNode<'_>, context: &mut BuildContext) -> Docum
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_when_node(&LayoutParamWhenNode { conditions, statements })
+    Document::None
 }

@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::imaginary_node::{layout_imaginary_node, LayoutParamImaginaryNode};
+
 
 pub fn build_imaginary_node(node: &ImaginaryNode<'_>, context: &mut BuildContext) -> Document {
     let numeric = build_node(&node.numeric(), context);
-    layout_imaginary_node(&LayoutParamImaginaryNode { numeric })
+    Document::None
 }

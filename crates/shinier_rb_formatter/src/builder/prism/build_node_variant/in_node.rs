@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::in_node::{layout_in_node, LayoutParamInNode};
+
 
 pub fn build_in_node(node: &InNode<'_>, context: &mut BuildContext) -> Document {
     let pattern = build_node(&node.pattern(), context);
@@ -14,5 +14,5 @@ pub fn build_in_node(node: &InNode<'_>, context: &mut BuildContext) -> Document 
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_in_node(&LayoutParamInNode { pattern, statements })
+    Document::None
 }

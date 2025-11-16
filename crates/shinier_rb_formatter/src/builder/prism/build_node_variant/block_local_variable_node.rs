@@ -2,12 +2,9 @@
 
 use crate::Document;
 use crate::builder::builder::*;
+use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_constant_id;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::BuildContext;
-use crate::builder::prism::layout_node_variant::block_local_variable_node::{
-    LayoutParamBlockLocalVariableNode, layout_block_local_variable_node,
-};
 use crate::keyword::*;
 use ruby_prism::*;
 
@@ -16,5 +13,5 @@ pub fn build_block_local_variable_node(
     context: &mut BuildContext,
 ) -> Document {
     let name = build_constant_id(&node.name(), context);
-    layout_block_local_variable_node(&LayoutParamBlockLocalVariableNode { name })
+    Document::None
 }

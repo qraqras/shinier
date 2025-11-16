@@ -7,10 +7,10 @@ use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::build_node::escape;
-use crate::builder::prism::layout_node_variant::string_node::{layout_string_node, LayoutParamStringNode};
+
 
 pub fn build_string_node(node: &StringNode<'_>, context: &mut BuildContext) -> Document {
     // TODO
     let escaped = Document::String(escape(node.unescaped()));
-    layout_string_node(&LayoutParamStringNode { escaped })
+    Document::None
 }

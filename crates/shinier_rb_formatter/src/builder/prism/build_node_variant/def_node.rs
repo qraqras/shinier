@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::def_node::{layout_def_node, LayoutParamDefNode};
+
 
 pub fn build_def_node(node: &DefNode<'_>, context: &mut BuildContext) -> Document {
     let receiver = match &node.receiver() {
@@ -21,5 +21,5 @@ pub fn build_def_node(node: &DefNode<'_>, context: &mut BuildContext) -> Documen
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };
-    layout_def_node(&LayoutParamDefNode { receiver, parameters, body })
+    Document::None
 }

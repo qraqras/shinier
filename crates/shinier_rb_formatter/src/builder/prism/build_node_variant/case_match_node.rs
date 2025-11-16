@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::case_match_node::{layout_case_match_node, LayoutParamCaseMatchNode};
+
 
 pub fn build_case_match_node(node: &CaseMatchNode<'_>, context: &mut BuildContext) -> Document {
     let predicate = match &node.predicate() {
@@ -21,5 +21,5 @@ pub fn build_case_match_node(node: &CaseMatchNode<'_>, context: &mut BuildContex
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_case_match_node(&LayoutParamCaseMatchNode { predicate, conditions, else_clause })
+    Document::None
 }

@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::hash_pattern_node::{layout_hash_pattern_node, LayoutParamHashPatternNode};
+
 
 pub fn build_hash_pattern_node(node: &HashPatternNode<'_>, context: &mut BuildContext) -> Document {
     let constant = match node.constant() {
@@ -21,5 +21,5 @@ pub fn build_hash_pattern_node(node: &HashPatternNode<'_>, context: &mut BuildCo
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };
-    layout_hash_pattern_node(&LayoutParamHashPatternNode { constant, elements, rest })
+    Document::None
 }

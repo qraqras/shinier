@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::multi_write_node::{layout_multi_write_node, LayoutParamMultiWriteNode};
+
 
 pub fn build_multi_write_node(node: &MultiWriteNode<'_>, context: &mut BuildContext) -> Document {
     let mut lefts = Vec::new();
@@ -22,5 +22,5 @@ pub fn build_multi_write_node(node: &MultiWriteNode<'_>, context: &mut BuildCont
         rights.push(build_node(&node, context));
     }
     let value = build_node(&node.value(), context);
-    layout_multi_write_node(&LayoutParamMultiWriteNode { lefts, rest, rights, value })
+    Document::None
 }

@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::singleton_class_node::{layout_singleton_class_node, LayoutParamSingletonClassNode};
+
 
 pub fn build_singleton_class_node(node: &SingletonClassNode<'_>, context: &mut BuildContext) -> Document {
     let expression = build_node(&node.expression(), context);
@@ -14,5 +14,5 @@ pub fn build_singleton_class_node(node: &SingletonClassNode<'_>, context: &mut B
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };
-    layout_singleton_class_node(&LayoutParamSingletonClassNode { expression, body })
+    Document::None
 }

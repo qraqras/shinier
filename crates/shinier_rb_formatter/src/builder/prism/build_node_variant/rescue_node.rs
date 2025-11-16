@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::rescue_node::{layout_rescue_node, LayoutParamRescueNode};
+
 
 pub fn build_rescue_node(node: &RescueNode<'_>, context: &mut BuildContext) -> Document {
     let mut expressions = Vec::new();
@@ -25,5 +25,5 @@ pub fn build_rescue_node(node: &RescueNode<'_>, context: &mut BuildContext) -> D
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_rescue_node(&LayoutParamRescueNode { expressions, reference, statements, subsequent })
+    Document::None
 }

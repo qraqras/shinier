@@ -4,9 +4,6 @@ use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::index_target_node::{
-    LayoutParamIndexTargetNode, layout_index_target_node,
-};
 use crate::keyword::*;
 use ruby_prism::*;
 
@@ -20,5 +17,5 @@ pub fn build_index_target_node(node: &IndexTargetNode<'_>, context: &mut BuildCo
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_index_target_node(&LayoutParamIndexTargetNode { arguments, block })
+    Document::None
 }

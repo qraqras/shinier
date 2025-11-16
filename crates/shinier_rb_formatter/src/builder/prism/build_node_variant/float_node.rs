@@ -7,9 +7,9 @@ use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::build_node::build_f64;
-use crate::builder::prism::layout_node_variant::float_node::{layout_float_node, LayoutParamFloatNode};
+
 
 pub fn build_float_node(node: &FloatNode<'_>, context: &mut BuildContext) -> Document {
     let value = build_f64(&node.value(), context);
-    layout_float_node(&LayoutParamFloatNode { value })
+    Document::None
 }

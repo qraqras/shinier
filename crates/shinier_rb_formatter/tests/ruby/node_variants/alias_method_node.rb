@@ -7,8 +7,7 @@ alias
 # long expression
 alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
 
-alias
-  # owning comment
+alias # owning comment
   foo bar
 alias
   # owning comment 1
@@ -27,4 +26,6 @@ block comment 2
 =end
   foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
 alias foo bar # trailing comment
+alias
+  foo bar # trailing comment
 alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar # trailing comment

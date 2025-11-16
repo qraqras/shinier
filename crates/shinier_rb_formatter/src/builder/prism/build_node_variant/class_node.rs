@@ -3,10 +3,9 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::class_node::{layout_class_node, LayoutParamClassNode};
 
 pub fn build_class_node(node: &ClassNode<'_>, context: &mut BuildContext) -> Document {
     build_node(&node.constant_path(), context);
@@ -18,5 +17,5 @@ pub fn build_class_node(node: &ClassNode<'_>, context: &mut BuildContext) -> Doc
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };
-    layout_class_node(&LayoutParamClassNode { superclass, body })
+    Document::None
 }

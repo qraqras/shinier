@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::retry_node::{layout_retry_node, LayoutParamRetryNode};
+
 
 pub fn build_retry_node(node: &RetryNode<'_>, context: &mut BuildContext) -> Document {
     let keyword = Document::String(RETRY.to_string());
-    layout_retry_node(&LayoutParamRetryNode { keyword })
+    Document::None
 }

@@ -6,16 +6,17 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/back_reference_
 ---
 ****FORMATTED****
 # Basic back references
-$&
-$`
-$'
-$+
+# Basic back references
+
+
+
+
 
 # Numbered back references
-$1
-$2
-$10
-$99
+
+
+
+
 
 # Match data
 $~

@@ -6,10 +6,10 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::or_node::{layout_or_node, LayoutParamOrNode};
+
 
 pub fn build_or_node(node: &OrNode<'_>, context: &mut BuildContext) -> Document {
     let left = build_node(&node.left(), context);
     let right = build_node(&node.right(), context);
-    layout_or_node(&LayoutParamOrNode { left, right })
+    Document::None
 }

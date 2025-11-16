@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::forwarding_arguments_node::{layout_forwarding_arguments_node, LayoutParamForwardingArgumentsNode};
+
 
 pub fn build_forwarding_arguments_node(node: &ForwardingArgumentsNode<'_>, context: &mut BuildContext) -> Document {
     let keyword = Document::String(TRIPLE_DOT.to_string());
-    layout_forwarding_arguments_node(&LayoutParamForwardingArgumentsNode { keyword })
+    Document::None
 }

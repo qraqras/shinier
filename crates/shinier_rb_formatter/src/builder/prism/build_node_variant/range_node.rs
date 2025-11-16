@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::range_node::{layout_range_node, LayoutParamRangeNode};
+
 
 pub fn build_range_node(node: &RangeNode<'_>, context: &mut BuildContext) -> Document {
     let left = match &node.left() {
@@ -17,5 +17,5 @@ pub fn build_range_node(node: &RangeNode<'_>, context: &mut BuildContext) -> Doc
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };
-    layout_range_node(&LayoutParamRangeNode { left, right })
+    Document::None
 }

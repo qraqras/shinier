@@ -7,9 +7,9 @@ use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::build_node::build_constant_id;
-use crate::builder::prism::layout_node_variant::required_parameter_node::{layout_required_parameter_node, LayoutParamRequiredParameterNode};
+
 
 pub fn build_required_parameter_node(node: &RequiredParameterNode<'_>, context: &mut BuildContext) -> Document {
     let name = build_constant_id(&node.name(), context);
-    layout_required_parameter_node(&LayoutParamRequiredParameterNode { name })
+    Document::None
 }

@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::optional_parameter_node::{layout_optional_parameter_node, LayoutParamOptionalParameterNode};
+
 
 pub fn build_optional_parameter_node(node: &OptionalParameterNode<'_>, context: &mut BuildContext) -> Document {
     let value = build_node(&node.value(), context);
-    layout_optional_parameter_node(&LayoutParamOptionalParameterNode { value })
+    Document::None
 }

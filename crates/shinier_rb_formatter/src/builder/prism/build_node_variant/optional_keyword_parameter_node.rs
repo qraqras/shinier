@@ -2,11 +2,8 @@
 
 use crate::Document;
 use crate::builder::builder::*;
-use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::BuildContext;
-use crate::builder::prism::layout_node_variant::optional_keyword_parameter_node::{
-    LayoutParamOptionalKeywordParameterNode, layout_optional_keyword_parameter_node,
-};
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
@@ -15,5 +12,5 @@ pub fn build_optional_keyword_parameter_node(
     context: &mut BuildContext,
 ) -> Document {
     let value = build_node(&node.value(), context);
-    layout_optional_keyword_parameter_node(&LayoutParamOptionalKeywordParameterNode { value })
+    Document::None
 }

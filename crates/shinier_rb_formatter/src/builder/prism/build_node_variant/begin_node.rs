@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::begin_node::{layout_begin_node, LayoutParamBeginNode};
+
 
 pub fn build_begin_node(node: &BeginNode<'_>, context: &mut BuildContext) -> Document {
     let statements = match &node.statements() {
@@ -25,5 +25,5 @@ pub fn build_begin_node(node: &BeginNode<'_>, context: &mut BuildContext) -> Doc
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_begin_node(&LayoutParamBeginNode { statements, rescue_clause, else_clause, ensure_clause })
+    Document::None
 }

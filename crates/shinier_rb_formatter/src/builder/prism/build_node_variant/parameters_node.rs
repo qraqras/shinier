@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::parameters_node::{layout_parameters_node, LayoutParamParametersNode};
+
 
 pub fn build_parameters_node(node: &ParametersNode<'_>, context: &mut BuildContext) -> Document {
     let mut requireds = Vec::new();
@@ -37,5 +37,5 @@ pub fn build_parameters_node(node: &ParametersNode<'_>, context: &mut BuildConte
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_parameters_node(&LayoutParamParametersNode { requireds, optionals, rest, posts, keywords, keyword, block })
+    Document::None
 }

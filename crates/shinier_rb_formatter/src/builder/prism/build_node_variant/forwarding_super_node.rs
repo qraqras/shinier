@@ -6,12 +6,12 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::forwarding_super_node::{layout_forwarding_super_node, LayoutParamForwardingSuperNode};
+
 
 pub fn build_forwarding_super_node(node: &ForwardingSuperNode<'_>, context: &mut BuildContext) -> Document {
     let block = match node.block() {
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_forwarding_super_node(&LayoutParamForwardingSuperNode { block })
+    Document::None
 }

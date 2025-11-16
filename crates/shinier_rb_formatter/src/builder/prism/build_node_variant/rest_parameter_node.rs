@@ -7,12 +7,12 @@ use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::build_node::build_constant_id;
-use crate::builder::prism::layout_node_variant::rest_parameter_node::{layout_rest_parameter_node, LayoutParamRestParameterNode};
+
 
 pub fn build_rest_parameter_node(node: &RestParameterNode<'_>, context: &mut BuildContext) -> Document {
     let name = match &node.name() {
         Some(id) => Some(build_constant_id(id, context)),
         None => None,
     };
-    layout_rest_parameter_node(&LayoutParamRestParameterNode { name })
+    Document::None
 }

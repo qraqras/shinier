@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::call_operator_write_node::{layout_call_operator_write_node, LayoutParamCallOperatorWriteNode};
+
 
 pub fn build_call_operator_write_node(node: &CallOperatorWriteNode<'_>, context: &mut BuildContext) -> Document {
     let receiver = match &node.receiver() {
@@ -14,5 +14,5 @@ pub fn build_call_operator_write_node(node: &CallOperatorWriteNode<'_>, context:
         None => None,
     };
     let value = build_node(&node.value(), context);
-    layout_call_operator_write_node(&LayoutParamCallOperatorWriteNode { receiver, value })
+    Document::None
 }

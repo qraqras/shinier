@@ -6,7 +6,7 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::array_pattern_node::{layout_array_pattern_node, LayoutParamArrayPatternNode};
+
 
 pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, context: &mut BuildContext) -> Document {
     let constant = match &node.constant() {
@@ -25,5 +25,5 @@ pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, context: &mut Build
     for node in &node.posts() {
         posts.push(build_node(&node, context));
     }
-    layout_array_pattern_node(&LayoutParamArrayPatternNode { constant, requireds, rest, posts })
+    Document::None
 }

@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::redo_node::{layout_redo_node, LayoutParamRedoNode};
+
 
 pub fn build_redo_node(node: &RedoNode<'_>, context: &mut BuildContext) -> Document {
     let keyword = Document::String(REDO.to_string());
-    layout_redo_node(&LayoutParamRedoNode { keyword })
+    Document::None
 }

@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::embedded_variable_node::{layout_embedded_variable_node, LayoutParamEmbeddedVariableNode};
+
 
 pub fn build_embedded_variable_node(node: &EmbeddedVariableNode<'_>, context: &mut BuildContext) -> Document {
     let variable = build_node(&node.variable(), context);
-    layout_embedded_variable_node(&LayoutParamEmbeddedVariableNode { variable })
+    Document::None
 }

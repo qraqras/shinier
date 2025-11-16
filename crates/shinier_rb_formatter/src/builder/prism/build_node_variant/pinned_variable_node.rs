@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::pinned_variable_node::{layout_pinned_variable_node, LayoutParamPinnedVariableNode};
+
 
 pub fn build_pinned_variable_node(node: &PinnedVariableNode<'_>, context: &mut BuildContext) -> Document {
     let variable = build_node(&node.variable(), context);
-    layout_pinned_variable_node(&LayoutParamPinnedVariableNode { variable })
+    Document::None
 }

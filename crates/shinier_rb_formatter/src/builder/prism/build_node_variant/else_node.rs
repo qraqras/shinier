@@ -6,12 +6,12 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::else_node::{layout_else_node, LayoutParamElseNode};
+
 
 pub fn build_else_node(node: &ElseNode<'_>, context: &mut BuildContext) -> Document {
     let statements = match &node.statements() {
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,
     };
-    layout_else_node(&LayoutParamElseNode { statements })
+    Document::None
 }

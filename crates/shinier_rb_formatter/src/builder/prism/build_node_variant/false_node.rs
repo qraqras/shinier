@@ -6,9 +6,9 @@ use crate::builder::prism::BuildContext;
 use crate::keyword::*;
 use ruby_prism::*;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::layout_node_variant::false_node::{layout_false_node, LayoutParamFalseNode};
+
 
 pub fn build_false_node(node: &FalseNode<'_>, context: &mut BuildContext) -> Document {
     let keyword = Document::String(FALSE.to_string());
-    layout_false_node(&LayoutParamFalseNode { keyword })
+    Document::None
 }
