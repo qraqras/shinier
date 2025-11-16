@@ -38,9 +38,7 @@ impl<'a> Printer<'a> {
         let comment_store = attach(&parse_result);
 
         let mut context = BuildContext {
-            source: self.source.as_bytes(),
-            root: &parse_result.node(),
-            built_end: 0usize,
+            last_processed_start_offset: 0usize,
             line_break_index: LineBreakIndex::new(self.source.as_bytes()),
             comment_store,
             max_blank_lines: 0usize,

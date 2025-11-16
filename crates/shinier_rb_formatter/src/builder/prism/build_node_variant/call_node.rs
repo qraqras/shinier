@@ -1,7 +1,7 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
-use crate::builder::prism::build_location::build_location;
+use crate::builder::prism::build_location::build_node_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::CallNode;
 
@@ -19,5 +19,5 @@ pub fn build_call_node(node: &CallNode<'_>, context: &mut BuildContext) -> Docum
         None => None,
     };
     // TODO: not yet implemented method call formatting
-    build_location(&node.location(), context)
+    build_node_location(&node.as_node(), context)
 }

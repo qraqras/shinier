@@ -11,7 +11,10 @@ use std::io::Read;
 pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
     // Builds comments and blank lines
     let leading_comments = leading_comments_n(&node, context);
-    let leading_blank_lines = leading_blank_lines(&node, context);
+    let leading_blank_lines = match context.last_processed_start_offset < node.location().start_offset() {
+        true => leading_blank_lines(&node, context),
+        false => None,
+    };
     let trailing_comments = trailing_comments_n(&node, context);
     // Adjusts max_blank_lines based on node type
     let prev_max_blank_lines = context.max_blank_lines;
@@ -20,6 +23,7 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
         Node::StatementsNode { .. } => 1,
         _                           => 0,
     };
+    context.last_processed_start_offset = node.location().start_offset().max(context.last_processed_start_offset);
     // Builds node variant
     let node = match node {
         Node::AliasGlobalVariableNode           { .. } => alias_global_variable_node::build_alias_global_variable_node                      (&node.as_alias_global_variable_node().unwrap()           , context),

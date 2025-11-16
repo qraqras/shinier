@@ -108,7 +108,6 @@ pub fn leading_blank_lines(node: &Node, context: &mut BuildContext) -> Option<Do
         .count_leading_blank_lines(node.location().start_offset());
     for _ in 0..blank_lines_count {
         documents.push(hardline());
-        // documents.push(hardline());
     }
     match documents.is_empty() {
         true => None,

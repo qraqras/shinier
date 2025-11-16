@@ -10,11 +10,14 @@ pub fn build_alternation_pattern_node(
     node: &AlternationPatternNode<'_>,
     context: &mut BuildContext,
 ) -> Document {
-    let mut acc = Vec::new();
-    flatten(&node.as_node(), context, &mut acc);
-    group(array(&acc))
+    let mut parts = Vec::new();
+    flatten(&node.as_node(), context, &mut parts);
+    assert!(!parts.is_empty());
+    let first = parts.remove(0);
+    group(array(&[first, indent(array(&parts))]))
 }
 
+/// Flattens nested AlternationPatternNode into a linear sequence of Documents.
 fn flatten(node: &Node<'_>, context: &mut BuildContext, acc: &mut Vec<Document>) {
     match node {
         Node::AlternationPatternNode { .. } => {
@@ -25,7 +28,8 @@ fn flatten(node: &Node<'_>, context: &mut BuildContext, acc: &mut Vec<Document>)
             flatten(&left, context, acc);
             acc.push(space());
             acc.push(build_location(&operator, context));
-            acc.push(indent(array(&[line(), build_node(&right, context)])));
+            acc.push(line());
+            acc.push(build_node(&right, context));
         }
         _ => {
             acc.push(build_node(node, context));
