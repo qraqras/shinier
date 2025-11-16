@@ -7,10 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use ruby_prism::ArrayPatternNode;
 use ruby_prism::Node;
 
-pub fn build_array_pattern_node(
-    node: &ArrayPatternNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
+pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, context: &mut BuildContext) -> Document {
     let constant = node.constant();
     let requireds = node.requireds();
     let rest = node.rest();

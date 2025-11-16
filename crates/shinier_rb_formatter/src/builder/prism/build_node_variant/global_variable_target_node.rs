@@ -3,11 +3,10 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_node::build_constant_id;
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::build_node::build_constant_id;
-
 
 pub fn build_global_variable_target_node(node: &GlobalVariableTargetNode<'_>, context: &mut BuildContext) -> Document {
     let name = build_constant_id(&node.name(), context);

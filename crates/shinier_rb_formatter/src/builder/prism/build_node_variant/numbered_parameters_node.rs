@@ -3,10 +3,9 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-
 
 pub fn build_numbered_parameters_node(node: &NumberedParametersNode<'_>, context: &mut BuildContext) -> Document {
     let maximum = Document::String(node.maximum().to_string());

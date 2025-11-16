@@ -8,10 +8,7 @@ use crate::builder::prism::build_node::escape;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_regular_expression_node(
-    node: &RegularExpressionNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
+pub fn build_regular_expression_node(node: &RegularExpressionNode<'_>, context: &mut BuildContext) -> Document {
     // TODO
     let escaped = Document::String(escape(node.unescaped()));
     Document::None

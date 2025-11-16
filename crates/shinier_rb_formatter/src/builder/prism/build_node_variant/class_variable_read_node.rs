@@ -8,10 +8,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_class_variable_read_node(
-    node: &ClassVariableReadNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
+pub fn build_class_variable_read_node(node: &ClassVariableReadNode<'_>, context: &mut BuildContext) -> Document {
     let name = build_constant_id(&node.name(), context);
     Document::None
 }

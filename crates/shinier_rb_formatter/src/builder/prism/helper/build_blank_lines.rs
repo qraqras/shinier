@@ -26,22 +26,12 @@ impl LineBreakIndex {
         if start_offset >= end_offset {
             return false;
         }
-        let idx = self
-            .positions
-            .partition_point(|&position| position < start_offset);
-        self.positions
-            .get(idx)
-            .map_or(false, |&pos| pos < end_offset)
+        let idx = self.positions.partition_point(|&position| position < start_offset);
+        self.positions.get(idx).map_or(false, |&pos| pos < end_offset)
     }
     pub fn line_number_at_offset(&self, start_offset: usize, end_offset: usize) -> (usize, usize) {
-        let start_line = self
-            .positions
-            .partition_point(|&position| position < start_offset)
-            + 1;
-        let end_line = self
-            .positions
-            .partition_point(|&position| position < end_offset)
-            + 1;
+        let start_line = self.positions.partition_point(|&position| position < start_offset) + 1;
+        let end_line = self.positions.partition_point(|&position| position < end_offset) + 1;
         (start_line, end_line)
     }
     pub fn get_line_start_offset(&self, offset: usize) -> usize {
@@ -49,16 +39,10 @@ impl LineBreakIndex {
             return 0;
         }
         let idx = self.positions.partition_point(|&pos| pos < offset);
-        if idx == 0 {
-            0
-        } else {
-            self.positions[idx - 1] + 1
-        }
+        if idx == 0 { 0 } else { self.positions[idx - 1] + 1 }
     }
     pub fn col_at_offset(&self, offset: usize) -> usize {
-        let line_start_idx = self
-            .positions
-            .partition_point(|&position| position < offset);
+        let line_start_idx = self.positions.partition_point(|&position| position < offset);
         let line_start_offset = if line_start_idx == 0 {
             0
         } else {

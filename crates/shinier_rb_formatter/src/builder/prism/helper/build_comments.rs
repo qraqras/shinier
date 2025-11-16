@@ -8,11 +8,7 @@ use ruby_prism::Node;
 
 /// Builds leading comments for a given node.
 pub fn leading_comments_n(node: &Node, context: &mut BuildContext) -> Option<Document> {
-    base_leading_comments(
-        node.location().start_offset(),
-        node.location().end_offset(),
-        context,
-    )
+    base_leading_comments(node.location().start_offset(), node.location().end_offset(), context)
 }
 
 /// Builds leading comments for a given location.
@@ -22,11 +18,7 @@ pub fn leading_comments_l(location: &Location, context: &mut BuildContext) -> Op
 
 /// Builds trailing comments for a given node.
 pub fn trailing_comments_n(node: &Node, context: &mut BuildContext) -> Option<Document> {
-    base_trailing_comments(
-        node.location().start_offset(),
-        node.location().end_offset(),
-        context,
-    )
+    base_trailing_comments(node.location().start_offset(), node.location().end_offset(), context)
 }
 
 /// Builds trailing comments for a given location.
@@ -35,11 +27,7 @@ pub fn trailing_comments_l(location: &Location, context: &mut BuildContext) -> O
 }
 
 /// Builds leading comments for a given start and end offset.
-fn base_leading_comments(
-    start_offset: usize,
-    end_offset: usize,
-    context: &mut BuildContext,
-) -> Option<Document> {
+fn base_leading_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
     let mut documents = Vec::new();
     let comment_store = &context.comment_store;
     if let Some(comment_placement) = comment_store.by_target.get(&(start_offset, end_offset)) {
@@ -72,11 +60,7 @@ fn base_leading_comments(
 }
 
 /// Builds trailing comments for a given start and end offset.
-fn base_trailing_comments(
-    start_offset: usize,
-    end_offset: usize,
-    context: &mut BuildContext,
-) -> Option<Document> {
+fn base_trailing_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
     let mut documents = Vec::new();
     let comment_store = &context.comment_store;
     if let Some(comment_placement) = comment_store.by_target.get(&(start_offset, end_offset)) {

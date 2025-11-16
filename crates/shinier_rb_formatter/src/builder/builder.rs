@@ -1,6 +1,11 @@
-use crate::document::{
-    Align, Document, Group, IfBreak, Indent, Line, LineSuffix, LineSuffixBoundary,
-};
+use crate::document::Align;
+use crate::document::Document;
+use crate::document::Group;
+use crate::document::IfBreak;
+use crate::document::Indent;
+use crate::document::Line;
+use crate::document::LineSuffix;
+use crate::document::LineSuffixBoundary;
 use std::cell::Cell;
 
 thread_local! {
@@ -63,10 +68,7 @@ pub fn group(contents: Document) -> Document {
 }
 
 pub fn conditional_group(states: &[Document]) -> Document {
-    assert!(
-        !states.is_empty(),
-        "conditional_group requires at least one state"
-    );
+    assert!(!states.is_empty(), "conditional_group requires at least one state");
     Document::Group(Group {
         id: generate_group_id(),
         contents: Box::new(states.first().unwrap().clone()),
@@ -160,10 +162,7 @@ pub fn space() -> Document {
 }
 
 pub fn array_opt(parts: &[Option<Document>]) -> Document {
-    let filtered: Vec<Document> = parts
-        .iter()
-        .filter_map(|opt| opt.as_ref().cloned())
-        .collect();
+    let filtered: Vec<Document> = parts.iter().filter_map(|opt| opt.as_ref().cloned()).collect();
     if filtered.is_empty() {
         return Document::None;
     }

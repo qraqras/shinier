@@ -6,10 +6,7 @@ use crate::builder::prism::build_node::build_node;
 use ruby_prism::AlternationPatternNode;
 use ruby_prism::Node;
 
-pub fn build_alternation_pattern_node(
-    node: &AlternationPatternNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
+pub fn build_alternation_pattern_node(node: &AlternationPatternNode<'_>, context: &mut BuildContext) -> Document {
     let mut parts = Vec::new();
     flatten(&node.as_node(), context, &mut parts);
     assert!(!parts.is_empty());

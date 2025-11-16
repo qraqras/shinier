@@ -96,13 +96,7 @@ impl Ind {
             *value += " ".repeat(count).as_str();
             *length += count;
         }
-        fn flush(
-            ind: &Ind,
-            value: &mut String,
-            length: &mut usize,
-            last_tabs: &mut usize,
-            last_spaces: &mut usize,
-        ) {
+        fn flush(ind: &Ind, value: &mut String, length: &mut usize, last_tabs: &mut usize, last_spaces: &mut usize) {
             const USE_TABS: bool = false; // TODO: オプション化
             match USE_TABS {
                 true => flush_tabs(ind, value, length, last_tabs, last_spaces),
@@ -162,24 +156,12 @@ impl Ind {
                     last_spaces += n;
                 }
                 IndType::AlignString(s) => {
-                    flush(
-                        self,
-                        &mut value,
-                        &mut length,
-                        &mut last_tabs,
-                        &mut last_spaces,
-                    );
+                    flush(self, &mut value, &mut length, &mut last_tabs, &mut last_spaces);
                     value.push_str(s);
                     length += s.len();
                 }
                 IndType::Indent => {
-                    flush(
-                        self,
-                        &mut value,
-                        &mut length,
-                        &mut last_tabs,
-                        &mut last_spaces,
-                    );
+                    flush(self, &mut value, &mut length, &mut last_tabs, &mut last_spaces);
                     match USE_TABS {
                         true => add_tabs(self, &mut value, &mut length, 1),
                         false => add_spaces(self, &mut value, &mut length, self.tab_width),
@@ -190,13 +172,7 @@ impl Ind {
                 }
             };
         }
-        flush_spaces(
-            self,
-            &mut value,
-            &mut length,
-            &mut last_tabs,
-            &mut last_spaces,
-        );
+        flush_spaces(self, &mut value, &mut length, &mut last_tabs, &mut last_spaces);
         let root = match &self.root {
             Some(root) => Some(Rc::clone(root)),
             None => Some(Rc::new(self.clone())),
@@ -354,13 +330,7 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
 
     let mut group_mode_map = HashMap::new();
 
-    while let Some(Command {
-        ind,
-        doc,
-        mode,
-        offset,
-    }) = cmds.pop()
-    {
+    while let Some(Command { ind, doc, mode, offset }) = cmds.pop() {
         match &doc {
             Document::Align(align) => {
                 let n = &align.n;
@@ -420,11 +390,8 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                 let second_content = fill.parts.get(offset + 2).unwrap();
 
                 let remaining_cmd = doc.as_cmd_with_offset(Rc::clone(&ind), mode, offset + 2);
-                let first_and_second_content_array = Document::Array(Vec::from([
-                    content.clone(),
-                    whitespace.clone(),
-                    second_content.clone(),
-                ]));
+                let first_and_second_content_array =
+                    Document::Array(Vec::from([content.clone(), whitespace.clone(), second_content.clone()]));
                 let first_and_second_content_flat_cmd =
                     first_and_second_content_array.as_cmd(Rc::clone(&ind), Mode::Flat);
                 let first_and_second_content_fits = fits(
@@ -453,11 +420,7 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                 let mut fallthrough = true;
                 if matches!(mode, Mode::Flat) {
                     if !should_remeasure {
-                        cmds.push(
-                            group
-                                .contents
-                                .as_cmd(Rc::clone(&ind), Mode::from(group.r#break)),
-                        );
+                        cmds.push(group.contents.as_cmd(Rc::clone(&ind), Mode::from(group.r#break)));
                         fallthrough = false;
                     }
                 }
@@ -467,14 +430,7 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                     let mut rem = width - pos;
                     let mut has_line_suffix = !line_suffixes.is_empty();
                     if Mode::from(group.r#break) == Mode::Flat
-                        && fits(
-                            &next,
-                            &cmds,
-                            &mut rem,
-                            &mut has_line_suffix,
-                            &group_mode_map,
-                            false,
-                        )
+                        && fits(&next, &cmds, &mut rem, &mut has_line_suffix, &group_mode_map, false)
                     {
                         cmds.push(next.clone());
                     } else {
@@ -489,20 +445,11 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                             } else {
                                 for (i, state) in expanded_states.iter().enumerate() {
                                     if i >= expanded_states.len() - 1 {
-                                        cmds.push(
-                                            most_expanded.as_cmd(Rc::clone(&ind), Mode::Break),
-                                        );
+                                        cmds.push(most_expanded.as_cmd(Rc::clone(&ind), Mode::Break));
                                         break;
                                     } else {
                                         let cmd = state.as_cmd(Rc::clone(&ind), Mode::Flat);
-                                        if fits(
-                                            &cmd,
-                                            &cmds,
-                                            &mut rem,
-                                            &mut has_line_suffix,
-                                            &group_mode_map,
-                                            false,
-                                        ) {
+                                        if fits(&cmd, &cmds, &mut rem, &mut has_line_suffix, &group_mode_map, false) {
                                             cmds.push(cmd);
                                             break;
                                         }
@@ -694,9 +641,7 @@ fn traverse_doc(
             }
         }
         Document::Group(group) => {
-            if should_traverse_conditional_groups
-                && let Some(ref mut expanded_states) = group.expanded_states
-            {
+            if should_traverse_conditional_groups && let Some(ref mut expanded_states) = group.expanded_states {
                 for state in expanded_states.iter_mut() {
                     traverse_doc(
                         state,

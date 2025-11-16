@@ -8,10 +8,7 @@ use crate::builder::prism::build_node::escape;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_match_last_line_node(
-    node: &MatchLastLineNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
+pub fn build_match_last_line_node(node: &MatchLastLineNode<'_>, context: &mut BuildContext) -> Document {
     let escaped = Document::String(escape(node.unescaped()));
     Document::None
 }

@@ -3,13 +3,12 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-
 
 pub fn build_index_and_write_node(node: &IndexAndWriteNode<'_>, context: &mut BuildContext) -> Document {
-    let receiver = match  &node.receiver() {
+    let receiver = match &node.receiver() {
         Some(node) => Some(build_node(&node, context)),
         None => None,
     };

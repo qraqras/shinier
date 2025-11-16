@@ -3,20 +3,10 @@ use crate::document::Document;
 use crate::keyword::{LogicalOperator, WRITE_OPERATOR};
 
 pub fn build_write(name: Document, value: Document) -> Document {
-    group(array(&[
-        name,
-        space(),
-        string(WRITE_OPERATOR),
-        space(),
-        value,
-    ]))
+    group(array(&[name, space(), string(WRITE_OPERATOR), space(), value]))
 }
 
-pub fn build_logical_write(
-    name: Document,
-    value: Document,
-    logical_operator: LogicalOperator,
-) -> Document {
+pub fn build_logical_write(name: Document, value: Document, logical_operator: LogicalOperator) -> Document {
     group(array(&[
         name,
         space(),

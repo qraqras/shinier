@@ -3,10 +3,9 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-
 
 pub fn build_constant_path_node(node: &ConstantPathNode<'_>, context: &mut BuildContext) -> Document {
     let parent = match &node.parent() {

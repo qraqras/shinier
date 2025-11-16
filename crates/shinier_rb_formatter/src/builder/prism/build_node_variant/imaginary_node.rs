@@ -3,10 +3,9 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-
 
 pub fn build_imaginary_node(node: &ImaginaryNode<'_>, context: &mut BuildContext) -> Document {
     let numeric = build_node(&node.numeric(), context);

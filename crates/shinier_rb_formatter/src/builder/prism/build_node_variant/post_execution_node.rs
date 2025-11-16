@@ -7,10 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_post_execution_node(
-    node: &PostExecutionNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
+pub fn build_post_execution_node(node: &PostExecutionNode<'_>, context: &mut BuildContext) -> Document {
     let statements = match node.statements() {
         Some(node) => Some(build_node(&node.as_node(), context)),
         None => None,

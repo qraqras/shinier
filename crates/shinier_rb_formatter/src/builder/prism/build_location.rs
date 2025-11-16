@@ -16,11 +16,7 @@ pub fn build_location(location: &Location, context: &mut BuildContext) -> Docume
 }
 
 // Builds a Document for a given location with custom content, including leading and trailing comments.
-pub fn build_custom_location(
-    location: &Location,
-    context: &mut BuildContext,
-    content: &str,
-) -> Document {
+pub fn build_custom_location(location: &Location, context: &mut BuildContext, content: &str) -> Document {
     let leading_comments = leading_comments_l(location, context);
     let trailing_comments = trailing_comments_l(location, context);
     array_opt(&[leading_comments, Some(string(content)), trailing_comments])

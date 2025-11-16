@@ -3,10 +3,9 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-
 
 pub fn build_multi_target_node(node: &MultiTargetNode<'_>, context: &mut BuildContext) -> Document {
     let mut lefts = Vec::new();
@@ -20,6 +19,6 @@ pub fn build_multi_target_node(node: &MultiTargetNode<'_>, context: &mut BuildCo
     let mut rights = Vec::new();
     for node in &node.rights() {
         rights.push(build_node(&node, context));
-    };
+    }
     Document::None
 }
