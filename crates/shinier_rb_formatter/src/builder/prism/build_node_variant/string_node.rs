@@ -1,16 +1,17 @@
-// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/string_node.rs
-
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
-use crate::keyword::*;
-use ruby_prism::*;
-use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::build_node::escape;
-
+use crate::builder::prism::build_location::build_location;
+use ruby_prism::StringNode;
 
 pub fn build_string_node(node: &StringNode<'_>, context: &mut BuildContext) -> Document {
-    // TODO
-    let escaped = Document::String(escape(node.unescaped()));
-    Document::None
+    // TODO: Use single quotes if possible
+    let opening_loc = node.opening_loc();
+    let content_loc = node.content_loc();
+    let closing_loc = node.closing_loc();
+    array_opt(&[
+        opening_loc.as_ref().map(|loc| build_location(loc, context)),
+        Some(build_location(&content_loc, context)),
+        closing_loc.as_ref().map(|loc| build_location(loc, context)),
+    ])
 }

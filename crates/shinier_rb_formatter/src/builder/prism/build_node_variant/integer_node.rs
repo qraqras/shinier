@@ -1,14 +1,8 @@
-// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/integer_node.rs
-
 use crate::Document;
-use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
-use crate::builder::prism::build_node::build_integer;
-use crate::builder::prism::build_node::build_node;
-use crate::keyword::*;
-use ruby_prism::*;
+use crate::builder::prism::build_location::build_node_as_location;
+use ruby_prism::IntegerNode;
 
 pub fn build_integer_node(node: &IntegerNode<'_>, context: &mut BuildContext) -> Document {
-    let value = build_integer(&node.value(), context);
-    Document::None
+    build_node_as_location(&node.as_node(), context)
 }
