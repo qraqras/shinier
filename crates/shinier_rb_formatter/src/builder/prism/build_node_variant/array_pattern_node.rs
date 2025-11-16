@@ -1,29 +1,65 @@
-// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/array_pattern_node.rs
-
 use crate::Document;
 use crate::builder::builder::*;
+use crate::builder::keyword::COMMA;
 use crate::builder::prism::BuildContext;
-use crate::keyword::*;
-use ruby_prism::*;
+use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
+use ruby_prism::ArrayPatternNode;
+use ruby_prism::Node;
 
+pub fn build_array_pattern_node(
+    node: &ArrayPatternNode<'_>,
+    context: &mut BuildContext,
+) -> Document {
+    let constant = node.constant();
+    let requireds = node.requireds();
+    let rest = node.rest();
+    let posts = node.posts();
+    let opening_loc = node.opening_loc();
+    let closing_loc = node.closing_loc();
 
-pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, context: &mut BuildContext) -> Document {
-    let constant = match &node.constant() {
-        Some(node) => Some(build_node(&node, context)),
-        None => None,
-    };
-    let mut requireds = Vec::new();
-    for node in &node.requireds() {
-        requireds.push(build_node(&node, context));
+    // Collects all parameters
+    let mut params = Vec::new();
+    for required in requireds.iter() {
+        params.push(required);
     }
-    let rest = match &node.rest() {
-        Some(node) => Some(build_node(&node, context)),
-        None => None,
-    };
-    let mut posts = Vec::new();
-    for node in &node.posts() {
-        posts.push(build_node(&node, context));
+    if let Some(rest) = rest {
+        params.push(rest);
     }
-    Document::None
+    for post in posts.iter() {
+        params.push(post);
+    }
+
+    // Builds parameters with separators
+    let mut built_params = Vec::new();
+    for (i, param) in params.into_iter().enumerate() {
+        match param {
+            Node::ImplicitRestNode { .. } => {}
+            _ => {
+                if i > 0 {
+                    built_params.push(string(COMMA));
+                    built_params.push(line());
+                }
+            }
+        };
+        built_params.push(build_node(&param, context));
+    }
+
+    match (&constant, &opening_loc, &closing_loc) {
+        (None, None, None) => group(array(&built_params)),
+        (None, Some(opening_loc), Some(closing_loc)) => group(array(&[
+            build_location(opening_loc, context),
+            indent(array(&[softline(), array(&built_params)])),
+            softline(),
+            build_location(closing_loc, context),
+        ])),
+        (Some(constant), Some(opening_loc), Some(closing_loc)) => group(array(&[
+            build_node(constant, context),
+            build_location(opening_loc, context),
+            indent(array(&[softline(), array(&built_params)])),
+            softline(),
+            build_location(closing_loc, context),
+        ])),
+        _ => unreachable!(),
+    }
 }

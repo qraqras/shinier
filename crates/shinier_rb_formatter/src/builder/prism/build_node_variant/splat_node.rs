@@ -1,17 +1,15 @@
-// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/splat_node.rs
-
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
-use crate::keyword::*;
-use ruby_prism::*;
+use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
-
+use ruby_prism::SplatNode;
 
 pub fn build_splat_node(node: &SplatNode<'_>, context: &mut BuildContext) -> Document {
-    let expression = match &node.expression() {
-        Some(node) => Some(build_node(&node, context)),
-        None => None,
-    };
-    Document::None
+    let operator_loc = node.operator_loc();
+    let expression = node.expression();
+    group(array_opt(&[
+        Some(build_location(&operator_loc, context)),
+        expression.as_ref().map(|n| build_node(&n, context)),
+    ]))
 }
