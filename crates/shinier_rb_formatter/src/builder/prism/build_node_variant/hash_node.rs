@@ -20,13 +20,16 @@ pub fn build_hash_node(node: &HashNode<'_>, context: &mut BuildContext) -> Docum
         parts.push(build_node(&element, context));
     }
 
+    // If there are no elements, use softline to avoid unnecessary spaces inside the braces.
+    let line_or_softline = match parts.is_empty() {
+        true => softline(),
+        false => line(),
+    };
+
     group(array(&[
         build_location(&opening_loc, context),
-        indent(array(&[line(), array(&parts)])),
-        match parts.is_empty() {
-            true => softline(),
-            false => line(),
-        },
+        indent(array(&[line_or_softline.clone(), array(&parts)])),
+        line_or_softline.clone(),
         build_location(&closing_loc, context),
     ]))
 }
