@@ -28,11 +28,13 @@ pub fn trailing_comments_l(location: &Location, context: &mut BuildContext) -> O
 
 /// Builds leading comments for a given start and end offset.
 fn base_leading_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
-    let mut documents = Vec::new();
     let comment_store = &context.comment_store;
-    if let Some(comment_placement) = comment_store.by_target.get(&(start_offset, end_offset)) {
-        for offsets in &comment_placement.leading {
-            if let Some(comment) = comment_store.by_location.get(offsets) {
+    let leading_comments = comment_store.get_leading(start_offset, end_offset);
+
+    match leading_comments {
+        Some(comments) => {
+            let mut documents = Vec::new();
+            for comment in comments {
                 // hardline between comments
                 if !documents.is_empty() {
                     documents.push(hardline());
@@ -40,42 +42,36 @@ fn base_leading_comments(start_offset: usize, end_offset: usize, context: &mut B
                 // hardlines for blank lines
                 let blank_line_count = context
                     .line_break_index
-                    .count_leading_blank_lines(offsets.0)
+                    .count_leading_blank_lines(comment.location().start_offset())
                     .min(context.max_blank_lines);
                 for _ in 0..blank_line_count {
                     documents.push(hardline());
                 }
                 documents.push(build_comment(comment));
             }
-        }
-    }
-    match documents.is_empty() {
-        true => None,
-        false => {
             documents.push(hardline());
             documents.push(break_parent());
             Some(array(&documents))
         }
+        None => None,
     }
 }
 
 /// Builds trailing comments for a given start and end offset.
 fn base_trailing_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
-    let mut documents = Vec::new();
     let comment_store = &context.comment_store;
-    if let Some(comment_placement) = comment_store.by_target.get(&(start_offset, end_offset)) {
-        for offsets in &comment_placement.trailing {
-            if let Some(comment) = comment_store.by_location.get(offsets) {
+    let trailing_comments = comment_store.get_trailing(start_offset, end_offset);
+
+    match trailing_comments {
+        Some(comments) => {
+            let mut documents = Vec::new();
+            for comment in comments {
                 documents.push(line_suffix(array(&[space(), build_comment(comment)])));
             }
-        }
-    }
-    match documents.is_empty() {
-        true => None,
-        false => {
             documents.push(break_parent());
             Some(array(&documents))
         }
+        None => None,
     }
 }
 

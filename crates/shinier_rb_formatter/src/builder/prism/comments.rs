@@ -3,8 +3,41 @@ use ruby_prism::*;
 use std::collections::HashMap;
 
 pub struct CommentStore<'sh> {
-    pub by_location: HashMap<(usize, usize), Comment<'sh>>,
-    pub by_target: HashMap<(usize, usize), CommentPlacement>,
+    by_location: HashMap<(usize, usize), Comment<'sh>>,
+    by_target: HashMap<(usize, usize), CommentPlacement>,
+}
+
+impl<'sh> CommentStore<'sh> {
+    pub fn get_leading(&self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
+        self.by_target
+            .get(&(target_start_offset, target_end_offset))
+            .and_then(|placement| {
+                let comments = placement
+                    .leading
+                    .iter()
+                    .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
+                    .collect::<Vec<&Comment>>();
+                match comments.is_empty() {
+                    true => None,
+                    false => Some(comments),
+                }
+            })
+    }
+    pub fn get_trailing(&self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
+        self.by_target
+            .get(&(target_start_offset, target_end_offset))
+            .and_then(|placement| {
+                let comments = placement
+                    .trailing
+                    .iter()
+                    .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
+                    .collect::<Vec<&Comment>>();
+                match comments.is_empty() {
+                    true => None,
+                    false => Some(comments),
+                }
+            })
+    }
 }
 
 /// attached comment offsets for a target
