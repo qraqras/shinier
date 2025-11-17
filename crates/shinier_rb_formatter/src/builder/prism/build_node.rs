@@ -15,7 +15,7 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
         true => leading_blank_lines(&node, context),
         false => None,
     };
-    let trailing_comments = trailing_comments_n(&node, context);
+    context.last_processed_start_offset = node.location().start_offset().max(context.last_processed_start_offset);
     // Adjusts max_blank_lines based on node type
     let prev_max_blank_lines = context.max_blank_lines;
     context.max_blank_lines = match node {
@@ -23,9 +23,8 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
         Node::StatementsNode { .. } => 1,
         _                           => 0,
     };
-    context.last_processed_start_offset = node.location().start_offset().max(context.last_processed_start_offset);
     // Builds node variant
-    let node = match node {
+    let node_document = match node {
         Node::AliasGlobalVariableNode           { .. } => alias_global_variable_node::build_alias_global_variable_node                      (&node.as_alias_global_variable_node().unwrap()           , context),
         Node::AliasMethodNode                   { .. } => alias_method_node::build_alias_method_node                                        (&node.as_alias_method_node().unwrap()                    , context),
         Node::AlternationPatternNode            { .. } => alternation_pattern_node::build_alternation_pattern_node                          (&node.as_alternation_pattern_node().unwrap()             , context),
@@ -179,7 +178,8 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
         Node::YieldNode                         { .. } => yield_node::build_yield_node                                                      (&node.as_yield_node().unwrap()                           , context),
     };
     context.max_blank_lines = prev_max_blank_lines;
-    array_opt(&[leading_comments, leading_blank_lines, Some(node), trailing_comments])
+    let trailing_comments = trailing_comments_n(&node, context);
+    array_opt(&[leading_comments, leading_blank_lines, Some(node_document), trailing_comments])
 }
 
 pub fn escape(unescaped: &[u8]) -> String {

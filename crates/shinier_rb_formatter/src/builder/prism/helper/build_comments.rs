@@ -28,9 +28,7 @@ pub fn trailing_comments_l(location: &Location, context: &mut BuildContext) -> O
 
 /// Builds leading comments for a given start and end offset.
 fn base_leading_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
-    let comment_store = &context.comment_store;
-    let leading_comments = comment_store.get_leading(start_offset, end_offset);
-
+    let leading_comments = context.comment_store.pop_leading(start_offset, end_offset);
     match leading_comments {
         Some(comments) => {
             let mut documents = Vec::new();
@@ -59,9 +57,7 @@ fn base_leading_comments(start_offset: usize, end_offset: usize, context: &mut B
 
 /// Builds trailing comments for a given start and end offset.
 fn base_trailing_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
-    let comment_store = &context.comment_store;
-    let trailing_comments = comment_store.get_trailing(start_offset, end_offset);
-
+    let trailing_comments = context.comment_store.pop_trailing(start_offset, end_offset);
     match trailing_comments {
         Some(comments) => {
             let mut documents = Vec::new();

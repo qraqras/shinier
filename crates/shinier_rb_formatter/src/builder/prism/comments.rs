@@ -8,42 +8,36 @@ pub struct CommentStore<'sh> {
 }
 
 impl<'sh> CommentStore<'sh> {
-    pub fn get_leading(&self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
+    pub fn pop_leading(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
         self.by_target
-            .get(&(target_start_offset, target_end_offset))
+            .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| {
-                let comments = placement
-                    .leading
-                    .iter()
-                    .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
-                    .collect::<Vec<&Comment>>();
-                match comments.is_empty() {
-                    true => None,
-                    false => Some(comments),
-                }
+                placement.leading.take().map(|leading_vec| {
+                    leading_vec
+                        .iter()
+                        .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
+                        .collect::<Vec<&Comment>>()
+                })
             })
     }
-    pub fn get_trailing(&self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
+    pub fn pop_trailing(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
         self.by_target
-            .get(&(target_start_offset, target_end_offset))
+            .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| {
-                let comments = placement
-                    .trailing
-                    .iter()
-                    .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
-                    .collect::<Vec<&Comment>>();
-                match comments.is_empty() {
-                    true => None,
-                    false => Some(comments),
-                }
+                placement.trailing.take().map(|trailing_vec| {
+                    trailing_vec
+                        .iter()
+                        .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
+                        .collect::<Vec<&Comment>>()
+                })
             })
     }
 }
 
 /// attached comment offsets for a target
 pub struct CommentPlacement {
-    pub leading: Vec<(usize, usize)>,
-    pub trailing: Vec<(usize, usize)>,
+    pub leading: Option<Vec<(usize, usize)>>,
+    pub trailing: Option<Vec<(usize, usize)>>,
 }
 
 /// trait for attaching comments to targets
@@ -97,20 +91,26 @@ impl Attach for Target {
         let key = (self.start_offset(), self.end_offset());
         let value = (comment.location().start_offset(), comment.location().end_offset());
         map.entry(key)
-            .and_modify(|attached| attached.leading.push(value))
+            .and_modify(|attached| match &mut attached.leading {
+                Some(vec) => vec.push(value),
+                None => attached.leading = Some(Vec::from([value])),
+            })
             .or_insert_with(|| CommentPlacement {
-                leading: Vec::from([value]),
-                trailing: Vec::new(),
+                leading: Some(Vec::from([value])),
+                trailing: None,
             });
     }
     fn trailing_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
         let key = (self.start_offset(), self.end_offset());
         let value = (comment.location().start_offset(), comment.location().end_offset());
         map.entry(key)
-            .and_modify(|attached| attached.trailing.push(value))
+            .and_modify(|attached| match &mut attached.trailing {
+                Some(vec) => vec.push(value),
+                None => attached.trailing = Some(Vec::from([value])),
+            })
             .or_insert_with(|| CommentPlacement {
-                leading: Vec::new(),
-                trailing: Vec::from([value]),
+                leading: None,
+                trailing: Some(Vec::from([value])),
             });
     }
 }
