@@ -32,12 +32,25 @@ impl<'sh> CommentStore<'sh> {
                 })
             })
     }
+    pub fn pop_dangling(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
+        self.by_target
+            .get_mut(&(target_start_offset, target_end_offset))
+            .and_then(|placement| {
+                placement.dangling.take().map(|dangling_vec| {
+                    dangling_vec
+                        .iter()
+                        .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
+                        .collect::<Vec<&Comment>>()
+                })
+            })
+    }
 }
 
 /// attached comment offsets for a target
 pub struct CommentPlacement {
     pub leading: Option<Vec<(usize, usize)>>,
     pub trailing: Option<Vec<(usize, usize)>>,
+    pub dangling: Option<Vec<(usize, usize)>>,
 }
 
 /// trait for attaching comments to targets
@@ -47,6 +60,7 @@ trait Attach {
     fn is_enclosing(&self, comment: &Comment) -> bool;
     fn leading_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
     fn trailing_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
+    fn dangling_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
 }
 
 /// target node for attaching comments
@@ -98,6 +112,7 @@ impl Attach for Target {
             .or_insert_with(|| CommentPlacement {
                 leading: Some(Vec::from([value])),
                 trailing: None,
+                dangling: None,
             });
     }
     fn trailing_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
@@ -111,6 +126,21 @@ impl Attach for Target {
             .or_insert_with(|| CommentPlacement {
                 leading: None,
                 trailing: Some(Vec::from([value])),
+                dangling: None,
+            });
+    }
+    fn dangling_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
+        let key = (self.start_offset(), self.end_offset());
+        let value = (comment.location().start_offset(), comment.location().end_offset());
+        map.entry(key)
+            .and_modify(|attached| match &mut attached.dangling {
+                Some(vec) => vec.push(value),
+                None => attached.dangling = Some(Vec::from([value])),
+            })
+            .or_insert_with(|| CommentPlacement {
+                leading: None,
+                trailing: None,
+                dangling: Some(Vec::from([value])),
             });
     }
 }
