@@ -18,6 +18,24 @@ begin
   do_something
 rescue
   recover
+else
+  handle_else
+end
+
+begin
+  do_something
+rescue
+  recover
+ensure
+  must_to_do
+end
+
+begin
+  do_something
+rescue
+  recover
+else
+  handle_else
 ensure
   must_to_do
 end

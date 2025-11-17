@@ -5,6 +5,7 @@ use crate::builder::prism::helper::build_blank_lines::LineBreakIndex;
 use crate::renderer::print_doc_to_string;
 use ruby_prism::*;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 pub struct Printer<'a> {
     source: String,
@@ -41,6 +42,7 @@ impl<'a> Printer<'a> {
             last_processed_start_offset: 0usize,
             line_break_index: LineBreakIndex::new(self.source.as_bytes()),
             comment_store: &mut comment_store,
+            processed_locations: HashSet::new(),
             max_blank_lines: 0usize,
             hash_label_style: false,
             percent_literal: false,

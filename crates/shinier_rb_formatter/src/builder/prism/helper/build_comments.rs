@@ -55,6 +55,17 @@ fn base_leading_comments(start_offset: usize, end_offset: usize, context: &mut B
     }
 }
 
+/// Builds indented leading comments for a given start and end offset.
+/// ```ruby
+/// if condition
+///   # This is an indented leading comment
+/// # This is a leading comment
+/// else
+/// ```
+fn indent_leading_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
+    // TODO: Implement indentation logic for leading comments
+}
+
 /// Builds trailing comments for a given start and end offset.
 fn base_trailing_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
     let trailing_comments = context.comment_store.pop_trailing(start_offset, end_offset);
