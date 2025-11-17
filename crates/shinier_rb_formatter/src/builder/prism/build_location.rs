@@ -31,3 +31,10 @@ pub fn build_node_as_location(node: &Node, _context: &mut BuildContext) -> Docum
     let _ = location.as_slice().read_to_string(&mut buf);
     string(buf)
 }
+
+/// Builds a Document for the given node with custom content.
+/// Comments and blank lines are not included here because they are already processed
+/// when building the node itself in build_node().
+pub fn build_node_as_custom_location(_node: &Node, _context: &mut BuildContext, content: &str) -> Document {
+    string(content)
+}
