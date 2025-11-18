@@ -51,9 +51,14 @@ rescue # comment 7
   recover # comment 9
   # comment 10
 # comment 11
-ensure # comment 12
+else # comment 12
   # comment 13
-  must_to_do # comment 14
+  handle_else # comment 14
   # comment 15
 # comment 16
+ensure # comment 17
+  # comment 18
+  must_to_do # comment 19
+  # comment 20
+# comment 21
 end

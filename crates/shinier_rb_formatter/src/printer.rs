@@ -36,11 +36,12 @@ impl<'a> Printer<'a> {
             panic!("!!!!パースエラー時の処理は未実装です!!!!: {}", messages);
         }
 
-        let mut comment_store = attach(&parse_result);
+        let line_index = LineBreakIndex::new(self.source.as_bytes());
+        let mut comment_store = attach(&parse_result, &line_index);
 
         let mut context = BuildContext {
             last_processed_start_offset: 0usize,
-            line_break_index: LineBreakIndex::new(self.source.as_bytes()),
+            line_break_index: line_index,
             comment_store: &mut comment_store,
             processed_locations: HashSet::new(),
             max_blank_lines: 0usize,

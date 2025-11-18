@@ -179,7 +179,8 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
     };
     context.max_blank_lines = prev_max_blank_lines;
     let trailing_comments = trailing_comments_n(&node, context);
-    array_opt(&[leading_comments, leading_blank_lines, Some(node_document), trailing_comments])
+    let dangling_comments = dangling_comments_n(&node, context);
+    array_opt(&[leading_comments, leading_blank_lines, Some(node_document), trailing_comments, dangling_comments])
 }
 
 pub fn escape(unescaped: &[u8]) -> String {
