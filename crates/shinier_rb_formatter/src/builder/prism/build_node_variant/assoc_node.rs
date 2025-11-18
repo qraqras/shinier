@@ -18,14 +18,14 @@ pub fn build_assoc_node(node: &AssocNode<'_>, context: &mut BuildContext) -> Doc
             // if key is a SymbolNode, we format it as hash label style
             Some(n) => group(array(&[
                 build_node_as_hash_label_style(&n.as_node(), context),
-                build_custom_location(&l, context, ":"),
+                build_custom_location(&l, context, ":").unwrap(),
                 indent(array(&[line(), build_node(&value, context)])),
             ])),
             // if key is not a SymbolNode, we format it as hash rocket style
             None => group(array(&[
                 build_node(&key, context),
                 space(),
-                build_location(&l, context),
+                build_location(&l, context).unwrap(),
                 indent(array(&[line(), build_node(&value, context)])),
             ])),
         },

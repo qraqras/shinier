@@ -11,9 +11,8 @@ pub fn build_ensure_node(node: &EnsureNode<'_>, context: &mut BuildContext) -> D
     let end_keyword_loc = node.end_keyword_loc();
 
     group(array_opt(&[
-        Some(build_location(&ensure_keyword_loc, context)),
+        build_location(&ensure_keyword_loc, context),
         statements.map(|n| indent(array(&[hardline(), build_node(&n.as_node(), context)]))),
-        Some(hardline()),
-        Some(build_location(&end_keyword_loc, context)),
+        build_location(&end_keyword_loc, context).map(|e| array(&[hardline(), e])),
     ]))
 }

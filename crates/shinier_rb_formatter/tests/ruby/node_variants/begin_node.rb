@@ -1,19 +1,25 @@
 begin
+end
+
+begin
   do_something
 end
 
+# with rescue
 begin
   do_something
 rescue
   recover
 end
 
+# with ensure
 begin
   do_something
 ensure
   must_to_do
 end
 
+# with rescue and else
 begin
   do_something
 rescue
@@ -22,6 +28,7 @@ else
   handle_else
 end
 
+# with rescue and ensure
 begin
   do_something
 rescue
@@ -30,6 +37,7 @@ ensure
   must_to_do
 end
 
+# with rescue and else and ensure
 begin
   do_something
 rescue
@@ -39,6 +47,10 @@ else
 ensure
   must_to_do
 end
+
+begin # comment 1
+  # comment 2
+end # comment 3
 
 # comment 1
 begin # comment 2
@@ -61,4 +73,4 @@ ensure # comment 17
   must_to_do # comment 19
   # comment 20
 # comment 21
-end
+end # comment 22

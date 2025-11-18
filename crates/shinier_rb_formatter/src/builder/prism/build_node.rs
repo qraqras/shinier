@@ -9,26 +9,28 @@ use std::io::Read;
 
 #[rustfmt::skip]
 pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
-    let prev_blank_lines = context.blank_lines.take();
-    let prev_leading_comments = context.leading_comments.take();
-    let prev_trailing_comments = context.trailing_comments.take();
-    let prev_dangling_comments = context.dangling_comments.take();
-    context.blank_lines = match context.last_processed_start_offset < node.location().start_offset() {
+    // blank lines
+    let blank_lines = match context.last_processed_start_offset < node.location().start_offset() {
         true => leading_blank_lines(&node, context),
         false => None,
     };
-    context.leading_comments = leading_comments_n(&node, context);
-    context.trailing_comments = trailing_comments_n(&node, context);
-    context.dangling_comments = dangling_comments_n(&node, context);
+    // comments
+    let prev_leading_comments = context.leading_comments.take();
+    let prev_trailing_comments = context.trailing_comments.take();
+    let prev_dangling_comments = context.dangling_comments.take();
+    context.leading_comments = leading_comments_n(node, context);
+    context.trailing_comments = trailing_comments_n(node, context);
+    context.dangling_comments = dangling_comments_n(node, context);
+    // offset
     context.last_processed_start_offset = node.location().start_offset().max(context.last_processed_start_offset);
-    // Adjusts max_blank_lines based on node type
+    // max blank lines
     let prev_max_blank_lines = context.max_blank_lines;
     context.max_blank_lines = match node {
         Node::ProgramNode    { .. } => 1,
         Node::StatementsNode { .. } => 1,
         _                           => 0,
     };
-    // Builds node variant
+    // node variant
     let node_document = match node {
         Node::AliasGlobalVariableNode           { .. } => alias_global_variable_node::build_alias_global_variable_node                      (&node.as_alias_global_variable_node().unwrap()           , context),
         Node::AliasMethodNode                   { .. } => alias_method_node::build_alias_method_node                                        (&node.as_alias_method_node().unwrap()                    , context),
@@ -183,11 +185,9 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
         Node::YieldNode                         { .. } => yield_node::build_yield_node                                                      (&node.as_yield_node().unwrap()                           , context),
     };
     context.max_blank_lines = prev_max_blank_lines;
-    let blank_lines = context.blank_lines.take();
     let leading_comments = context.leading_comments.take();
     let trailing_comments = context.trailing_comments.take();
     let dangling_comments = context.dangling_comments.take();
-    context.blank_lines = prev_blank_lines;
     context.leading_comments = prev_leading_comments;
     context.trailing_comments = prev_trailing_comments;
     context.dangling_comments = prev_dangling_comments;

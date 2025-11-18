@@ -19,5 +19,5 @@ pub fn build_call_node(node: &CallNode<'_>, context: &mut BuildContext) -> Docum
         None => None,
     };
     // TODO: not yet implemented method call formatting
-    build_node_as_location(&node.as_node(), context)
+    build_node_as_location(&node.as_node(), context).unwrap()
 }

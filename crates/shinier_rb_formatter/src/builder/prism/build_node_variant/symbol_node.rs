@@ -7,7 +7,7 @@ use ruby_prism::SymbolNode;
 pub fn build_symbol_node(node: &SymbolNode<'_>, context: &mut BuildContext) -> Document {
     match context.hash_label_style {
         true => build_node_as_hash_label_style_location(&node, context),
-        false => build_node_as_location(&node.as_node(), context),
+        false => build_node_as_location(&node.as_node(), context).unwrap(),
     }
 }
 
@@ -17,8 +17,8 @@ fn build_node_as_hash_label_style_location(node: &SymbolNode<'_>, context: &mut 
     match location_slice.first() {
         Some(b':') => {
             let content = std::str::from_utf8(&location_slice[1..]).unwrap_or("");
-            build_node_as_custom_location(&node.as_node(), context, content)
+            build_node_as_custom_location(&node.as_node(), context, content).unwrap()
         }
-        _ => build_node_as_location(&node.as_node(), context),
+        _ => build_node_as_location(&node.as_node(), context).unwrap(),
     }
 }

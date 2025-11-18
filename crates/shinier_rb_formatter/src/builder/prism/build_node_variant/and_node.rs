@@ -24,7 +24,7 @@ fn flatten(node: &Node<'_>, context: &mut BuildContext, acc: &mut Vec<Document>)
             let operator = and_node.operator_loc();
             flatten(&left, context, acc);
             acc.push(space());
-            acc.push(build_custom_location(&operator, context, LOGICAL_AND));
+            acc.push(build_custom_location(&operator, context, LOGICAL_AND).unwrap());
             acc.push(line());
             acc.push(build_node(&right, context));
         }

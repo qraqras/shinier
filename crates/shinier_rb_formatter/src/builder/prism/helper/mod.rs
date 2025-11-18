@@ -2,6 +2,7 @@ pub mod build_blank_lines;
 pub mod build_comments;
 pub mod escape;
 pub mod layout;
+pub mod location;
 pub mod regex;
 
 pub use build_blank_lines::*;

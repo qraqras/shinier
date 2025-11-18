@@ -23,10 +23,10 @@ pub fn build_array_node(node: &ArrayNode<'_>, context: &mut BuildContext) -> Doc
         parts.push(build_node(&element, context));
     }
     group(array_opt(&[
-        opening_loc.as_ref().map(|l| build_location(l, context)),
+        opening_loc.as_ref().map(|l| build_location(l, context).unwrap()),
         Some(indent(array(&[softline(), array(&parts)]))),
         Some(softline()),
-        closing_loc.as_ref().map(|l| build_location(l, context)),
+        closing_loc.as_ref().map(|l| build_location(l, context).unwrap()),
     ]))
 }
 

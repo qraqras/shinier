@@ -5,7 +5,6 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/back_reference_read_node.rb
 ---
 ****FORMATTED****
-# Basic back references
 $&
 $`
 $'
@@ -13,9 +12,9 @@ $+
 
 
 ****AST****
-ProgramNode[24-35]: "$&\n$`\n$\'\n$+"
-__StatementsNode[24-35]: "$&\n$`\n$\'\n$+"
-____BackReferenceReadNode[24-26]: "$&"
-____BackReferenceReadNode[27-29]: "$`"
-____BackReferenceReadNode[30-32]: "$\'"
-____BackReferenceReadNode[33-35]: "$+"
+ProgramNode[0-11]: "$&\n$`\n$\'\n$+"
+__StatementsNode[0-11]: "$&\n$`\n$\'\n$+"
+____BackReferenceReadNode[0-2]: "$&"
+____BackReferenceReadNode[3-5]: "$`"
+____BackReferenceReadNode[6-8]: "$\'"
+____BackReferenceReadNode[9-11]: "$+"

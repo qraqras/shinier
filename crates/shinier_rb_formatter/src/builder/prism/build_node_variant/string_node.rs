@@ -10,8 +10,8 @@ pub fn build_string_node(node: &StringNode<'_>, context: &mut BuildContext) -> D
     let content_loc = node.content_loc();
     let closing_loc = node.closing_loc();
     array_opt(&[
-        opening_loc.as_ref().map(|loc| build_location(loc, context)),
-        Some(build_location(&content_loc, context)),
-        closing_loc.as_ref().map(|loc| build_location(loc, context)),
+        opening_loc.as_ref().map(|loc| build_location(loc, context).unwrap()),
+        Some(build_location(&content_loc, context).unwrap()),
+        closing_loc.as_ref().map(|loc| build_location(loc, context).unwrap()),
     ])
 }

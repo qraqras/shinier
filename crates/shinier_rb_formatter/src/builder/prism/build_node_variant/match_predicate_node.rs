@@ -8,6 +8,6 @@ use ruby_prism::MatchPredicateNode;
 pub fn build_match_predicate_node(node: &MatchPredicateNode<'_>, context: &mut BuildContext) -> Document {
     let value = build_node(&node.value(), context);
     let pattern = build_node(&node.pattern(), context);
-    let operator = build_location(&node.operator_loc(), context);
+    let operator = build_location(&node.operator_loc(), context).unwrap();
     group(array(&[value, space(), operator, indent(array(&[line(), pattern]))]))
 }

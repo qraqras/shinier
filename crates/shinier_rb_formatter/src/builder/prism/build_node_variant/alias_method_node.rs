@@ -7,7 +7,7 @@ use ruby_prism::AliasMethodNode;
 
 pub fn build_alias_method_node(node: &AliasMethodNode<'_>, context: &mut BuildContext) -> Document {
     group(array(&[
-        build_location(&node.keyword_loc(), context),
+        build_location(&node.keyword_loc(), context).unwrap(),
         indent(array(&[
             line(),
             build_node(&node.new_name(), context),

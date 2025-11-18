@@ -70,7 +70,6 @@ pub struct Target {
     start_offset: usize,
     end_offset: usize,
     is_node: bool,
-    is_end: bool,
 }
 impl Target {
     fn from_node<'sh>(node: &'sh Node<'sh>) -> Self {
@@ -79,16 +78,13 @@ impl Target {
             start_offset: loc.start_offset(),
             end_offset: loc.end_offset(),
             is_node: true,
-            is_end: false,
         }
     }
     fn from_location<'sh>(loc: &Location<'sh>) -> Self {
-        let is_end = std::str::from_utf8(loc.as_slice()).unwrap_or("") == "end";
         Self {
             start_offset: loc.start_offset(),
             end_offset: loc.end_offset(),
             is_node: false,
-            is_end: is_end,
         }
     }
 }
@@ -174,12 +170,12 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>, line_index: &LineBreakIn
                 }
             },
             false => match (preceding, enclosing, following) {
-                (Some(p), _, Some(f)) => match f.is_end {
+                (Some(p), _, Some(f)) => match f.is_node {
                     true => {
-                        p.dangling_comment(&comment, &mut comments_by_target);
+                        f.leading_comment(&comment, &mut comments_by_target);
                     }
                     false => {
-                        f.leading_comment(&comment, &mut comments_by_target);
+                        p.dangling_comment(&comment, &mut comments_by_target);
                     }
                 },
                 (Some(p), _, None) => {
@@ -940,6 +936,7 @@ pub fn comment_targets_of_defined_node<'sh>(node: &DefinedNode<'sh>) -> (Vec<Loc
 pub fn comment_targets_of_else_node<'sh>(node: &ElseNode<'sh>) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
+
     push_loc(&mut locations, node.else_keyword_loc());
     push_loc_opt(&mut locations, node.end_keyword_loc());
     push_statements_opt(&mut nodes, node.statements());

@@ -44,7 +44,6 @@ impl<'a> Printer<'a> {
             line_break_index: line_index,
             comment_store: &mut comment_store,
             processed_locations: HashSet::new(),
-            blank_lines: None,
             leading_comments: None,
             trailing_comments: None,
             dangling_comments: None,

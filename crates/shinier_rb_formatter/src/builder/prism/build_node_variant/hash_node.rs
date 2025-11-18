@@ -27,9 +27,9 @@ pub fn build_hash_node(node: &HashNode<'_>, context: &mut BuildContext) -> Docum
     };
 
     group(array(&[
-        build_location(&opening_loc, context),
+        build_location(&opening_loc, context).unwrap(),
         indent(array(&[line_or_softline.clone(), array(&parts)])),
         line_or_softline.clone(),
-        build_location(&closing_loc, context),
+        build_location(&closing_loc, context).unwrap(),
     ]))
 }

@@ -24,7 +24,7 @@ fn flatten(node: &Node<'_>, context: &mut BuildContext, acc: &mut Vec<Document>)
             let operator = alternation_pattern_node.operator_loc();
             flatten(&left, context, acc);
             acc.push(space());
-            acc.push(build_location(&operator, context));
+            acc.push(build_location(&operator, context).unwrap());
             acc.push(line());
             acc.push(build_node(&right, context));
         }

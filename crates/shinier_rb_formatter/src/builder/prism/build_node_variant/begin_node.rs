@@ -14,11 +14,11 @@ pub fn build_begin_node(node: &BeginNode<'_>, context: &mut BuildContext) -> Doc
     let end_keyword_loc = node.end_keyword_loc();
 
     group(array_opt(&[
-        begin_keyword_loc.map(|loc| build_location(&loc, context)),
-        statements.map(|n| indent(array_opt(&[Some(hardline()), Some(build_node(&n.as_node(), context))]))),
+        begin_keyword_loc.map(|loc| build_location(&loc, context).unwrap_or(none())),
+        statements.map(|n| indent(array(&[hardline(), build_node(&n.as_node(), context)]))),
         rescue_clause.map(|n| array(&[hardline(), build_node(&n.as_node(), context)])),
         else_clause.map(|n| array(&[hardline(), build_node(&n.as_node(), context)])),
         ensure_clause.map(|n| array(&[hardline(), build_node(&n.as_node(), context)])),
-        end_keyword_loc.map(|loc| array(&[hardline(), build_location(&loc, context)])),
+        end_keyword_loc.and_then(|loc| build_location(&loc, context).map(|e| array(&[hardline(), e]))),
     ]))
 }

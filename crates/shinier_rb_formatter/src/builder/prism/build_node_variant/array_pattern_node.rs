@@ -45,17 +45,17 @@ pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, context: &mut Build
     match (&constant, &opening_loc, &closing_loc) {
         (None, None, None) => group(array(&built_params)),
         (None, Some(opening_loc), Some(closing_loc)) => group(array(&[
-            build_location(opening_loc, context),
+            build_location(opening_loc, context).unwrap(),
             indent(array(&[softline(), array(&built_params)])),
             softline(),
-            build_location(closing_loc, context),
+            build_location(closing_loc, context).unwrap(),
         ])),
         (Some(constant), Some(opening_loc), Some(closing_loc)) => group(array(&[
             build_node(constant, context),
-            build_location(opening_loc, context),
+            build_location(opening_loc, context).unwrap(),
             indent(array(&[softline(), array(&built_params)])),
             softline(),
-            build_location(closing_loc, context),
+            build_location(closing_loc, context).unwrap(),
         ])),
         _ => unreachable!(),
     }

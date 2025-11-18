@@ -28,11 +28,11 @@ pub fn build_rescue_node(node: &RescueNode<'_>, context: &mut BuildContext) -> D
     }
 
     group(array_opt(&[
-        Some(build_location(&keyword_loc, context)),
+        build_location(&keyword_loc, context),
         Some(array(&exceptions_document)),
-        operator_loc.map(|l| array(&[space(), build_location(&l, context)])),
+        operator_loc.map(|l| array(&[space(), build_location(&l, context).unwrap()])),
         reference.map(|n| array(&[space(), build_node(&n, context)])),
-        then_keyword_loc.map(|l| array(&[space(), build_location(&l, context)])),
+        then_keyword_loc.map(|l| array(&[space(), build_location(&l, context).unwrap()])),
         statements.map(|n| indent(array_opt(&[Some(hardline()), Some(build_node(&n.as_node(), context))]))),
         subsequent.map(|n| array(&[hardline(), build_node(&n.as_node(), context)])),
     ]))
