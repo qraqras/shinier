@@ -70,31 +70,25 @@ pub struct Target {
     start_offset: usize,
     end_offset: usize,
     is_node: bool,
-    following_dangling_comments: bool,
+    is_end: bool,
 }
 impl Target {
     fn from_node<'sh>(node: &'sh Node<'sh>) -> Self {
         let loc = node.location();
-        let dangling = match node {
-            Node::RescueNode { .. } => true,
-            Node::ElseNode { .. } => true,
-            Node::EnsureNode { .. } => true,
-            _ => false,
-        };
         Self {
             start_offset: loc.start_offset(),
             end_offset: loc.end_offset(),
             is_node: true,
-            following_dangling_comments: dangling,
+            is_end: false,
         }
     }
     fn from_location<'sh>(loc: &Location<'sh>) -> Self {
-        let dangling = "end" == std::str::from_utf8(loc.as_slice()).unwrap_or("");
+        let is_end = std::str::from_utf8(loc.as_slice()).unwrap_or("") == "end";
         Self {
             start_offset: loc.start_offset(),
             end_offset: loc.end_offset(),
             is_node: false,
-            following_dangling_comments: dangling,
+            is_end: is_end,
         }
     }
 }
@@ -164,37 +158,43 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>, line_index: &LineBreakIn
     let source = parse_result.source();
     for comment in parse_result.comments() {
         let (preceding, enclosing, following) = nearest_targets(&node, &comment);
-        if is_trailing(&comment, source) {
-            if let Some(preceding) = preceding {
-                preceding.trailing_comment(&comment, &mut comments_by_target);
-            } else {
-                if let Some(following) = following {
-                    following.leading_comment(&comment, &mut comments_by_target);
-                } else if let Some(enclosing) = enclosing {
-                    enclosing.leading_comment(&comment, &mut comments_by_target);
-                } else {
+        match is_trailing(&comment, source) {
+            true => match (preceding, enclosing, following) {
+                (Some(p), _, _) => {
+                    p.trailing_comment(&comment, &mut comments_by_target);
+                }
+                (None, _, Some(f)) => {
+                    f.leading_comment(&comment, &mut comments_by_target);
+                }
+                (None, Some(e), None) => {
+                    e.leading_comment(&comment, &mut comments_by_target);
+                }
+                (None, None, None) => {
                     Target::from_node(&parse_result.node()).leading_comment(&comment, &mut comments_by_target);
                 }
-            }
-        } else {
-            if let Some(preceding) = preceding
-                && let Some(following) = following
-                && following.following_dangling_comments
-                && line_index.col_at_offset(following.start_offset())
-                    < line_index.col_at_offset(comment.location().start_offset())
-            {
-                preceding.dangling_comment(&comment, &mut comments_by_target);
-            } else if let Some(following) = following {
-                following.leading_comment(&comment, &mut comments_by_target);
-            } else if let Some(preceding) = preceding {
-                preceding.trailing_comment(&comment, &mut comments_by_target);
-            } else {
-                if let Some(enclosing) = enclosing {
-                    enclosing.leading_comment(&comment, &mut comments_by_target);
-                } else {
+            },
+            false => match (preceding, enclosing, following) {
+                (Some(p), _, Some(f)) => match f.is_end {
+                    true => {
+                        p.dangling_comment(&comment, &mut comments_by_target);
+                    }
+                    false => {
+                        f.leading_comment(&comment, &mut comments_by_target);
+                    }
+                },
+                (Some(p), _, None) => {
+                    p.dangling_comment(&comment, &mut comments_by_target);
+                }
+                (None, _, Some(f)) => {
+                    f.leading_comment(&comment, &mut comments_by_target);
+                }
+                (None, Some(e), None) => {
+                    e.leading_comment(&comment, &mut comments_by_target);
+                }
+                (None, None, None) => {
                     Target::from_node(&parse_result.node()).leading_comment(&comment, &mut comments_by_target);
                 }
-            }
+            },
         }
         comments_by_location.insert(
             (comment.location().start_offset(), comment.location().end_offset()),

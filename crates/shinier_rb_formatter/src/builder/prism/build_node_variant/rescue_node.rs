@@ -33,7 +33,7 @@ pub fn build_rescue_node(node: &RescueNode<'_>, context: &mut BuildContext) -> D
         operator_loc.map(|l| array(&[space(), build_location(&l, context)])),
         reference.map(|n| array(&[space(), build_node(&n, context)])),
         then_keyword_loc.map(|l| array(&[space(), build_location(&l, context)])),
-        statements.map(|n| indent(array(&[hardline(), build_node(&n.as_node(), context)]))),
+        statements.map(|n| indent(array_opt(&[Some(hardline()), Some(build_node(&n.as_node(), context))]))),
         subsequent.map(|n| array(&[hardline(), build_node(&n.as_node(), context)])),
     ]))
 }

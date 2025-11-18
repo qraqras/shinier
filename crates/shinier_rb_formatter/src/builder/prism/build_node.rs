@@ -9,12 +9,17 @@ use std::io::Read;
 
 #[rustfmt::skip]
 pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
-    // Builds comments and blank lines
-    let leading_comments = leading_comments_n(&node, context);
-    let leading_blank_lines = match context.last_processed_start_offset < node.location().start_offset() {
+    let prev_blank_lines = context.blank_lines.take();
+    let prev_leading_comments = context.leading_comments.take();
+    let prev_trailing_comments = context.trailing_comments.take();
+    let prev_dangling_comments = context.dangling_comments.take();
+    context.blank_lines = match context.last_processed_start_offset < node.location().start_offset() {
         true => leading_blank_lines(&node, context),
         false => None,
     };
+    context.leading_comments = leading_comments_n(&node, context);
+    context.trailing_comments = trailing_comments_n(&node, context);
+    context.dangling_comments = dangling_comments_n(&node, context);
     context.last_processed_start_offset = node.location().start_offset().max(context.last_processed_start_offset);
     // Adjusts max_blank_lines based on node type
     let prev_max_blank_lines = context.max_blank_lines;
@@ -178,9 +183,21 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
         Node::YieldNode                         { .. } => yield_node::build_yield_node                                                      (&node.as_yield_node().unwrap()                           , context),
     };
     context.max_blank_lines = prev_max_blank_lines;
-    let trailing_comments = trailing_comments_n(&node, context);
-    let dangling_comments = dangling_comments_n(&node, context);
-    array_opt(&[leading_comments, leading_blank_lines, Some(node_document), trailing_comments, dangling_comments])
+    let blank_lines = context.blank_lines.take();
+    let leading_comments = context.leading_comments.take();
+    let trailing_comments = context.trailing_comments.take();
+    let dangling_comments = context.dangling_comments.take();
+    context.blank_lines = prev_blank_lines;
+    context.leading_comments = prev_leading_comments;
+    context.trailing_comments = prev_trailing_comments;
+    context.dangling_comments = prev_dangling_comments;
+    array_opt(&[
+        leading_comments,
+        blank_lines,
+        Some(node_document),
+        trailing_comments,
+        dangling_comments,
+    ])
 }
 
 pub fn escape(unescaped: &[u8]) -> String {

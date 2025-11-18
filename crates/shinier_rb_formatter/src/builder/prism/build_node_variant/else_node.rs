@@ -20,7 +20,7 @@ pub fn build_else_node(node: &ElseNode<'_>, context: &mut BuildContext) -> Docum
 
     group(array_opt(&[
         Some(build_location(&else_keyword_loc, context)),
-        statements.map(|n| indent(array(&[hardline(), build_node(&n.as_node(), context)]))),
+        statements.map(|n| indent(array_opt(&[Some(hardline()), Some(build_node(&n.as_node(), context))]))),
         end_keyword_loc.map(|l| array(&[hardline(), build_location(&l, context)])),
     ]))
 }

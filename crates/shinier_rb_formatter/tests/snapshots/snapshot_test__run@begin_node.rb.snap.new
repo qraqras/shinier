@@ -55,9 +55,10 @@ end
 begin # comment 2
   # comment 3
   do_something # comment 4
-  # comment 5
+# comment 5
 # comment 6
-rescue # comment 7 # comment 8
+rescue # comment 7
+  # comment 8
   recover # comment 9
 # comment 10
 # comment 11
@@ -70,7 +71,7 @@ ensure # comment 17
   # comment 18
   must_to_do # comment 19
   # comment 20
-# comment 21
+  # comment 21
 end
 
 

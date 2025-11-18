@@ -21,8 +21,9 @@
   1, # trailing comment 1
   2, # trailing comment 2
   # owning comment
-  3,
-] # trailing comment 3
+  3, # trailing comment 3
+  # dangling comment
+] # trailing comment 4
 
 # percent literal arrays
 %w(foo bar)

@@ -532,7 +532,14 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                 pos += get_string_width(string) as i32;
             }
         }
+        if cmds.len() == 0 && !line_suffixes.is_empty() {
+            let pending = std::mem::take(&mut line_suffixes);
+            for line_suffix in pending.iter().rev() {
+                cmds.push(line_suffix.clone());
+            }
+        }
     }
+    out.push('\n');
     out
 }
 
