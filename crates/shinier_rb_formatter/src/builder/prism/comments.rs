@@ -1,5 +1,4 @@
 // https://github.com/ruby/prism/blob/main/lib/prism/parse_result/comments.rb
-use crate::builder::prism::helper::build_blank_lines::LineBreakIndex;
 use ruby_prism::*;
 use std::collections::HashMap;
 
@@ -45,13 +44,36 @@ impl<'sh> CommentStore<'sh> {
                 })
             })
     }
+    pub fn pop_remaining(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
+        self.by_target
+            .get_mut(&(target_start_offset, target_end_offset))
+            .and_then(|placement| {
+                placement.remaining.take().map(|remaining_vec| {
+                    remaining_vec
+                        .iter()
+                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
+                        .collect::<Vec<Comment>>()
+                })
+            })
+    }
 }
 
 /// attached comment offsets for a target
+/// - **leading**: comments before the target on preceding lines
+/// - **trailing**: comments after the target on the same line
+/// - **dangling**: comments after the target on following lines (inside the block)
+/// - **remaining**: comments may not be attached to the target (outside the block)
+/// ```ruby
+///   # leading
+///   TARGET_NODE # trailing
+///   # dangling
+/// # remaining
+/// ```
 pub struct CommentPlacement {
     pub leading: Option<Vec<(usize, usize)>>,
     pub trailing: Option<Vec<(usize, usize)>>,
     pub dangling: Option<Vec<(usize, usize)>>,
+    pub remaining: Option<Vec<(usize, usize)>>,
 }
 
 /// trait for attaching comments to targets
@@ -62,6 +84,7 @@ trait Attach {
     fn leading_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
     fn trailing_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
     fn dangling_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
+    fn remaining_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
 }
 
 /// target node for attaching comments
@@ -114,6 +137,7 @@ impl Attach for Target {
                 leading: Some(Vec::from([value])),
                 trailing: None,
                 dangling: None,
+                remaining: None,
             });
     }
     fn trailing_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
@@ -128,6 +152,7 @@ impl Attach for Target {
                 leading: None,
                 trailing: Some(Vec::from([value])),
                 dangling: None,
+                remaining: None,
             });
     }
     fn dangling_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
@@ -142,12 +167,28 @@ impl Attach for Target {
                 leading: None,
                 trailing: None,
                 dangling: Some(Vec::from([value])),
+                remaining: None,
+            });
+    }
+    fn remaining_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
+        let key = (self.start_offset(), self.end_offset());
+        let value = (comment.location().start_offset(), comment.location().end_offset());
+        map.entry(key)
+            .and_modify(|attached| match &mut attached.remaining {
+                Some(vec) => vec.push(value),
+                None => attached.remaining = Some(Vec::from([value])),
+            })
+            .or_insert_with(|| CommentPlacement {
+                leading: None,
+                trailing: None,
+                dangling: None,
+                remaining: Some(Vec::from([value])),
             });
     }
 }
 
 /// attach comments to nodes and locations
-pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>, line_index: &LineBreakIndex) -> CommentStore<'sh> {
+pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
     let mut comments_by_location = HashMap::new();
     let mut comments_by_target = HashMap::new();
     let node = parse_result.node();
@@ -175,7 +216,14 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>, line_index: &LineBreakIn
                         f.leading_comment(&comment, &mut comments_by_target);
                     }
                     false => {
-                        p.dangling_comment(&comment, &mut comments_by_target);
+                        match is_end_keyword(f.start_offset, f.end_offset, source) {
+                            true => {
+                                p.dangling_comment(&comment, &mut comments_by_target);
+                            }
+                            false => {
+                                p.remaining_comment(&comment, &mut comments_by_target);
+                            }
+                        };
                     }
                 },
                 (Some(p), _, None) => {
@@ -272,6 +320,11 @@ fn is_trailing(comment: &Comment, source: &[u8]) -> bool {
         return true;
     }
     false
+}
+
+fn is_end_keyword(start_offset: usize, end_offset: usize, source: &[u8]) -> bool {
+    let keyword = &source[start_offset..end_offset];
+    keyword == b"end"
 }
 
 #[rustfmt::skip]

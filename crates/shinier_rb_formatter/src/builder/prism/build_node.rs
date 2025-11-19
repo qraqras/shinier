@@ -4,6 +4,7 @@ use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node_variant::*;
 use crate::builder::prism::helper::build_blank_lines::*;
 use crate::builder::prism::helper::build_comments::*;
+use crate::builder::prism::helper::comment_helper::update_dangling_remaining;
 use ruby_prism::*;
 use std::io::Read;
 
@@ -14,28 +15,13 @@ pub fn build_node<'sh>(node: &Node<'_>, context: &mut BuildContext) -> Document 
         true => leading_blank_lines(&node, context),
         false => None,
     };
-    // comments
+    // previous remaining comments
     let prev_remaining_comments = context.remaining_comments.take();
-    let prev_leading_comments   = context.leading_comments.take();
-    let prev_trailing_comments  = context.trailing_comments.take();
-    let prev_dangling_comments  = context.dangling_comments.take();
-    context.leading_comments  = context.comment_store.pop_leading (node.location().start_offset(), node.location().end_offset());
-    context.trailing_comments = context.comment_store.pop_trailing(node.location().start_offset(), node.location().end_offset());
-    context.dangling_comments = context.comment_store.pop_dangling(node.location().start_offset(), node.location().end_offset());
-    // comments indentation
-    let prev_comment_indentation = context.comment_indentation;
-    context.comment_indentation = match node {
-        Node::BeginNode { .. } => true,
-        Node::RescueNode { .. } => true,
-        Node::ElseNode { .. } => true,
-        // Node::EnsureNode { .. } => true,
-        Node::StatementsNode { .. } => prev_comment_indentation,
-        _ => false,
-    };
-
-
-
-
+    // comments current
+    let leading_comments = context.comment_store.pop_leading(node.location().start_offset(), node.location().end_offset());
+    let trailing_comments = context.comment_store.pop_trailing(node.location().start_offset(), node.location().end_offset());
+    let mut dangling_comments = context.comment_store.pop_dangling(node.location().start_offset(), node.location().end_offset());
+    let mut remaining_comments = context.comment_store.pop_remaining(node.location().start_offset(), node.location().end_offset());
     // offset
     context.last_processed_start_offset = node.location().start_offset().max(context.last_processed_start_offset);
     // max blank lines
@@ -200,13 +186,10 @@ pub fn build_node<'sh>(node: &Node<'_>, context: &mut BuildContext) -> Document 
         Node::YieldNode                         { .. } => yield_node::build_yield_node                                                      (&node.as_yield_node().unwrap()                           , context),
     };
     context.max_blank_lines = prev_max_blank_lines;
-    // comments
-    let leading_comments  = context.leading_comments.take();
-    let trailing_comments = context.trailing_comments.take();
-    let dangling_comments = context.dangling_comments.take();
-    context.leading_comments  = prev_leading_comments;
-    context.trailing_comments = prev_trailing_comments;
-    context.dangling_comments = prev_dangling_comments;
+
+
+    update_dangling_remaining(&mut dangling_comments, &mut remaining_comments, node, context);
+    context.remaining_comments = remaining_comments;
     // remainining comments
     let leading_comments = match (prev_remaining_comments, leading_comments) {
         (Some(mut remaining), Some(leading)) => {
@@ -217,8 +200,6 @@ pub fn build_node<'sh>(node: &Node<'_>, context: &mut BuildContext) -> Document 
         (None, Some(leading)) => Some(leading),
         (None, None) => None,
     };
-    // comments indentation
-    context.comment_indentation = prev_comment_indentation;
 
     array_opt(&[
         build_comments_as_leading(leading_comments, context),

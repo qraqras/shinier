@@ -1,14 +1,12 @@
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::helper::comment_helper::separate_indented_comments;
+use crate::builder::prism::helper::comment_helper::update_dangling_remaining;
 use crate::{Document, array, hardline};
 use ruby_prism::StatementsNode;
 
 pub fn build_statements_node(node: &StatementsNode<'_>, context: &mut BuildContext) -> Document {
-    let mut dangling = context.dangling_comments.take();
-    // Separate comments by their position relative to the statements block
-    let (inner_dangling, outer_remaining) =
-        separate_indented_comments(&node.as_node(), &mut dangling, &context.line_break_index).unwrap_or((None, None));
+    // let mut dangling = context.dangling_comments.take();
+    // let mut remaining = context.remaining_comments.take();
 
     let mut parts = Vec::new();
     for (i, stmt) in node.body().iter().enumerate() {
@@ -18,10 +16,9 @@ pub fn build_statements_node(node: &StatementsNode<'_>, context: &mut BuildConte
         parts.push(build_node(&stmt, context));
     }
 
-    // Comments after the statements belong to the inner block
-    context.dangling_comments = inner_dangling;
-    // Comments before the statements belong to the outer scope
-    context.remaining_comments = outer_remaining;
+    // update_dangling_remaining(&mut dangling, &mut remaining, &node.as_node(), context);
+    // context.dangling_comments = dangling;
+    // context.remaining_comments = remaining;
 
     array(&parts)
 }
