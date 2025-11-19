@@ -3,7 +3,7 @@ use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::helper::location::is_end_keyword;
+use crate::builder::prism::helper::location_helper::is_end_keyword;
 use ruby_prism::ElseNode;
 
 pub fn build_else_node(node: &ElseNode<'_>, context: &mut BuildContext) -> Document {

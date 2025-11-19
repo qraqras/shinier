@@ -48,6 +48,7 @@ impl<'a> Printer<'a> {
             trailing_comments: None,
             dangling_comments: None,
             remaining_comments: None,
+            comment_indentation: false,
             max_blank_lines: 0usize,
             hash_label_style: false,
             percent_literal: false,

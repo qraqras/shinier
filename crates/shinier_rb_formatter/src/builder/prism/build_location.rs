@@ -7,9 +7,6 @@ use ruby_prism::Node;
 
 /// Builds a Document for a given location, including leading and trailing comments.
 pub fn build_location(location: &Location, context: &mut BuildContext) -> Option<Document> {
-    if is_processed(location, context) {
-        return None;
-    }
     let content = std::str::from_utf8(location.as_slice()).unwrap_or("");
     build_custom_location(location, context, content)
 }
@@ -58,9 +55,6 @@ pub fn build_custom_location(location: &Location, context: &mut BuildContext, co
 /// when building the node itself in build_node().
 pub fn build_node_as_location(node: &Node, context: &mut BuildContext) -> Option<Document> {
     let location = &node.location();
-    if is_processed(location, context) {
-        return None;
-    }
     let content = std::str::from_utf8(location.as_slice()).unwrap_or("");
     build_node_as_custom_location(node, context, content)
 }

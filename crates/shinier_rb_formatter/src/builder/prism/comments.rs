@@ -635,17 +635,6 @@ pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> (Vec<Locatio
     push_ensure_clause(&mut locations, &mut nodes, &node.ensure_clause());
     (locations, nodes)
 }
-// pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
-//     let mut locations = Vec::new();
-//     let mut nodes = Vec::new();
-//     push_loc_opt(&mut locations, node.begin_keyword_loc());
-//     push_loc_opt(&mut locations, node.end_keyword_loc());
-//     push_statements_opt(&mut nodes, node.statements());
-//     push_rescue_clauses_opt(&mut nodes, node.rescue_clause());
-//     push_else_clause_opt(&mut nodes, node.else_clause());
-//     push_ensure_clause_opt(&mut nodes, node.ensure_clause());
-//     (locations, nodes)
-// }
 pub fn comment_targets_of_block_argument_node<'sh>(
     node: &BlockArgumentNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {

@@ -13,6 +13,7 @@ pub struct BuildContext<'sh> {
     pub trailing_comments: Option<Vec<Comment<'sh>>>,
     pub dangling_comments: Option<Vec<Comment<'sh>>>,
     pub remaining_comments: Option<Vec<Comment<'sh>>>,
+    pub comment_indentation: bool,
     pub max_blank_lines: usize,
     pub hash_label_style: bool,
     pub percent_literal: bool,
