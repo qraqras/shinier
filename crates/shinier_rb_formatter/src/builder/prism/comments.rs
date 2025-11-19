@@ -9,39 +9,39 @@ pub struct CommentStore<'sh> {
 }
 
 impl<'sh> CommentStore<'sh> {
-    pub fn pop_leading(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
+    pub fn pop_leading(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
         self.by_target
             .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| {
                 placement.leading.take().map(|leading_vec| {
                     leading_vec
                         .iter()
-                        .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
-                        .collect::<Vec<&Comment>>()
+                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
+                        .collect::<Vec<Comment>>()
                 })
             })
     }
-    pub fn pop_trailing(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
+    pub fn pop_trailing(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
         self.by_target
             .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| {
                 placement.trailing.take().map(|trailing_vec| {
                     trailing_vec
                         .iter()
-                        .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
-                        .collect::<Vec<&Comment>>()
+                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
+                        .collect::<Vec<Comment>>()
                 })
             })
     }
-    pub fn pop_dangling(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<&Comment<'sh>>> {
+    pub fn pop_dangling(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
         self.by_target
             .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| {
                 placement.dangling.take().map(|dangling_vec| {
                     dangling_vec
                         .iter()
-                        .filter_map(|(start, end)| self.by_location.get(&(*start, *end)))
-                        .collect::<Vec<&Comment>>()
+                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
+                        .collect::<Vec<Comment>>()
                 })
             })
     }
@@ -579,16 +579,73 @@ pub fn comment_targets_of_back_reference_read_node<'sh>(
     (locations, nodes)
 }
 pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
+    fn push_rescue_clause_recursively<'sh>(
+        locations: &mut Vec<Location<'sh>>,
+        nodes: &mut Vec<Node<'sh>>,
+        rescue_node: &Option<RescueNode<'sh>>,
+    ) {
+        match rescue_node {
+            None => {}
+            Some(rescue_node) => {
+                push_loc(locations, rescue_node.keyword_loc());
+                push_loc_opt(locations, rescue_node.operator_loc());
+                push_loc_opt(locations, rescue_node.then_keyword_loc());
+                push_nodelist(nodes, rescue_node.exceptions());
+                push_node_opt(nodes, rescue_node.reference());
+                push_statements_opt(nodes, rescue_node.statements());
+                push_rescue_clause_recursively(locations, nodes, &rescue_node.subsequent());
+            }
+        }
+    }
+    fn push_else_clause<'sh>(
+        locations: &mut Vec<Location<'sh>>,
+        nodes: &mut Vec<Node<'sh>>,
+        else_node: &Option<ElseNode<'sh>>,
+    ) {
+        match else_node {
+            None => {}
+            Some(else_node) => {
+                push_loc(locations, else_node.else_keyword_loc());
+                push_loc_opt(locations, else_node.end_keyword_loc());
+                push_statements_opt(nodes, else_node.statements());
+            }
+        }
+    }
+    fn push_ensure_clause<'sh>(
+        locations: &mut Vec<Location<'sh>>,
+        nodes: &mut Vec<Node<'sh>>,
+        ensure_node: &Option<EnsureNode<'sh>>,
+    ) {
+        match ensure_node {
+            None => {}
+            Some(ensure_node) => {
+                push_loc(locations, ensure_node.ensure_keyword_loc());
+                push_loc(locations, ensure_node.end_keyword_loc());
+                push_statements_opt(nodes, ensure_node.statements());
+            }
+        }
+    }
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
     push_loc_opt(&mut locations, node.begin_keyword_loc());
     push_loc_opt(&mut locations, node.end_keyword_loc());
     push_statements_opt(&mut nodes, node.statements());
-    push_rescue_clauses_opt(&mut nodes, node.rescue_clause());
-    push_else_clause_opt(&mut nodes, node.else_clause());
-    push_ensure_clause_opt(&mut nodes, node.ensure_clause());
+    push_rescue_clause_recursively(&mut locations, &mut nodes, &node.rescue_clause());
+    push_else_clause(&mut locations, &mut nodes, &node.else_clause());
+    push_ensure_clause(&mut locations, &mut nodes, &node.ensure_clause());
     (locations, nodes)
 }
+// pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
+//     let mut locations = Vec::new();
+//     let mut nodes = Vec::new();
+//     push_loc_opt(&mut locations, node.begin_keyword_loc());
+//     push_loc_opt(&mut locations, node.end_keyword_loc());
+//     push_statements_opt(&mut nodes, node.statements());
+//     push_rescue_clauses_opt(&mut nodes, node.rescue_clause());
+//     push_else_clause_opt(&mut nodes, node.else_clause());
+//     push_ensure_clause_opt(&mut nodes, node.ensure_clause());
+//     (locations, nodes)
+// }
 pub fn comment_targets_of_block_argument_node<'sh>(
     node: &BlockArgumentNode<'sh>,
 ) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
@@ -936,7 +993,6 @@ pub fn comment_targets_of_defined_node<'sh>(node: &DefinedNode<'sh>) -> (Vec<Loc
 pub fn comment_targets_of_else_node<'sh>(node: &ElseNode<'sh>) -> (Vec<Location<'sh>>, Vec<Node<'sh>>) {
     let mut locations = Vec::new();
     let mut nodes = Vec::new();
-
     push_loc(&mut locations, node.else_keyword_loc());
     push_loc_opt(&mut locations, node.end_keyword_loc());
     push_statements_opt(&mut nodes, node.statements());

@@ -1,45 +1,17 @@
-use crate::builder::builder::{array, break_parent, hardline, indent, line_suffix, space, string};
+use crate::builder::builder::array;
+use crate::builder::builder::break_parent;
+use crate::builder::builder::hardline;
+use crate::builder::builder::line_suffix;
+use crate::builder::builder::space;
+use crate::builder::builder::string;
 use crate::builder::context::BuildContext;
 use crate::document::Document;
 use ruby_prism::Comment;
 use ruby_prism::CommentType;
-use ruby_prism::Location;
-use ruby_prism::Node;
 
-/// Builds leading comments for a given node.
-pub fn leading_comments_n(node: &Node, context: &mut BuildContext) -> Option<Document> {
-    base_leading_comments(node.location().start_offset(), node.location().end_offset(), context)
-}
-
-/// Builds leading comments for a given location.
-pub fn leading_comments_l(location: &Location, context: &mut BuildContext) -> Option<Document> {
-    base_leading_comments(location.start_offset(), location.end_offset(), context)
-}
-
-/// Builds trailing comments for a given node.
-pub fn trailing_comments_n(node: &Node, context: &mut BuildContext) -> Option<Document> {
-    base_trailing_comments(node.location().start_offset(), node.location().end_offset(), context)
-}
-
-/// Builds trailing comments for a given location.
-pub fn trailing_comments_l(location: &Location, context: &mut BuildContext) -> Option<Document> {
-    base_trailing_comments(location.start_offset(), location.end_offset(), context)
-}
-
-/// Builds dangling comments for a given node.
-pub fn dangling_comments_n(node: &Node, context: &mut BuildContext) -> Option<Document> {
-    base_dangling_comments(node.location().start_offset(), node.location().end_offset(), context)
-}
-
-/// Builds dangling comments for a given location.
-pub fn dangling_comments_l(location: &Location, context: &mut BuildContext) -> Option<Document> {
-    base_dangling_comments(location.start_offset(), location.end_offset(), context)
-}
-
-/// Builds leading comments for a given start and end offset.
-fn base_leading_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
-    let leading_comments = context.comment_store.pop_leading(start_offset, end_offset);
-    match leading_comments {
+/// Builds comments as leading comments for a given set of comments.
+pub fn build_comments_as_leading(comments: Option<Vec<Comment>>, context: &mut BuildContext) -> Option<Document> {
+    match comments {
         Some(comments) => {
             let mut documents = Vec::new();
             for comment in comments {
@@ -55,7 +27,7 @@ fn base_leading_comments(start_offset: usize, end_offset: usize, context: &mut B
                 for _ in 0..blank_line_count {
                     documents.push(hardline());
                 }
-                documents.push(build_comment(comment));
+                documents.push(build_comment(&comment));
             }
             documents.push(hardline());
             documents.push(break_parent());
@@ -65,14 +37,13 @@ fn base_leading_comments(start_offset: usize, end_offset: usize, context: &mut B
     }
 }
 
-/// Builds trailing comments for a given start and end offset.
-fn base_trailing_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
-    let trailing_comments = context.comment_store.pop_trailing(start_offset, end_offset);
-    match trailing_comments {
+/// Builds comments as trailing comments for a given set of comments.
+pub fn build_comments_as_trailing(comments: Option<Vec<Comment>>, _context: &mut BuildContext) -> Option<Document> {
+    match comments {
         Some(comments) => {
             let mut documents = Vec::new();
             for comment in comments {
-                documents.push(line_suffix(array(&[space(), build_comment(comment)])));
+                documents.push(line_suffix(array(&[space(), build_comment(&comment)])));
             }
             documents.push(break_parent());
             Some(array(&documents))
@@ -81,10 +52,9 @@ fn base_trailing_comments(start_offset: usize, end_offset: usize, context: &mut 
     }
 }
 
-/// Builds dangling comments for a given start and end offset.
-fn base_dangling_comments(start_offset: usize, end_offset: usize, context: &mut BuildContext) -> Option<Document> {
-    let dangling_comments = context.comment_store.pop_dangling(start_offset, end_offset);
-    match dangling_comments {
+/// Builds comments as dangling comments for a given set of comments.
+pub fn build_comments_as_dangling(comments: Option<Vec<Comment>>, context: &mut BuildContext) -> Option<Document> {
+    match comments {
         Some(comments) => {
             let mut documents = Vec::new();
             for comment in comments {
@@ -97,7 +67,7 @@ fn base_dangling_comments(start_offset: usize, end_offset: usize, context: &mut 
                 for _ in 0..blank_line_count {
                     documents.push(hardline());
                 }
-                documents.push(build_comment(comment));
+                documents.push(build_comment(&comment));
             }
             documents.push(break_parent());
             Some(array(&documents))

@@ -10,16 +10,8 @@ pub fn build_location(location: &Location, context: &mut BuildContext) -> Option
     if is_processed(location, context) {
         return None;
     }
-    let leading_comments = leading_comments_l(location, context);
-    let trailing_comments = trailing_comments_l(location, context);
-    let dangling_comments = dangling_comments_l(location, context);
     let content = std::str::from_utf8(location.as_slice()).unwrap_or("");
-    Some(array_opt(&[
-        leading_comments,
-        Some(string(content)),
-        trailing_comments,
-        dangling_comments.map(|d| indent(d)),
-    ]))
+    build_custom_location(location, context, content)
 }
 
 // Builds a Document for a given location with custom content, including leading and trailing comments.
@@ -27,14 +19,37 @@ pub fn build_custom_location(location: &Location, context: &mut BuildContext, co
     if is_processed(location, context) {
         return None;
     }
-    let leading_comments = leading_comments_l(location, context);
-    let trailing_comments = trailing_comments_l(location, context);
-    let dangling_comments = dangling_comments_l(location, context);
+    let remaining_comments = context.remaining_comments.take();
+    let leading_comments = context
+        .comment_store
+        .pop_leading(location.start_offset(), location.end_offset());
+    let trailing_comments = context
+        .comment_store
+        .pop_trailing(location.start_offset(), location.end_offset());
+    let dangling_comments = context
+        .comment_store
+        .pop_dangling(location.start_offset(), location.end_offset());
+    // merge remaining comments into leading comments
+    let leading_comments = match (remaining_comments, leading_comments) {
+        (Some(mut remaining), Some(leading)) => {
+            remaining.extend(leading);
+            Some(remaining)
+        }
+        (Some(remaining), None) => Some(remaining),
+        (None, Some(leading)) => Some(leading),
+        (None, None) => None,
+    };
     Some(array_opt(&[
-        leading_comments,
+        leading_comments
+            .map(|c| build_comments_as_leading(Some(c), context))
+            .flatten(),
         Some(string(content)),
-        trailing_comments,
-        dangling_comments.map(|d| indent(d)),
+        trailing_comments
+            .map(|c| build_comments_as_trailing(Some(c), context))
+            .flatten(),
+        dangling_comments
+            .map(|d| build_comments_as_dangling(Some(d), context))
+            .flatten(),
     ]))
 }
 
@@ -47,7 +62,7 @@ pub fn build_node_as_location(node: &Node, context: &mut BuildContext) -> Option
         return None;
     }
     let content = std::str::from_utf8(location.as_slice()).unwrap_or("");
-    Some(string(content))
+    build_node_as_custom_location(node, context, content)
 }
 
 /// Builds a Document for the given node with custom content.

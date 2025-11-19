@@ -8,19 +8,20 @@ use ruby_prism::*;
 use std::io::Read;
 
 #[rustfmt::skip]
-pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
+pub fn build_node<'sh>(node: &Node<'_>, context: &mut BuildContext) -> Document {
     // blank lines
     let blank_lines = match context.last_processed_start_offset < node.location().start_offset() {
         true => leading_blank_lines(&node, context),
         false => None,
     };
     // comments
-    let prev_leading_comments = context.leading_comments.take();
-    let prev_trailing_comments = context.trailing_comments.take();
-    let prev_dangling_comments = context.dangling_comments.take();
-    context.leading_comments = leading_comments_n(node, context);
-    context.trailing_comments = trailing_comments_n(node, context);
-    context.dangling_comments = dangling_comments_n(node, context);
+    let prev_remaining_comments = context.remaining_comments.take();
+    let prev_leading_comments   = context.leading_comments.take();
+    let prev_trailing_comments  = context.trailing_comments.take();
+    let prev_dangling_comments  = context.dangling_comments.take();
+    context.leading_comments  = context.comment_store.pop_leading (node.location().start_offset(), node.location().end_offset());
+    context.trailing_comments = context.comment_store.pop_trailing(node.location().start_offset(), node.location().end_offset());
+    context.dangling_comments = context.comment_store.pop_dangling(node.location().start_offset(), node.location().end_offset());
     // offset
     context.last_processed_start_offset = node.location().start_offset().max(context.last_processed_start_offset);
     // max blank lines
@@ -185,18 +186,29 @@ pub fn build_node(node: &Node<'_>, context: &mut BuildContext) -> Document{
         Node::YieldNode                         { .. } => yield_node::build_yield_node                                                      (&node.as_yield_node().unwrap()                           , context),
     };
     context.max_blank_lines = prev_max_blank_lines;
+    // comments
     let leading_comments = context.leading_comments.take();
     let trailing_comments = context.trailing_comments.take();
     let dangling_comments = context.dangling_comments.take();
     context.leading_comments = prev_leading_comments;
     context.trailing_comments = prev_trailing_comments;
     context.dangling_comments = prev_dangling_comments;
+    // remainining comments
+    let leading_comments = match (prev_remaining_comments, leading_comments) {
+        (Some(mut remaining), Some(leading)) => {
+            remaining.extend(leading);
+            Some(remaining)
+        },
+        (Some(remaining), None) => Some(remaining),
+        (None, Some(leading)) => Some(leading),
+        (None, None) => None,
+    };
     array_opt(&[
-        leading_comments,
+        build_comments_as_leading(leading_comments, context),
         blank_lines,
         Some(node_document),
-        trailing_comments,
-        dangling_comments,
+        build_comments_as_trailing(trailing_comments, context),
+        build_comments_as_dangling(dangling_comments, context),
     ])
 }
 
