@@ -10,12 +10,12 @@ use crate::builder::prism::helper::comment_helper::update_dangling_remaining;
 pub fn build_main<B, V, P>(
     builder: B,
     value: &V,
-    param: P,
+    param: &P,
     context: &mut BuildContext,
     target: &Target,
 ) -> Option<Document>
 where
-    B: Fn(&V, &mut BuildContext, P) -> Option<Document>,
+    B: Fn(&V, &mut BuildContext, &P) -> Option<Document>,
 {
     // ** GET OFFSETS **
     let start_offset = target.start_offset();
@@ -57,7 +57,8 @@ where
         (Some(prev), None) => Some(prev),
         (None, Some(curr)) => Some(curr),
         (None, None) => None,
-    };
+    }
+    .filter(|merged| !merged.is_empty());
 
     // ** MERGE PREVIOUS REMAINING COMMENTS INTO LEADING COMMENTS **
     let current_leading_comments = match (previous_remaining_comments, current_leading_comments) {
@@ -65,7 +66,8 @@ where
         (Some(remaining), None) => Some(remaining),
         (None, Some(leading)) => Some(leading),
         (None, None) => None,
-    };
+    }
+    .filter(|merged| !merged.is_empty());
 
     // ** BUILD COMMENTS AND ASSEMBLE FINAL DOCUMENT **
     let leading_comments = build_comments_as_leading(current_leading_comments, context);

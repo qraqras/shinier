@@ -2,7 +2,6 @@ use crate::BuildContext;
 use crate::builder::builder::array;
 use crate::builder::builder::hardline;
 use crate::document::Document;
-use ruby_prism::Node;
 
 /// line break index for efficient line break queries
 pub struct LineBreakIndex {
@@ -85,9 +84,9 @@ impl LineBreakIndex {
     }
 }
 
-pub fn leading_blank_lines(start_offset: usize, _end_offset: usize, context: &mut BuildContext) -> Option<Document> {
+pub fn leading_blank_lines(start_offset: usize, _end_offset: usize, ctx: &mut BuildContext) -> Option<Document> {
     let mut documents = Vec::new();
-    let blank_lines_count = context.line_break_index.count_leading_blank_lines(start_offset);
+    let blank_lines_count = ctx.line_break_index.count_leading_blank_lines(start_offset);
     for _ in 0..blank_lines_count {
         documents.push(hardline());
     }

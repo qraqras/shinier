@@ -7,23 +7,17 @@ use ruby_prism::Location;
 use ruby_prism::Node;
 
 /// Internal function to build a location with optional content
-fn _location_builder(
-    location: &Location,
-    _context: &mut BuildContext,
-    custom_content: Option<&str>,
-) -> Option<Document> {
+fn _location_builder(loc: &Location, _ctx: &mut BuildContext, custom_content: &Option<&str>) -> Option<Document> {
     let content = match custom_content {
         Some(c) => c,
-        None => std::str::from_utf8(location.as_slice()).unwrap_or(""),
+        None => std::str::from_utf8(loc.as_slice()).unwrap_or(""),
     };
     string(content)
 }
 
 /// Checks if the location has already been processed.
-fn _is_processed(location: &Location, context: &mut BuildContext) -> bool {
-    !context
-        .processed_locations
-        .insert((location.start_offset(), location.end_offset()))
+fn _is_processed(loc: &Location, ctx: &mut BuildContext) -> bool {
+    !ctx.processed_locations.insert((loc.start_offset(), loc.end_offset()))
 }
 
 /// Internal function to build a location with optional custom content.
@@ -31,7 +25,7 @@ fn _build_location(loc: &Location, ctx: &mut BuildContext, content: Option<&str>
     if _is_processed(loc, ctx) {
         return None;
     }
-    build_main(_location_builder, loc, content, ctx, &Target::from_location(loc))
+    build_main(_location_builder, loc, &content, ctx, &Target::from_location(loc))
 }
 
 /// Internal function to build a node as a location with optional custom content.
@@ -41,7 +35,7 @@ fn _build_node_as_location(node: &Node, ctx: &mut BuildContext, content: Option<
         return None;
     }
     let loc = &node.location();
-    _location_builder(loc, ctx, content)
+    _location_builder(loc, ctx, &content)
 }
 
 /// Builds a Document for a given location.

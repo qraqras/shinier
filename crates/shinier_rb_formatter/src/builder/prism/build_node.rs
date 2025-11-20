@@ -8,7 +8,7 @@ use std::marker::PhantomData;
 
 /// Internal function to build a node with optional content
 #[rustfmt::skip]
-fn _node_builder<T>(node: &Node<'_>, ctx: &mut BuildContext, _: PhantomData<T>) -> Option<Document> {
+fn _node_builder<T>(node: &Node<'_>, ctx: &mut BuildContext, _: &PhantomData<T>) -> Option<Document> {
     // ** SAVE PREVIOUS MAX BLANK LINES **
     let prev_max_blank_lines = ctx.max_blank_lines;
     // ** SET MAX BLANK LINES FOR NODE TYPE **
@@ -178,5 +178,5 @@ fn _node_builder<T>(node: &Node<'_>, ctx: &mut BuildContext, _: PhantomData<T>) 
 
 /// Build a node into a Document
 pub fn build_node<'sh>(node: &Node<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    build_main(_node_builder, node, PhantomData::<()>, ctx, &Target::from_node(node))
+    build_main(_node_builder, node, &PhantomData::<()>, ctx, &Target::from_node(node))
 }
