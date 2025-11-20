@@ -37,7 +37,7 @@ impl<'a> Printer<'a> {
         }
 
         let mut context = BuildContext {
-            last_processed_start_offset: 0usize,
+            previous_start_offset: 0usize,
             line_break_index: LineBreakIndex::new(self.source.as_bytes()),
             comment_store: &mut attach(&parse_result),
             processed_locations: HashSet::new(),
@@ -53,7 +53,11 @@ impl<'a> Printer<'a> {
 
         let mut doc = build_node(&parse_result.node(), &mut context);
 
-        let output = print_doc_to_string(&mut doc, ());
+        let mut output = String::new();
+        if let Some(doc) = &mut doc {
+            output = print_doc_to_string(doc, ());
+        }
+
         (parse_result, output)
     }
 }

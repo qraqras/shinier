@@ -7,6 +7,6 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_missing_node(node: &MissingNode<'_>, context: &mut BuildContext) -> Document {
-    Document::None
+pub fn build_missing_node(node: &MissingNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    None
 }

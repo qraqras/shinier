@@ -87,41 +87,66 @@ trait Attach {
     fn remaining_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
 }
 
+/// target type for attaching comments
+#[derive(Clone, Copy)]
+enum TargetType {
+    Location,
+    Node,
+}
+
 /// target node for attaching comments
 #[derive(Clone, Copy)]
 pub struct Target {
     start_offset: usize,
     end_offset: usize,
-    is_node: bool,
+    target_type: TargetType,
 }
 impl Target {
-    fn from_node<'sh>(node: &'sh Node<'sh>) -> Self {
+    pub fn from_node<'sh>(node: &'sh Node<'sh>) -> Self {
         let loc = node.location();
         Self {
             start_offset: loc.start_offset(),
             end_offset: loc.end_offset(),
-            is_node: true,
+            target_type: TargetType::Node,
         }
     }
-    fn from_location<'sh>(loc: &Location<'sh>) -> Self {
+    pub fn from_location<'sh>(loc: &Location<'sh>) -> Self {
         Self {
             start_offset: loc.start_offset(),
             end_offset: loc.end_offset(),
-            is_node: false,
+            target_type: TargetType::Location,
+        }
+    }
+    pub fn start_offset(&self) -> usize {
+        self.start_offset
+    }
+    pub fn end_offset(&self) -> usize {
+        self.end_offset
+    }
+    pub fn is_node(&self) -> bool {
+        match self.target_type {
+            TargetType::Node => true,
+            _ => false,
+        }
+    }
+    pub fn is_location(&self) -> bool {
+        match self.target_type {
+            TargetType::Location => true,
+            _ => false,
         }
     }
 }
 impl Attach for Target {
     fn start_offset(&self) -> usize {
-        self.start_offset
+        self.start_offset()
     }
     fn end_offset(&self) -> usize {
-        self.end_offset
+        self.end_offset()
     }
     #[rustfmt::skip]
     fn is_enclosing(&self, comment: &Comment) -> bool {
-        match self.is_node {
-            true => self.start_offset <= comment.location().start_offset() && comment.location().end_offset() <= self.end_offset,
+        match self.is_node() {
+            true => self.start_offset() <= comment.location().start_offset() && comment.location().end_offset() <= self.end_offset(),
             false => false,
         }
     }
@@ -211,7 +236,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 }
             },
             false => match (preceding, enclosing, following) {
-                (Some(p), _, Some(f)) => match f.is_node {
+                (Some(p), _, Some(f)) => match f.is_node() {
                     true => {
                         f.leading_comment(&comment, &mut comments_by_target);
                     }

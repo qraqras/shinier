@@ -7,11 +7,11 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_while_node(node: &WhileNode<'_>, context: &mut BuildContext) -> Document {
-    let predicate = build_node(&node.predicate(), context);
+pub fn build_while_node(node: &WhileNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    let predicate = build_node(&node.predicate(), ctx);
     let statements = match node.statements() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
-    Document::None
+    None
 }

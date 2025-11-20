@@ -7,11 +7,11 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_match_write_node(node: &MatchWriteNode<'_>, context: &mut BuildContext) -> Document {
-    let call = build_node(&node.call().as_node(), context);
+pub fn build_match_write_node(node: &MatchWriteNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    let call = build_node(&node.call().as_node(), ctx);
     let mut targets = Vec::new();
     for node in &node.targets() {
-        targets.push(build_node(&node, context));
+        targets.push(build_node(&node, ctx));
     }
-    Document::None
+    None
 }

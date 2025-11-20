@@ -7,14 +7,14 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_range_node(node: &RangeNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_range_node(node: &RangeNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let left = match &node.left() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
     let right = match &node.right() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
-    Document::None
+    None
 }

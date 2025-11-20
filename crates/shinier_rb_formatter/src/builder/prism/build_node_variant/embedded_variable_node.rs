@@ -7,7 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_embedded_variable_node(node: &EmbeddedVariableNode<'_>, context: &mut BuildContext) -> Document {
-    let variable = build_node(&node.variable(), context);
-    Document::None
+pub fn build_embedded_variable_node(node: &EmbeddedVariableNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    let variable = build_node(&node.variable(), ctx);
+    None
 }

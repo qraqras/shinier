@@ -7,14 +7,14 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_block_parameters_node(node: &BlockParametersNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_block_parameters_node(node: &BlockParametersNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let parameters = match &node.parameters() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
     let mut locals = Vec::new();
     for node in &node.locals() {
-        locals.push(build_node(&node, context));
+        locals.push(build_node(&node, ctx));
     }
-    Document::None
+    None
 }

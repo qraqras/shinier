@@ -7,7 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_nil_node(node: &NilNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_nil_node(node: &NilNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let keyword = Document::String(NIL.to_string());
-    Document::None
+    None
 }

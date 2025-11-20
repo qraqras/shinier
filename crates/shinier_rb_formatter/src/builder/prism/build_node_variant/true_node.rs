@@ -7,7 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_true_node(node: &TrueNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_true_node(node: &TrueNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let keyword = Document::String(TRUE.to_string());
-    Document::None
+    None
 }

@@ -1,4 +1,5 @@
 pub mod build_location;
+pub mod build_main;
 pub mod build_node;
 pub mod build_node_variant;
 pub mod comments;

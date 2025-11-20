@@ -9,8 +9,8 @@ use ruby_prism::*;
 
 pub fn build_optional_keyword_parameter_node(
     node: &OptionalKeywordParameterNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
-    let value = build_node(&node.value(), context);
-    Document::None
+    ctx: &mut BuildContext,
+) -> Option<Document> {
+    let value = build_node(&node.value(), ctx);
+    None
 }

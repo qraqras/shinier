@@ -7,14 +7,14 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_when_node(node: &WhenNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_when_node(node: &WhenNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let mut conditions = Vec::new();
     for node in &node.conditions() {
-        conditions.push(build_node(&node, context));
+        conditions.push(build_node(&node, ctx));
     }
     let statements = match &node.statements() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
-    Document::None
+    None
 }

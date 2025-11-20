@@ -7,12 +7,12 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_for_node(node: &ForNode<'_>, context: &mut BuildContext) -> Document {
-    let index = build_node(&node.index(), context);
-    let collection = build_node(&node.collection(), context);
+pub fn build_for_node(node: &ForNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    let index = build_node(&node.index(), ctx);
+    let collection = build_node(&node.collection(), ctx);
     let statements = match node.statements() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
-    Document::None
+    None
 }

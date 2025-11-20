@@ -7,10 +7,10 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_keyword_hash_node(node: &KeywordHashNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_keyword_hash_node(node: &KeywordHashNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let mut elements = Vec::new();
     for node in &node.elements() {
-        elements.push(build_node(&node, context));
+        elements.push(build_node(&node, ctx));
     }
-    Document::None
+    None
 }

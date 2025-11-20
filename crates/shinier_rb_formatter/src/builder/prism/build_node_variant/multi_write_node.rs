@@ -7,19 +7,19 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_multi_write_node(node: &MultiWriteNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_multi_write_node(node: &MultiWriteNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let mut lefts = Vec::new();
     for node in &node.lefts() {
-        lefts.push(build_node(&node, context));
+        lefts.push(build_node(&node, ctx));
     }
     let rest = match &node.rest() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
     let mut rights = Vec::new();
     for node in &node.rights() {
-        rights.push(build_node(&node, context));
+        rights.push(build_node(&node, ctx));
     }
-    let value = build_node(&node.value(), context);
-    Document::None
+    let value = build_node(&node.value(), ctx);
+    None
 }

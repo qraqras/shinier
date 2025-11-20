@@ -9,8 +9,8 @@ use ruby_prism::*;
 
 pub fn build_numbered_reference_read_node(
     node: &NumberedReferenceReadNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
+    ctx: &mut BuildContext,
+) -> Option<Document> {
     let number = Document::String(format!("{}{}", DOLLAR, node.number()));
-    Document::None
+    None
 }

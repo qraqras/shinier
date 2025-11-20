@@ -7,15 +7,15 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_if_node(node: &IfNode<'_>, context: &mut BuildContext) -> Document {
-    build_node(&node.predicate(), context);
+pub fn build_if_node(node: &IfNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    build_node(&node.predicate(), ctx);
     let statements = match &node.statements() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
     let subsequent = match &node.subsequent() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
-    Document::None
+    None
 }

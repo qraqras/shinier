@@ -3,15 +3,10 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
-use crate::builder::prism::build_node::build_constant_id;
 use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_rest_parameter_node(node: &RestParameterNode<'_>, context: &mut BuildContext) -> Document {
-    let name = match &node.name() {
-        Some(id) => Some(build_constant_id(id, context)),
-        None => None,
-    };
-    Document::None
+pub fn build_rest_parameter_node(node: &RestParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    None
 }

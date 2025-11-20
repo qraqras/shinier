@@ -5,10 +5,10 @@ use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::ReturnNode;
 
-pub fn build_return_node(node: &ReturnNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_return_node(node: &ReturnNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let arguments = match &node.arguments() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => build_node(&node.as_node(), ctx),
         None => None,
     };
-    group(array(&[string(RETURN), space(), indent_opt(arguments)]))
+    group(array(&[string(RETURN), space(), indent(arguments)]))
 }

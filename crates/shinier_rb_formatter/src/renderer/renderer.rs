@@ -289,7 +289,9 @@ fn fits(
                     Mode::Break => &if_break.r#break,
                     Mode::Flat => &if_break.flat,
                 };
-                cmds.push(contents.as_cmd(Rc::clone(&ind), mode));
+                if let Some(contents) = contents {
+                    cmds.push(contents.as_cmd(Rc::clone(&ind), mode));
+                }
             }
             Document::Indent(indent) => {
                 cmds.push(indent.contents.as_cmd(Rc::clone(&ind), mode));
@@ -472,7 +474,9 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                     Mode::Break => &if_break.r#break,
                     Mode::Flat => &if_break.flat,
                 };
-                cmds.push(contents.as_cmd(Rc::clone(&ind), mode));
+                if let Some(contents) = contents {
+                    cmds.push(contents.as_cmd(Rc::clone(&ind), mode));
+                }
             }
             Document::Indent(indent) => {
                 cmds.push(indent.contents.as_cmd(Rc::new(ind.make_indent()), mode));
@@ -671,22 +675,42 @@ fn traverse_doc(
             }
         }
         Document::IfBreak(if_break) => {
-            traverse_doc(
-                &mut if_break.r#break,
-                on_enter,
-                on_exit,
-                should_traverse_conditional_groups,
-                already_visited_set,
-                group_stack,
-            );
-            traverse_doc(
-                &mut if_break.flat,
-                on_enter,
-                on_exit,
-                should_traverse_conditional_groups,
-                already_visited_set,
-                group_stack,
-            );
+            if let Some(r#break) = &mut if_break.r#break {
+                traverse_doc(
+                    r#break,
+                    on_enter,
+                    on_exit,
+                    should_traverse_conditional_groups,
+                    already_visited_set,
+                    group_stack,
+                );
+            }
+            // traverse_doc(
+            //     &mut if_break.r#break,
+            //     on_enter,
+            //     on_exit,
+            //     should_traverse_conditional_groups,
+            //     already_visited_set,
+            //     group_stack,
+            // );
+            if let Some(flat) = &mut if_break.flat {
+                traverse_doc(
+                    flat,
+                    on_enter,
+                    on_exit,
+                    should_traverse_conditional_groups,
+                    already_visited_set,
+                    group_stack,
+                );
+            }
+            // traverse_doc(
+            //     &mut if_break.flat,
+            //     on_enter,
+            //     on_exit,
+            //     should_traverse_conditional_groups,
+            //     already_visited_set,
+            //     group_stack,
+            // );
         }
         Document::Indent(indent) => {
             traverse_doc(

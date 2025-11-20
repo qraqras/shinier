@@ -7,11 +7,11 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_singleton_class_node(node: &SingletonClassNode<'_>, context: &mut BuildContext) -> Document {
-    let expression = build_node(&node.expression(), context);
+pub fn build_singleton_class_node(node: &SingletonClassNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    let expression = build_node(&node.expression(), ctx);
     let body = match &node.body() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
-    Document::None
+    None
 }

@@ -7,7 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_no_keywords_parameter_node(node: &NoKeywordsParameterNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_no_keywords_parameter_node(node: &NoKeywordsParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let keyword = Document::String(format!("{}{}", SPLAT, NIL));
-    Document::None
+    None
 }

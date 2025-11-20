@@ -3,12 +3,10 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
-use crate::builder::prism::build_node::build_constant_id;
 use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_block_local_variable_node(node: &BlockLocalVariableNode<'_>, context: &mut BuildContext) -> Document {
-    let name = build_constant_id(&node.name(), context);
-    Document::None
+pub fn build_block_local_variable_node(node: &BlockLocalVariableNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    None
 }

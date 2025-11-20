@@ -5,7 +5,7 @@ use std::collections::HashSet;
 
 /// build context during building process
 pub struct BuildContext<'sh> {
-    pub last_processed_start_offset: usize,
+    pub previous_start_offset: usize,
     pub line_break_index: LineBreakIndex,
     pub comment_store: &'sh mut CommentStore<'sh>,
     pub processed_locations: HashSet<(usize, usize)>,

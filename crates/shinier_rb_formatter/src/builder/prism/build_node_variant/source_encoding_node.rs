@@ -7,7 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_source_encoding_node(node: &SourceEncodingNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_source_encoding_node(node: &SourceEncodingNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let keyword = Document::String(ENCODING.to_string());
-    Document::None
+    None
 }

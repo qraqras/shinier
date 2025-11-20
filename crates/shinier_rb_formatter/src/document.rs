@@ -37,8 +37,8 @@ pub struct Group {
 #[derive(Clone, Debug)]
 pub struct IfBreak {
     pub group_id: Option<usize>,
-    pub r#break: Box<Document>,
-    pub flat: Box<Document>,
+    pub r#break: Option<Box<Document>>,
+    pub flat: Option<Box<Document>>,
 }
 
 #[derive(Clone, Debug)]

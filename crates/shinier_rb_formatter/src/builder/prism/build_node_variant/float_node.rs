@@ -3,12 +3,10 @@
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
-use crate::builder::prism::build_node::build_f64;
 use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_float_node(node: &FloatNode<'_>, context: &mut BuildContext) -> Document {
-    let value = build_f64(&node.value(), context);
-    Document::None
+pub fn build_float_node(node: &FloatNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    None
 }

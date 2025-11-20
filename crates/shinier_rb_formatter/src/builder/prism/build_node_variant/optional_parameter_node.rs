@@ -7,7 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_optional_parameter_node(node: &OptionalParameterNode<'_>, context: &mut BuildContext) -> Document {
-    let value = build_node(&node.value(), context);
-    Document::None
+pub fn build_optional_parameter_node(node: &OptionalParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    let value = build_node(&node.value(), ctx);
+    None
 }

@@ -7,8 +7,8 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_or_node(node: &OrNode<'_>, context: &mut BuildContext) -> Document {
-    let left = build_node(&node.left(), context);
-    let right = build_node(&node.right(), context);
-    Document::None
+pub fn build_or_node(node: &OrNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    let left = build_node(&node.left(), ctx);
+    let right = build_node(&node.right(), ctx);
+    None
 }

@@ -56,7 +56,7 @@ ensure
 end
 
 begin # comment 1
-# comment 2
+  # comment 2
 end # comment 3
 
 # comment 1
@@ -87,7 +87,7 @@ ensure # comment 22
   # comment 26
   # comment 27
   # comment 28
-end # comment 27
+end # comment 29
 
 
 ****AST****

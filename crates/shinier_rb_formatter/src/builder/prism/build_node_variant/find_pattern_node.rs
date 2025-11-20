@@ -7,16 +7,16 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_find_pattern_node(node: &FindPatternNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_find_pattern_node(node: &FindPatternNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let constant = match &node.constant() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
-    let left = build_node(&node.left().as_node(), context);
+    let left = build_node(&node.left().as_node(), ctx);
     let mut requireds = Vec::new();
     for node in &node.requireds() {
-        requireds.push(build_node(&node, context));
+        requireds.push(build_node(&node, ctx));
     }
-    let right = build_node(&node.right(), context);
-    Document::None
+    let right = build_node(&node.right(), ctx);
+    None
 }

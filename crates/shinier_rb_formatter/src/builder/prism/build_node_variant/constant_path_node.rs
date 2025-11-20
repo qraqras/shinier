@@ -7,10 +7,10 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_constant_path_node(node: &ConstantPathNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_constant_path_node(node: &ConstantPathNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let parent = match &node.parent() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
-    Document::None
+    None
 }

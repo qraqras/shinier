@@ -1,15 +1,15 @@
 use crate::builder::BuildContext;
 use ruby_prism::Comment;
-use ruby_prism::Node;
 
 pub fn update_dangling_remaining<'sh>(
     dangling: &mut Option<Vec<Comment<'sh>>>,
     remaining: &mut Option<Vec<Comment<'sh>>>,
-    node: &Node,
+    start_offset: usize,
+    _end_offset: usize,
     context: &mut BuildContext<'sh>,
 ) {
     let index = &context.line_break_index;
-    let node_col = index.col_at_offset(node.location().start_offset());
+    let node_col = index.col_at_offset(start_offset);
 
     match remaining {
         Some(remaining) => {

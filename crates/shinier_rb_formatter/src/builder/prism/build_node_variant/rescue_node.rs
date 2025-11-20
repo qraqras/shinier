@@ -6,7 +6,7 @@ use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::RescueNode;
 
-pub fn build_rescue_node(node: &RescueNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_rescue_node(node: &RescueNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let keyword_loc = node.keyword_loc();
     let exceptions = node.exceptions();
     let operator_loc = node.operator_loc();
@@ -24,16 +24,24 @@ pub fn build_rescue_node(node: &RescueNode<'_>, context: &mut BuildContext) -> D
         if i > 0 {
             exceptions_document.push(array(&[string(COMMA), line()]));
         }
-        exceptions_document.push(build_node(&exception, context));
+        exceptions_document.push(build_node(&exception, ctx));
     }
 
-    group(array_opt(&[
-        build_location(&keyword_loc, context),
-        Some(array(&exceptions_document)),
-        operator_loc.map(|l| array(&[space(), build_location(&l, context).unwrap()])),
-        reference.map(|n| array(&[space(), build_node(&n, context)])),
-        then_keyword_loc.map(|l| array(&[space(), build_location(&l, context).unwrap()])),
-        statements.map(|n| indent(array_opt(&[Some(hardline()), Some(build_node(&n.as_node(), context))]))),
-        subsequent.map(|n| array(&[hardline(), build_node(&n.as_node(), context)])),
+    group(array(&[
+        build_location(&keyword_loc, ctx),
+        array(&exceptions_document),
+        operator_loc
+            .map(|l| array(&[space(), build_location(&l, ctx)]))
+            .flatten(),
+        reference.map(|n| array(&[space(), build_node(&n, ctx)])).flatten(),
+        then_keyword_loc
+            .map(|l| array(&[space(), build_location(&l, ctx)]))
+            .flatten(),
+        statements
+            .map(|n| indent(array(&[hardline(), build_node(&n.as_node(), ctx)])))
+            .flatten(),
+        subsequent
+            .map(|n| array(&[hardline(), build_node(&n.as_node(), ctx)]))
+            .flatten(),
     ]))
 }

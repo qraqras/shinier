@@ -9,8 +9,8 @@ use ruby_prism::*;
 
 pub fn build_instance_variable_operator_write_node(
     node: &InstanceVariableOperatorWriteNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
-    let value = build_node(&node.value(), context);
-    Document::None
+    ctx: &mut BuildContext,
+) -> Option<Document> {
+    let value = build_node(&node.value(), ctx);
+    None
 }

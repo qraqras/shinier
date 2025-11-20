@@ -7,29 +7,29 @@ use crate::builder::prism::build_node::build_node;
 use ruby_prism::AndNode;
 use ruby_prism::Node;
 
-pub fn build_and_node(node: &AndNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_and_node(node: &AndNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let mut parts = Vec::new();
-    flatten(&node.as_node(), context, &mut parts);
+    flatten(&node.as_node(), ctx, &mut parts);
     assert!(!parts.is_empty());
     let first = parts.remove(0);
     group(array(&[first, indent(array(&parts))]))
 }
 
-fn flatten(node: &Node<'_>, context: &mut BuildContext, acc: &mut Vec<Document>) {
+fn flatten(node: &Node<'_>, ctx: &mut BuildContext, acc: &mut Vec<Option<Document>>) {
     match node {
         Node::AndNode { .. } => {
             let and_node = node.as_and_node().unwrap();
             let left = and_node.left();
             let right = and_node.right();
             let operator = and_node.operator_loc();
-            flatten(&left, context, acc);
+            flatten(&left, ctx, acc);
             acc.push(space());
-            acc.push(build_custom_location(&operator, context, LOGICAL_AND).unwrap());
+            acc.push(build_custom_location(&operator, ctx, LOGICAL_AND));
             acc.push(line());
-            acc.push(build_node(&right, context));
+            acc.push(build_node(&right, ctx));
         }
         _ => {
-            acc.push(build_node(node, context));
+            acc.push(build_node(node, ctx));
         }
     }
 }

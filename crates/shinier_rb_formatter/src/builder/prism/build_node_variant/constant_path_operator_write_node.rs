@@ -9,9 +9,9 @@ use ruby_prism::*;
 
 pub fn build_constant_path_operator_write_node(
     node: &ConstantPathOperatorWriteNode<'_>,
-    context: &mut BuildContext,
-) -> Document {
-    let target = build_node(&node.target().as_node(), context);
-    let value = build_node(&node.value(), context);
-    Document::None
+    ctx: &mut BuildContext,
+) -> Option<Document> {
+    let target = build_node(&node.target().as_node(), ctx);
+    let value = build_node(&node.value(), ctx);
+    None
 }

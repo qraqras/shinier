@@ -7,14 +7,14 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_super_node(node: &SuperNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_super_node(node: &SuperNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let arguments = match &node.arguments() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
     let block = match &node.block() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
-    Document::None
+    None
 }

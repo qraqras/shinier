@@ -7,7 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_shareable_constant_node(node: &ShareableConstantNode<'_>, context: &mut BuildContext) -> Document {
-    let write = build_node(&node.write(), context);
-    Document::None
+pub fn build_shareable_constant_node(node: &ShareableConstantNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    let write = build_node(&node.write(), ctx);
+    None
 }

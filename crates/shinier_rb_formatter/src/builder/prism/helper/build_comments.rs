@@ -31,7 +31,7 @@ pub fn build_comments_as_leading(comments: Option<Vec<Comment>>, context: &mut B
             }
             documents.push(hardline());
             documents.push(break_parent());
-            Some(array(&documents))
+            array(&documents)
         }
         None => None,
     }
@@ -46,7 +46,7 @@ pub fn build_comments_as_trailing(comments: Option<Vec<Comment>>, _context: &mut
                 documents.push(line_suffix(array(&[space(), build_comment(&comment)])));
             }
             documents.push(break_parent());
-            Some(array(&documents))
+            array(&documents)
         }
         None => None,
     }
@@ -70,7 +70,7 @@ pub fn build_comments_as_dangling(comments: Option<Vec<Comment>>, context: &mut 
                 documents.push(build_comment(&comment));
             }
             documents.push(break_parent());
-            Some(array(&documents))
+            array(&documents)
         }
         None => None,
     }
@@ -79,7 +79,7 @@ pub fn build_comments_as_dangling(comments: Option<Vec<Comment>>, context: &mut 
 /// Builds a comment into a Document.
 /// If the comment is an embedded document comment (=begin ... =end),
 /// it formats it as multiple lines with '#' prefixes.
-fn build_comment(comment: &Comment) -> Document {
+fn build_comment(comment: &Comment) -> Option<Document> {
     let text = std::str::from_utf8(comment.text()).unwrap();
     match comment.type_() {
         CommentType::EmbDocComment => {

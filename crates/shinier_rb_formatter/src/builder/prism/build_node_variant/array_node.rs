@@ -7,7 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use ruby_prism::ArrayNode;
 use ruby_prism::Location;
 
-pub fn build_array_node(node: &ArrayNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_array_node(node: &ArrayNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let elements = node.elements();
     let opening_loc = node.opening_loc();
     let closing_loc = node.closing_loc();
@@ -20,13 +20,13 @@ pub fn build_array_node(node: &ArrayNode<'_>, context: &mut BuildContext) -> Doc
         if i > 0 {
             parts.push(sparator.clone());
         }
-        parts.push(build_node(&element, context));
+        parts.push(build_node(&element, ctx));
     }
-    group(array_opt(&[
-        opening_loc.as_ref().map(|l| build_location(l, context).unwrap()),
-        Some(indent(array(&[softline(), array(&parts)]))),
-        Some(softline()),
-        closing_loc.as_ref().map(|l| build_location(l, context).unwrap()),
+    group(array(&[
+        opening_loc.as_ref().map(|l| build_location(l, ctx).unwrap()),
+        indent(array(&[softline(), array(&parts)])),
+        softline(),
+        closing_loc.as_ref().map(|l| build_location(l, ctx).unwrap()),
     ]))
 }
 

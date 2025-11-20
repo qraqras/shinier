@@ -7,14 +7,14 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_lambda_node(node: &LambdaNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_lambda_node(node: &LambdaNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let parameters = match &node.parameters() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
     let body = match &node.body() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
-    Document::None
+    None
 }

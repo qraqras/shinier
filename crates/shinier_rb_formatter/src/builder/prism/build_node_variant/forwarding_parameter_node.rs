@@ -7,7 +7,7 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_forwarding_parameter_node(node: &ForwardingParameterNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_forwarding_parameter_node(node: &ForwardingParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let keyword = Document::String(TRIPLE_DOT.to_string());
-    Document::None
+    None
 }

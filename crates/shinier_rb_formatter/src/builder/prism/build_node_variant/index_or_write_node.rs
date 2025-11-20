@@ -7,19 +7,19 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_index_or_write_node(node: &IndexOrWriteNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_index_or_write_node(node: &IndexOrWriteNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let receiver = match &node.receiver() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
     let arguments = match &node.arguments() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
     let block = match &node.block() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
-    let value = build_node(&node.value(), context);
-    Document::None
+    let value = build_node(&node.value(), ctx);
+    None
 }

@@ -7,18 +7,18 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_def_node(node: &DefNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_def_node(node: &DefNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let receiver = match &node.receiver() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
     let parameters = match &node.parameters() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
     let body = match &node.body() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
-    Document::None
+    None
 }

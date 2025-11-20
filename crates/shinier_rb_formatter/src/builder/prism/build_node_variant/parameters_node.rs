@@ -7,34 +7,34 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_parameters_node(node: &ParametersNode<'_>, context: &mut BuildContext) -> Document {
+pub fn build_parameters_node(node: &ParametersNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let mut requireds = Vec::new();
     for node in &node.requireds() {
-        requireds.push(build_node(&node, context));
+        requireds.push(build_node(&node, ctx));
     }
     let mut optionals = Vec::new();
     for node in &node.optionals() {
-        optionals.push(build_node(&node, context));
+        optionals.push(build_node(&node, ctx));
     }
     let rest = match &node.rest() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
     let mut posts = Vec::new();
     for node in &node.posts() {
-        posts.push(build_node(&node, context));
+        posts.push(build_node(&node, ctx));
     }
     let mut keywords = Vec::new();
     for node in &node.keywords() {
-        keywords.push(build_node(&node, context));
+        keywords.push(build_node(&node, ctx));
     }
     let keyword = match &node.keyword_rest() {
-        Some(node) => Some(build_node(&node, context)),
+        Some(node) => Some(build_node(&node, ctx)),
         None => None,
     };
     let block = match &node.block() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
-    Document::None
+    None
 }

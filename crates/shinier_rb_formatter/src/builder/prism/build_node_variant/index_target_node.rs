@@ -7,15 +7,15 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_index_target_node(node: &IndexTargetNode<'_>, context: &mut BuildContext) -> Document {
-    build_node(&node.receiver(), context);
+pub fn build_index_target_node(node: &IndexTargetNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    build_node(&node.receiver(), ctx);
     let arguments = match &node.arguments() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
     let block = match &node.block() {
-        Some(node) => Some(build_node(&node.as_node(), context)),
+        Some(node) => Some(build_node(&node.as_node(), ctx)),
         None => None,
     };
-    Document::None
+    None
 }
