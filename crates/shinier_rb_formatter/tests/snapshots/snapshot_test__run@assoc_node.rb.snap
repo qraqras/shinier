@@ -7,19 +7,19 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/assoc_node.rb
 ****FORMATTED****
 { a => b }
 { foo: :bar }
-{ 'foo' => 'bar' }
+{ "foo" => "bar" }
 { foo: bar }
 
 # Multiple associations
 { a => b, c => d }
 { foo: 1, bar: 2 }
-{ 'foo' => '1', 'bar' => '2' }
+{ "foo" => "1", "bar" => "2" }
 { foo: 1, bar: 2 }
 
 # Unnecessary line breaks
 { a => b }
 { foo: bar }
-{ 'foo' => '1', 'bar' => '2' }
+{ "foo" => "1", "bar" => "2" }
 
 # Long associations
 {
@@ -39,12 +39,12 @@ input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/assoc_node.rb
 
 # Nested hashes
 { a => { b => c } }
-{ a => { b: { 'c' => 'd' } } }
+{ a => { b: { "c" => "d" } } }
 
 # Complex values
 { a => [1, 2, 3] }
 { a: foo.bar.baz }
-{ 'a' => method_call(arg1, arg2) }
+{ "a" => method_call(arg1, arg2) }
 
 # Comments
 { a => b } # trailing comment

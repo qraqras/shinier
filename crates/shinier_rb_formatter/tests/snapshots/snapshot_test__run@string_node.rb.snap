@@ -5,27 +5,27 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/string_node.rb
 ---
 ****FORMATTED****
-'foo'
-['foo']
-"foo #{bar} baz"
+"foo"
+%w[foo]
+
 
 # single quotes
 'foo'
 # double quotes
-'foo'
+"foo"
 
 # single quotes with escaped single quote
-"foo'bar'baz"
+'foo\'bar\'baz'
 # double quotes with escaped double quote
-'foo"bar"baz'
+"foo\"bar\"baz"
 
 # single quotes with escaped backslash
-'f\\o\\o'
+'f\o\o'
 # double quotes with escaped backslash
-'f\\o\\o'
+"f\\o\\o"
 
 # single quotes with escaped tab
-'\\t'
+'\t'
 # double quotes with escaped tab
 "\t"
 

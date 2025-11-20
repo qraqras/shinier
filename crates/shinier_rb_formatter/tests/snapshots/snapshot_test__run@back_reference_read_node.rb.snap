@@ -1,0 +1,20 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/back_reference_read_node.rb
+---
+****FORMATTED****
+$&
+$`
+$'
+$+
+
+
+****AST****
+ProgramNode[0-11]: "$&\n$`\n$\'\n$+"
+__StatementsNode[0-11]: "$&\n$`\n$\'\n$+"
+____BackReferenceReadNode[0-2]: "$&"
+____BackReferenceReadNode[3-5]: "$`"
+____BackReferenceReadNode[6-8]: "$\'"
+____BackReferenceReadNode[9-11]: "$+"

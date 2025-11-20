@@ -12,8 +12,8 @@ foo in *bar, 2, 3
 foo in
   1, 2
 foo in [
-    1,
-    2
+  1,
+  2
 ]
 foo in 1,
   2

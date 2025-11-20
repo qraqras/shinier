@@ -7,11 +7,11 @@ alias
 # long expression
 alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
 
-alias # owning inline comment
+alias # owning comment
   $foo $bar
 alias
-  # owning inline comment 1
-  # owning inline comment 2
+  # owning comment 1
+  # owning comment 2
   $foo $bar
 alias
 =begin
@@ -20,4 +20,6 @@ owning block comment 2
 =end
   $foo $bar
 alias $foo $bar # trailing comment
+alias
+  $foo $bar # trailing comment
 alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar # trailing comment
