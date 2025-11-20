@@ -187,14 +187,16 @@ pub fn build_node<'sh>(node: &Node<'_>, context: &mut BuildContext) -> Document 
     };
     context.max_blank_lines = prev_max_blank_lines;
 
-
     update_dangling_remaining(&mut dangling_comments, &mut remaining_comments, node, context);
-
-    // node variant 関数が context.remaining_comments を設定した場合、それを優先する
-    // そうでない場合は、pop_remaining() の結果を使用
-    if context.remaining_comments.is_none() {
-        context.remaining_comments = remaining_comments;
-    }
+    context.remaining_comments = match (context.remaining_comments.take(), remaining_comments) {
+        (Some(mut curr), Some(prev)) => {
+            curr.extend(prev);
+            Some(curr)
+        },
+        (Some(curr), None) => Some(curr),
+        (None, Some(prev)) => Some(prev),
+        (None, None) => None,
+    };
 
     // remainining comments
     let leading_comments = match (prev_remaining_comments, leading_comments) {

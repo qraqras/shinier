@@ -69,6 +69,7 @@ rescue ArgumentError => e # comment 7
   # comment 8
   recover_argument_error # comment 9
   # comment 10
+# comment 11
 rescue ZeroDivisionError => e # comment 12
   # comment 13
   recover_zero_division_error # comment 14
