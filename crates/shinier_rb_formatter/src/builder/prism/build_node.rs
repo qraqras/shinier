@@ -189,7 +189,13 @@ pub fn build_node<'sh>(node: &Node<'_>, context: &mut BuildContext) -> Document 
 
 
     update_dangling_remaining(&mut dangling_comments, &mut remaining_comments, node, context);
-    context.remaining_comments = remaining_comments;
+
+    // node variant 関数が context.remaining_comments を設定した場合、それを優先する
+    // そうでない場合は、pop_remaining() の結果を使用
+    if context.remaining_comments.is_none() {
+        context.remaining_comments = remaining_comments;
+    }
+
     // remainining comments
     let leading_comments = match (prev_remaining_comments, leading_comments) {
         (Some(mut remaining), Some(leading)) => {
