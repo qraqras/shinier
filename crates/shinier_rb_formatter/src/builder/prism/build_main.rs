@@ -71,6 +71,10 @@ where
 
     // ** BUILD COMMENTS AND ASSEMBLE FINAL DOCUMENT **
     let leading_comments = build_comments_as_leading(current_leading_comments, context);
+    let leading_comments = match target.is_location() {
+        true => indent(leading_comments),
+        false => leading_comments,
+    };
     let trailing_comments = build_comments_as_trailing(current_trailing_comments, context);
     let dangling_comments = build_comments_as_dangling(current_dangling_comments, context);
     let dangling_comments = match target.is_location() {

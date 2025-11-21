@@ -1,23 +1,51 @@
 use crate::Document;
 use crate::builder::builder::*;
+use crate::builder::keyword::COMMA;
 use crate::builder::prism::BuildContext;
-use crate::builder::prism::build_location::build_node_as_location;
+use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::CallNode;
 
 pub fn build_call_node(node: &CallNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let receiver = match &node.receiver() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
+    let receiver = node.receiver();
+    let call_operator_loc = node.call_operator_loc();
+    let message_loc = node.message_loc();
+    let opening_loc = node.opening_loc();
+    let arguments = node.arguments();
+    let closing_loc = node.closing_loc();
+    let block = node.block();
+
+    let line_or_none = match (&opening_loc, &closing_loc) {
+        (Some(_), Some(_)) => softline(),
+        (None, None) => None,
+        _ => unreachable!(),
     };
-    let arguments = match &node.arguments() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
+
+    let separator_or_none = match (&arguments, &block) {
+        (Some(_), Some(_)) => array(&[string(COMMA), line()]),
+        _ => None,
     };
-    let block = match node.block() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
-    // TODO: not yet implemented method call formatting
-    build_node_as_location(&node.as_node(), ctx)
+
+    // TODO: TESTING
+    group(array(&[
+        receiver.map(|n| build_node(&n, ctx)).flatten(),
+        call_operator_loc.map(|loc| build_location(&loc, ctx)).flatten(),
+        message_loc.map(|loc| build_location(&loc, ctx)).flatten(),
+        opening_loc.map(|loc| build_location(&loc, ctx)).flatten(),
+        match (&arguments, &block) {
+            (None, None) => None,
+            _ => indent(array(&[
+                line_or_none.clone(),
+                arguments
+                    .map(|n| indent(array(&[softline(), build_node(&n.as_node(), ctx)])))
+                    .flatten(),
+                block
+                    .map(|n| array(&[separator_or_none.clone(), build_node(&n, ctx)]))
+                    .flatten(),
+            ])),
+        },
+        closing_loc
+            .map(|loc| array(&[line_or_none.clone(), build_location(&loc, ctx)]))
+            .flatten(),
+    ]))
 }

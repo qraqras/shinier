@@ -25,7 +25,7 @@ fn _build_location(loc: &Location, ctx: &mut BuildContext, content: Option<&str>
     if _is_processed(loc, ctx) {
         return None;
     }
-    build_main(_location_builder, loc, &content, ctx, &Target::from_location(loc))
+    build_main(_location_builder, loc, &content, ctx, &Target::from_loc(loc))
 }
 
 /// Internal function to build a node as a location with optional custom content.

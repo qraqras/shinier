@@ -1,12 +1,17 @@
-// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/block_parameter_node.rs
-
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
-use crate::builder::prism::build_node::build_node;
-use crate::keyword::*;
-use ruby_prism::*;
+use crate::builder::prism::build_location::build_location;
+use ruby_prism::BlockParameterNode;
 
 pub fn build_block_parameter_node(node: &BlockParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    None
+    let name_loc = node.name_loc();
+    let oprator_loc = node.operator_loc();
+
+    group(array(&[
+        build_location(&oprator_loc, ctx),
+        name_loc
+            .map(|n| array(&[softline(), build_location(&n, ctx)]))
+            .flatten(),
+    ]))
 }

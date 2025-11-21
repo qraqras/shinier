@@ -1,0 +1,42 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/block_parameter_node.rb
+---
+****FORMATTED****
+def foo(&bar)
+end
+
+def foo(&bar)
+end
+
+def foo(
+  # leading comment
+  &bar # trailing comment
+  # dangling comment
+)
+end
+
+def foo(
+  &bar
+# aaaaaa
+  )
+end
+
+
+****AST****
+ProgramNode[0-153]: "def foo(&bar)\nend\n\ndef foo(&\n  bar)\nend\n\ndef foo(\n  # leading comment\n  &bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(&bar\n  # aaaaaa\n)\nend"
+__StatementsNode[0-153]: "def foo(&bar)\nend\n\ndef foo(&\n  bar)\nend\n\ndef foo(\n  # leading comment\n  &bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(&bar\n  # aaaaaa\n)\nend"
+____DefNode[0-17]: "def foo(&bar)\nend"
+______ParametersNode[8-12]: "&bar"
+________BlockParameterNode[8-12]: "&bar"
+____DefNode[19-39]: "def foo(&\n  bar)\nend"
+______ParametersNode[27-34]: "&\n  bar"
+________BlockParameterNode[27-34]: "&\n  bar"
+____DefNode[41-122]: "def foo(\n  # leading comment\n  &bar # trailing comment\n  # dangling comment\n)\nend"
+______ParametersNode[72-76]: "&bar"
+________BlockParameterNode[72-76]: "&bar"
+____DefNode[124-153]: "def foo(&bar\n  # aaaaaa\n)\nend"
+______ParametersNode[132-136]: "&bar"
+________BlockParameterNode[132-136]: "&bar"

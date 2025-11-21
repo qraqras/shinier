@@ -1,0 +1,51 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/block_argument_node.rb
+---
+****FORMATTED****
+def foo(&)
+  bar(&)
+end
+
+bar(&args)
+
+bar(&args)
+
+bar(
+  # leading comment
+  &args # trailing comment
+  # dangling comment
+)
+
+bar(
+  # leading comment
+  & # trailing comment 1
+  # dangling comment 1
+  args # trailing comment 2
+  # dangling comment 2
+)
+
+
+****AST****
+ProgramNode[0-257]: "def foo(&)\n  bar(&)\nend\n\nbar(&args)\n\nbar(\n  &\n  args\n)\n\nbar(\n  # leading comment\n  &args # trailing comment\n  # dangling comment\n)\n\nbar(\n  # leading comment\n  & # trailing comment 1\n  # dangling comment 1\n  args # trailing comment 2\n  # dangling comment 2\n)"
+__StatementsNode[0-257]: "def foo(&)\n  bar(&)\nend\n\nbar(&args)\n\nbar(\n  &\n  args\n)\n\nbar(\n  # leading comment\n  &args # trailing comment\n  # dangling comment\n)\n\nbar(\n  # leading comment\n  & # trailing comment 1\n  # dangling comment 1\n  args # trailing comment 2\n  # dangling comment 2\n)"
+____DefNode[0-23]: "def foo(&)\n  bar(&)\nend"
+______ParametersNode[8-9]: "&"
+________BlockParameterNode[8-9]: "&"
+______StatementsNode[13-19]: "bar(&)"
+________CallNode[13-19]: "bar(&)"
+__________BlockArgumentNode[17-18]: "&"
+____CallNode[25-35]: "bar(&args)"
+______BlockArgumentNode[29-34]: "&args"
+________CallNode[30-34]: "args"
+____CallNode[37-54]: "bar(\n  &\n  args\n)"
+______BlockArgumentNode[44-52]: "&\n  args"
+________CallNode[48-52]: "args"
+____CallNode[56-130]: "bar(\n  # leading comment\n  &args # trailing comment\n  # dangling comment\n)"
+______BlockArgumentNode[83-88]: "&args"
+________CallNode[84-88]: "args"
+____CallNode[132-257]: "bar(\n  # leading comment\n  & # trailing comment 1\n  # dangling comment 1\n  args # trailing comment 2\n  # dangling comment 2\n)"
+______BlockArgumentNode[159-211]: "& # trailing comment 1\n  # dangling comment 1\n  args"
+________CallNode[207-211]: "args"
