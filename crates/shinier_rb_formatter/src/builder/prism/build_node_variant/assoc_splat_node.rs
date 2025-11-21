@@ -9,7 +9,7 @@ pub fn build_assoc_splat_node(node: &AssocSplatNode<'_>, ctx: &mut BuildContext)
     let value = node.value();
     let operator_loc = node.operator_loc();
     group(array(&[
-        build_location(&operator_loc, ctx),
-        value.map(|v| build_node(&v, ctx)).flatten(),
+        build_location(operator_loc, ctx),
+        value.map(|v| build_node(v, ctx)).flatten(),
     ]))
 }

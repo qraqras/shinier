@@ -7,10 +7,9 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_interpolated_x_string_node(node: &InterpolatedXStringNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let mut parts = Vec::new();
-    for node in &node.parts() {
-        parts.push(build_node(&node, ctx));
-    }
+pub fn build_interpolated_x_string_node(
+    node: &InterpolatedXStringNode<'_>,
+    ctx: &mut BuildContext,
+) -> Option<Document> {
     None
 }

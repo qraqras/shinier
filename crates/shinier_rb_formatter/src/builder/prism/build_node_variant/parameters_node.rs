@@ -16,20 +16,20 @@ pub fn build_parameters_node(node: &ParametersNode<'_>, ctx: &mut BuildContext) 
 
     let mut parameters = Vec::new();
     for required in requireds.iter() {
-        parameters.push(build_node(&required, ctx));
+        parameters.push(build_node(required, ctx));
     }
     for optional in optionals.iter() {
-        parameters.push(build_node(&optional, ctx));
+        parameters.push(build_node(optional, ctx));
     }
-    rest.map(|r| parameters.push(build_node(&r, ctx)));
+    rest.map(|r| parameters.push(build_node(r, ctx)));
     for post in posts.iter() {
-        parameters.push(build_node(&post, ctx));
+        parameters.push(build_node(post, ctx));
     }
     for keyword in keywords.iter() {
-        parameters.push(build_node(&keyword, ctx));
+        parameters.push(build_node(keyword, ctx));
     }
-    keyword_rest.map(|kr| parameters.push(build_node(&kr, ctx)));
-    block.map(|b| parameters.push(build_node(&b.as_node(), ctx)));
+    keyword_rest.map(|kr| parameters.push(build_node(kr, ctx)));
+    block.map(|b| parameters.push(build_node(b.as_node(), ctx)));
 
     let mut separated_parameters = Vec::new();
     for (i, param) in parameters.into_iter().enumerate() {

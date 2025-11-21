@@ -51,7 +51,7 @@ impl<'a> Printer<'a> {
             percent_literal: false,
         };
 
-        let mut doc = build_node(&parse_result.node(), &mut context);
+        let mut doc = build_node(parse_result.node(), &mut context);
 
         let mut output = String::new();
         if let Some(doc) = &mut doc {

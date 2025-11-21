@@ -8,9 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_constant_path_node(node: &ConstantPathNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let parent = match &node.parent() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
     None
 }

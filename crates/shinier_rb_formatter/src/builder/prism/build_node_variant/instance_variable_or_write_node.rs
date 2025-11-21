@@ -11,6 +11,5 @@ pub fn build_instance_variable_or_write_node(
     node: &InstanceVariableOrWriteNode<'_>,
     ctx: &mut BuildContext,
 ) -> Option<Document> {
-    let value = build_node(&node.value(), ctx);
     None
 }

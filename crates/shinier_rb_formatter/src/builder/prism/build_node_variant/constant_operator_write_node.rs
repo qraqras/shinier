@@ -11,6 +11,5 @@ pub fn build_constant_operator_write_node(
     node: &ConstantOperatorWriteNode<'_>,
     ctx: &mut BuildContext,
 ) -> Option<Document> {
-    let value = build_node(&node.value(), ctx);
     None
 }

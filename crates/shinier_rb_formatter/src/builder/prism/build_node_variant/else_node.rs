@@ -19,12 +19,12 @@ pub fn build_else_node(node: &ElseNode<'_>, ctx: &mut BuildContext) -> Option<Do
     };
 
     group(array(&[
-        build_location(&else_keyword_loc, ctx),
+        build_location(else_keyword_loc, ctx),
         statements
-            .map(|n| indent(array(&[hardline(), build_node(&n.as_node(), ctx)])))
+            .map(|n| indent(array(&[hardline(), build_node(n.as_node(), ctx)])))
             .flatten(),
         end_keyword_loc
-            .and_then(|l| build_location(&l, ctx).map(|e| array(&[hardline(), Some(e)])))
+            .and_then(|l| build_location(l, ctx).map(|e| array(&[hardline(), Some(e)])))
             .flatten(),
     ]))
 }

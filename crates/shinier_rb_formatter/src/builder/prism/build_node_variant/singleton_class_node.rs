@@ -8,10 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_singleton_class_node(node: &SingletonClassNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let expression = build_node(&node.expression(), ctx);
-    let body = match &node.body() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
     None
 }

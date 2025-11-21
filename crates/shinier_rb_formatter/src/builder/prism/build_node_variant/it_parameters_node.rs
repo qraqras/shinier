@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_it_parameters_node(node: &ItParametersNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    // TODO
     None
 }

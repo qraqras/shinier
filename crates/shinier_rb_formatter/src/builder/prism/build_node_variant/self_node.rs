@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_self_node(node: &SelfNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let keyword = Document::String(SELF.to_string());
     None
 }

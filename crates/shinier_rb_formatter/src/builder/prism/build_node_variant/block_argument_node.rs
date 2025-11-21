@@ -10,7 +10,7 @@ pub fn build_block_argument_node(node: &BlockArgumentNode<'_>, ctx: &mut BuildCo
     let operator_loc = node.operator_loc();
 
     group(array(&[
-        build_location(&operator_loc, ctx),
-        expression.map(|e| array(&[softline(), build_node(&e, ctx)])).flatten(),
+        build_location(operator_loc, ctx),
+        expression.map(|e| array(&[softline(), build_node(e, ctx)])).flatten(),
     ]))
 }

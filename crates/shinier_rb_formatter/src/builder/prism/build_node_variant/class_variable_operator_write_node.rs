@@ -11,6 +11,5 @@ pub fn build_class_variable_operator_write_node(
     node: &ClassVariableOperatorWriteNode<'_>,
     ctx: &mut BuildContext,
 ) -> Option<Document> {
-    let value = build_node(&node.value(), ctx);
     None
 }

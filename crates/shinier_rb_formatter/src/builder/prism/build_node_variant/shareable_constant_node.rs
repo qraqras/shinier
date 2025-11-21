@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_shareable_constant_node(node: &ShareableConstantNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let write = build_node(&node.write(), ctx);
     None
 }

@@ -11,11 +11,11 @@ pub fn build_ensure_node(node: &EnsureNode<'_>, ctx: &mut BuildContext) -> Optio
     let end_keyword_loc = node.end_keyword_loc();
 
     group(array(&[
-        build_location(&ensure_keyword_loc, ctx),
+        build_location(ensure_keyword_loc, ctx),
         statements
-            .map(|n| indent(array(&[hardline(), build_node(&n.as_node(), ctx)])))
+            .map(|n| indent(array(&[hardline(), build_node(n.as_node(), ctx)])))
             .flatten(),
-        build_location(&end_keyword_loc, ctx)
+        build_location(end_keyword_loc, ctx)
             .map(|e| array(&[hardline(), Some(e)]))
             .flatten(),
     ]))

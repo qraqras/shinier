@@ -8,9 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_forwarding_super_node(node: &ForwardingSuperNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let block = match node.block() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
     None
 }

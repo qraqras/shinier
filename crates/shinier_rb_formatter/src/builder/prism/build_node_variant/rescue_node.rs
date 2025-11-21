@@ -24,24 +24,24 @@ pub fn build_rescue_node(node: &RescueNode<'_>, ctx: &mut BuildContext) -> Optio
         if i > 0 {
             exceptions_document.push(array(&[string(COMMA), line()]));
         }
-        exceptions_document.push(build_node(&exception, ctx));
+        exceptions_document.push(build_node(exception, ctx));
     }
 
     group(array(&[
-        build_location(&keyword_loc, ctx),
+        build_location(keyword_loc, ctx),
         array(&exceptions_document),
         operator_loc
-            .map(|l| array(&[space(), build_location(&l, ctx)]))
+            .map(|l| array(&[space(), build_location(l, ctx)]))
             .flatten(),
-        reference.map(|n| array(&[space(), build_node(&n, ctx)])).flatten(),
+        reference.map(|n| array(&[space(), build_node(n, ctx)])).flatten(),
         then_keyword_loc
-            .map(|l| array(&[space(), build_location(&l, ctx)]))
+            .map(|l| array(&[space(), build_location(l, ctx)]))
             .flatten(),
         statements
-            .map(|n| indent(array(&[hardline(), build_node(&n.as_node(), ctx)])))
+            .map(|n| indent(array(&[hardline(), build_node(n.as_node(), ctx)])))
             .flatten(),
         subsequent
-            .map(|n| array(&[hardline(), build_node(&n.as_node(), ctx)]))
+            .map(|n| array(&[hardline(), build_node(n.as_node(), ctx)]))
             .flatten(),
     ]))
 }

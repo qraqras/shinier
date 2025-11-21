@@ -8,9 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_next_node(node: &NextNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let arguments = match &node.arguments() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
     None
 }

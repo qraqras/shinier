@@ -8,14 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_unless_node(node: &UnlessNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let predicate = build_node(&node.predicate(), ctx);
-    let statements = match &node.statements() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
-    let else_clause = match &node.else_clause() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
     None
 }

@@ -8,13 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_block_node(node: &BlockNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let parameters = match &node.parameters() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
-    let body = match &node.body() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
     None
 }

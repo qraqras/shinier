@@ -20,13 +20,13 @@ pub fn build_array_node(node: &ArrayNode<'_>, ctx: &mut BuildContext) -> Option<
         if i > 0 {
             parts.push(sparator.clone());
         }
-        parts.push(build_node(&element, ctx));
+        parts.push(build_node(element, ctx));
     }
     group(array(&[
-        opening_loc.as_ref().map(|l| build_location(l, ctx)).flatten(),
+        opening_loc.map(|l| build_location(l, ctx)).flatten(),
         indent(array(&[softline(), array(&parts)])),
         softline(),
-        closing_loc.as_ref().map(|l| build_location(l, ctx)).flatten(),
+        closing_loc.map(|l| build_location(l, ctx)).flatten(),
     ]))
 }
 

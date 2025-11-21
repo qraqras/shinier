@@ -12,7 +12,7 @@ pub fn build_arguments_node(node: &ArgumentsNode<'_>, ctx: &mut BuildContext) ->
             arguments.push(string(COMMA));
             arguments.push(line());
         }
-        arguments.push(build_node(&node, ctx));
+        arguments.push(build_node(node, ctx));
     }
     group(array(&arguments))
 }

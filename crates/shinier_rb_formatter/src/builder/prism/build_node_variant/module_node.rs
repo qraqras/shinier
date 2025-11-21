@@ -8,10 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_module_node(node: &ModuleNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let constant_path = build_node(&node.constant_path(), ctx);
-    let mut body = Vec::new();
-    if let Some(node) = &node.body() {
-        body.push(build_node(&node, ctx));
-    }
     None
 }

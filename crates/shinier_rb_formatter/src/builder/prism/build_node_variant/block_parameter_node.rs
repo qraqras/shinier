@@ -9,9 +9,7 @@ pub fn build_block_parameter_node(node: &BlockParameterNode<'_>, ctx: &mut Build
     let oprator_loc = node.operator_loc();
 
     group(array(&[
-        build_location(&oprator_loc, ctx),
-        name_loc
-            .map(|n| array(&[softline(), build_location(&n, ctx)]))
-            .flatten(),
+        build_location(oprator_loc, ctx),
+        name_loc.map(|n| array(&[softline(), build_location(n, ctx)])).flatten(),
     ]))
 }

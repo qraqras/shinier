@@ -8,13 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_range_node(node: &RangeNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let left = match &node.left() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
-    let right = match &node.right() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
     None
 }

@@ -7,16 +7,13 @@ use crate::builder::prism::helper::build_comments::*;
 use crate::builder::prism::helper::comment_helper::update_dangling_remaining;
 
 /// Builds the main Document for a given node or location, including comments and blank lines.
-pub fn build_main<B, V, P>(
-    builder: B,
-    value: &V,
-    param: &P,
-    context: &mut BuildContext,
-    target: &Target,
-) -> Option<Document>
+pub fn build_main<'sh, B, V, P>(builder: B, value: V, param: &P, context: &mut BuildContext) -> Option<Document>
 where
-    B: Fn(&V, &mut BuildContext, &P) -> Option<Document>,
+    B: Fn(&Target<'sh>, &mut BuildContext, &P) -> Option<Document>,
+    V: Into<Target<'sh>>,
 {
+    let target = value.into();
+
     // ** GET OFFSETS **
     let start_offset = target.start_offset();
     let end_offset = target.end_offset();
@@ -40,7 +37,7 @@ where
     context.previous_start_offset = start_offset.max(context.previous_start_offset);
 
     // ** MAIN BUILDING PROCESS **
-    let built = builder(value, context, param);
+    let built = builder(&target, context, param);
 
     // ** UPDATE COMMENTS **
     update_dangling_remaining(

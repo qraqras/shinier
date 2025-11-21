@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_source_line_node(node: &SourceLineNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let keyword = Document::String(LINE.to_string());
     None
 }

@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_true_node(node: &TrueNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let keyword = Document::String(TRUE.to_string());
     None
 }

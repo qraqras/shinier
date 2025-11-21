@@ -10,12 +10,12 @@ pub fn build_alias_global_variable_node(
     ctx: &mut BuildContext,
 ) -> Option<Document> {
     group(array(&[
-        build_location(&node.keyword_loc(), ctx),
+        build_location(node.keyword_loc(), ctx),
         indent(array(&[
             line(),
-            build_node(&node.new_name(), ctx),
+            build_node(node.new_name(), ctx),
             space(),
-            build_node(&node.old_name(), ctx),
+            build_node(node.old_name(), ctx),
         ])),
     ]))
 }

@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_embedded_variable_node(node: &EmbeddedVariableNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let variable = build_node(&node.variable(), ctx);
     None
 }

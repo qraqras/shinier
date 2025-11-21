@@ -39,10 +39,10 @@ pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, ctx: &mut BuildCont
                 }
             }
         };
-        built_params.push(build_node(&param, ctx));
+        built_params.push(build_node(param, ctx));
     }
 
-    match (&constant, &opening_loc, &closing_loc) {
+    match (constant, opening_loc, closing_loc) {
         (None, None, None) => group(array(&built_params)),
         (None, Some(opening_loc), Some(closing_loc)) => group(array(&[
             build_location(opening_loc, ctx),

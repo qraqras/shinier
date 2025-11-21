@@ -28,24 +28,24 @@ pub fn build_call_node(node: &CallNode<'_>, ctx: &mut BuildContext) -> Option<Do
 
     // TODO: TESTING
     group(array(&[
-        receiver.map(|n| build_node(&n, ctx)).flatten(),
-        call_operator_loc.map(|loc| build_location(&loc, ctx)).flatten(),
-        message_loc.map(|loc| build_location(&loc, ctx)).flatten(),
-        opening_loc.map(|loc| build_location(&loc, ctx)).flatten(),
+        receiver.map(|n| build_node(n, ctx)).flatten(),
+        call_operator_loc.map(|loc| build_location(loc, ctx)).flatten(),
+        message_loc.map(|loc| build_location(loc, ctx)).flatten(),
+        opening_loc.map(|loc| build_location(loc, ctx)).flatten(),
         match (&arguments, &block) {
             (None, None) => None,
             _ => indent(array(&[
                 line_or_none.clone(),
                 arguments
-                    .map(|n| indent(array(&[softline(), build_node(&n.as_node(), ctx)])))
+                    .map(|n| indent(array(&[softline(), build_node(n.as_node(), ctx)])))
                     .flatten(),
                 block
-                    .map(|n| array(&[separator_or_none.clone(), build_node(&n, ctx)]))
+                    .map(|n| array(&[separator_or_none.clone(), build_node(n, ctx)]))
                     .flatten(),
             ])),
         },
         closing_loc
-            .map(|loc| array(&[line_or_none.clone(), build_location(&loc, ctx)]))
+            .map(|loc| array(&[line_or_none.clone(), build_location(loc, ctx)]))
             .flatten(),
     ]))
 }

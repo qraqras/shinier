@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_source_encoding_node(node: &SourceEncodingNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let keyword = Document::String(ENCODING.to_string());
     None
 }

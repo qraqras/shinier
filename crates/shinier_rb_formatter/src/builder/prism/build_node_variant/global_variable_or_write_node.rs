@@ -11,6 +11,5 @@ pub fn build_global_variable_or_write_node(
     node: &GlobalVariableOrWriteNode<'_>,
     ctx: &mut BuildContext,
 ) -> Option<Document> {
-    let value = build_node(&node.value(), ctx);
     None
 }

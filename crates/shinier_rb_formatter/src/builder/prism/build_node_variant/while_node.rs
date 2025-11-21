@@ -8,10 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_while_node(node: &WhileNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let predicate = build_node(&node.predicate(), ctx);
-    let statements = match node.statements() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
     None
 }
