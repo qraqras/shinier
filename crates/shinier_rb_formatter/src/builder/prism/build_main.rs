@@ -31,6 +31,7 @@ where
     let current_leading_comments = context.comment_store.pop_leading(start_offset, end_offset);
     let current_trailing_comments = context.comment_store.pop_trailing(start_offset, end_offset);
     let mut current_dangling_comments = context.comment_store.pop_dangling(start_offset, end_offset);
+    let current_indenting_comments = context.comment_store.pop_indenting(start_offset, end_offset);
     let mut current_remaining_comments = context.comment_store.pop_remaining(start_offset, end_offset);
 
     // ** UPDATE PREVIOUS START OFFSET **
@@ -68,21 +69,15 @@ where
 
     // ** BUILD COMMENTS AND ASSEMBLE FINAL DOCUMENT **
     let leading_comments = build_comments_as_leading(current_leading_comments, context);
-    let leading_comments = match target.is_location() {
-        true => indent(leading_comments),
-        false => leading_comments,
-    };
     let trailing_comments = build_comments_as_trailing(current_trailing_comments, context);
     let dangling_comments = build_comments_as_dangling(current_dangling_comments, context);
-    let dangling_comments = match target.is_location() {
-        true => indent(dangling_comments),
-        false => dangling_comments,
-    };
+    let indenting_comments = indent(build_comments_as_dangling(current_indenting_comments, context));
     array(&[
         leading_comments,
         blank_lines,
         built,
         trailing_comments,
+        indenting_comments,
         dangling_comments,
     ])
 }

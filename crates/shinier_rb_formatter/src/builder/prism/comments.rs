@@ -44,6 +44,18 @@ impl<'sh> CommentStore<'sh> {
                 })
             })
     }
+    pub fn pop_indenting(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
+        self.by_target
+            .get_mut(&(target_start_offset, target_end_offset))
+            .and_then(|placement| {
+                placement.indenting.take().map(|indenting_vec| {
+                    indenting_vec
+                        .iter()
+                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
+                        .collect::<Vec<Comment>>()
+                })
+            })
+    }
     pub fn pop_remaining(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
         self.by_target
             .get_mut(&(target_start_offset, target_end_offset))
@@ -73,6 +85,7 @@ pub struct CommentPlacement {
     pub leading: Option<Vec<(usize, usize)>>,
     pub trailing: Option<Vec<(usize, usize)>>,
     pub dangling: Option<Vec<(usize, usize)>>,
+    pub indenting: Option<Vec<(usize, usize)>>,
     pub remaining: Option<Vec<(usize, usize)>>,
 }
 
@@ -84,6 +97,7 @@ trait Attach {
     fn leading_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
     fn trailing_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
     fn dangling_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
+    fn indenting_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
     fn remaining_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
 }
 
@@ -183,6 +197,7 @@ impl<'sh> Attach for Target<'sh> {
                 leading: Some(Vec::from([value])),
                 trailing: None,
                 dangling: None,
+                indenting: None,
                 remaining: None,
             });
     }
@@ -198,6 +213,7 @@ impl<'sh> Attach for Target<'sh> {
                 leading: None,
                 trailing: Some(Vec::from([value])),
                 dangling: None,
+                indenting: None,
                 remaining: None,
             });
     }
@@ -213,6 +229,23 @@ impl<'sh> Attach for Target<'sh> {
                 leading: None,
                 trailing: None,
                 dangling: Some(Vec::from([value])),
+                indenting: None,
+                remaining: None,
+            });
+    }
+    fn indenting_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
+        let key = (self.start_offset(), self.end_offset());
+        let value = (comment.location().start_offset(), comment.location().end_offset());
+        map.entry(key)
+            .and_modify(|attached| match &mut attached.indenting {
+                Some(vec) => vec.push(value),
+                None => attached.indenting = Some(Vec::from([value])),
+            })
+            .or_insert_with(|| CommentPlacement {
+                leading: None,
+                trailing: None,
+                dangling: None,
+                indenting: Some(Vec::from([value])),
                 remaining: None,
             });
     }
@@ -228,6 +261,7 @@ impl<'sh> Attach for Target<'sh> {
                 leading: None,
                 trailing: None,
                 dangling: None,
+                indenting: None,
                 remaining: Some(Vec::from([value])),
             });
     }
@@ -256,21 +290,33 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 }
             },
             false => match (preceding, enclosing, following) {
-                (Some(p), _, Some(f)) => match f.is_node() {
-                    true => {
+                (Some(p), _, Some(f)) => match (&p, &f) {
+                    (Target::OpeningLocation(o), Target::ClosingLocation(c)) => {
+                        p.indenting_comment(&comment, &mut comments_by_target);
+                    }
+                    (_, Target::ClosingLocation(c)) => {
+                        p.dangling_comment(&comment, &mut comments_by_target);
+                    }
+                    (_, _) => {
                         f.leading_comment(&comment, &mut comments_by_target);
                     }
-                    false => {
-                        match is_end_keyword(f.start_offset(), f.end_offset(), source) {
-                            true => {
-                                p.dangling_comment(&comment, &mut comments_by_target);
-                            }
-                            false => {
-                                p.remaining_comment(&comment, &mut comments_by_target);
-                            }
-                        };
-                    }
                 },
+                // match &f {
+                //     Target::ClosingLocation(c) => {
+                //         p.dangling_comment(&comment, &mut comments_by_target);
+                //     }
+                //     Target::Location(l) => {
+                //         f.leading_comment(&comment, &mut comments_by_target);
+                //         // p.remaining_comment(&comment, &mut comments_by_target);
+                //     }
+                //     Target::Node(n) => {
+                //         f.leading_comment(&comment, &mut comments_by_target);
+                //     }
+                //     Target::OpeningLocation(o) => {
+                //         f.leading_comment(&comment, &mut comments_by_target);
+                //         // p.remaining_comment(&comment, &mut comments_by_target);
+                //     }
+                // },
                 (Some(p), _, None) => {
                     p.dangling_comment(&comment, &mut comments_by_target);
                 }
