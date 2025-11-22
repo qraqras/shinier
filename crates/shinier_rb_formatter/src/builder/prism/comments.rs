@@ -36,6 +36,7 @@ pub struct CommentStore<'sh> {
     pub placement: HashMap<(usize, usize), CommentPlacement<'sh>>,
 }
 impl<'sh> CommentStore<'sh> {
+    /// Creates a new CommentStore.
     fn new() -> Self {
         Self {
             placement: HashMap::new(),
@@ -115,38 +116,32 @@ impl<'sh> CommentStore<'sh> {
     }
 }
 
-/// target node for attaching comments
+/// Type of location for comments.
+/// - **Opening**: opening location (e.g., `def`, `{`)
+/// - **Closing**: closing location (e.g., `end`, `}`)
+/// - **Regular**: regular location (e.g., other locations)
+pub enum LocationType {
+    Opening,
+    Closing,
+    Regular,
+}
+
+/// Target node or location for attaching comments.
 pub enum Target<'sh> {
-    ClosingLocation(Location<'sh>),
-    Location(Location<'sh>),
+    Location(Location<'sh>, LocationType),
     Node(Node<'sh>),
-    OpeningLocation(Location<'sh>),
 }
 impl<'sh> Target<'sh> {
-    // TODO: from_*を整理する
-    pub fn from_node(node: Node<'sh>) -> Self {
-        Self::Node(node)
-    }
-    pub fn from_loc(loc: Location<'sh>) -> Self {
-        Self::Location(loc)
-    }
-    pub fn from_location(loc: Location<'sh>) -> Self {
-        Self::Location(loc)
-    }
     pub fn start_offset(&self) -> usize {
         match self {
-            Target::ClosingLocation(loc) => loc.start_offset(),
-            Target::Location(loc) => loc.start_offset(),
+            Target::Location(loc, _) => loc.start_offset(),
             Target::Node(node) => node.location().start_offset(),
-            Target::OpeningLocation(loc) => loc.start_offset(),
         }
     }
     pub fn end_offset(&self) -> usize {
         match self {
-            Target::ClosingLocation(loc) => loc.end_offset(),
-            Target::Location(loc) => loc.end_offset(),
+            Target::Location(loc, _) => loc.end_offset(),
             Target::Node(node) => node.location().end_offset(),
-            Target::OpeningLocation(loc) => loc.end_offset(),
         }
     }
     fn is_enclosing(&self, start_offset: usize, end_offset: usize) -> bool {
@@ -157,9 +152,7 @@ impl<'sh> Target<'sh> {
     }
     pub fn location(&self) -> Option<&Location<'sh>> {
         match self {
-            Target::Location(loc) => Some(loc),
-            Target::ClosingLocation(loc) => Some(loc),
-            Target::OpeningLocation(loc) => Some(loc),
+            Target::Location(loc, _) => Some(loc),
             _ => None,
         }
     }
@@ -171,7 +164,7 @@ impl<'sh> Target<'sh> {
     }
     pub fn is_location(&self) -> bool {
         match self {
-            Target::Location(_) => true,
+            Target::Location(_, _) => true,
             _ => false,
         }
     }
@@ -182,9 +175,9 @@ impl<'sh> Target<'sh> {
         }
     }
 }
-impl<'sh> From<Location<'sh>> for Target<'sh> {
-    fn from(loc: Location<'sh>) -> Self {
-        Target::Location(loc)
+impl<'sh> From<(Location<'sh>, LocationType)> for Target<'sh> {
+    fn from((location, location_type): (Location<'sh>, LocationType)) -> Self {
+        Target::Location(location, location_type)
     }
 }
 impl<'sh> From<Node<'sh>> for Target<'sh> {
@@ -216,17 +209,17 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 }
                 (None, None, None) => {
                     comment_store.push_leading(
-                        &Target::from_node(parse_result.node()),
+                        &Target::from(parse_result.node()),
                         CommentWrapper::from((comment, CommentPosition::OwnLine)),
                     );
                 }
             },
             false => match (preceding, enclosing, following) {
                 (Some(p), _, Some(f)) => match (&p, &f) {
-                    (Target::OpeningLocation(o), Target::ClosingLocation(c)) => {
+                    (Target::Location(_, LocationType::Opening), Target::Location(_, LocationType::Closing)) => {
                         comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
-                    (_, Target::ClosingLocation(c)) => {
+                    (_, Target::Location(_, LocationType::Closing)) => {
                         comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
                     (_, _) => {
@@ -244,7 +237,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 }
                 (None, None, None) => {
                     comment_store.push_leading(
-                        &Target::from_node(parse_result.node()),
+                        &Target::from(parse_result.node()),
                         CommentWrapper::from((comment, CommentPosition::OwnLine)),
                     );
                 }
@@ -321,8 +314,7 @@ fn is_end_keyword(start_offset: usize, end_offset: usize, source: &[u8]) -> bool
 #[rustfmt::skip]
 fn comment_targets<'sh>(target: &Target<'sh>) -> Vec<Target<'sh>> {
     match target {
-        Target::ClosingLocation(_) => Vec::new(),
-        Target::Location(_) => Vec::new(),
+        Target::Location(_, _) => Vec::new(),
         Target::Node(node) => match node {
             Node::AliasGlobalVariableNode           { .. } => comment_targets_of_alias_global_variable_node           (&node.as_alias_global_variable_node().unwrap()           ),
             Node::AliasMethodNode                   { .. } => comment_targets_of_alias_method_node                    (&node.as_alias_method_node().unwrap()                    ),
@@ -476,14 +468,21 @@ fn comment_targets<'sh>(target: &Target<'sh>) -> Vec<Target<'sh>> {
             Node::XStringNode                       { .. } => comment_targets_of_x_string_node                        (&node.as_x_string_node().unwrap()                        ),
             Node::YieldNode                         { .. } => comment_targets_of_yield_node                           (&node.as_yield_node().unwrap()                           ),
         }
-        Target::OpeningLocation(_) => Vec::new(),
     }
 }
 
+fn push_loc_opening<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match loc {
+        Some(loc) => {
+            targets.push(Target::from((loc, LocationType::Opening)));
+        }
+        None => {}
+    }
+}
 fn push_loc_closing<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
     match loc {
         Some(loc) => {
-            targets.push(Target::ClosingLocation(loc));
+            targets.push(Target::from((loc, LocationType::Closing)));
         }
         None => {}
     }
@@ -491,7 +490,7 @@ fn push_loc_closing<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'s
 fn push_loc<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
     match loc {
         Some(loc) => {
-            targets.push(Target::Location(loc));
+            targets.push(Target::from((loc, LocationType::Regular)));
         }
         None => {}
     }
@@ -500,14 +499,6 @@ fn push_node<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<Target<'sh>>) {
     match node {
         Some(node) => {
             targets.push(Target::Node(node));
-        }
-        None => {}
-    }
-}
-fn push_loc_opening<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
-    match loc {
-        Some(loc) => {
-            targets.push(Target::OpeningLocation(loc));
         }
         None => {}
     }

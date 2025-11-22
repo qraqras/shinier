@@ -177,10 +177,8 @@ fn _node_builder<'sh, T>(target: &Target<'sh>, ctx: &mut BuildContext, _: &Phant
         node_doc
     }
     match target {
-        Target::ClosingLocation(_) => None,
-        Target::Location(_) => None,
+        Target::Location(_, _) => None,
         Target::Node(node) => main(node, ctx),
-        Target::OpeningLocation(_) => None,
     }
 }
 
