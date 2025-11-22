@@ -2,103 +2,117 @@
 use ruby_prism::*;
 use std::collections::HashMap;
 
+/// Placement of comments relative to a target node or location.
+/// - **leading**: comments before the target
+/// - **trailing**: comments after the target
+/// - **dangling**: comments inside the target
+pub struct CommentPlacement<'sh> {
+    leading: Option<Vec<CommentWrapper<'sh>>>,
+    trailing: Option<Vec<CommentWrapper<'sh>>>,
+    dangling: Option<Vec<CommentWrapper<'sh>>>,
+}
+
+/// Position of a comment relative to code.
+/// - **OwnLine**: comment is on its own line
+/// - **EndOfLine**: comment is at the end of a line of code
+pub enum CommentPosition {
+    OwnLine,
+    EndOfLine,
+}
+
+/// Wrapper for a comment with its position relative to code.
+pub struct CommentWrapper<'sh> {
+    pub comment: Comment<'sh>,
+    pub position: CommentPosition,
+}
+impl<'sh> From<(Comment<'sh>, CommentPosition)> for CommentWrapper<'sh> {
+    fn from((comment, position): (Comment<'sh>, CommentPosition)) -> Self {
+        Self { comment, position }
+    }
+}
+
+/// Store for comments attached to targets.
 pub struct CommentStore<'sh> {
-    by_location: HashMap<(usize, usize), Comment<'sh>>,
-    by_target: HashMap<(usize, usize), CommentPlacement>,
+    pub placement: HashMap<(usize, usize), CommentPlacement<'sh>>,
 }
-
 impl<'sh> CommentStore<'sh> {
-    pub fn pop_leading(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
-        self.by_target
-            .get_mut(&(target_start_offset, target_end_offset))
-            .and_then(|placement| {
-                placement.leading.take().map(|leading_vec| {
-                    leading_vec
-                        .iter()
-                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
-                        .collect::<Vec<Comment>>()
-                })
-            })
+    fn new() -> Self {
+        Self {
+            placement: HashMap::new(),
+        }
     }
-    pub fn pop_trailing(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
-        self.by_target
-            .get_mut(&(target_start_offset, target_end_offset))
-            .and_then(|placement| {
-                placement.trailing.take().map(|trailing_vec| {
-                    trailing_vec
-                        .iter()
-                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
-                        .collect::<Vec<Comment>>()
-                })
+    /// Pushes a leading comment for a given target.
+    fn push_leading(&mut self, target: &Target<'sh>, comment_wrapper: CommentWrapper<'sh>) {
+        self.placement
+            .entry((target.start_offset(), target.end_offset()))
+            .or_insert_with(|| CommentPlacement {
+                leading: Some(Vec::new()),
+                trailing: None,
+                dangling: None,
             })
+            .leading
+            .as_mut()
+            .unwrap()
+            .push(comment_wrapper);
     }
-    pub fn pop_dangling(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
-        self.by_target
-            .get_mut(&(target_start_offset, target_end_offset))
-            .and_then(|placement| {
-                placement.dangling.take().map(|dangling_vec| {
-                    dangling_vec
-                        .iter()
-                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
-                        .collect::<Vec<Comment>>()
-                })
+    /// Pushes a trailing comment for a given target.
+    fn push_trailing(&mut self, target: &Target<'sh>, comment_wrapper: CommentWrapper<'sh>) {
+        self.placement
+            .entry((target.start_offset(), target.end_offset()))
+            .or_insert_with(|| CommentPlacement {
+                leading: None,
+                trailing: Some(Vec::new()),
+                dangling: None,
             })
+            .trailing
+            .as_mut()
+            .unwrap()
+            .push(comment_wrapper);
     }
-    pub fn pop_indenting(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
-        self.by_target
-            .get_mut(&(target_start_offset, target_end_offset))
-            .and_then(|placement| {
-                placement.indenting.take().map(|indenting_vec| {
-                    indenting_vec
-                        .iter()
-                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
-                        .collect::<Vec<Comment>>()
-                })
+    /// Pushes a dangling comment for a given target.
+    fn push_dangling(&mut self, target: &Target<'sh>, comment_wrapper: CommentWrapper<'sh>) {
+        self.placement
+            .entry((target.start_offset(), target.end_offset()))
+            .or_insert_with(|| CommentPlacement {
+                leading: None,
+                trailing: None,
+                dangling: Some(Vec::new()),
             })
+            .dangling
+            .as_mut()
+            .unwrap()
+            .push(comment_wrapper);
     }
-    pub fn pop_remaining(&mut self, target_start_offset: usize, target_end_offset: usize) -> Option<Vec<Comment<'sh>>> {
-        self.by_target
+    /// Pops leading comments for a given target.
+    pub fn pop_leadings(
+        &mut self,
+        target_start_offset: usize,
+        target_end_offset: usize,
+    ) -> Option<Vec<CommentWrapper<'sh>>> {
+        self.placement
             .get_mut(&(target_start_offset, target_end_offset))
-            .and_then(|placement| {
-                placement.remaining.take().map(|remaining_vec| {
-                    remaining_vec
-                        .iter()
-                        .filter_map(|(start, end)| self.by_location.remove(&(*start, *end)))
-                        .collect::<Vec<Comment>>()
-                })
-            })
+            .and_then(|placement| placement.leading.take())
     }
-}
-
-/// attached comment offsets for a target
-/// - **leading**: comments before the target on preceding lines
-/// - **trailing**: comments after the target on the same line
-/// - **dangling**: comments after the target on following lines (inside the block)
-/// - **remaining**: comments may not be attached to the target (outside the block)
-/// ```ruby
-///   # leading
-///   TARGET_NODE # trailing
-///   # dangling
-/// # remaining
-/// ```
-pub struct CommentPlacement {
-    pub leading: Option<Vec<(usize, usize)>>,
-    pub trailing: Option<Vec<(usize, usize)>>,
-    pub dangling: Option<Vec<(usize, usize)>>,
-    pub indenting: Option<Vec<(usize, usize)>>,
-    pub remaining: Option<Vec<(usize, usize)>>,
-}
-
-/// trait for attaching comments to targets
-trait Attach {
-    fn start_offset(&self) -> usize;
-    fn end_offset(&self) -> usize;
-    fn is_enclosing(&self, comment: &Comment) -> bool;
-    fn leading_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
-    fn trailing_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
-    fn dangling_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
-    fn indenting_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
-    fn remaining_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>);
+    /// Pops trailing comments for a given target.
+    pub fn pop_trailings(
+        &mut self,
+        target_start_offset: usize,
+        target_end_offset: usize,
+    ) -> Option<Vec<CommentWrapper<'sh>>> {
+        self.placement
+            .get_mut(&(target_start_offset, target_end_offset))
+            .and_then(|placement| placement.trailing.take())
+    }
+    /// Pops dangling comments for a given target.
+    pub fn pop_danglings(
+        &mut self,
+        target_start_offset: usize,
+        target_end_offset: usize,
+    ) -> Option<Vec<CommentWrapper<'sh>>> {
+        self.placement
+            .get_mut(&(target_start_offset, target_end_offset))
+            .and_then(|placement| placement.dangling.take())
+    }
 }
 
 /// target node for attaching comments
@@ -109,6 +123,7 @@ pub enum Target<'sh> {
     OpeningLocation(Location<'sh>),
 }
 impl<'sh> Target<'sh> {
+    // TODO: from_*を整理する
     pub fn from_node(node: Node<'sh>) -> Self {
         Self::Node(node)
     }
@@ -132,6 +147,12 @@ impl<'sh> Target<'sh> {
             Target::Location(loc) => loc.end_offset(),
             Target::Node(node) => node.location().end_offset(),
             Target::OpeningLocation(loc) => loc.end_offset(),
+        }
+    }
+    fn is_enclosing(&self, start_offset: usize, end_offset: usize) -> bool {
+        match self.is_node() {
+            true => self.start_offset() <= start_offset && end_offset <= self.end_offset(),
+            false => false,
         }
     }
     pub fn location(&self) -> Option<&Location<'sh>> {
@@ -171,184 +192,74 @@ impl<'sh> From<Node<'sh>> for Target<'sh> {
         Target::Node(node)
     }
 }
-impl<'sh> Attach for Target<'sh> {
-    fn start_offset(&self) -> usize {
-        self.start_offset()
-    }
-    fn end_offset(&self) -> usize {
-        self.end_offset()
-    }
-    #[rustfmt::skip]
-    fn is_enclosing(&self, comment: &Comment) -> bool {
-        match self.is_node() {
-            true => self.start_offset() <= comment.location().start_offset() && comment.location().end_offset() <= self.end_offset(),
-            false => false,
-        }
-    }
-    fn leading_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
-        let key = (self.start_offset(), self.end_offset());
-        let value = (comment.location().start_offset(), comment.location().end_offset());
-        map.entry(key)
-            .and_modify(|attached| match &mut attached.leading {
-                Some(vec) => vec.push(value),
-                None => attached.leading = Some(Vec::from([value])),
-            })
-            .or_insert_with(|| CommentPlacement {
-                leading: Some(Vec::from([value])),
-                trailing: None,
-                dangling: None,
-                indenting: None,
-                remaining: None,
-            });
-    }
-    fn trailing_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
-        let key = (self.start_offset(), self.end_offset());
-        let value = (comment.location().start_offset(), comment.location().end_offset());
-        map.entry(key)
-            .and_modify(|attached| match &mut attached.trailing {
-                Some(vec) => vec.push(value),
-                None => attached.trailing = Some(Vec::from([value])),
-            })
-            .or_insert_with(|| CommentPlacement {
-                leading: None,
-                trailing: Some(Vec::from([value])),
-                dangling: None,
-                indenting: None,
-                remaining: None,
-            });
-    }
-    fn dangling_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
-        let key = (self.start_offset(), self.end_offset());
-        let value = (comment.location().start_offset(), comment.location().end_offset());
-        map.entry(key)
-            .and_modify(|attached| match &mut attached.dangling {
-                Some(vec) => vec.push(value),
-                None => attached.dangling = Some(Vec::from([value])),
-            })
-            .or_insert_with(|| CommentPlacement {
-                leading: None,
-                trailing: None,
-                dangling: Some(Vec::from([value])),
-                indenting: None,
-                remaining: None,
-            });
-    }
-    fn indenting_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
-        let key = (self.start_offset(), self.end_offset());
-        let value = (comment.location().start_offset(), comment.location().end_offset());
-        map.entry(key)
-            .and_modify(|attached| match &mut attached.indenting {
-                Some(vec) => vec.push(value),
-                None => attached.indenting = Some(Vec::from([value])),
-            })
-            .or_insert_with(|| CommentPlacement {
-                leading: None,
-                trailing: None,
-                dangling: None,
-                indenting: Some(Vec::from([value])),
-                remaining: None,
-            });
-    }
-    fn remaining_comment(&self, comment: &Comment, map: &mut HashMap<(usize, usize), CommentPlacement>) {
-        let key = (self.start_offset(), self.end_offset());
-        let value = (comment.location().start_offset(), comment.location().end_offset());
-        map.entry(key)
-            .and_modify(|attached| match &mut attached.remaining {
-                Some(vec) => vec.push(value),
-                None => attached.remaining = Some(Vec::from([value])),
-            })
-            .or_insert_with(|| CommentPlacement {
-                leading: None,
-                trailing: None,
-                dangling: None,
-                indenting: None,
-                remaining: Some(Vec::from([value])),
-            });
-    }
-}
 
 /// attach comments to nodes and locations
 pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
-    let mut comments_by_location = HashMap::new();
-    let mut comments_by_target = HashMap::new();
+    let mut comment_store = CommentStore::new();
     let source = parse_result.source();
     for comment in parse_result.comments() {
-        let (preceding, enclosing, following) = nearest_targets(Target::Node(parse_result.node()), &comment);
+        let (preceding, enclosing, following) = nearest_targets(
+            Target::Node(parse_result.node()),
+            comment.location().start_offset(),
+            comment.location().end_offset(),
+        );
         match is_trailing(&comment, source) {
             true => match (preceding, enclosing, following) {
                 (Some(p), _, _) => {
-                    p.trailing_comment(&comment, &mut comments_by_target);
+                    comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::EndOfLine)));
                 }
                 (None, _, Some(f)) => {
-                    f.leading_comment(&comment, &mut comments_by_target);
+                    comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                 }
                 (None, Some(e), None) => {
-                    e.leading_comment(&comment, &mut comments_by_target);
+                    comment_store.push_leading(&e, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                 }
                 (None, None, None) => {
-                    Target::from_node(parse_result.node()).leading_comment(&comment, &mut comments_by_target);
+                    comment_store.push_leading(
+                        &Target::from_node(parse_result.node()),
+                        CommentWrapper::from((comment, CommentPosition::OwnLine)),
+                    );
                 }
             },
             false => match (preceding, enclosing, following) {
                 (Some(p), _, Some(f)) => match (&p, &f) {
                     (Target::OpeningLocation(o), Target::ClosingLocation(c)) => {
-                        p.indenting_comment(&comment, &mut comments_by_target);
+                        comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
                     (_, Target::ClosingLocation(c)) => {
-                        p.dangling_comment(&comment, &mut comments_by_target);
+                        comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
                     (_, _) => {
-                        f.leading_comment(&comment, &mut comments_by_target);
+                        comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
                 },
-                // match &f {
-                //     Target::ClosingLocation(c) => {
-                //         p.dangling_comment(&comment, &mut comments_by_target);
-                //     }
-                //     Target::Location(l) => {
-                //         f.leading_comment(&comment, &mut comments_by_target);
-                //         // p.remaining_comment(&comment, &mut comments_by_target);
-                //     }
-                //     Target::Node(n) => {
-                //         f.leading_comment(&comment, &mut comments_by_target);
-                //     }
-                //     Target::OpeningLocation(o) => {
-                //         f.leading_comment(&comment, &mut comments_by_target);
-                //         // p.remaining_comment(&comment, &mut comments_by_target);
-                //     }
-                // },
                 (Some(p), _, None) => {
-                    p.dangling_comment(&comment, &mut comments_by_target);
+                    comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                 }
                 (None, _, Some(f)) => {
-                    f.leading_comment(&comment, &mut comments_by_target);
+                    comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                 }
                 (None, Some(e), None) => {
-                    e.leading_comment(&comment, &mut comments_by_target);
+                    comment_store.push_leading(&e, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                 }
                 (None, None, None) => {
-                    Target::from_node(parse_result.node()).leading_comment(&comment, &mut comments_by_target);
+                    comment_store.push_leading(
+                        &Target::from_node(parse_result.node()),
+                        CommentWrapper::from((comment, CommentPosition::OwnLine)),
+                    );
                 }
             },
         }
-        comments_by_location.insert(
-            (comment.location().start_offset(), comment.location().end_offset()),
-            comment,
-        );
     }
-    CommentStore {
-        by_location: comments_by_location,
-        by_target: comments_by_target,
-    }
+    comment_store
 }
 
 /// find nearest targets for a comment
 fn nearest_targets<'sh>(
     target: Target<'sh>,
-    comment: &'sh Comment<'sh>,
+    comment_start_offset: usize,
+    comment_end_offset: usize,
 ) -> (Option<Target<'sh>>, Option<Target<'sh>>, Option<Target<'sh>>) {
-    let comment_start = comment.location().start_offset();
-    let comment_end = comment.location().end_offset();
     {
         let mut targets = comment_targets(&target);
         targets.sort_by_key(|t| t.start_offset());
@@ -363,18 +274,18 @@ fn nearest_targets<'sh>(
             let current_target_start = current_target.start_offset();
             let current_target_end = current_target.end_offset();
             // enclosing
-            if current_target.is_enclosing(comment) {
+            if current_target.is_enclosing(comment_start_offset, comment_end_offset) {
                 let enclosing_target = targets.swap_remove(middle);
-                return nearest_targets(enclosing_target, comment);
+                return nearest_targets(enclosing_target, comment_start_offset, comment_end_offset);
             }
             // preceding
-            if current_target_end <= comment_start {
+            if current_target_end <= comment_start_offset {
                 preceding = Some(middle);
                 left = middle + 1;
                 continue;
             }
             // following
-            if comment_end <= current_target_start {
+            if comment_end_offset <= current_target_start {
                 following = Some(middle);
                 right = middle;
                 continue;

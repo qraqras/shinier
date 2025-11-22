@@ -28,9 +28,9 @@ where
     let previous_remaining_comments = context.remaining_comments.take();
 
     // ** GET CURRENT COMMENTS **
-    let current_leading_comments = context.comment_store.pop_leading(start_offset, end_offset);
-    let current_trailing_comments = context.comment_store.pop_trailing(start_offset, end_offset);
-    let mut current_dangling_comments = context.comment_store.pop_dangling(start_offset, end_offset);
+    let current_leading_comments = context.comment_store.pop_leadings(start_offset, end_offset);
+    let current_trailing_comments = context.comment_store.pop_trailings(start_offset, end_offset);
+    let mut current_dangling_comments = context.comment_store.pop_danglings(start_offset, end_offset);
     let current_indenting_comments = context.comment_store.pop_indenting(start_offset, end_offset);
     let mut current_remaining_comments = context.comment_store.pop_remaining(start_offset, end_offset);
 
