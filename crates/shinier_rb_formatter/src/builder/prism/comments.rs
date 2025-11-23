@@ -97,8 +97,8 @@ impl<'sh> CommentStore<'sh> {
             .get_or_insert_with(Vec::new)
             .push(comment_wrapper);
     }
-    /// Pops leading comments for a given target.
-    pub fn pop_leadings(
+    /// Takes leading comments for a given target.
+    pub fn take_leadings(
         &mut self,
         target_start_offset: usize,
         target_end_offset: usize,
@@ -107,8 +107,8 @@ impl<'sh> CommentStore<'sh> {
             .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| placement.leading.take())
     }
-    /// Pops trailing comments for a given target.
-    pub fn pop_trailings(
+    /// Takes trailing comments for a given target.
+    pub fn take_trailings(
         &mut self,
         target_start_offset: usize,
         target_end_offset: usize,
@@ -117,8 +117,8 @@ impl<'sh> CommentStore<'sh> {
             .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| placement.trailing.take())
     }
-    /// Pops dangling comments for a given target.
-    pub fn pop_danglings(
+    /// Takes dangling comments for a given target.
+    pub fn take_danglings(
         &mut self,
         target_start_offset: usize,
         target_end_offset: usize,
@@ -127,35 +127,29 @@ impl<'sh> CommentStore<'sh> {
             .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| placement.dangling.take())
     }
-    /// Peeks leading comments for a given target.
-    pub fn peek_leadings(
-        &self,
-        target_start_offset: usize,
-        target_end_offset: usize,
-    ) -> Option<&Vec<CommentWrapper<'sh>>> {
+    /// Checks if there are leading comments for a given target.
+    #[allow(dead_code)]
+    fn has_leadings(&self, target_start_offset: usize, target_end_offset: usize) -> bool {
         self.placement
             .get(&(target_start_offset, target_end_offset))
             .and_then(|placement| placement.leading.as_ref())
+            .is_some()
     }
-    /// Peeks trailing comments for a given target.
-    pub fn peek_trailings(
-        &self,
-        target_start_offset: usize,
-        target_end_offset: usize,
-    ) -> Option<&Vec<CommentWrapper<'sh>>> {
+    /// Checks if there are trailing comments for a given target.
+    #[allow(dead_code)]
+    fn has_trailings(&self, target_start_offset: usize, target_end_offset: usize) -> bool {
         self.placement
             .get(&(target_start_offset, target_end_offset))
             .and_then(|placement| placement.trailing.as_ref())
+            .is_some()
     }
-    /// Peeks dangling comments for a given target.
-    pub fn peek_danglings(
-        &self,
-        target_start_offset: usize,
-        target_end_offset: usize,
-    ) -> Option<&Vec<CommentWrapper<'sh>>> {
+    /// Checks if there are dangling comments for a given target.
+    #[allow(dead_code)]
+    fn has_danglings(&self, target_start_offset: usize, target_end_offset: usize) -> bool {
         self.placement
             .get(&(target_start_offset, target_end_offset))
             .and_then(|placement| placement.dangling.as_ref())
+            .is_some()
     }
 }
 
@@ -403,7 +397,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                             let preceding_col = col(p.start_offset(), parse_result.source());
                             let comment_col = col(comment.location().start_offset(), parse_result.source());
                             if preceding_col < comment_col
-                                && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
+                                && !comment_store.has_leadings(f.start_offset(), f.end_offset())
                             {
                                 comment_store
                                     .push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
@@ -421,7 +415,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                             let preceding_col = col(p.start_offset(), parse_result.source());
                             let comment_col = col(comment.location().start_offset(), parse_result.source());
                             if preceding_col <= comment_col
-                                && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
+                                && !comment_store.has_leadings(f.start_offset(), f.end_offset())
                             {
                                 comment_store
                                     .push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));

@@ -26,9 +26,9 @@ where
     };
 
     // ** GET CURRENT COMMENTS **
-    let current_leading_comments = context.comment_store.pop_leadings(start_offset, end_offset);
-    let current_trailing_comments = context.comment_store.pop_trailings(start_offset, end_offset);
-    let current_dangling_comments = context.comment_store.pop_danglings(start_offset, end_offset);
+    let current_leading_comments = context.comment_store.take_leadings(start_offset, end_offset);
+    let current_trailing_comments = context.comment_store.take_trailings(start_offset, end_offset);
+    let current_dangling_comments = context.comment_store.take_danglings(start_offset, end_offset);
 
     // ** UPDATE PREVIOUS START OFFSET **
     context.previous_start_offset = start_offset.max(context.previous_start_offset);
