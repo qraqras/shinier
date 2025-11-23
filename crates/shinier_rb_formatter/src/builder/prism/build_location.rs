@@ -2,8 +2,8 @@ use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_main::build_main;
-use crate::comments::LocationType;
 use crate::comments::Target;
+use crate::comments::TargetType;
 use ruby_prism::Location;
 use ruby_prism::Node;
 
@@ -22,7 +22,7 @@ fn _location_builder<'sh>(
     }
     match target {
         Target::Location(loc, _) => main(loc, custom_content),
-        Target::Node(_) => None,
+        Target::Node(_, _) => None,
     }
 }
 
@@ -38,7 +38,7 @@ fn _build_location(loc: Location, ctx: &mut BuildContext, content: Option<&str>)
     }
     build_main(
         _location_builder,
-        Target::from((loc, LocationType::Regular)),
+        Target::from((loc, TargetType::Regular)),
         &content,
         ctx,
     )
@@ -51,7 +51,7 @@ fn _build_node_as_location(node: &Node, ctx: &mut BuildContext, content: Option<
         return None;
     }
     let loc = node.location();
-    _location_builder(&Target::from((loc, LocationType::Regular)), ctx, &content)
+    _location_builder(&Target::from((loc, TargetType::Regular)), ctx, &content)
 }
 
 /// Builds a Document for a given location.

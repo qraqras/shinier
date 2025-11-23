@@ -4,17 +4,23 @@ use crate::builder::builder::hardline;
 use crate::builder::builder::line_suffix;
 use crate::builder::builder::space;
 use crate::builder::builder::string;
+use crate::builder::comments::CommentPosition;
 use crate::builder::context::BuildContext;
+use crate::comments::CommentWrapper;
 use crate::document::Document;
 use ruby_prism::Comment;
 use ruby_prism::CommentType;
 
 /// Builds comments as leading comments for a given set of comments.
-pub fn build_comments_as_leading(comments: Option<Vec<Comment>>, ctx: &mut BuildContext) -> Option<Document> {
-    match comments {
-        Some(comments) if !comments.is_empty() => {
+pub fn build_comments_as_leading(
+    comment_wrappers: Option<Vec<CommentWrapper>>,
+    ctx: &mut BuildContext,
+) -> Option<Document> {
+    match comment_wrappers {
+        Some(comment_wrappers) => {
             let mut documents = Vec::new();
-            for comment in comments {
+            for comment_wrapper in comment_wrappers {
+                let comment = comment_wrapper.comment;
                 // hardline between comments
                 if !documents.is_empty() {
                     documents.push(hardline());
@@ -33,18 +39,27 @@ pub fn build_comments_as_leading(comments: Option<Vec<Comment>>, ctx: &mut Build
             documents.push(break_parent());
             array(&documents)
         }
-        Some(_comments) => None,
         None => None,
     }
 }
 
 /// Builds comments as trailing comments for a given set of comments.
-pub fn build_comments_as_trailing(comments: Option<Vec<Comment>>, _ctx: &mut BuildContext) -> Option<Document> {
+pub fn build_comments_as_trailing(comments: Option<Vec<CommentWrapper>>, _ctx: &mut BuildContext) -> Option<Document> {
     match comments {
         Some(comments) if !comments.is_empty() => {
             let mut documents = Vec::new();
-            for comment in comments {
-                documents.push(line_suffix(array(&[space(), _build_comment(&comment)])));
+            for comment_wrapper in comments {
+                let comment = comment_wrapper.comment;
+                let position = comment_wrapper.position;
+                match position {
+                    CommentPosition::EndOfLine => {
+                        documents.push(line_suffix(array(&[space(), _build_comment(&comment)])));
+                    }
+                    CommentPosition::OwnLine => {
+                        documents.push(hardline());
+                        documents.push(_build_comment(&comment));
+                    }
+                }
             }
             documents.push(break_parent());
             array(&documents)
@@ -55,11 +70,12 @@ pub fn build_comments_as_trailing(comments: Option<Vec<Comment>>, _ctx: &mut Bui
 }
 
 /// Builds comments as dangling comments for a given set of comments.
-pub fn build_comments_as_dangling(comments: Option<Vec<Comment>>, ctx: &mut BuildContext) -> Option<Document> {
+pub fn build_comments_as_dangling(comments: Option<Vec<CommentWrapper>>, ctx: &mut BuildContext) -> Option<Document> {
     match comments {
         Some(comments) if !comments.is_empty() => {
             let mut documents = Vec::new();
-            for comment in comments {
+            for comment_wrapper in comments {
+                let comment = comment_wrapper.comment;
                 documents.push(hardline());
                 // hardlines for blank lines
                 let blank_line_count = ctx

@@ -32,7 +32,9 @@ foo in
   # owning comment 3
   3 # trailing comment 3
 
-foo in [
+foo in Bar # trailing comment
+# leading comment
+[
   # owning comment 1
   1, # trailing comment 1
   # owning comment 2

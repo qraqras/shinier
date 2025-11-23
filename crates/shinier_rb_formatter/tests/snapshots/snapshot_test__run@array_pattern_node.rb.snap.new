@@ -1,0 +1,177 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/array_pattern_node.rb
+---
+****FORMATTED****
+foo in 1, 2
+foo in [1, 2]
+foo in *bar
+foo in Bar[]
+foo in Bar[1, 2, 3]
+
+foo in 1, 2, *bar
+foo in 1, *bar, 3
+foo in *bar, 2, 3
+
+# unnecessary line breaks
+foo in 1, 2
+foo in [1, 2]
+foo in 1, 2
+
+# long array patterns
+foo in
+  1000,
+  2000,
+  3000,
+  4000,
+  5000,
+  6000,
+  7000,
+  8000,
+  9000,
+  10000,
+  11000,
+  12000,
+  13000,
+  14000,
+  15000,
+  16000,
+  17000,
+  18000,
+  19000,
+  20000
+
+# implicit rest pattern
+foo in [1, 2,]
+
+foo in
+  # owning comment 1
+  1, # trailing comment 1
+  # owning comment 2
+  *bar, # trailing comment 2
+  # owning comment 3
+  3 # trailing comment 3
+
+foo in Bar # trailing comment
+# leading comment
+[
+  # owning comment 1
+  1, # trailing comment 1
+  # owning comment 2
+  *, # trailing comment 2
+  # owning comment 3
+  3 # trailing comment 3
+]
+
+
+****AST****
+ProgramNode[0-748]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3 # trailing comment 3\n\nfoo in Bar # trailing comment\n# leading comment\n[\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
+__StatementsNode[0-748]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3 # trailing comment 3\n\nfoo in Bar # trailing comment\n# leading comment\n[\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
+____MatchPredicateNode[0-11]: "foo in 1, 2"
+______CallNode[0-3]: "foo"
+______ArrayPatternNode[7-11]: "1, 2"
+________IntegerNode[7-8]: "1"
+________IntegerNode[10-11]: "2"
+____MatchPredicateNode[12-25]: "foo in [1, 2]"
+______CallNode[12-15]: "foo"
+______ArrayPatternNode[19-25]: "[1, 2]"
+________IntegerNode[20-21]: "1"
+________IntegerNode[23-24]: "2"
+____MatchPredicateNode[26-37]: "foo in *bar"
+______CallNode[26-29]: "foo"
+______ArrayPatternNode[33-37]: "*bar"
+________SplatNode[33-37]: "*bar"
+__________LocalVariableTargetNode[34-37]: "bar"
+____MatchPredicateNode[38-50]: "foo in Bar[]"
+______CallNode[38-41]: "foo"
+______ArrayPatternNode[45-50]: "Bar[]"
+________ConstantReadNode[45-48]: "Bar"
+____MatchPredicateNode[51-70]: "foo in Bar[1, 2, 3]"
+______CallNode[51-54]: "foo"
+______ArrayPatternNode[58-70]: "Bar[1, 2, 3]"
+________ConstantReadNode[58-61]: "Bar"
+________IntegerNode[62-63]: "1"
+________IntegerNode[65-66]: "2"
+________IntegerNode[68-69]: "3"
+____MatchPredicateNode[72-89]: "foo in 1, 2, *bar"
+______CallNode[72-75]: "foo"
+______ArrayPatternNode[79-89]: "1, 2, *bar"
+________IntegerNode[79-80]: "1"
+________IntegerNode[82-83]: "2"
+________SplatNode[85-89]: "*bar"
+__________LocalVariableTargetNode[86-89]: "bar"
+____MatchPredicateNode[90-107]: "foo in 1, *bar, 3"
+______CallNode[90-93]: "foo"
+______ArrayPatternNode[97-107]: "1, *bar, 3"
+________IntegerNode[97-98]: "1"
+________SplatNode[100-104]: "*bar"
+__________LocalVariableTargetNode[101-104]: "bar"
+________IntegerNode[106-107]: "3"
+____MatchPredicateNode[108-125]: "foo in *bar, 2, 3"
+______CallNode[108-111]: "foo"
+______ArrayPatternNode[115-125]: "*bar, 2, 3"
+________SplatNode[115-119]: "*bar"
+__________LocalVariableTargetNode[116-119]: "bar"
+________IntegerNode[121-122]: "2"
+________IntegerNode[124-125]: "3"
+____MatchPredicateNode[153-166]: "foo in\n  1, 2"
+______CallNode[153-156]: "foo"
+______ArrayPatternNode[162-166]: "1, 2"
+________IntegerNode[162-163]: "1"
+________IntegerNode[165-166]: "2"
+____MatchPredicateNode[167-186]: "foo in [\n  1,\n  2\n]"
+______CallNode[167-170]: "foo"
+______ArrayPatternNode[174-186]: "[\n  1,\n  2\n]"
+________IntegerNode[178-179]: "1"
+________IntegerNode[183-184]: "2"
+____MatchPredicateNode[187-200]: "foo in 1,\n  2"
+______CallNode[187-190]: "foo"
+______ArrayPatternNode[194-200]: "1,\n  2"
+________IntegerNode[194-195]: "1"
+________IntegerNode[199-200]: "2"
+____MatchPredicateNode[224-360]: "foo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000"
+______CallNode[224-227]: "foo"
+______ArrayPatternNode[231-360]: "1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000"
+________IntegerNode[231-235]: "1000"
+________IntegerNode[237-241]: "2000"
+________IntegerNode[243-247]: "3000"
+________IntegerNode[249-253]: "4000"
+________IntegerNode[255-259]: "5000"
+________IntegerNode[261-265]: "6000"
+________IntegerNode[267-271]: "7000"
+________IntegerNode[273-277]: "8000"
+________IntegerNode[279-283]: "9000"
+________IntegerNode[285-290]: "10000"
+________IntegerNode[292-297]: "11000"
+________IntegerNode[299-304]: "12000"
+________IntegerNode[306-311]: "13000"
+________IntegerNode[313-318]: "14000"
+________IntegerNode[320-325]: "15000"
+________IntegerNode[327-332]: "16000"
+________IntegerNode[334-339]: "17000"
+________IntegerNode[341-346]: "18000"
+________IntegerNode[348-353]: "19000"
+________IntegerNode[355-360]: "20000"
+____MatchPredicateNode[386-400]: "foo in [1, 2,]"
+______CallNode[386-389]: "foo"
+______ArrayPatternNode[393-400]: "[1, 2,]"
+________IntegerNode[394-395]: "1"
+________IntegerNode[397-398]: "2"
+________ImplicitRestNode[398-399]: ","
+____MatchPredicateNode[402-530]: "foo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3"
+______CallNode[402-405]: "foo"
+______ArrayPatternNode[432-530]: "1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3"
+________IntegerNode[432-433]: "1"
+________SplatNode[479-483]: "*bar"
+__________LocalVariableTargetNode[480-483]: "bar"
+________IntegerNode[529-530]: "3"
+____MatchPredicateNode[553-563]: "foo in Bar"
+______CallNode[553-556]: "foo"
+______ConstantReadNode[560-563]: "Bar"
+____ArrayNode[601-748]: "[\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
+______IntegerNode[626-627]: "1"
+______SplatNode[673-677]: "*bar"
+________LocalVariableReadNode[674-677]: "bar"
+______IntegerNode[723-724]: "3"

@@ -5,7 +5,15 @@ use std::collections::HashMap;
 /// Placement of comments relative to a target node or location.
 /// - **leading**: comments before the target
 /// - **trailing**: comments after the target
-/// - **dangling**: comments inside the target
+/// - **dangling**: comments inside the target but not attached to any child nodes
+///
+/// Example:
+/// ```ruby
+/// # leading comment
+/// def foo(param) # trailing comment
+///   # dangling comment
+/// end
+/// ```
 pub struct CommentPlacement<'sh> {
     leading: Option<Vec<CommentWrapper<'sh>>>,
     trailing: Option<Vec<CommentWrapper<'sh>>>,
@@ -15,6 +23,14 @@ pub struct CommentPlacement<'sh> {
 /// Position of a comment relative to code.
 /// - **OwnLine**: comment is on its own line
 /// - **EndOfLine**: comment is at the end of a line of code
+///
+/// Example:
+/// ```ruby
+/// # OwnLine
+/// def foo(param)
+///   bar # EndOfLine
+/// end
+/// ```
 pub enum CommentPosition {
     OwnLine,
     EndOfLine,
@@ -52,8 +68,7 @@ impl<'sh> CommentStore<'sh> {
                 dangling: None,
             })
             .leading
-            .as_mut()
-            .unwrap()
+            .get_or_insert_with(Vec::new)
             .push(comment_wrapper);
     }
     /// Pushes a trailing comment for a given target.
@@ -66,8 +81,7 @@ impl<'sh> CommentStore<'sh> {
                 dangling: None,
             })
             .trailing
-            .as_mut()
-            .unwrap()
+            .get_or_insert_with(Vec::new)
             .push(comment_wrapper);
     }
     /// Pushes a dangling comment for a given target.
@@ -80,8 +94,7 @@ impl<'sh> CommentStore<'sh> {
                 dangling: Some(Vec::new()),
             })
             .dangling
-            .as_mut()
-            .unwrap()
+            .get_or_insert_with(Vec::new)
             .push(comment_wrapper);
     }
     /// Pops leading comments for a given target.
@@ -114,34 +127,81 @@ impl<'sh> CommentStore<'sh> {
             .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| placement.dangling.take())
     }
+    /// Peeks leading comments for a given target.
+    pub fn peek_leadings(
+        &self,
+        target_start_offset: usize,
+        target_end_offset: usize,
+    ) -> Option<&Vec<CommentWrapper<'sh>>> {
+        self.placement
+            .get(&(target_start_offset, target_end_offset))
+            .and_then(|placement| placement.leading.as_ref())
+    }
+    /// Peeks trailing comments for a given target.
+    pub fn peek_trailings(
+        &self,
+        target_start_offset: usize,
+        target_end_offset: usize,
+    ) -> Option<&Vec<CommentWrapper<'sh>>> {
+        self.placement
+            .get(&(target_start_offset, target_end_offset))
+            .and_then(|placement| placement.trailing.as_ref())
+    }
+    /// Peeks dangling comments for a given target.
+    pub fn peek_danglings(
+        &self,
+        target_start_offset: usize,
+        target_end_offset: usize,
+    ) -> Option<&Vec<CommentWrapper<'sh>>> {
+        self.placement
+            .get(&(target_start_offset, target_end_offset))
+            .and_then(|placement| placement.dangling.as_ref())
+    }
 }
 
 /// Type of location for comments.
-/// - **Opening**: opening location (e.g., `def`, `{`)
-/// - **Closing**: closing location (e.g., `end`, `}`)
+/// - **Opening**: opening location (e.g., `if`, `(`)
+/// - **OpeningLike**: locations similar to opening (e.g., `then`, `else`, function name)
+/// - **Closing**: closing location (e.g., `end`, `)`)
 /// - **Regular**: regular location (e.g., other locations)
-pub enum LocationType {
+///
+/// Example:
+/// ```ruby
+/// def foo(param)
+///   bar
+/// end
+/// ```
+/// - `def` is an **Opening** location.
+/// - `foo` is an **OpeningLike** location.
+/// - `(param)` is an **OpeningLike** location.
+/// - `(` is an **Opening** location.
+/// - `param` is a **Regular** location.
+/// - `)` is a **Closing** location.
+/// - `bar` is a **Regular** location.
+/// - `end` is a **Closing** location.
+pub enum TargetType {
     Opening,
+    OpeningLike,
     Closing,
     Regular,
 }
 
 /// Target node or location for attaching comments.
 pub enum Target<'sh> {
-    Location(Location<'sh>, LocationType),
-    Node(Node<'sh>),
+    Location(Location<'sh>, TargetType),
+    Node(Node<'sh>, TargetType),
 }
 impl<'sh> Target<'sh> {
     pub fn start_offset(&self) -> usize {
         match self {
             Target::Location(loc, _) => loc.start_offset(),
-            Target::Node(node) => node.location().start_offset(),
+            Target::Node(node, _) => node.location().start_offset(),
         }
     }
     pub fn end_offset(&self) -> usize {
         match self {
             Target::Location(loc, _) => loc.end_offset(),
-            Target::Node(node) => node.location().end_offset(),
+            Target::Node(node, _) => node.location().end_offset(),
         }
     }
     fn is_enclosing(&self, start_offset: usize, end_offset: usize) -> bool {
@@ -158,7 +218,7 @@ impl<'sh> Target<'sh> {
     }
     pub fn node(&self) -> Option<&Node<'sh>> {
         match self {
-            Target::Node(node) => Some(node),
+            Target::Node(node, _) => Some(node),
             _ => None,
         }
     }
@@ -170,33 +230,85 @@ impl<'sh> Target<'sh> {
     }
     pub fn is_node(&self) -> bool {
         match self {
-            Target::Node(_) => true,
+            Target::Node(_, _) => true,
+            _ => false,
+        }
+    }
+    pub fn is_opening(&self) -> bool {
+        match self {
+            Target::Location(_, TargetType::Opening) => true,
+            Target::Location(_, TargetType::OpeningLike) => true,
+            Target::Node(_, TargetType::Opening) => true,
+            Target::Node(_, TargetType::OpeningLike) => true,
+            _ => false,
+        }
+    }
+    pub fn is_closing(&self) -> bool {
+        match self {
+            Target::Location(_, TargetType::Closing) => true,
+            Target::Node(_, TargetType::Closing) => true,
             _ => false,
         }
     }
 }
-impl<'sh> From<(Location<'sh>, LocationType)> for Target<'sh> {
-    fn from((location, location_type): (Location<'sh>, LocationType)) -> Self {
-        Target::Location(location, location_type)
+impl<'sh> From<(Location<'sh>, TargetType)> for Target<'sh> {
+    fn from((location, r#type): (Location<'sh>, TargetType)) -> Self {
+        Target::Location(location, r#type)
     }
 }
-impl<'sh> From<Node<'sh>> for Target<'sh> {
-    fn from(node: Node<'sh>) -> Self {
-        Target::Node(node)
+impl<'sh> From<(Node<'sh>, TargetType)> for Target<'sh> {
+    fn from((node, r#type): (Node<'sh>, TargetType)) -> Self {
+        Target::Node(node, r#type)
     }
 }
 
-/// attach comments to nodes and locations
+/// Attach comments to nodes and locations.
 pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
+    fn is_trailing_comment(comment: &Comment<'_>, source: &[u8]) -> bool {
+        let mut curr = comment.location().start_offset();
+        while curr > 0 {
+            let next = curr - 1;
+            if source[next] == b' ' || source[next] == b'\t' {
+                curr = next;
+                continue;
+            }
+            if source[next] == b'\n' {
+                return false;
+            }
+            return true;
+        }
+        false
+    }
+    fn col(start_offset: usize, source: &[u8]) -> usize {
+        let mut col = 0;
+        let mut curr = start_offset;
+        while curr > 0 {
+            let next = curr - 1;
+            if source[next] == b'\n' {
+                break;
+            }
+            col += 1;
+            curr = next;
+        }
+        col
+    }
+    fn should_check_indentation(target: &Target) -> bool {
+        match target {
+            Target::Location(l, TargetType::Opening) => {
+                let text = std::str::from_utf8(l.as_slice()).unwrap_or("");
+                matches!(text, "else" | "ensure" | "rescue")
+            }
+            _ => false,
+        }
+    }
     let mut comment_store = CommentStore::new();
-    let source = parse_result.source();
     for comment in parse_result.comments() {
         let (preceding, enclosing, following) = nearest_targets(
-            Target::Node(parse_result.node()),
+            Target::Node(parse_result.node(), TargetType::Regular),
             comment.location().start_offset(),
             comment.location().end_offset(),
         );
-        match is_trailing(&comment, source) {
+        match is_trailing_comment(&comment, parse_result.source()) {
             true => match (preceding, enclosing, following) {
                 (Some(p), _, _) => {
                     comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::EndOfLine)));
@@ -209,19 +321,73 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 }
                 (None, None, None) => {
                     comment_store.push_leading(
-                        &Target::from(parse_result.node()),
+                        &Target::from((parse_result.node(), TargetType::Regular)),
                         CommentWrapper::from((comment, CommentPosition::OwnLine)),
                     );
                 }
             },
             false => match (preceding, enclosing, following) {
                 (Some(p), _, Some(f)) => match (&p, &f) {
-                    (Target::Location(_, LocationType::Opening), Target::Location(_, LocationType::Closing)) => {
+                    // ```ruby
+                    // [
+                    //   # comment
+                    // ]
+                    // ```
+                    (Target::Location(_, TargetType::Opening), Target::Location(_, TargetType::Closing)) => {
                         comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
-                    (_, Target::Location(_, LocationType::Closing)) => {
+                    // ```ruby
+                    // [
+                    //   foo
+                    //   # comment
+                    // ]
+                    // ```
+                    (_, Target::Location(_, TargetType::Closing)) => {
                         comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
+                    // ```ruby
+                    // begin
+                    //   # comment
+                    // # comment
+                    // rescue
+                    // end
+                    // ```
+                    (Target::Location(_, TargetType::Opening), Target::Location(_, TargetType::Opening))
+                        if should_check_indentation(&f) =>
+                    {
+                        if col(p.start_offset(), parse_result.source())
+                            < col(comment.location().start_offset(), parse_result.source())
+                            && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
+                        {
+                            comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                        } else {
+                            comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                        }
+                    }
+                    // ```ruby
+                    // if foo
+                    //   # comment
+                    // # comment
+                    // else
+                    // end
+                    // ```
+                    (_, Target::Location(_, TargetType::Opening)) if should_check_indentation(&f) => {
+                        if col(p.start_offset(), parse_result.source())
+                            <= col(comment.location().start_offset(), parse_result.source())
+                            && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
+                        {
+                            comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                        } else {
+                            comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                        }
+                    }
+                    // ```ruby
+                    // [
+                    //   foo
+                    //   # comment
+                    //   bar
+                    // ]
+                    // ```
                     (_, _) => {
                         comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
@@ -237,7 +403,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 }
                 (None, None, None) => {
                     comment_store.push_leading(
-                        &Target::from(parse_result.node()),
+                        &Target::from((parse_result.node(), TargetType::Regular)),
                         CommentWrapper::from((comment, CommentPosition::OwnLine)),
                     );
                 }
@@ -247,7 +413,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
     comment_store
 }
 
-/// find nearest targets for a comment
+/// Finds the nearest preceding, enclosing, and following targets for a comment.
 fn nearest_targets<'sh>(
     target: Target<'sh>,
     comment_start_offset: usize,
@@ -291,31 +457,12 @@ fn nearest_targets<'sh>(
     }
 }
 
-fn is_trailing(comment: &Comment, source: &[u8]) -> bool {
-    let mut idx = comment.location().start_offset();
-    while idx > 0 {
-        if source[idx - 1] == b' ' || source[idx - 1] == b'\t' {
-            idx -= 1;
-            continue;
-        }
-        if source[idx - 1] == b'\n' {
-            return false;
-        }
-        return true;
-    }
-    false
-}
-
-fn is_end_keyword(start_offset: usize, end_offset: usize, source: &[u8]) -> bool {
-    let keyword = &source[start_offset..end_offset];
-    keyword == b"end"
-}
-
+/// Finds comment targets for a given target.
 #[rustfmt::skip]
 fn comment_targets<'sh>(target: &Target<'sh>) -> Vec<Target<'sh>> {
     match target {
         Target::Location(_, _) => Vec::new(),
-        Target::Node(node) => match node {
+        Target::Node(node, _) => match node {
             Node::AliasGlobalVariableNode           { .. } => comment_targets_of_alias_global_variable_node           (&node.as_alias_global_variable_node().unwrap()           ),
             Node::AliasMethodNode                   { .. } => comment_targets_of_alias_method_node                    (&node.as_alias_method_node().unwrap()                    ),
             Node::AlternationPatternNode            { .. } => comment_targets_of_alternation_pattern_node             (&node.as_alternation_pattern_node().unwrap()             ),
@@ -470,116 +617,72 @@ fn comment_targets<'sh>(target: &Target<'sh>) -> Vec<Target<'sh>> {
         }
     }
 }
-
-fn push_loc_opening<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
-    match loc {
-        Some(loc) => {
-            targets.push(Target::from((loc, LocationType::Opening)));
-        }
-        None => {}
-    }
-}
-fn push_loc_closing<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
-    match loc {
-        Some(loc) => {
-            targets.push(Target::from((loc, LocationType::Closing)));
-        }
-        None => {}
-    }
-}
-fn push_loc<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
-    match loc {
-        Some(loc) => {
-            targets.push(Target::from((loc, LocationType::Regular)));
-        }
-        None => {}
-    }
-}
-fn push_node<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<Target<'sh>>) {
-    match node {
-        Some(node) => {
-            targets.push(Target::Node(node));
-        }
-        None => {}
-    }
-}
-fn push_nodelist<'sh>(nodelist: Option<NodeList<'sh>>, targets: &mut Vec<Target<'sh>>) {
-    match nodelist {
-        Some(nodelist) => {
-            for node in nodelist.iter() {
-                targets.push(Target::Node(node));
-            }
-        }
-        None => {}
-    }
-}
-
 pub fn comment_targets_of_alias_global_variable_node<'sh>(node: &AliasGlobalVariableNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.new_name()), &mut targets);
-    push_node(Some(node.old_name()), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_node_regular(Some(node.new_name()), &mut targets);
+    push_node_regular(Some(node.old_name()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_alias_method_node<'sh>(node: &AliasMethodNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.new_name()), &mut targets);
-    push_node(Some(node.old_name()), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_node_regular(Some(node.new_name()), &mut targets);
+    push_node_regular(Some(node.old_name()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_alternation_pattern_node<'sh>(node: &AlternationPatternNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.left()), &mut targets);
-    push_node(Some(node.right()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.left()), &mut targets);
+    push_node_regular(Some(node.right()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_and_node<'sh>(node: &AndNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.left()), &mut targets);
-    push_node(Some(node.right()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.left()), &mut targets);
+    push_node_regular(Some(node.right()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_arguments_node<'sh>(node: &ArgumentsNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_nodelist(Some(node.arguments()), &mut targets);
+    push_nodelist_regular(Some(node.arguments()), &mut targets);
     targets
 }
 pub fn comment_targets_of_array_node<'sh>(node: &ArrayNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_nodelist(Some(node.elements()), &mut targets);
+    push_nodelist_regular(Some(node.elements()), &mut targets);
     push_loc_opening(node.opening_loc(), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_array_pattern_node<'sh>(node: &ArrayPatternNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.constant(), &mut targets);
-    push_nodelist(Some(node.requireds()), &mut targets);
-    push_node(node.rest(), &mut targets);
-    push_nodelist(Some(node.posts()), &mut targets);
+    push_node_regular(node.constant(), &mut targets);
+    push_nodelist_regular(Some(node.requireds()), &mut targets);
+    push_node_regular(node.rest(), &mut targets);
+    push_nodelist_regular(Some(node.posts()), &mut targets);
     push_loc_opening(node.opening_loc(), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_assoc_node<'sh>(node: &AssocNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.key()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
-    push_loc(node.operator_loc(), &mut targets);
+    push_node_regular(Some(node.key()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_loc_regular(node.operator_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_assoc_splat_node<'sh>(node: &AssocSplatNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.value(), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(node.value(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_back_reference_read_node<'sh>(node: &BackReferenceReadNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Target<'sh>> {
@@ -587,12 +690,12 @@ pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Target<'
         match rescue_node {
             None => {}
             Some(rescue_node) => {
-                push_loc_opening(Some(rescue_node.keyword_loc()), targets);
-                push_nodelist(Some(rescue_node.exceptions()), targets);
-                push_loc(rescue_node.operator_loc(), targets);
-                push_node(rescue_node.reference(), targets);
-                push_loc(rescue_node.then_keyword_loc(), targets);
-                push_node(rescue_node.statements().map(|stmts| stmts.as_node()), targets);
+                push_loc_opening_like(Some(rescue_node.keyword_loc()), targets);
+                push_nodelist_opning_like(Some(rescue_node.exceptions()), targets);
+                push_loc_regular(rescue_node.operator_loc(), targets);
+                push_node_opening_like(rescue_node.reference(), targets);
+                push_loc_opening_like(rescue_node.then_keyword_loc(), targets);
+                push_node_regular(rescue_node.statements().map(|stmts| stmts.as_node()), targets);
                 rescue_clause_recursively(&rescue_node.subsequent(), targets);
             }
         }
@@ -601,9 +704,12 @@ pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Target<'
         match else_node {
             None => {}
             Some(else_node) => {
-                push_loc_opening(Some(else_node.else_keyword_loc()), targets);
-                push_loc_closing(else_node.end_keyword_loc(), targets);
-                push_node(else_node.statements().map(|stmts| stmts.as_node()), targets);
+                push_loc_opening_like(Some(else_node.else_keyword_loc()), targets);
+                push_node_regular(else_node.statements().map(|stmts| stmts.as_node()), targets);
+                // instead of closing else, we use end of begin
+                /*
+                 * push_loc_closing(else_node.end_keyword_loc(), targets);
+                 */
             }
         }
     }
@@ -611,15 +717,18 @@ pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Target<'
         match ensure_node {
             None => {}
             Some(ensure_node) => {
-                push_loc_opening(Some(ensure_node.ensure_keyword_loc()), targets);
-                push_node(ensure_node.statements().map(|stmts| stmts.as_node()), targets);
-                push_loc_closing(Some(ensure_node.end_keyword_loc()), targets);
+                push_loc_opening_like(Some(ensure_node.ensure_keyword_loc()), targets);
+                push_node_regular(ensure_node.statements().map(|stmts| stmts.as_node()), targets);
+                // instead of closing ensure, we use end of begin
+                /*
+                 * push_loc_closing(Some(ensure_node.end_keyword_loc()), targets);
+                 */
             }
         }
     }
     let mut targets = Vec::new();
     push_loc_opening(node.begin_keyword_loc(), &mut targets);
-    push_node(node.statements().map(|stmts| stmts.as_node()), &mut targets);
+    push_node_regular(node.statements().map(|stmts| stmts.as_node()), &mut targets);
     rescue_clause_recursively(&node.rescue_clause(), &mut targets);
     else_clause(&node.else_clause(), &mut targets);
     ensure_clause(&node.ensure_clause(), &mut targets);
@@ -628,33 +737,33 @@ pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Target<'
 }
 pub fn comment_targets_of_block_argument_node<'sh>(node: &BlockArgumentNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(node.expression(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(node.expression(), &mut targets);
     targets
 }
 pub fn comment_targets_of_block_local_variable_node<'sh>(node: &BlockLocalVariableNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_block_node<'sh>(node: &BlockNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.parameters(), &mut targets);
-    push_node(node.body(), &mut targets);
+    push_node_regular(node.parameters(), &mut targets);
+    push_node_regular(node.body(), &mut targets);
     push_loc_opening(Some(node.opening_loc()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_block_parameter_node<'sh>(node: &BlockParameterNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(node.name_loc(), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(node.name_loc(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_block_parameters_node<'sh>(node: &BlockParametersNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.parameters().map(|node| node.as_node()), &mut targets);
-    push_nodelist(Some(node.locals()), &mut targets);
+    push_node_regular(node.parameters().map(|node| node.as_node()), &mut targets);
+    push_nodelist_regular(Some(node.locals()), &mut targets);
     push_loc_opening(node.opening_loc(), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
     targets
@@ -662,67 +771,67 @@ pub fn comment_targets_of_block_parameters_node<'sh>(node: &BlockParametersNode<
 
 pub fn comment_targets_of_break_node<'sh>(node: &BreakNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.arguments().map(|node| node.as_node()), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_node_regular(node.arguments().map(|node| node.as_node()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_call_and_write_node<'sh>(node: &CallAndWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.receiver(), &mut targets);
-    push_loc(node.call_operator_loc(), &mut targets);
-    push_loc(node.message_loc(), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(node.receiver(), &mut targets);
+    push_loc_regular(node.call_operator_loc(), &mut targets);
+    push_loc_regular(node.message_loc(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_call_node<'sh>(node: &CallNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.receiver(), &mut targets);
-    push_loc(node.call_operator_loc(), &mut targets);
-    push_loc(node.message_loc(), &mut targets);
+    push_node_regular(node.receiver(), &mut targets);
+    push_loc_regular(node.call_operator_loc(), &mut targets);
+    push_loc_regular(node.message_loc(), &mut targets);
     push_loc_opening(node.opening_loc(), &mut targets);
-    push_node(node.arguments().map(|node| node.as_node()), &mut targets);
+    push_node_regular(node.arguments().map(|node| node.as_node()), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
-    node.block().map(|node| targets.push(Target::Node(node)));
+    push_node_regular(node.block(), &mut targets);
     targets
 }
 pub fn comment_targets_of_call_operator_write_node<'sh>(node: &CallOperatorWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.receiver(), &mut targets);
-    push_loc(node.call_operator_loc(), &mut targets);
-    push_loc(node.message_loc(), &mut targets);
-    push_loc(Some(node.binary_operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(node.receiver(), &mut targets);
+    push_loc_regular(node.call_operator_loc(), &mut targets);
+    push_loc_regular(node.message_loc(), &mut targets);
+    push_loc_regular(Some(node.binary_operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_call_or_write_node<'sh>(node: &CallOrWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.receiver(), &mut targets);
-    push_loc(node.call_operator_loc(), &mut targets);
-    push_loc(node.message_loc(), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(node.receiver(), &mut targets);
+    push_loc_regular(node.call_operator_loc(), &mut targets);
+    push_loc_regular(node.message_loc(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_call_target_node<'sh>(node: &CallTargetNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.receiver()), &mut targets);
-    push_loc(Some(node.call_operator_loc()), &mut targets);
-    push_loc(Some(node.message_loc()), &mut targets);
+    push_node_regular(Some(node.receiver()), &mut targets);
+    push_loc_regular(Some(node.call_operator_loc()), &mut targets);
+    push_loc_regular(Some(node.message_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_capture_pattern_node<'sh>(node: &CapturePatternNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.value()), &mut targets);
-    push_node(Some(node.target().as_node()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_node_regular(Some(node.target().as_node()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_case_match_node<'sh>(node: &CaseMatchNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.predicate(), &mut targets);
-    push_nodelist(Some(node.conditions()), &mut targets);
-    push_node(
+    push_node_regular(node.predicate(), &mut targets);
+    push_nodelist_regular(Some(node.conditions()), &mut targets);
+    push_node_regular(
         node.else_clause().map(|else_clause| else_clause.as_node()),
         &mut targets,
     );
@@ -732,9 +841,9 @@ pub fn comment_targets_of_case_match_node<'sh>(node: &CaseMatchNode<'sh>) -> Vec
 }
 pub fn comment_targets_of_case_node<'sh>(node: &CaseNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.predicate(), &mut targets);
-    push_nodelist(Some(node.conditions()), &mut targets);
-    push_node(
+    push_node_regular(node.predicate(), &mut targets);
+    push_nodelist_regular(Some(node.conditions()), &mut targets);
+    push_node_regular(
         node.else_clause().map(|else_clause| else_clause.as_node()),
         &mut targets,
     );
@@ -745,10 +854,10 @@ pub fn comment_targets_of_case_node<'sh>(node: &CaseNode<'sh>) -> Vec<Target<'sh
 pub fn comment_targets_of_class_node<'sh>(node: &ClassNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.class_keyword_loc()), &mut targets);
-    push_node(Some(node.constant_path()), &mut targets);
-    push_loc(node.inheritance_operator_loc(), &mut targets);
-    push_node(node.superclass(), &mut targets);
-    push_node(node.body(), &mut targets);
+    push_node_opening_like(Some(node.constant_path()), &mut targets);
+    push_loc_regular(node.inheritance_operator_loc(), &mut targets);
+    push_node_opening_like(node.superclass(), &mut targets);
+    push_node_regular(node.body(), &mut targets);
     push_loc_closing(Some(node.end_keyword_loc()), &mut targets);
     targets
 }
@@ -756,284 +865,284 @@ pub fn comment_targets_of_class_variable_and_write_node<'sh>(
     node: &ClassVariableAndWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_class_variable_operator_write_node<'sh>(
     node: &ClassVariableOperatorWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.binary_operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.binary_operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_class_variable_or_write_node<'sh>(node: &ClassVariableOrWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_class_variable_read_node<'sh>(node: &ClassVariableReadNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_class_variable_target_node<'sh>(node: &ClassVariableTargetNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_class_variable_write_node<'sh>(node: &ClassVariableWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_and_write_node<'sh>(node: &ConstantAndWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_operator_write_node<'sh>(node: &ConstantOperatorWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.binary_operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.binary_operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_or_write_node<'sh>(node: &ConstantOrWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_path_and_write_node<'sh>(node: &ConstantPathAndWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.target().as_node()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(Some(node.target().as_node()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_path_node<'sh>(node: &ConstantPathNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.parent(), &mut targets);
-    push_loc(Some(node.delimiter_loc()), &mut targets);
-    push_loc(Some(node.name_loc()), &mut targets);
+    push_node_regular(node.parent(), &mut targets);
+    push_loc_regular(Some(node.delimiter_loc()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_path_operator_write_node<'sh>(
     node: &ConstantPathOperatorWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.target().as_node()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
-    push_loc(Some(node.binary_operator_loc()), &mut targets);
+    push_node_regular(Some(node.target().as_node()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.binary_operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_path_or_write_node<'sh>(node: &ConstantPathOrWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.target().as_node()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(Some(node.target().as_node()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_path_target_node<'sh>(node: &ConstantPathTargetNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.parent(), &mut targets);
-    push_loc(Some(node.delimiter_loc()), &mut targets);
-    push_loc(Some(node.name_loc()), &mut targets);
+    push_node_regular(node.parent(), &mut targets);
+    push_loc_regular(Some(node.delimiter_loc()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_path_write_node<'sh>(node: &ConstantPathWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.target().as_node()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(Some(node.target().as_node()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_read_node<'sh>(node: &ConstantReadNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_target_node<'sh>(node: &ConstantTargetNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_constant_write_node<'sh>(node: &ConstantWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_def_node<'sh>(node: &DefNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_node(node.receiver(), &mut targets);
-    push_node(node.parameters().map(|p| p.as_node()), &mut targets);
-    push_node(node.body(), &mut targets);
+    push_loc_opening_like(Some(node.name_loc()), &mut targets);
+    push_node_regular(node.receiver(), &mut targets);
+    push_node_opening_like(node.parameters().map(|p| p.as_node()), &mut targets);
+    push_node_regular(node.body(), &mut targets);
     push_loc_opening(Some(node.def_keyword_loc()), &mut targets);
-    push_loc(node.operator_loc(), &mut targets);
+    push_loc_regular(node.operator_loc(), &mut targets);
     push_loc_opening(node.lparen_loc(), &mut targets);
     push_loc_closing(node.rparen_loc(), &mut targets);
-    push_loc(node.equal_loc(), &mut targets);
+    push_loc_regular(node.equal_loc(), &mut targets);
     push_loc_closing(node.end_keyword_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_defined_node<'sh>(node: &DefinedNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(node.lparen_loc(), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     push_loc_closing(node.rparen_loc(), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_else_node<'sh>(node: &ElseNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.else_keyword_loc()), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     push_loc_closing(node.end_keyword_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_embedded_statements_node<'sh>(node: &EmbeddedStatementsNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_embedded_variable_node<'sh>(node: &EmbeddedVariableNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.variable()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.variable()), &mut targets);
     targets
 }
 pub fn comment_targets_of_ensure_node<'sh>(node: &EnsureNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.ensure_keyword_loc()), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     push_loc_closing(Some(node.end_keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_false_node<'sh>(node: &FalseNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_find_pattern_node<'sh>(node: &FindPatternNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.constant(), &mut targets);
-    push_node(Some(node.left().as_node()), &mut targets);
-    push_nodelist(Some(node.requireds()), &mut targets);
-    push_node(Some(node.right()), &mut targets);
+    push_node_regular(node.constant(), &mut targets);
+    push_node_regular(Some(node.left().as_node()), &mut targets);
+    push_nodelist_regular(Some(node.requireds()), &mut targets);
+    push_node_regular(Some(node.right()), &mut targets);
     push_loc_opening(node.opening_loc(), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_flip_flop_node<'sh>(node: &FlipFlopNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.left(), &mut targets);
-    push_node(node.right(), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(node.left(), &mut targets);
+    push_node_regular(node.right(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_float_node<'sh>(node: &FloatNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_for_node<'sh>(node: &ForNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.index()), &mut targets);
-    push_node(Some(node.collection()), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(Some(node.index()), &mut targets);
+    push_node_regular(Some(node.collection()), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     push_loc_opening(Some(node.for_keyword_loc()), &mut targets);
-    push_loc(Some(node.in_keyword_loc()), &mut targets);
-    push_loc(node.do_keyword_loc(), &mut targets);
+    push_loc_regular(Some(node.in_keyword_loc()), &mut targets);
+    push_loc_regular(node.do_keyword_loc(), &mut targets);
     push_loc_closing(Some(node.end_keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_forwarding_arguments_node<'sh>(node: &ForwardingArgumentsNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_forwarding_parameter_node<'sh>(node: &ForwardingParameterNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_forwarding_super_node<'sh>(node: &ForwardingSuperNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.block().map(|b| b.as_node()), &mut targets);
+    push_node_regular(node.block().map(|b| b.as_node()), &mut targets);
     targets
 }
 pub fn comment_targets_of_global_variable_and_write_node<'sh>(
     node: &GlobalVariableAndWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_global_variable_operator_write_node<'sh>(
     node: &GlobalVariableOperatorWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.binary_operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.binary_operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_global_variable_or_write_node<'sh>(
     node: &GlobalVariableOrWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_global_variable_read_node<'sh>(node: &GlobalVariableReadNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_global_variable_target_node<'sh>(node: &GlobalVariableTargetNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_global_variable_write_node<'sh>(node: &GlobalVariableWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_hash_node<'sh>(node: &HashNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.opening_loc()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
-    push_nodelist(Some(node.elements()), &mut targets);
+    push_nodelist_regular(Some(node.elements()), &mut targets);
     targets
 }
 pub fn comment_targets_of_hash_pattern_node<'sh>(node: &HashPatternNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.constant(), &mut targets);
-    push_nodelist(Some(node.elements()), &mut targets);
-    push_node(node.rest(), &mut targets);
+    push_node_regular(node.constant(), &mut targets);
+    push_nodelist_regular(Some(node.elements()), &mut targets);
+    push_node_regular(node.rest(), &mut targets);
     push_loc_opening(node.opening_loc(), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
     targets
@@ -1041,130 +1150,130 @@ pub fn comment_targets_of_hash_pattern_node<'sh>(node: &HashPatternNode<'sh>) ->
 pub fn comment_targets_of_if_node<'sh>(node: &IfNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(node.if_keyword_loc(), &mut targets);
-    push_node(Some(node.predicate()), &mut targets);
-    push_loc(node.then_keyword_loc(), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
-    push_node(node.subsequent(), &mut targets);
+    push_node_regular(Some(node.predicate()), &mut targets);
+    push_loc_regular(node.then_keyword_loc(), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(node.subsequent(), &mut targets);
     push_loc_closing(node.end_keyword_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_imaginary_node<'sh>(node: &ImaginaryNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.numeric()), &mut targets);
+    push_node_regular(Some(node.numeric()), &mut targets);
     targets
 }
 pub fn comment_targets_of_implicit_node<'sh>(node: &ImplicitNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_implicit_rest_node<'sh>(node: &ImplicitRestNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_in_node<'sh>(node: &InNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.pattern()), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(Some(node.pattern()), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     push_loc_opening(Some(node.in_loc()), &mut targets);
-    push_loc(node.then_loc(), &mut targets);
+    push_loc_regular(node.then_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_index_and_write_node<'sh>(node: &IndexAndWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.receiver(), &mut targets);
-    push_loc(node.call_operator_loc(), &mut targets);
+    push_node_regular(node.receiver(), &mut targets);
+    push_loc_regular(node.call_operator_loc(), &mut targets);
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_node(node.arguments().map(|a| a.as_node()), &mut targets);
+    push_node_regular(node.arguments().map(|a| a.as_node()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
-    push_node(node.block().map(|b| b.as_node()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(node.block().map(|b| b.as_node()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_index_operator_write_node<'sh>(node: &IndexOperatorWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.receiver(), &mut targets);
-    push_loc(node.call_operator_loc(), &mut targets);
+    push_node_regular(node.receiver(), &mut targets);
+    push_loc_regular(node.call_operator_loc(), &mut targets);
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_node(node.arguments().map(|a| a.as_node()), &mut targets);
+    push_node_regular(node.arguments().map(|a| a.as_node()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
-    push_node(node.block().map(|b| b.as_node()), &mut targets);
-    push_loc(Some(node.binary_operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(node.block().map(|b| b.as_node()), &mut targets);
+    push_loc_regular(Some(node.binary_operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_index_or_write_node<'sh>(node: &IndexOrWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.receiver(), &mut targets);
-    push_loc(node.call_operator_loc(), &mut targets);
+    push_node_regular(node.receiver(), &mut targets);
+    push_loc_regular(node.call_operator_loc(), &mut targets);
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_node(node.arguments().map(|a| a.as_node()), &mut targets);
+    push_node_regular(node.arguments().map(|a| a.as_node()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
-    push_node(node.block().map(|b| b.as_node()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_node_regular(node.block().map(|b| b.as_node()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_index_target_node<'sh>(node: &IndexTargetNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.receiver()), &mut targets);
+    push_node_regular(Some(node.receiver()), &mut targets);
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_node(node.arguments().map(|a| a.as_node()), &mut targets);
+    push_node_regular(node.arguments().map(|a| a.as_node()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
-    push_node(node.block().map(|b| b.as_node()), &mut targets);
+    push_node_regular(node.block().map(|b| b.as_node()), &mut targets);
     targets
 }
 pub fn comment_targets_of_instance_variable_and_write_node<'sh>(
     node: &InstanceVariableAndWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_instance_variable_operator_write_node<'sh>(
     node: &InstanceVariableOperatorWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.binary_operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.binary_operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_instance_variable_or_write_node<'sh>(
     node: &InstanceVariableOrWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_instance_variable_read_node<'sh>(node: &InstanceVariableReadNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_instance_variable_target_node<'sh>(
     node: &InstanceVariableTargetNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_instance_variable_write_node<'sh>(node: &InstanceVariableWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_integer_node<'sh>(node: &IntegerNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_interpolated_match_last_line_node<'sh>(
@@ -1172,7 +1281,7 @@ pub fn comment_targets_of_interpolated_match_last_line_node<'sh>(
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_nodelist(Some(node.parts()), &mut targets);
+    push_nodelist_regular(Some(node.parts()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
@@ -1180,287 +1289,287 @@ pub fn comment_targets_of_interpolated_regular_expression_node<'sh>(
     node: &InterpolatedRegularExpressionNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.opening_loc()), &mut targets);
-    push_nodelist(Some(node.parts()), &mut targets);
-    push_loc(Some(node.closing_loc()), &mut targets);
+    push_loc_regular(Some(node.opening_loc()), &mut targets);
+    push_nodelist_regular(Some(node.parts()), &mut targets);
+    push_loc_regular(Some(node.closing_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_interpolated_string_node<'sh>(node: &InterpolatedStringNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(node.opening_loc(), &mut targets);
-    push_nodelist(Some(node.parts()), &mut targets);
+    push_nodelist_regular(Some(node.parts()), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_interpolated_symbol_node<'sh>(node: &InterpolatedSymbolNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(node.opening_loc(), &mut targets);
-    push_nodelist(Some(node.parts()), &mut targets);
+    push_nodelist_regular(Some(node.parts()), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_interpolated_x_string_node<'sh>(node: &InterpolatedXStringNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_nodelist(Some(node.parts()), &mut targets);
+    push_nodelist_regular(Some(node.parts()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_it_local_variable_read_node<'sh>(node: &ItLocalVariableReadNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_it_parameters_node<'sh>(node: &ItParametersNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_keyword_hash_node<'sh>(node: &KeywordHashNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_nodelist(Some(node.elements()), &mut targets);
+    push_nodelist_regular(Some(node.elements()), &mut targets);
     targets
 }
 pub fn comment_targets_of_keyword_rest_parameter_node<'sh>(node: &KeywordRestParameterNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(node.name_loc(), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(node.name_loc(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_lambda_node<'sh>(node: &LambdaNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     push_loc_opening(Some(node.opening_loc()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
-    push_node(node.parameters(), &mut targets);
-    push_node(node.body(), &mut targets);
+    push_node_regular(node.parameters(), &mut targets);
+    push_node_regular(node.body(), &mut targets);
     targets
 }
 pub fn comment_targets_of_local_variable_and_write_node<'sh>(
     node: &LocalVariableAndWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_local_variable_operator_write_node<'sh>(
     node: &LocalVariableOperatorWriteNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.binary_operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.binary_operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_local_variable_or_write_node<'sh>(node: &LocalVariableOrWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_local_variable_read_node<'sh>(node: &LocalVariableReadNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_local_variable_target_node<'sh>(node: &LocalVariableTargetNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_local_variable_write_node<'sh>(node: &LocalVariableWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_match_last_line_node<'sh>(node: &MatchLastLineNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_loc(Some(node.content_loc()), &mut targets);
+    push_loc_regular(Some(node.content_loc()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_match_predicate_node<'sh>(node: &MatchPredicateNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.value()), &mut targets);
-    push_node(Some(node.pattern()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_node_regular(Some(node.pattern()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_match_required_node<'sh>(node: &MatchRequiredNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.value()), &mut targets);
-    push_node(Some(node.pattern()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
+    push_node_regular(Some(node.pattern()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_match_write_node<'sh>(node: &MatchWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.call().as_node()), &mut targets);
-    push_nodelist(Some(node.targets()), &mut targets);
+    push_node_regular(Some(node.call().as_node()), &mut targets);
+    push_nodelist_regular(Some(node.targets()), &mut targets);
     targets
 }
 pub fn comment_targets_of_missing_node<'sh>(node: &MissingNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_module_node<'sh>(node: &ModuleNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.module_keyword_loc()), &mut targets);
-    push_node(Some(node.constant_path()), &mut targets);
-    push_node(node.body(), &mut targets);
+    push_node_regular(Some(node.constant_path()), &mut targets);
+    push_node_regular(node.body(), &mut targets);
     push_loc_closing(Some(node.end_keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_multi_target_node<'sh>(node: &MultiTargetNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_nodelist(Some(node.lefts()), &mut targets);
-    push_node(node.rest(), &mut targets);
-    push_nodelist(Some(node.rights()), &mut targets);
+    push_nodelist_regular(Some(node.lefts()), &mut targets);
+    push_node_regular(node.rest(), &mut targets);
+    push_nodelist_regular(Some(node.rights()), &mut targets);
     push_loc_opening(node.lparen_loc(), &mut targets);
     push_loc_closing(node.rparen_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_multi_write_node<'sh>(node: &MultiWriteNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_nodelist(Some(node.lefts()), &mut targets);
-    push_node(node.rest(), &mut targets);
-    push_nodelist(Some(node.rights()), &mut targets);
+    push_nodelist_regular(Some(node.lefts()), &mut targets);
+    push_node_regular(node.rest(), &mut targets);
+    push_nodelist_regular(Some(node.rights()), &mut targets);
     push_loc_opening(node.lparen_loc(), &mut targets);
     push_loc_closing(node.rparen_loc(), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_next_node<'sh>(node: &NextNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.arguments().map(|a| a.as_node()), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_node_regular(node.arguments().map(|a| a.as_node()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_nil_node<'sh>(node: &NilNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_no_keywords_parameter_node<'sh>(node: &NoKeywordsParameterNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_numbered_parameters_node<'sh>(node: &NumberedParametersNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_numbered_reference_read_node<'sh>(node: &NumberedReferenceReadNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_optional_keyword_parameter_node<'sh>(
     node: &OptionalKeywordParameterNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_optional_parameter_node<'sh>(node: &OptionalParameterNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.value()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.value()), &mut targets);
     targets
 }
 pub fn comment_targets_of_or_node<'sh>(node: &OrNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.left()), &mut targets);
-    push_node(Some(node.right()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.left()), &mut targets);
+    push_node_regular(Some(node.right()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_parameters_node<'sh>(node: &ParametersNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_nodelist(Some(node.requireds()), &mut targets);
-    push_nodelist(Some(node.optionals()), &mut targets);
-    push_node(node.rest(), &mut targets);
-    push_nodelist(Some(node.posts()), &mut targets);
-    push_nodelist(Some(node.keywords()), &mut targets);
-    push_node(node.keyword_rest(), &mut targets);
-    push_node(node.block().map(|b| b.as_node()), &mut targets);
+    push_nodelist_regular(Some(node.requireds()), &mut targets);
+    push_nodelist_regular(Some(node.optionals()), &mut targets);
+    push_node_regular(node.rest(), &mut targets);
+    push_nodelist_regular(Some(node.posts()), &mut targets);
+    push_nodelist_regular(Some(node.keywords()), &mut targets);
+    push_node_regular(node.keyword_rest(), &mut targets);
+    push_node_regular(node.block().map(|b| b.as_node()), &mut targets);
     targets
 }
 pub fn comment_targets_of_parentheses_node<'sh>(node: &ParenthesesNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.body(), &mut targets);
+    push_node_regular(node.body(), &mut targets);
     push_loc_opening(Some(node.opening_loc()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_pinned_expression_node<'sh>(node: &PinnedExpressionNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.expression()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.expression()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     push_loc_opening(Some(node.lparen_loc()), &mut targets);
     push_loc_closing(Some(node.rparen_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_pinned_variable_node<'sh>(node: &PinnedVariableNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.variable()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.variable()), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_post_execution_node<'sh>(node: &PostExecutionNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     push_loc_opening(Some(node.opening_loc()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_pre_execution_node<'sh>(node: &PreExecutionNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     push_loc_opening(Some(node.opening_loc()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_program_node<'sh>(node: &ProgramNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.statements().as_node()), &mut targets);
+    push_node_regular(Some(node.statements().as_node()), &mut targets);
     targets
 }
 pub fn comment_targets_of_range_node<'sh>(node: &RangeNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(node.left(), &mut targets);
-    push_node(node.right(), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_node_regular(node.left(), &mut targets);
+    push_node_regular(node.right(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_rational_node<'sh>(node: &RationalNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_redo_node<'sh>(node: &RedoNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_regular_expression_node<'sh>(node: &RegularExpressionNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_loc(Some(node.content_loc()), &mut targets);
+    push_loc_regular(Some(node.content_loc()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
@@ -1468,168 +1577,168 @@ pub fn comment_targets_of_required_keyword_parameter_node<'sh>(
     node: &RequiredKeywordParameterNode<'sh>,
 ) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.name_loc()), &mut targets);
+    push_loc_regular(Some(node.name_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_required_parameter_node<'sh>(node: &RequiredParameterNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_rescue_modifier_node<'sh>(node: &RescueModifierNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.expression()), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
-    push_node(Some(node.rescue_expression()), &mut targets);
+    push_node_regular(Some(node.expression()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
+    push_node_regular(Some(node.rescue_expression()), &mut targets);
     targets
 }
 pub fn comment_targets_of_rescue_node<'sh>(node: &RescueNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.keyword_loc()), &mut targets);
-    push_nodelist(Some(node.exceptions()), &mut targets);
-    push_loc(node.operator_loc(), &mut targets);
-    push_node(node.reference(), &mut targets);
-    push_loc(node.then_keyword_loc(), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
-    push_node(node.subsequent().map(|s| s.as_node()), &mut targets);
+    push_nodelist_regular(Some(node.exceptions()), &mut targets);
+    push_loc_regular(node.operator_loc(), &mut targets);
+    push_node_regular(node.reference(), &mut targets);
+    push_loc_regular(node.then_keyword_loc(), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(node.subsequent().map(|s| s.as_node()), &mut targets);
     targets
 }
 pub fn comment_targets_of_rest_parameter_node<'sh>(node: &RestParameterNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(node.name_loc(), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
+    push_loc_regular(node.name_loc(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_retry_node<'sh>(node: &RetryNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_return_node<'sh>(node: &ReturnNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.keyword_loc()), &mut targets);
-    push_node(node.arguments().map(|a| a.as_node()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
+    push_node_regular(node.arguments().map(|a| a.as_node()), &mut targets);
     targets
 }
 pub fn comment_targets_of_self_node<'sh>(node: &SelfNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_shareable_constant_node<'sh>(node: &ShareableConstantNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_node(Some(node.write()), &mut targets);
+    push_node_regular(Some(node.write()), &mut targets);
     targets
 }
 pub fn comment_targets_of_singleton_class_node<'sh>(node: &SingletonClassNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.class_keyword_loc()), &mut targets);
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(Some(node.expression()), &mut targets);
-    push_node(node.body(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(Some(node.expression()), &mut targets);
+    push_node_regular(node.body(), &mut targets);
     push_loc_closing(Some(node.end_keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_source_encoding_node<'sh>(node: &SourceEncodingNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_source_file_node<'sh>(node: &SourceFileNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_source_line_node<'sh>(node: &SourceLineNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_splat_node<'sh>(node: &SplatNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.operator_loc()), &mut targets);
-    push_node(node.expression(), &mut targets);
+    push_loc_regular(Some(node.operator_loc()), &mut targets);
+    push_node_regular(node.expression(), &mut targets);
     targets
 }
 pub fn comment_targets_of_statements_node<'sh>(node: &StatementsNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_nodelist(Some(node.body()), &mut targets);
+    push_nodelist_regular(Some(node.body()), &mut targets);
     targets
 }
 pub fn comment_targets_of_string_node<'sh>(node: &StringNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(node.opening_loc(), &mut targets);
-    push_loc(Some(node.content_loc()), &mut targets);
+    push_loc_regular(Some(node.content_loc()), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_super_node<'sh>(node: &SuperNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     push_loc_opening(node.lparen_loc(), &mut targets);
-    push_node(node.arguments().map(|a| a.as_node()), &mut targets);
+    push_node_regular(node.arguments().map(|a| a.as_node()), &mut targets);
     push_loc_closing(node.rparen_loc(), &mut targets);
-    push_node(node.block(), &mut targets);
+    push_node_regular(node.block(), &mut targets);
     targets
 }
 pub fn comment_targets_of_symbol_node<'sh>(node: &SymbolNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(node.opening_loc(), &mut targets);
-    push_loc(node.value_loc(), &mut targets);
+    push_loc_regular(node.value_loc(), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_true_node<'sh>(node: &TrueNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_loc(Some(node.location()), &mut targets);
+    push_loc_regular(Some(node.location()), &mut targets);
     targets
 }
 pub fn comment_targets_of_undef_node<'sh>(node: &UndefNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
-    push_nodelist(Some(node.names()), &mut targets);
-    push_loc(Some(node.keyword_loc()), &mut targets);
+    push_nodelist_regular(Some(node.names()), &mut targets);
+    push_loc_regular(Some(node.keyword_loc()), &mut targets);
     targets
 }
 pub fn comment_targets_of_unless_node<'sh>(node: &UnlessNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.keyword_loc()), &mut targets);
-    push_node(Some(node.predicate()), &mut targets);
-    push_loc(node.then_keyword_loc(), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
-    push_node(node.else_clause().map(|e| e.as_node()), &mut targets);
+    push_node_regular(Some(node.predicate()), &mut targets);
+    push_loc_regular(node.then_keyword_loc(), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(node.else_clause().map(|e| e.as_node()), &mut targets);
     push_loc_closing(node.end_keyword_loc(), &mut targets);
     targets
 }
 pub fn comment_targets_of_until_node<'sh>(node: &UntilNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.keyword_loc()), &mut targets);
-    push_loc(node.do_keyword_loc(), &mut targets);
+    push_loc_regular(node.do_keyword_loc(), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
-    push_node(Some(node.predicate()), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(Some(node.predicate()), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     targets
 }
 pub fn comment_targets_of_when_node<'sh>(node: &WhenNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.keyword_loc()), &mut targets);
-    push_nodelist(Some(node.conditions()), &mut targets);
-    push_loc(node.then_keyword_loc(), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
+    push_nodelist_regular(Some(node.conditions()), &mut targets);
+    push_loc_regular(node.then_keyword_loc(), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     targets
 }
 pub fn comment_targets_of_while_node<'sh>(node: &WhileNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.keyword_loc()), &mut targets);
-    push_loc(node.do_keyword_loc(), &mut targets);
+    push_loc_regular(node.do_keyword_loc(), &mut targets);
     push_loc_closing(node.closing_loc(), &mut targets);
-    push_node(Some(node.predicate()), &mut targets);
-    push_node(node.statements().map(|s| s.as_node()), &mut targets);
+    push_node_regular(Some(node.predicate()), &mut targets);
+    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     targets
 }
 pub fn comment_targets_of_x_string_node<'sh>(node: &XStringNode<'sh>) -> Vec<Target<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.opening_loc()), &mut targets);
-    push_loc(Some(node.content_loc()), &mut targets);
+    push_loc_regular(Some(node.content_loc()), &mut targets);
     push_loc_closing(Some(node.closing_loc()), &mut targets);
     targets
 }
@@ -1637,7 +1746,84 @@ pub fn comment_targets_of_yield_node<'sh>(node: &YieldNode<'sh>) -> Vec<Target<'
     let mut targets = Vec::new();
     push_loc_opening(Some(node.keyword_loc()), &mut targets);
     push_loc_opening(node.lparen_loc(), &mut targets);
-    push_node(node.arguments().map(|a| a.as_node()), &mut targets);
+    push_node_regular(node.arguments().map(|a| a.as_node()), &mut targets);
     push_loc_closing(node.rparen_loc(), &mut targets);
     targets
+}
+
+/// Helper functions to push targets if they are Some.
+fn push_loc_opening<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match loc {
+        Some(loc) => {
+            targets.push(Target::from((loc, TargetType::Opening)));
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_loc_opening_like<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match loc {
+        Some(loc) => {
+            targets.push(Target::from((loc, TargetType::OpeningLike)));
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_loc_closing<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match loc {
+        Some(loc) => {
+            targets.push(Target::from((loc, TargetType::Closing)));
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_loc_regular<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match loc {
+        Some(loc) => {
+            targets.push(Target::from((loc, TargetType::Regular)));
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_node_opening_like<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match node {
+        Some(node) => {
+            targets.push(Target::from((node, TargetType::OpeningLike)));
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_node_regular<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match node {
+        Some(node) => {
+            targets.push(Target::Node(node, TargetType::Regular));
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_nodelist_opning_like<'sh>(nodelist: Option<NodeList<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match nodelist {
+        Some(nodelist) => {
+            for node in nodelist.iter() {
+                targets.push(Target::from((node, TargetType::OpeningLike)));
+            }
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_nodelist_regular<'sh>(nodelist: Option<NodeList<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match nodelist {
+        Some(nodelist) => {
+            for node in nodelist.iter() {
+                targets.push(Target::Node(node, TargetType::Regular));
+            }
+        }
+        None => {}
+    }
 }

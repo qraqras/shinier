@@ -47,7 +47,7 @@ def foo(
 end
 
 def foo
-# comment
+  # comment
 end
 
 
