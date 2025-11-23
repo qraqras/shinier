@@ -159,13 +159,16 @@ impl<'sh> CommentStore<'sh> {
     }
 }
 
-/// Type of location for comments.
-/// - **Opening**: opening location (e.g., `if`, `(`)
-/// - **OpeningLike**: locations similar to opening (e.g., `then`, `else`, function name)
+/// Type of target for comment attachment.
+/// - **Opening**: opening location (e.g., `if`, `def`, `(`)
+/// - **OpeningLike**: locations similar to opening (e.g., `then`, function name)
 /// - **Closing**: closing location (e.g., `end`, `)`)
+/// - **ClosingLike**: locations similar to closing (e.g., now unused in Ruby)
+/// - **OpeningAndClosingLike**: locations that serve as both opening and closing-like (e.g., `else`, `rescue`, `ensure`)
+/// - **OpeningLikeAndClosing**: locations that serve as both opening-like and closing (e.g., closing of parameters)
 /// - **Regular**: regular location (e.g., other locations)
 ///
-/// Example:
+/// Example 1:
 /// ```ruby
 /// def foo(param)
 ///   bar
@@ -176,13 +179,32 @@ impl<'sh> CommentStore<'sh> {
 /// - `(param)` is an **OpeningLike** location.
 /// - `(` is an **Opening** location.
 /// - `param` is a **Regular** location.
-/// - `)` is a **Closing** location.
+/// - `)` is a **OpeningLikeAndClosing** location.
 /// - `bar` is a **Regular** location.
+/// - `end` is a **Closing** location.
+///
+/// Example 2:
+/// ```ruby
+/// if foo then
+///   bar
+/// else
+///   baz
+/// end
+/// ```
+/// - `if` is an **Opening** location.
+/// - `foo` is an **OpeningLike** location.
+/// - `then` is an **OpeningLike** location.
+/// - `bar` is a **Regular** location.
+/// - `else` is an **OpeningAndClosingLike** location.
+/// - `baz` is a **Regular** location.
 /// - `end` is a **Closing** location.
 pub enum TargetType {
     Opening,
     OpeningLike,
     Closing,
+    ClosingLike,
+    OpeningAndClosingLike,
+    OpeningLikeAndClosing,
     Regular,
 }
 
@@ -192,61 +214,116 @@ pub enum Target<'sh> {
     Node(Node<'sh>, TargetType),
 }
 impl<'sh> Target<'sh> {
+    /// Returns the start offset of the target.
     pub fn start_offset(&self) -> usize {
         match self {
             Target::Location(loc, _) => loc.start_offset(),
             Target::Node(node, _) => node.location().start_offset(),
         }
     }
+    /// Returns the end offset of the target.
     pub fn end_offset(&self) -> usize {
         match self {
             Target::Location(loc, _) => loc.end_offset(),
             Target::Node(node, _) => node.location().end_offset(),
         }
     }
+    /// Checks if the target encloses the given offsets.
+    /// If the target is a location, it cannot enclose anything.
     fn is_enclosing(&self, start_offset: usize, end_offset: usize) -> bool {
-        match self.is_node() {
-            true => self.start_offset() <= start_offset && end_offset <= self.end_offset(),
-            false => false,
-        }
-    }
-    pub fn location(&self) -> Option<&Location<'sh>> {
         match self {
-            Target::Location(loc, _) => Some(loc),
-            _ => None,
+            Target::Location(_, _) => false,
+            Target::Node(_, _) => self.start_offset() <= start_offset && end_offset <= self.end_offset(),
         }
     }
-    pub fn node(&self) -> Option<&Node<'sh>> {
-        match self {
-            Target::Node(node, _) => Some(node),
-            _ => None,
-        }
-    }
-    pub fn is_location(&self) -> bool {
-        match self {
-            Target::Location(_, _) => true,
-            _ => false,
-        }
-    }
-    pub fn is_node(&self) -> bool {
-        match self {
-            Target::Node(_, _) => true,
-            _ => false,
-        }
-    }
-    pub fn is_opening(&self) -> bool {
+    /// Checks if the target has opening characteristic.
+    fn has_opening_characteristic(&self) -> bool {
         match self {
             Target::Location(_, TargetType::Opening) => true,
             Target::Location(_, TargetType::OpeningLike) => true,
+            Target::Location(_, TargetType::OpeningAndClosingLike) => true,
+            Target::Location(_, TargetType::OpeningLikeAndClosing) => true,
             Target::Node(_, TargetType::Opening) => true,
             Target::Node(_, TargetType::OpeningLike) => true,
+            Target::Node(_, TargetType::OpeningAndClosingLike) => true,
+            Target::Node(_, TargetType::OpeningLikeAndClosing) => true,
             _ => false,
         }
     }
-    pub fn is_closing(&self) -> bool {
+    /// Checks if the target has closing characteristic.
+    fn has_closing_characteristic(&self) -> bool {
+        match self {
+            Target::Location(_, TargetType::Closing) => true,
+            Target::Location(_, TargetType::OpeningAndClosingLike) => true,
+            Target::Location(_, TargetType::OpeningLikeAndClosing) => true,
+            Target::Node(_, TargetType::Closing) => true,
+            Target::Node(_, TargetType::OpeningAndClosingLike) => true,
+            Target::Node(_, TargetType::OpeningLikeAndClosing) => true,
+            _ => false,
+        }
+    }
+    /// Checks if the target is `Opening`.
+    #[allow(dead_code)]
+    fn is_opening(&self) -> bool {
+        match self {
+            Target::Location(_, TargetType::Opening) => true,
+            Target::Node(_, TargetType::Opening) => true,
+            _ => false,
+        }
+    }
+    /// Checks if the target is `OpeningLike`.
+    #[allow(dead_code)]
+    fn is_opening_like(&self) -> bool {
+        match self {
+            Target::Location(_, TargetType::OpeningLike) => true,
+            Target::Location(_, TargetType::OpeningAndClosingLike) => true,
+            Target::Node(_, TargetType::OpeningLike) => true,
+            Target::Node(_, TargetType::OpeningAndClosingLike) => true,
+            _ => false,
+        }
+    }
+    /// Checks if the target is `OpeningAndClosingLike`.
+    #[allow(dead_code)]
+    fn is_opening_and_closing_like(&self) -> bool {
+        match self {
+            Target::Location(_, TargetType::OpeningAndClosingLike) => true,
+            Target::Node(_, TargetType::OpeningAndClosingLike) => true,
+            _ => false,
+        }
+    }
+    /// Checks if the target is `OpeningLikeAndClosing`.
+    #[allow(dead_code)]
+    fn is_opening_like_and_closing(&self) -> bool {
+        match self {
+            Target::Location(_, TargetType::OpeningLikeAndClosing) => true,
+            Target::Node(_, TargetType::OpeningLikeAndClosing) => true,
+            _ => false,
+        }
+    }
+    /// Checks if the target is `Closing`.
+    #[allow(dead_code)]
+    fn is_closing(&self) -> bool {
         match self {
             Target::Location(_, TargetType::Closing) => true,
             Target::Node(_, TargetType::Closing) => true,
+            _ => false,
+        }
+    }
+    /// Checks if the target is `ClosingLike`.
+    #[allow(dead_code)]
+    fn is_closing_like(&self) -> bool {
+        match self {
+            Target::Location(_, TargetType::ClosingLike) => true,
+            Target::Node(_, TargetType::ClosingLike) => true,
+            _ => false,
+        }
+    }
+    /// Checks if the target is `Regular`.
+    #[allow(dead_code)]
+    fn is_regular(&self) -> bool {
+        match self {
+            Target::Location(_, TargetType::Regular) => true,
+            Target::Node(_, TargetType::Regular) => true,
             _ => false,
         }
     }
@@ -264,6 +341,7 @@ impl<'sh> From<(Node<'sh>, TargetType)> for Target<'sh> {
 
 /// Attach comments to nodes and locations.
 pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
+    // Determines if a comment is a trailing comment.
     fn is_trailing_comment(comment: &Comment<'_>, source: &[u8]) -> bool {
         let mut curr = comment.location().start_offset();
         while curr > 0 {
@@ -279,6 +357,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
         }
         false
     }
+    // Returns the column number (0-based) of the given start_offset.
     fn col(start_offset: usize, source: &[u8]) -> usize {
         let mut col = 0;
         let mut curr = start_offset;
@@ -291,15 +370,6 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
             curr = next;
         }
         col
-    }
-    fn should_check_indentation(target: &Target) -> bool {
-        match target {
-            Target::Location(l, TargetType::Opening | TargetType::OpeningLike) => {
-                let text = std::str::from_utf8(l.as_slice()).unwrap_or("");
-                matches!(text, "else" | "ensure" | "rescue")
-            }
-            _ => false,
-        }
     }
     let mut comment_store = CommentStore::new();
     for comment in parse_result.comments() {
@@ -327,98 +397,47 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 }
             },
             false => match (preceding, enclosing, following) {
-                (Some(p), _, Some(f)) => {
-                    if p.is_opening() && f.is_closing() {
-                        comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                    } else if f.is_closing() {
-                        comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                    } else if p.is_opening() && f.is_opening() && should_check_indentation(&f) {
-                        if col(p.start_offset(), parse_result.source())
-                            < col(comment.location().start_offset(), parse_result.source())
-                            && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
-                        {
+                (Some(p), _, Some(f)) => match (p.has_opening_characteristic(), f.has_closing_characteristic()) {
+                    (true, true) => match f.is_opening_and_closing_like() {
+                        true => {
+                            let preceding_col = col(p.start_offset(), parse_result.source());
+                            let comment_col = col(comment.location().start_offset(), parse_result.source());
+                            if preceding_col < comment_col
+                                && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
+                            {
+                                comment_store
+                                    .push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                            } else {
+                                comment_store
+                                    .push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                            }
+                        }
+                        false => {
                             comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                        } else {
-                            comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                         }
-                    } else if f.is_opening() && should_check_indentation(&f) {
-                        if col(p.start_offset(), parse_result.source())
-                            <= col(comment.location().start_offset(), parse_result.source())
-                            && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
-                        {
+                    },
+                    (_, true) => match f.is_opening_and_closing_like() {
+                        true => {
+                            let preceding_col = col(p.start_offset(), parse_result.source());
+                            let comment_col = col(comment.location().start_offset(), parse_result.source());
+                            if preceding_col <= comment_col
+                                && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
+                            {
+                                comment_store
+                                    .push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                            } else {
+                                comment_store
+                                    .push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                            }
+                        }
+                        false => {
                             comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                        } else {
-                            comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                         }
-                    } else {
+                    },
+                    (_, _) => {
                         comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
-                }
-                // (Some(p), _, Some(f)) => match (&p, &f) {
-                //     // ```ruby
-                //     // [
-                //     //   # comment
-                //     // ]
-                //     // ```
-                //     (Target::Location(_, TargetType::Opening), Target::Location(_, TargetType::Closing)) => {
-                //         comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                //     }
-                //     // ```ruby
-                //     // [
-                //     //   foo
-                //     //   # comment
-                //     // ]
-                //     // ```
-                //     (_, Target::Location(_, TargetType::Closing)) => {
-                //         comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                //     }
-                //     // ```ruby
-                //     // begin
-                //     //   # comment
-                //     // # comment
-                //     // rescue
-                //     // end
-                //     // ```
-                //     (Target::Location(_, TargetType::Opening), Target::Location(_, TargetType::Opening))
-                //         if should_check_indentation(&f) =>
-                //     {
-                //         if col(p.start_offset(), parse_result.source())
-                //             < col(comment.location().start_offset(), parse_result.source())
-                //             && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
-                //         {
-                //             comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                //         } else {
-                //             comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                //         }
-                //     }
-                //     // ```ruby
-                //     // if foo
-                //     //   # comment
-                //     // # comment
-                //     // else
-                //     // end
-                //     // ```
-                //     (_, Target::Location(_, TargetType::Opening)) if should_check_indentation(&f) => {
-                //         if col(p.start_offset(), parse_result.source())
-                //             <= col(comment.location().start_offset(), parse_result.source())
-                //             && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
-                //         {
-                //             comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                //         } else {
-                //             comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                //         }
-                //     }
-                //     // ```ruby
-                //     // [
-                //     //   foo
-                //     //   # comment
-                //     //   bar
-                //     // ]
-                //     // ```
-                //     (_, _) => {
-                //         comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                //     }
-                // },
+                },
                 (Some(p), _, None) => {
                     comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                 }
@@ -447,11 +466,14 @@ fn nearest_targets<'sh>(
     comment_end_offset: usize,
 ) -> (Option<Target<'sh>>, Option<Target<'sh>>, Option<Target<'sh>>) {
     {
-        let mut targets = comment_targets(&target);
+        // Collect candidates
+        let mut targets = collect_child_targets(&target);
         targets.sort_by_key(|t| t.start_offset());
-        let mut preceding: Option<usize> = None;
-        let mut following: Option<usize> = None;
-        // binary search
+
+        let mut preceding_index: Option<usize> = None;
+        let mut following_index: Option<usize> = None;
+
+        // Binary search for the nearest targets
         let mut left = 0;
         let mut right = targets.len();
         while left < right {
@@ -459,34 +481,34 @@ fn nearest_targets<'sh>(
             let current_target = &targets[middle];
             let current_target_start = current_target.start_offset();
             let current_target_end = current_target.end_offset();
-            // enclosing
+            // Determine the enclosing target
             if current_target.is_enclosing(comment_start_offset, comment_end_offset) {
                 let enclosing_target = targets.swap_remove(middle);
                 return nearest_targets(enclosing_target, comment_start_offset, comment_end_offset);
             }
-            // preceding
+            // Determine the preceding target
             if current_target_end <= comment_start_offset {
-                preceding = Some(middle);
+                preceding_index = Some(middle);
                 left = middle + 1;
                 continue;
             }
-            // following
+            // Determine the following target
             if comment_end_offset <= current_target_start {
-                following = Some(middle);
+                following_index = Some(middle);
                 right = middle;
                 continue;
             }
             unreachable!("comment location overlaps with a target location");
         }
-        let following = following.map(|idx| targets.remove(idx));
-        let preceding = preceding.map(|idx| targets.remove(idx));
+        let following = following_index.map(|idx| targets.remove(idx));
+        let preceding = preceding_index.map(|idx| targets.remove(idx));
         (preceding, Some(target), following)
     }
 }
 
-/// Finds comment targets for a given target.
+/// Collects child targets of a given target.
 #[rustfmt::skip]
-fn comment_targets<'sh>(target: &Target<'sh>) -> Vec<Target<'sh>> {
+fn collect_child_targets<'sh>(target: &Target<'sh>) -> Vec<Target<'sh>> {
     match target {
         Target::Location(_, _) => Vec::new(),
         Target::Node(node, _) => match node {
@@ -717,7 +739,7 @@ pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Target<'
         match rescue_node {
             None => {}
             Some(rescue_node) => {
-                push_loc_opening_like(Some(rescue_node.keyword_loc()), targets);
+                push_loc_opening_and_closing_like(Some(rescue_node.keyword_loc()), targets);
                 push_nodelist_opning_like(Some(rescue_node.exceptions()), targets);
                 push_loc_regular(rescue_node.operator_loc(), targets);
                 push_node_opening_like(rescue_node.reference(), targets);
@@ -731,7 +753,7 @@ pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Target<'
         match else_node {
             None => {}
             Some(else_node) => {
-                push_loc_opening_like(Some(else_node.else_keyword_loc()), targets);
+                push_loc_opening_and_closing_like(Some(else_node.else_keyword_loc()), targets);
                 push_node_regular(else_node.statements().map(|stmts| stmts.as_node()), targets);
                 // instead of closing else, we use end of begin
                 /*
@@ -744,7 +766,7 @@ pub fn comment_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Target<'
         match ensure_node {
             None => {}
             Some(ensure_node) => {
-                push_loc_opening_like(Some(ensure_node.ensure_keyword_loc()), targets);
+                push_loc_opening_and_closing_like(Some(ensure_node.ensure_keyword_loc()), targets);
                 push_node_regular(ensure_node.statements().map(|stmts| stmts.as_node()), targets);
                 // instead of closing ensure, we use end of begin
                 /*
@@ -1021,7 +1043,7 @@ pub fn comment_targets_of_def_node<'sh>(node: &DefNode<'sh>) -> Vec<Target<'sh>>
     push_loc_opening(Some(node.def_keyword_loc()), &mut targets);
     push_loc_regular(node.operator_loc(), &mut targets);
     push_loc_opening(node.lparen_loc(), &mut targets);
-    push_loc_closing(node.rparen_loc(), &mut targets);
+    push_loc_opening_like_and_closing(node.rparen_loc(), &mut targets);
     push_loc_regular(node.equal_loc(), &mut targets);
     push_loc_closing(node.end_keyword_loc(), &mut targets);
     targets
@@ -1792,6 +1814,24 @@ fn push_loc_opening_like<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Targ
     match loc {
         Some(loc) => {
             targets.push(Target::from((loc, TargetType::OpeningLike)));
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_loc_opening_and_closing_like<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match loc {
+        Some(loc) => {
+            targets.push(Target::from((loc, TargetType::OpeningAndClosingLike)));
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_loc_opening_like_and_closing<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Target<'sh>>) {
+    match loc {
+        Some(loc) => {
+            targets.push(Target::from((loc, TargetType::OpeningLikeAndClosing)));
         }
         None => {}
     }

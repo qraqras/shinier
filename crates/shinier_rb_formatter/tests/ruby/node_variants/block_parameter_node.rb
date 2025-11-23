@@ -41,3 +41,7 @@ end
 def foo
   # comment
 end
+
+def foo(bar)
+  # comment
+end

@@ -50,10 +50,16 @@ def foo
   # comment
 end
 
+def foo(
+
+)
+  # comment
+end
+
 
 ****AST****
-ProgramNode[0-453]: "def foo(&bar)\nend\n\ndef foo(&\n  bar)\nend\n\ndef foo(\n  # leading comment\n  &bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(\n  # leading comment 1\n  & # trailing comment 1\n  # leading comment 2\n  bar # trailing comment 2\n  # dangling comment 2\n)\nend\n\ndef foo(&bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(&\n  # leading comment\n  bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(\n  # comment\n)\nend\n\ndef foo\n  # comment\nend"
-__StatementsNode[0-453]: "def foo(&bar)\nend\n\ndef foo(&\n  bar)\nend\n\ndef foo(\n  # leading comment\n  &bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(\n  # leading comment 1\n  & # trailing comment 1\n  # leading comment 2\n  bar # trailing comment 2\n  # dangling comment 2\n)\nend\n\ndef foo(&bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(&\n  # leading comment\n  bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(\n  # comment\n)\nend\n\ndef foo\n  # comment\nend"
+ProgramNode[0-483]: "def foo(&bar)\nend\n\ndef foo(&\n  bar)\nend\n\ndef foo(\n  # leading comment\n  &bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(\n  # leading comment 1\n  & # trailing comment 1\n  # leading comment 2\n  bar # trailing comment 2\n  # dangling comment 2\n)\nend\n\ndef foo(&bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(&\n  # leading comment\n  bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(\n  # comment\n)\nend\n\ndef foo\n  # comment\nend\n\ndef foo(bar)\n  # comment\nend"
+__StatementsNode[0-483]: "def foo(&bar)\nend\n\ndef foo(&\n  bar)\nend\n\ndef foo(\n  # leading comment\n  &bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(\n  # leading comment 1\n  & # trailing comment 1\n  # leading comment 2\n  bar # trailing comment 2\n  # dangling comment 2\n)\nend\n\ndef foo(&bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(&\n  # leading comment\n  bar # trailing comment\n  # dangling comment\n)\nend\n\ndef foo(\n  # comment\n)\nend\n\ndef foo\n  # comment\nend\n\ndef foo(bar)\n  # comment\nend"
 ____DefNode[0-17]: "def foo(&bar)\nend"
 ______ParametersNode[8-12]: "&bar"
 ________BlockParameterNode[8-12]: "&bar"
@@ -74,3 +80,6 @@ ______ParametersNode[327-354]: "&\n  # leading comment\n  bar"
 ________BlockParameterNode[327-354]: "&\n  # leading comment\n  bar"
 ____DefNode[402-428]: "def foo(\n  # comment\n)\nend"
 ____DefNode[430-453]: "def foo\n  # comment\nend"
+____DefNode[455-483]: "def foo(bar)\n  # comment\nend"
+______ParametersNode[463-466]: "bar"
+________RequiredParameterNode[463-466]: "bar"
