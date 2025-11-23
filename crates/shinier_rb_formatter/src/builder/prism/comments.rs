@@ -294,7 +294,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
     }
     fn should_check_indentation(target: &Target) -> bool {
         match target {
-            Target::Location(l, TargetType::Opening) => {
+            Target::Location(l, TargetType::Opening | TargetType::OpeningLike) => {
                 let text = std::str::from_utf8(l.as_slice()).unwrap_or("");
                 matches!(text, "else" | "ensure" | "rescue")
             }
@@ -327,34 +327,12 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 }
             },
             false => match (preceding, enclosing, following) {
-                (Some(p), _, Some(f)) => match (&p, &f) {
-                    // ```ruby
-                    // [
-                    //   # comment
-                    // ]
-                    // ```
-                    (Target::Location(_, TargetType::Opening), Target::Location(_, TargetType::Closing)) => {
+                (Some(p), _, Some(f)) => {
+                    if p.is_opening() && f.is_closing() {
                         comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                    }
-                    // ```ruby
-                    // [
-                    //   foo
-                    //   # comment
-                    // ]
-                    // ```
-                    (_, Target::Location(_, TargetType::Closing)) => {
+                    } else if f.is_closing() {
                         comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
-                    }
-                    // ```ruby
-                    // begin
-                    //   # comment
-                    // # comment
-                    // rescue
-                    // end
-                    // ```
-                    (Target::Location(_, TargetType::Opening), Target::Location(_, TargetType::Opening))
-                        if should_check_indentation(&f) =>
-                    {
+                    } else if p.is_opening() && f.is_opening() && should_check_indentation(&f) {
                         if col(p.start_offset(), parse_result.source())
                             < col(comment.location().start_offset(), parse_result.source())
                             && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
@@ -363,15 +341,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                         } else {
                             comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                         }
-                    }
-                    // ```ruby
-                    // if foo
-                    //   # comment
-                    // # comment
-                    // else
-                    // end
-                    // ```
-                    (_, Target::Location(_, TargetType::Opening)) if should_check_indentation(&f) => {
+                    } else if f.is_opening() && should_check_indentation(&f) {
                         if col(p.start_offset(), parse_result.source())
                             <= col(comment.location().start_offset(), parse_result.source())
                             && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
@@ -380,18 +350,75 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                         } else {
                             comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                         }
-                    }
-                    // ```ruby
-                    // [
-                    //   foo
-                    //   # comment
-                    //   bar
-                    // ]
-                    // ```
-                    (_, _) => {
+                    } else {
                         comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                     }
-                },
+                }
+                // (Some(p), _, Some(f)) => match (&p, &f) {
+                //     // ```ruby
+                //     // [
+                //     //   # comment
+                //     // ]
+                //     // ```
+                //     (Target::Location(_, TargetType::Opening), Target::Location(_, TargetType::Closing)) => {
+                //         comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                //     }
+                //     // ```ruby
+                //     // [
+                //     //   foo
+                //     //   # comment
+                //     // ]
+                //     // ```
+                //     (_, Target::Location(_, TargetType::Closing)) => {
+                //         comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                //     }
+                //     // ```ruby
+                //     // begin
+                //     //   # comment
+                //     // # comment
+                //     // rescue
+                //     // end
+                //     // ```
+                //     (Target::Location(_, TargetType::Opening), Target::Location(_, TargetType::Opening))
+                //         if should_check_indentation(&f) =>
+                //     {
+                //         if col(p.start_offset(), parse_result.source())
+                //             < col(comment.location().start_offset(), parse_result.source())
+                //             && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
+                //         {
+                //             comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                //         } else {
+                //             comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                //         }
+                //     }
+                //     // ```ruby
+                //     // if foo
+                //     //   # comment
+                //     // # comment
+                //     // else
+                //     // end
+                //     // ```
+                //     (_, Target::Location(_, TargetType::Opening)) if should_check_indentation(&f) => {
+                //         if col(p.start_offset(), parse_result.source())
+                //             <= col(comment.location().start_offset(), parse_result.source())
+                //             && comment_store.peek_leadings(f.start_offset(), f.end_offset()).is_none()
+                //         {
+                //             comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                //         } else {
+                //             comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                //         }
+                //     }
+                //     // ```ruby
+                //     // [
+                //     //   foo
+                //     //   # comment
+                //     //   bar
+                //     // ]
+                //     // ```
+                //     (_, _) => {
+                //         comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                //     }
+                // },
                 (Some(p), _, None) => {
                     comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                 }
@@ -989,7 +1016,7 @@ pub fn comment_targets_of_def_node<'sh>(node: &DefNode<'sh>) -> Vec<Target<'sh>>
     let mut targets = Vec::new();
     push_loc_opening_like(Some(node.name_loc()), &mut targets);
     push_node_regular(node.receiver(), &mut targets);
-    push_node_opening_like(node.parameters().map(|p| p.as_node()), &mut targets);
+    push_node_regular(node.parameters().map(|p| p.as_node()), &mut targets);
     push_node_regular(node.body(), &mut targets);
     push_loc_opening(Some(node.def_keyword_loc()), &mut targets);
     push_loc_regular(node.operator_loc(), &mut targets);

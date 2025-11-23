@@ -30,7 +30,7 @@ pub fn build_def_node(node: &DefNode<'_>, ctx: &mut BuildContext) -> Option<Docu
         space(),
         receiver.map(|n| array(&[space(), build_node(n, ctx)])).flatten(),
         operator_loc.map(|loc| build_location(loc, ctx)).flatten(),
-        indent(build_location(name_loc, ctx)),
+        build_location(name_loc, ctx),
         group(array(&[
             lparen_loc.map(|loc| build_location(loc, ctx)).flatten(),
             parameters
