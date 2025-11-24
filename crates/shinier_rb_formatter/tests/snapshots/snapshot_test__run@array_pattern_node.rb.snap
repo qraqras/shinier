@@ -54,20 +54,21 @@ foo in
   # owning comment 3
   3 # trailing comment 3
 
-foo in
-  [
-    # owning comment 1
-    1, # trailing comment 1
-    # owning comment 2
-    *bar, # trailing comment 2
-    # owning comment 3
-    3, # trailing comment 3
-  ]
+foo in Bar # trailing comment
+# leading comment
+[
+  # owning comment 1
+  1, # trailing comment 1
+  # owning comment 2
+  *, # trailing comment 2
+  # owning comment 3
+  3 # trailing comment 3
+]
 
 
 ****AST****
-ProgramNode[0-707]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3 # trailing comment 3\n\nfoo in [\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
-__StatementsNode[0-707]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3 # trailing comment 3\n\nfoo in [\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
+ProgramNode[0-748]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3 # trailing comment 3\n\nfoo in Bar # trailing comment\n# leading comment\n[\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
+__StatementsNode[0-748]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3 # trailing comment 3\n\nfoo in Bar # trailing comment\n# leading comment\n[\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
 ____MatchPredicateNode[0-11]: "foo in 1, 2"
 ______CallNode[0-3]: "foo"
 ______ArrayPatternNode[7-11]: "1, 2"
@@ -166,11 +167,11 @@ ________IntegerNode[432-433]: "1"
 ________SplatNode[479-483]: "*bar"
 __________LocalVariableTargetNode[480-483]: "bar"
 ________IntegerNode[529-530]: "3"
-____MatchPredicateNode[553-707]: "foo in [\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
+____MatchPredicateNode[553-563]: "foo in Bar"
 ______CallNode[553-556]: "foo"
-______ArrayPatternNode[560-707]: "[\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
-________IntegerNode[585-586]: "1"
-________SplatNode[632-636]: "*bar"
-__________LocalVariableTargetNode[633-636]: "bar"
-________IntegerNode[682-683]: "3"
-________ImplicitRestNode[683-684]: ","
+______ConstantReadNode[560-563]: "Bar"
+____ArrayNode[601-748]: "[\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
+______IntegerNode[626-627]: "1"
+______SplatNode[673-677]: "*bar"
+________LocalVariableReadNode[674-677]: "bar"
+______IntegerNode[723-724]: "3"

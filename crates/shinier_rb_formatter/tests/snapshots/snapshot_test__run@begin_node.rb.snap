@@ -65,34 +65,54 @@ begin # comment 2
   do_something # comment 4
   # comment 5
 # comment 6
-rescue ArgumentError => e # comment 7
-  # comment 8
-  recover_argument_error # comment 9
-  # comment 10
-# comment 11
-rescue ZeroDivisionError => e # comment 12
-  # comment 13
-  recover_zero_division_error # comment 14
+# comment 7
+rescue ArgumentError => e # comment 8
+  # comment 9
+  recover_argument_error # comment 10
+  # comment 11
+# comment 12
+# comment 13
+rescue ZeroDivisionError => e # comment 14
   # comment 15
-# comment 16
-else # comment 17
-  # comment 18
-  handle_else # comment 19
-  # comment 20
-# comment 21
-ensure # comment 22
+  recover_zero_division_error # comment 16
+  # comment 17
+# comment 18
+# comment 19
+else # comment 20
+  # comment 21
+  handle_else # comment 22
   # comment 23
-  must_to_do # comment 24
-  # comment 25
-  # comment 26
+# comment 24
+# comment 25
+ensure # comment 26
   # comment 27
-  # comment 28
-end # comment 29
+  must_to_do # comment 28
+  # comment 29
+  # comment 30
+  # comment 31
+end # comment 32
+
+begin # begin 1
+  # begin 2
+# rescue 1
+# rescue 2
+rescue # rescue 3
+  # rescue 4
+# else 1
+# else 2
+else # else 3
+  # else 4
+# ensure 1
+# ensure 2
+ensure # ensure 3
+  # ensure 4
+  # ensure 5
+end
 
 
 ****AST****
-ProgramNode[0-1043]: "begin\nend\n\nbegin\n  do_something\nend\n\n# with rescue\nbegin\n  do_something\nrescue\n  recover\nend\n\n# with ensure\nbegin\n  do_something\nensure\n  must_to_do\nend\n\n# with rescue and else\nbegin\n  do_something\nrescue\n  recover\nelse\n  handle_else\nend\n\n# with rescue and ensure\nbegin\n  do_something\nrescue\n  recover\nensure\n  must_to_do\nend\n\n# with rescue and else and ensure\nbegin\n  do_something\nrescue\n  recover\nelse\n  handle_else\nensure\n  must_to_do\nend\n\nbegin # comment 1\n  # comment 2\nend # comment 3\n\n# comment 1\nbegin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\nrescue ArgumentError => e # comment 7\n  # comment 8\n  recover_argument_error # comment 9\n  # comment 10\n# comment 11\nrescue ZeroDivisionError => e # comment 12\n  # comment 13\n  recover_zero_division_error # comment 14\n  # comment 15\n# comment 16\nelse # comment 17\n  # comment 18\n  handle_else # comment 19\n  # comment 20\n# comment 21\nensure # comment 22\n  # comment 23\n  must_to_do # comment 24\n  # comment 25\n# comment 26\n# comment 27\n  # comment 28\nend"
-__StatementsNode[0-1043]: "begin\nend\n\nbegin\n  do_something\nend\n\n# with rescue\nbegin\n  do_something\nrescue\n  recover\nend\n\n# with ensure\nbegin\n  do_something\nensure\n  must_to_do\nend\n\n# with rescue and else\nbegin\n  do_something\nrescue\n  recover\nelse\n  handle_else\nend\n\n# with rescue and ensure\nbegin\n  do_something\nrescue\n  recover\nensure\n  must_to_do\nend\n\n# with rescue and else and ensure\nbegin\n  do_something\nrescue\n  recover\nelse\n  handle_else\nensure\n  must_to_do\nend\n\nbegin # comment 1\n  # comment 2\nend # comment 3\n\n# comment 1\nbegin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\nrescue ArgumentError => e # comment 7\n  # comment 8\n  recover_argument_error # comment 9\n  # comment 10\n# comment 11\nrescue ZeroDivisionError => e # comment 12\n  # comment 13\n  recover_zero_division_error # comment 14\n  # comment 15\n# comment 16\nelse # comment 17\n  # comment 18\n  handle_else # comment 19\n  # comment 20\n# comment 21\nensure # comment 22\n  # comment 23\n  must_to_do # comment 24\n  # comment 25\n# comment 26\n# comment 27\n  # comment 28\nend"
+ProgramNode[0-1302]: "begin\nend\n\nbegin\n  do_something\nend\n\n# with rescue\nbegin\n  do_something\nrescue\n  recover\nend\n\n# with ensure\nbegin\n  do_something\nensure\n  must_to_do\nend\n\n# with rescue and else\nbegin\n  do_something\nrescue\n  recover\nelse\n  handle_else\nend\n\n# with rescue and ensure\nbegin\n  do_something\nrescue\n  recover\nensure\n  must_to_do\nend\n\n# with rescue and else and ensure\nbegin\n  do_something\nrescue\n  recover\nelse\n  handle_else\nensure\n  must_to_do\nend\n\nbegin # comment 1\n  # comment 2\nend # comment 3\n\n# comment 1\nbegin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\n  # comment 7\nrescue ArgumentError => e # comment 8\n  # comment 9\n  recover_argument_error # comment 10\n  # comment 11\n# comment 12\n  # comment 13\nrescue ZeroDivisionError => e # comment 14\n  # comment 15\n  recover_zero_division_error # comment 16\n  # comment 17\n# comment 18\n  # comment 19\nelse # comment 20\n  # comment 21\n  handle_else # comment 22\n  # comment 23\n# comment 24\n  # comment 25\nensure # comment 26\n  # comment 27\n  must_to_do # comment 28\n  # comment 29\n# comment 30\n  # comment 31\nend # comment 32\n\nbegin # begin 1\n  # begin 2\n# rescue 1\n  # rescue 2\nrescue # rescue 3\n  # rescue 4\n# else 1\n  # else 2\nelse # else 3\n  # else 4\n# ensure 1\n  # ensure 2\nensure # ensure 3\n  # ensure 4\n# ensure 5\nend"
+__StatementsNode[0-1302]: "begin\nend\n\nbegin\n  do_something\nend\n\n# with rescue\nbegin\n  do_something\nrescue\n  recover\nend\n\n# with ensure\nbegin\n  do_something\nensure\n  must_to_do\nend\n\n# with rescue and else\nbegin\n  do_something\nrescue\n  recover\nelse\n  handle_else\nend\n\n# with rescue and ensure\nbegin\n  do_something\nrescue\n  recover\nensure\n  must_to_do\nend\n\n# with rescue and else and ensure\nbegin\n  do_something\nrescue\n  recover\nelse\n  handle_else\nensure\n  must_to_do\nend\n\nbegin # comment 1\n  # comment 2\nend # comment 3\n\n# comment 1\nbegin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\n  # comment 7\nrescue ArgumentError => e # comment 8\n  # comment 9\n  recover_argument_error # comment 10\n  # comment 11\n# comment 12\n  # comment 13\nrescue ZeroDivisionError => e # comment 14\n  # comment 15\n  recover_zero_division_error # comment 16\n  # comment 17\n# comment 18\n  # comment 19\nelse # comment 20\n  # comment 21\n  handle_else # comment 22\n  # comment 23\n# comment 24\n  # comment 25\nensure # comment 26\n  # comment 27\n  must_to_do # comment 28\n  # comment 29\n# comment 30\n  # comment 31\nend # comment 32\n\nbegin # begin 1\n  # begin 2\n# rescue 1\n  # rescue 2\nrescue # rescue 3\n  # rescue 4\n# else 1\n  # else 2\nelse # else 3\n  # else 4\n# ensure 1\n  # ensure 2\nensure # ensure 3\n  # ensure 4\n# ensure 5\nend"
 ____BeginNode[0-9]: "begin\nend"
 ____BeginNode[11-35]: "begin\n  do_something\nend"
 ______StatementsNode[19-31]: "do_something"
@@ -140,22 +160,26 @@ ______EnsureNode[418-441]: "ensure\n  must_to_do\nend"
 ________StatementsNode[427-437]: "must_to_do"
 __________CallNode[427-437]: "must_to_do"
 ____BeginNode[443-478]: "begin # comment 1\n  # comment 2\nend"
-____BeginNode[504-1043]: "begin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\nrescue ArgumentError => e # comment 7\n  # comment 8\n  recover_argument_error # comment 9\n  # comment 10\n# comment 11\nrescue ZeroDivisionError => e # comment 12\n  # comment 13\n  recover_zero_division_error # comment 14\n  # comment 15\n# comment 16\nelse # comment 17\n  # comment 18\n  handle_else # comment 19\n  # comment 20\n# comment 21\nensure # comment 22\n  # comment 23\n  must_to_do # comment 24\n  # comment 25\n# comment 26\n# comment 27\n  # comment 28\nend"
+____BeginNode[504-1090]: "begin # comment 2\n  # comment 3\n  do_something # comment 4\n  # comment 5\n# comment 6\n  # comment 7\nrescue ArgumentError => e # comment 8\n  # comment 9\n  recover_argument_error # comment 10\n  # comment 11\n# comment 12\n  # comment 13\nrescue ZeroDivisionError => e # comment 14\n  # comment 15\n  recover_zero_division_error # comment 16\n  # comment 17\n# comment 18\n  # comment 19\nelse # comment 20\n  # comment 21\n  handle_else # comment 22\n  # comment 23\n# comment 24\n  # comment 25\nensure # comment 26\n  # comment 27\n  must_to_do # comment 28\n  # comment 29\n# comment 30\n  # comment 31\nend"
 ______StatementsNode[538-550]: "do_something"
 ________CallNode[538-550]: "do_something"
-______RescueNode[589-793]: "rescue ArgumentError => e # comment 7\n  # comment 8\n  recover_argument_error # comment 9\n  # comment 10\n# comment 11\nrescue ZeroDivisionError => e # comment 12\n  # comment 13\n  recover_zero_division_error"
-________ConstantReadNode[596-609]: "ArgumentError"
-________LocalVariableTargetNode[613-614]: "e"
-________StatementsNode[643-665]: "recover_argument_error"
-__________CallNode[643-665]: "recover_argument_error"
-________RescueNode[706-793]: "rescue ZeroDivisionError => e # comment 12\n  # comment 13\n  recover_zero_division_error"
-__________ConstantReadNode[713-730]: "ZeroDivisionError"
-__________LocalVariableTargetNode[734-735]: "e"
-__________StatementsNode[766-793]: "recover_zero_division_error"
-____________CallNode[766-793]: "recover_zero_division_error"
-______ElseNode[835-929]: "else # comment 17\n  # comment 18\n  handle_else # comment 19\n  # comment 20\n# comment 21\nensure"
-________StatementsNode[870-881]: "handle_else"
-__________CallNode[870-881]: "handle_else"
-______EnsureNode[923-1043]: "ensure # comment 22\n  # comment 23\n  must_to_do # comment 24\n  # comment 25\n# comment 26\n# comment 27\n  # comment 28\nend"
-________StatementsNode[960-970]: "must_to_do"
-__________CallNode[960-970]: "must_to_do"
+______RescueNode[603-823]: "rescue ArgumentError => e # comment 8\n  # comment 9\n  recover_argument_error # comment 10\n  # comment 11\n# comment 12\n  # comment 13\nrescue ZeroDivisionError => e # comment 14\n  # comment 15\n  recover_zero_division_error"
+________ConstantReadNode[610-623]: "ArgumentError"
+________LocalVariableTargetNode[627-628]: "e"
+________StatementsNode[657-679]: "recover_argument_error"
+__________CallNode[657-679]: "recover_argument_error"
+________RescueNode[736-823]: "rescue ZeroDivisionError => e # comment 14\n  # comment 15\n  recover_zero_division_error"
+__________ConstantReadNode[743-760]: "ZeroDivisionError"
+__________LocalVariableTargetNode[764-765]: "e"
+__________StatementsNode[796-823]: "recover_zero_division_error"
+____________CallNode[796-823]: "recover_zero_division_error"
+______ElseNode[880-989]: "else # comment 20\n  # comment 21\n  handle_else # comment 22\n  # comment 23\n# comment 24\n  # comment 25\nensure"
+________StatementsNode[915-926]: "handle_else"
+__________CallNode[915-926]: "handle_else"
+______EnsureNode[983-1090]: "ensure # comment 26\n  # comment 27\n  must_to_do # comment 28\n  # comment 29\n# comment 30\n  # comment 31\nend"
+________StatementsNode[1020-1030]: "must_to_do"
+__________CallNode[1020-1030]: "must_to_do"
+____BeginNode[1105-1302]: "begin # begin 1\n  # begin 2\n# rescue 1\n  # rescue 2\nrescue # rescue 3\n  # rescue 4\n# else 1\n  # else 2\nelse # else 3\n  # else 4\n# ensure 1\n  # ensure 2\nensure # ensure 3\n  # ensure 4\n# ensure 5\nend"
+______RescueNode[1157-1163]: "rescue"
+______ElseNode[1208-1263]: "else # else 3\n  # else 4\n# ensure 1\n  # ensure 2\nensure"
+______EnsureNode[1257-1302]: "ensure # ensure 3\n  # ensure 4\n# ensure 5\nend"
