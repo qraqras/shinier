@@ -1,8 +1,7 @@
 use crate::Document;
 use crate::builder::builder::*;
-use crate::builder::keyword::LOGICAL_AND;
 use crate::builder::prism::BuildContext;
-use crate::builder::prism::build_location::build_custom_location;
+use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::AndNode;
 use ruby_prism::Node;
@@ -24,7 +23,7 @@ fn flatten(node: Node<'_>, ctx: &mut BuildContext, acc: &mut Vec<Option<Document
             let operator = and_node.operator_loc();
             flatten(left, ctx, acc);
             acc.push(space());
-            acc.push(build_custom_location(operator, ctx, LOGICAL_AND));
+            acc.push(build_location(operator, ctx));
             acc.push(line());
             acc.push(build_node(right, ctx));
         }

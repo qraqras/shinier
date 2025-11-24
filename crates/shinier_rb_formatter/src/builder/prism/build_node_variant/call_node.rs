@@ -36,12 +36,9 @@ pub fn build_call_node(node: &CallNode<'_>, ctx: &mut BuildContext) -> Option<Do
             (None, None) => None,
             _ => indent(array(&[
                 line_or_none.clone(),
-                arguments
-                    .map(|n| indent(array(&[softline(), build_node(n.as_node(), ctx)])))
-                    .flatten(),
-                block
-                    .map(|n| array(&[separator_or_none.clone(), build_node(n, ctx)]))
-                    .flatten(),
+                arguments.map(|n| build_node(n.as_node(), ctx)).flatten(),
+                separator_or_none,
+                block.map(|n| build_node(n, ctx)).flatten(),
             ])),
         },
         closing_loc

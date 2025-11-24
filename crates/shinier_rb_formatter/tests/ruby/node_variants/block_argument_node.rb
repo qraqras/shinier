@@ -1,7 +1,3 @@
-def foo(&)
-  bar(&)
-end
-
 bar(&args)
 
 bar(
@@ -10,15 +6,50 @@ bar(
 )
 
 bar(
-  # leading comment
-  &args # trailing comment
-  # dangling comment
+  # leading comment 1
+  &args
+)
+
+bar(&args # trailing comment 1
+)
+
+bar(&args
+  # trailing comment 1
+)
+
+
+bar(
+  # leading comment 1
+  &args # trailing comment 1
+  # trailing comment 2
+)
+
+bar(& # trailing comment 1
+  args # trailing comment 2
 )
 
 bar(
-  # leading comment
+  # leading comment 1
   & # trailing comment 1
-  # dangling comment 1
+  # leading comment 2
   args # trailing comment 2
-  # dangling comment 2
+  # trailing comment 3
 )
+
+def foo(&)
+  bar(&)
+end
+
+def foo(&)
+  bar(
+    &
+  )
+end
+
+def foo(&)
+  bar(
+    # leading comment 1
+    & # trailing comment 1
+    # trailing comment 2
+  )
+end

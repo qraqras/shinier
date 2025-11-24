@@ -5,47 +5,103 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/block_argument_node.rb
 ---
 ****FORMATTED****
+bar(&args)
+
+bar(&args)
+
+bar(
+  # leading comment 1
+  &args
+)
+
+bar(
+  &args # trailing comment 1
+)
+
+bar(
+  &args
+  # trailing comment 1
+)
+
+
+bar(
+  # leading comment 1
+  &args # trailing comment 1
+  # trailing comment 2
+)
+
+bar(
+  & # trailing comment 1
+  args # trailing comment 2
+)
+
+bar(
+  # leading comment 1
+  & # trailing comment 1
+  # leading comment 2
+  args # trailing comment 2
+  # trailing comment 3
+)
+
 def foo(&)
   bar(&)
 end
 
-bar(&args)
+def foo(&)
+  bar(&)
+end
 
-bar(&args)
-
-bar(
-  # leading comment
-  &args # trailing comment
-  # dangling comment
-)
-
-bar(
-  # leading comment
-  & # trailing comment 1
-  # dangling comment 1
-  args # trailing comment 2
-  # dangling comment 2
-)
+def foo(&)
+  bar(
+    # leading comment 1
+    & # trailing comment 1
+    # trailing comment 2
+  )
+end
 
 
 ****AST****
-ProgramNode[0-257]: "def foo(&)\n  bar(&)\nend\n\nbar(&args)\n\nbar(\n  &\n  args\n)\n\nbar(\n  # leading comment\n  &args # trailing comment\n  # dangling comment\n)\n\nbar(\n  # leading comment\n  & # trailing comment 1\n  # dangling comment 1\n  args # trailing comment 2\n  # dangling comment 2\n)"
-__StatementsNode[0-257]: "def foo(&)\n  bar(&)\nend\n\nbar(&args)\n\nbar(\n  &\n  args\n)\n\nbar(\n  # leading comment\n  &args # trailing comment\n  # dangling comment\n)\n\nbar(\n  # leading comment\n  & # trailing comment 1\n  # dangling comment 1\n  args # trailing comment 2\n  # dangling comment 2\n)"
-____DefNode[0-23]: "def foo(&)\n  bar(&)\nend"
-______ParametersNode[8-9]: "&"
-________BlockParameterNode[8-9]: "&"
-______StatementsNode[13-19]: "bar(&)"
-________CallNode[13-19]: "bar(&)"
-__________BlockArgumentNode[17-18]: "&"
-____CallNode[25-35]: "bar(&args)"
-______BlockArgumentNode[29-34]: "&args"
-________CallNode[30-34]: "args"
-____CallNode[37-54]: "bar(\n  &\n  args\n)"
-______BlockArgumentNode[44-52]: "&\n  args"
-________CallNode[48-52]: "args"
-____CallNode[56-130]: "bar(\n  # leading comment\n  &args # trailing comment\n  # dangling comment\n)"
-______BlockArgumentNode[83-88]: "&args"
-________CallNode[84-88]: "args"
-____CallNode[132-257]: "bar(\n  # leading comment\n  & # trailing comment 1\n  # dangling comment 1\n  args # trailing comment 2\n  # dangling comment 2\n)"
-______BlockArgumentNode[159-211]: "& # trailing comment 1\n  # dangling comment 1\n  args"
-________CallNode[207-211]: "args"
+ProgramNode[0-567]: "bar(&args)\n\nbar(\n  &\n  args\n)\n\nbar(\n  # leading comment 1\n  &args\n)\n\nbar(&args # trailing comment 1\n)\n\nbar(&args\n  # trailing comment 1\n)\n\n\nbar(\n  # leading comment 1\n  &args # trailing comment 1\n  # trailing comment 2\n)\n\nbar(& # trailing comment 1\n  args # trailing comment 2\n)\n\nbar(\n  # leading comment 1\n  & # trailing comment 1\n  # leading comment 2\n  args # trailing comment 2\n  # trailing comment 3\n)\n\ndef foo(&)\n  bar(&)\nend\n\ndef foo(&)\n  bar(\n    &\n  )\nend\n\ndef foo(&)\n  bar(\n    # leading comment 1\n    & # trailing comment 1\n    # trailing comment 2\n  )\nend"
+__StatementsNode[0-567]: "bar(&args)\n\nbar(\n  &\n  args\n)\n\nbar(\n  # leading comment 1\n  &args\n)\n\nbar(&args # trailing comment 1\n)\n\nbar(&args\n  # trailing comment 1\n)\n\n\nbar(\n  # leading comment 1\n  &args # trailing comment 1\n  # trailing comment 2\n)\n\nbar(& # trailing comment 1\n  args # trailing comment 2\n)\n\nbar(\n  # leading comment 1\n  & # trailing comment 1\n  # leading comment 2\n  args # trailing comment 2\n  # trailing comment 3\n)\n\ndef foo(&)\n  bar(&)\nend\n\ndef foo(&)\n  bar(\n    &\n  )\nend\n\ndef foo(&)\n  bar(\n    # leading comment 1\n    & # trailing comment 1\n    # trailing comment 2\n  )\nend"
+____CallNode[0-10]: "bar(&args)"
+______BlockArgumentNode[4-9]: "&args"
+________CallNode[5-9]: "args"
+____CallNode[12-29]: "bar(\n  &\n  args\n)"
+______BlockArgumentNode[19-27]: "&\n  args"
+________CallNode[23-27]: "args"
+____CallNode[31-67]: "bar(\n  # leading comment 1\n  &args\n)"
+______BlockArgumentNode[60-65]: "&args"
+________CallNode[61-65]: "args"
+____CallNode[69-101]: "bar(&args # trailing comment 1\n)"
+______BlockArgumentNode[73-78]: "&args"
+________CallNode[74-78]: "args"
+____CallNode[103-137]: "bar(&args\n  # trailing comment 1\n)"
+______BlockArgumentNode[107-112]: "&args"
+________CallNode[108-112]: "args"
+____CallNode[140-220]: "bar(\n  # leading comment 1\n  &args # trailing comment 1\n  # trailing comment 2\n)"
+______BlockArgumentNode[169-174]: "&args"
+________CallNode[170-174]: "args"
+____CallNode[222-278]: "bar(& # trailing comment 1\n  args # trailing comment 2\n)"
+______BlockArgumentNode[226-255]: "& # trailing comment 1\n  args"
+________CallNode[251-255]: "args"
+____CallNode[280-406]: "bar(\n  # leading comment 1\n  & # trailing comment 1\n  # leading comment 2\n  args # trailing comment 2\n  # trailing comment 3\n)"
+______BlockArgumentNode[309-360]: "& # trailing comment 1\n  # leading comment 2\n  args"
+________CallNode[356-360]: "args"
+____DefNode[408-431]: "def foo(&)\n  bar(&)\nend"
+______ParametersNode[416-417]: "&"
+________BlockParameterNode[416-417]: "&"
+______StatementsNode[421-427]: "bar(&)"
+________CallNode[421-427]: "bar(&)"
+__________BlockArgumentNode[425-426]: "&"
+____DefNode[433-464]: "def foo(&)\n  bar(\n    &\n  )\nend"
+______ParametersNode[441-442]: "&"
+________BlockParameterNode[441-442]: "&"
+______StatementsNode[446-460]: "bar(\n    &\n  )"
+________CallNode[446-460]: "bar(\n    &\n  )"
+__________BlockArgumentNode[455-456]: "&"
+____DefNode[466-567]: "def foo(&)\n  bar(\n    # leading comment 1\n    & # trailing comment 1\n    # trailing comment 2\n  )\nend"
+______ParametersNode[474-475]: "&"
+________BlockParameterNode[474-475]: "&"
+______StatementsNode[479-563]: "bar(\n    # leading comment 1\n    & # trailing comment 1\n    # trailing comment 2\n  )"
+________CallNode[479-563]: "bar(\n    # leading comment 1\n    & # trailing comment 1\n    # trailing comment 2\n  )"
+__________BlockArgumentNode[512-513]: "&"

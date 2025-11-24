@@ -4,7 +4,6 @@ use crate::builder::builder::*;
 use crate::builder::prism::comments::Target;
 use crate::builder::prism::helper::build_blank_lines::*;
 use crate::builder::prism::helper::build_comments::*;
-use crate::builder::prism::helper::comment_helper::update_dangling_remaining;
 
 /// Builds the main Document for a given node or location, including comments and blank lines.
 pub fn build_main<'sh, B, V, P>(builder: B, value: V, param: &P, context: &mut BuildContext) -> Option<Document>
@@ -36,15 +35,6 @@ where
     // ** MAIN BUILDING PROCESS **
     let built = builder(&target, context, param);
 
-    // // ** UPDATE COMMENTS **
-    // update_dangling_remaining(
-    //     &mut current_dangling_comments,
-    //     &mut current_remaining_comments,
-    //     start_offset,
-    //     end_offset,
-    //     context,
-    // );
-
     // ** BUILD COMMENTS AND ASSEMBLE FINAL DOCUMENT **
     let leading_comments = build_comments_as_leading(current_leading_comments, context);
     let trailing_comments = build_comments_as_trailing(current_trailing_comments, context);
@@ -56,10 +46,4 @@ where
         trailing_comments,
         dangling_comments,
     ])
-}
-
-// Merges two vectors into one.
-fn merge_vector<T>(mut v1: Vec<T>, mut v2: Vec<T>) -> Vec<T> {
-    v1.append(&mut v2);
-    v1
 }

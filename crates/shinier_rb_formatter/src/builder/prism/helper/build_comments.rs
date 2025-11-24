@@ -54,6 +54,7 @@ pub fn build_comments_as_trailing(comments: Option<Vec<CommentWrapper>>, _ctx: &
                 match position {
                     CommentPosition::EndOfLine => {
                         documents.push(line_suffix(array(&[space(), _build_comment(&comment)])));
+                        documents.push(break_parent());
                     }
                     CommentPosition::OwnLine => {
                         documents.push(hardline());
@@ -61,7 +62,6 @@ pub fn build_comments_as_trailing(comments: Option<Vec<CommentWrapper>>, _ctx: &
                     }
                 }
             }
-            documents.push(break_parent());
             array(&documents)
         }
         Some(_comments) => None,
@@ -87,7 +87,6 @@ pub fn build_comments_as_dangling(comments: Option<Vec<CommentWrapper>>, ctx: &m
                 }
                 documents.push(_build_comment(&comment));
             }
-            documents.push(break_parent());
             array(&documents)
         }
         Some(_comments) => None,

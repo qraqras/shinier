@@ -1,0 +1,62 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/alias_global_variable_node.rb
+---
+****FORMATTED****
+alias $foo $bar
+
+# unnecessary line break
+alias $foo $bar
+
+# long expression
+alias
+  $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+
+alias # trailing comment
+  $foo $bar
+alias
+  # leading comment 1
+  # leading comment 2
+  $foo $bar
+alias
+  # leading block comment 1
+  # leading block comment 2
+  $foo $bar
+alias $foo $bar # trailing comment 1
+alias $foo $bar # trailing comment 1
+alias
+  $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar # trailing comment 1
+
+
+****AST****
+ProgramNode[0-592]: "alias $foo $bar\n\n# unnecessary line break\nalias\n  $foo $bar\n\n# long expression\nalias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\n\nalias # trailing comment\n  $foo $bar\nalias\n  # leading comment 1\n  # leading comment 2\n  $foo $bar\nalias\n=begin\nleading block comment 1\nleading block comment 2\n=end\n  $foo $bar\nalias $foo $bar # trailing comment 1\nalias\n  $foo $bar # trailing comment 1\nalias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+__StatementsNode[0-592]: "alias $foo $bar\n\n# unnecessary line break\nalias\n  $foo $bar\n\n# long expression\nalias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\n\nalias # trailing comment\n  $foo $bar\nalias\n  # leading comment 1\n  # leading comment 2\n  $foo $bar\nalias\n=begin\nleading block comment 1\nleading block comment 2\n=end\n  $foo $bar\nalias $foo $bar # trailing comment 1\nalias\n  $foo $bar # trailing comment 1\nalias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____AliasGlobalVariableNode[0-15]: "alias $foo $bar"
+______GlobalVariableReadNode[6-10]: "$foo"
+______GlobalVariableReadNode[11-15]: "$bar"
+____AliasGlobalVariableNode[42-59]: "alias\n  $foo $bar"
+______GlobalVariableReadNode[50-54]: "$foo"
+______GlobalVariableReadNode[55-59]: "$bar"
+____AliasGlobalVariableNode[79-208]: "alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+______GlobalVariableReadNode[85-146]: "$foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+______GlobalVariableReadNode[147-208]: "$barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____AliasGlobalVariableNode[210-246]: "alias # trailing comment\n  $foo $bar"
+______GlobalVariableReadNode[237-241]: "$foo"
+______GlobalVariableReadNode[242-246]: "$bar"
+____AliasGlobalVariableNode[247-308]: "alias\n  # leading comment 1\n  # leading comment 2\n  $foo $bar"
+______GlobalVariableReadNode[299-303]: "$foo"
+______GlobalVariableReadNode[304-308]: "$bar"
+____AliasGlobalVariableNode[309-386]: "alias\n=begin\nleading block comment 1\nleading block comment 2\n=end\n  $foo $bar"
+______GlobalVariableReadNode[377-381]: "$foo"
+______GlobalVariableReadNode[382-386]: "$bar"
+____AliasGlobalVariableNode[387-402]: "alias $foo $bar"
+______GlobalVariableReadNode[393-397]: "$foo"
+______GlobalVariableReadNode[398-402]: "$bar"
+____AliasGlobalVariableNode[424-441]: "alias\n  $foo $bar"
+______GlobalVariableReadNode[432-436]: "$foo"
+______GlobalVariableReadNode[437-441]: "$bar"
+____AliasGlobalVariableNode[463-592]: "alias $foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo $barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+______GlobalVariableReadNode[469-530]: "$foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+______GlobalVariableReadNode[531-592]: "$barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"

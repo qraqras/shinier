@@ -1,0 +1,69 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/alias_method_node.rb
+---
+****FORMATTED****
+alias foo bar
+
+# unnecessary line break
+alias foo bar
+
+# long expression
+alias
+  foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+
+alias # trailing comment 1
+  foo bar
+alias
+  # leading comment 1
+  # leading comment 2
+  foo bar
+alias
+  # leading block comment 1
+  # leading block comment 2
+  foo bar
+alias
+  # leading block comment 1
+  # leading block comment 2
+  foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar
+alias foo bar # trailing comment 1
+alias foo bar # trailing comment 1
+alias
+  foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar # trailing comment 1
+
+
+****AST****
+ProgramNode[0-766]: "alias foo bar\n\n# unnecessary line break\nalias\n  foo bar\n\n# long expression\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\n\nalias # trailing comment 1\n  foo bar\nalias\n  # leading comment 1\n  # leading comment 2\n  foo bar\nalias\n=begin\nleading block comment 1\nleading block comment 2\n=end\n  foo bar\nalias\n=begin\nleading block comment 1\nleading block comment 2\n=end\n  foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\nalias foo bar # trailing comment 1\nalias\n  foo bar # trailing comment 1\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+__StatementsNode[0-766]: "alias foo bar\n\n# unnecessary line break\nalias\n  foo bar\n\n# long expression\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\n\nalias # trailing comment 1\n  foo bar\nalias\n  # leading comment 1\n  # leading comment 2\n  foo bar\nalias\n=begin\nleading block comment 1\nleading block comment 2\n=end\n  foo bar\nalias\n=begin\nleading block comment 1\nleading block comment 2\n=end\n  foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar\nalias foo bar # trailing comment 1\nalias\n  foo bar # trailing comment 1\nalias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____AliasMethodNode[0-13]: "alias foo bar"
+______SymbolNode[6-9]: "foo"
+______SymbolNode[10-13]: "bar"
+____AliasMethodNode[40-55]: "alias\n  foo bar"
+______SymbolNode[48-51]: "foo"
+______SymbolNode[52-55]: "bar"
+____AliasMethodNode[75-202]: "alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+______SymbolNode[81-141]: "foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+______SymbolNode[142-202]: "barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____AliasMethodNode[204-240]: "alias # trailing comment 1\n  foo bar"
+______SymbolNode[233-236]: "foo"
+______SymbolNode[237-240]: "bar"
+____AliasMethodNode[241-300]: "alias\n  # leading comment 1\n  # leading comment 2\n  foo bar"
+______SymbolNode[293-296]: "foo"
+______SymbolNode[297-300]: "bar"
+____AliasMethodNode[301-376]: "alias\n=begin\nleading block comment 1\nleading block comment 2\n=end\n  foo bar"
+______SymbolNode[369-372]: "foo"
+______SymbolNode[373-376]: "bar"
+____AliasMethodNode[377-566]: "alias\n=begin\nleading block comment 1\nleading block comment 2\n=end\n  foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+______SymbolNode[445-505]: "foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+______SymbolNode[506-566]: "barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+____AliasMethodNode[567-580]: "alias foo bar"
+______SymbolNode[573-576]: "foo"
+______SymbolNode[577-580]: "bar"
+____AliasMethodNode[602-617]: "alias\n  foo bar"
+______SymbolNode[610-613]: "foo"
+______SymbolNode[614-617]: "bar"
+____AliasMethodNode[639-766]: "alias foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"
+______SymbolNode[645-705]: "foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo"
+______SymbolNode[706-766]: "barbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbarbar"

@@ -37,7 +37,7 @@ pub fn build_def_node(node: &DefNode<'_>, ctx: &mut BuildContext) -> Option<Docu
                 .map(|n| indent(array(&[line_or_none.clone(), build_node(n.as_node(), ctx)])))
                 .flatten(),
             rparen_loc
-                .map(|loc| array(&[line_or_none.clone(), build_location(loc, ctx)]))
+                .map(|loc| array(&[line_or_none.clone(), conditional_group(&[build_location(loc, ctx)])]))
                 .flatten(),
         ])),
         body.map(|n| indent(array(&[softline(), build_node(n, ctx)]))).flatten(),
