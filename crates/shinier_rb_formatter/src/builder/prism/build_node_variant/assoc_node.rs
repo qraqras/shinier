@@ -34,7 +34,7 @@ pub fn build_assoc_node(node: &AssocNode<'_>, ctx: &mut BuildContext) -> Option<
             match &key.as_symbol_node() {
                 // SymbolNode: Convert to Hash Label Style
                 Some(n) => group(array(&[
-                    build_node_as_hash_label_style(n.as_node(), ctx),
+                    _build_node_as_hash_label_style(n.as_node(), ctx),
                     build_custom_location(o, ctx, ":"),
                     indent(array(&[break_or_space, build_node(value, ctx)])),
                 ])),
@@ -61,7 +61,7 @@ pub fn build_assoc_node(node: &AssocNode<'_>, ctx: &mut BuildContext) -> Option<
     }
 }
 
-fn build_node_as_hash_label_style(node: Node<'_>, ctx: &mut BuildContext) -> Option<Document> {
+fn _build_node_as_hash_label_style(node: Node<'_>, ctx: &mut BuildContext) -> Option<Document> {
     ctx.hash_label_style = true;
     let built = build_node(node, ctx);
     ctx.hash_label_style = false;

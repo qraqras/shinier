@@ -11,6 +11,6 @@ baz
 return foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz
 
 return foo,
-  # owning comment
+  # leading comment 1
   bar, # trailing comment 1
   baz # trailing comment 2

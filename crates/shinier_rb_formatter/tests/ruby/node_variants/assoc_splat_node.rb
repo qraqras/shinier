@@ -1,4 +1,6 @@
 { **foo }
+{ **
+  foo }
 
 # With other keys
 { a: 1, **foo }
@@ -30,25 +32,32 @@
   **foo }
 
 # Long expressions
-{ very_long_key_name: value, **very_long_hash_variable_name }
-{ **very_long_hash_variable_name, another_very_long_key_name: value }
+{ **very_long_hash_variable_name_very_long_hash_variable_name_very_long_hash_variable_name_very_long_hash_variable_name }
 
-# Comments
-{ **foo } # trailing comment
 {
-  a: 1, # trailing comment 1
-  **foo # trailing comment 2
-}
-{
-  # owning comment
+  # leading comment 1
   **foo
 }
-
-# Multiline
 {
-  a: 1,
-  **foo,
-  b: 2
+  **foo # trailing comment 1
+}
+
+{
+  **foo
+  # trailing comment 1
+}
+
+{
+  ** # trailing comment 1
+  foo # trailing comment 2
+}
+
+{
+  # leading comment 1
+  ** # trailing comment 1
+  # trailing comment 2
+  foo # trailing comment 3
+  # trailing_comment_4
 }
 
 # Empty hash with splat

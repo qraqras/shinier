@@ -5,6 +5,7 @@ use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::BeginNode;
 
+/// Builds BeginNode.
 pub fn build_begin_node(node: &BeginNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let begin_keyword_loc = node.begin_keyword_loc();
     let statements = node.statements();

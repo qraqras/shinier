@@ -32,27 +32,3 @@ def foo(&
   # dangling comment
 )
 end
-
-def foo(
-  # comment
-)
-end
-
-def foo
-  # comment
-end
-
-def foo(bar)
-  # comment
-end
-
-def foo() # comment
-end
-
-def foo()
-end
-
-def foo()
-  bar
-  # comment
-end

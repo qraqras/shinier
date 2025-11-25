@@ -7,6 +7,7 @@ use crate::builder::prism::builder_helper::*;
 use ruby_prism::AliasGlobalVariableNode;
 
 /// Builds AliasGlobalVariableNode.
+///
 /// Formats on a single line regardless of length, unless comments are present.
 pub fn build_alias_global_variable_node(
     node: &AliasGlobalVariableNode<'_>,

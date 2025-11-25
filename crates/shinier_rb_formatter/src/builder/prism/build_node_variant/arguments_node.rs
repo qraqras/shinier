@@ -5,6 +5,7 @@ use crate::builder::prism::build_node::build_node;
 use ruby_prism::ArgumentsNode;
 
 /// Builds ArgumentsNode.
+///
 /// Arguments are separated by commas and line breaks.
 pub fn build_arguments_node(node: &ArgumentsNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let arguments = node.arguments();

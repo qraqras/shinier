@@ -35,18 +35,21 @@
 { "a" => method_call(arg1, arg2) }
 
 # Comments
-{ a => b } # trailing comment
 {
   a => b, # trailing comment 1
   c => d # trailing comment 2
 }
 {
-  # owning comment
+  # leading comment
   a => b
 }
 {
+  a => # trailing comment
+  b
+}
+{
   a =>
-  # owning comment
+  # leading comment
   b
 }
 

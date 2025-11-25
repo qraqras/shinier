@@ -20,3 +20,4 @@ foo => bar | # trailing comment 1
   # leading comment 1
   # leading comment 2
   baz # trailing comment 2
+  # trailing comment 3

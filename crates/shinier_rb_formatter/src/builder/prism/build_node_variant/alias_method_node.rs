@@ -7,6 +7,7 @@ use crate::builder::prism::builder_helper::*;
 use ruby_prism::AliasMethodNode;
 
 /// Builds AliasGlobalVariableNode.
+///
 /// Formats on a single line regardless of length, unless comments are present.
 pub fn build_alias_method_node(node: &AliasMethodNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let keyword_loc = node.keyword_loc();
