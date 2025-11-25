@@ -1,0 +1,54 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/call_node.rb
+---
+****FORMATTED****
+foo(a, b, c)
+foo a, b, c
+
+foo(
+  aaaaaaaaaaaa,
+  bbbbbbbbbbb,
+  ccccccccccc,
+  ddddddddddddddddddddddddd,
+  eeeeeeeeeeeeeeeeeeeeeeeeee
+)
+
+foo
+
+1+ 2+ 3+ 4
+
+
+****AST****
+ProgramNode[0-145]: "foo(a, b, c)\nfoo a, b, c\n\nfoo aaaaaaaaaaaa, bbbbbbbbbbb, ccccccccccc, ddddddddddddddddddddddddd, eeeeeeeeeeeeeeeeeeeeeeeeee\n\nfoo()\n\n1 + 2 + 3 + 4"
+__StatementsNode[0-145]: "foo(a, b, c)\nfoo a, b, c\n\nfoo aaaaaaaaaaaa, bbbbbbbbbbb, ccccccccccc, ddddddddddddddddddddddddd, eeeeeeeeeeeeeeeeeeeeeeeeee\n\nfoo()\n\n1 + 2 + 3 + 4"
+____CallNode[0-12]: "foo(a, b, c)"
+______ArgumentsNode[4-11]: "a, b, c"
+________CallNode[4-5]: "a"
+________CallNode[7-8]: "b"
+________CallNode[10-11]: "c"
+____CallNode[13-24]: "foo a, b, c"
+______ArgumentsNode[17-24]: "a, b, c"
+________CallNode[17-18]: "a"
+________CallNode[20-21]: "b"
+________CallNode[23-24]: "c"
+____CallNode[26-123]: "foo aaaaaaaaaaaa, bbbbbbbbbbb, ccccccccccc, ddddddddddddddddddddddddd, eeeeeeeeeeeeeeeeeeeeeeeeee"
+______ArgumentsNode[30-123]: "aaaaaaaaaaaa, bbbbbbbbbbb, ccccccccccc, ddddddddddddddddddddddddd, eeeeeeeeeeeeeeeeeeeeeeeeee"
+________CallNode[30-42]: "aaaaaaaaaaaa"
+________CallNode[44-55]: "bbbbbbbbbbb"
+________CallNode[57-68]: "ccccccccccc"
+________CallNode[70-95]: "ddddddddddddddddddddddddd"
+________CallNode[97-123]: "eeeeeeeeeeeeeeeeeeeeeeeeee"
+____CallNode[125-130]: "foo()"
+____CallNode[132-145]: "1 + 2 + 3 + 4"
+______CallNode[132-141]: "1 + 2 + 3"
+________CallNode[132-137]: "1 + 2"
+__________IntegerNode[132-133]: "1"
+__________ArgumentsNode[136-137]: "2"
+____________IntegerNode[136-137]: "2"
+________ArgumentsNode[140-141]: "3"
+__________IntegerNode[140-141]: "3"
+______ArgumentsNode[144-145]: "4"
+________IntegerNode[144-145]: "4"

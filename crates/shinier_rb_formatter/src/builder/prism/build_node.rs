@@ -4,6 +4,7 @@ use crate::builder::prism::build_main::build_main;
 use crate::builder::prism::build_node_variant::*;
 use crate::builder::target::Target;
 use ruby_prism::Node;
+use ruby_prism::NodeList;
 use std::marker::PhantomData;
 
 /// Internal function to build a node with optional content
@@ -185,4 +186,9 @@ fn _node_builder<'sh, T>(target: &Target<'sh>, ctx: &mut BuildContext, _: &Phant
 /// Build a node into a Document
 pub fn build_node<'sh>(node: Node<'sh>, ctx: &mut BuildContext) -> Option<Document> {
     build_main(_node_builder, Target::from(&node), &PhantomData::<()>, ctx)
+}
+
+/// Build a nodelist into a Vec of Documents
+pub fn build_nodelist<'sh>(nodelist: NodeList<'sh>, ctx: &mut BuildContext) -> Vec<Option<Document>> {
+    nodelist.iter().map(|node| build_node(node, ctx)).collect()
 }

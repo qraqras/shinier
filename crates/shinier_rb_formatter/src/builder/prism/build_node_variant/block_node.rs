@@ -1,12 +1,27 @@
-// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/block_node.rs
-
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
-use crate::keyword::*;
 use ruby_prism::*;
 
+/// Builds BlockNode.
+///
 pub fn build_block_node(node: &BlockNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    None
+    let parameters = node.parameters();
+    let body = node.body();
+    let opening_loc = node.opening_loc();
+    let closing_loc = node.closing_loc();
+
+    group(array(&[
+        build_location(opening_loc, ctx),
+        indent(match (parameters, body) {
+            (Some(p), Some(b)) => array(&[group(array(&[line(), build_node(p, ctx)])), line(), build_node(b, ctx)]),
+            (Some(p), None) => group(array(&[line(), build_node(p, ctx)])),
+            (None, Some(b)) => group(array(&[line(), build_node(b, ctx)])),
+            (None, None) => None,
+        }),
+        line(),
+        build_location(closing_loc, ctx),
+    ]))
 }

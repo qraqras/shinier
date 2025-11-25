@@ -9,13 +9,16 @@ use ruby_prism::ArgumentsNode;
 /// Arguments are separated by commas and line breaks.
 pub fn build_arguments_node(node: &ArgumentsNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let arguments = node.arguments();
-    let mut documents = Vec::new();
+    let mut arguments_doc = Vec::new();
     for (i, node) in arguments.iter().enumerate() {
         if i > 0 {
-            documents.push(comma());
-            documents.push(line());
+            arguments_doc.push(comma());
+            arguments_doc.push(line());
         }
-        documents.push(build_node(node, ctx));
+        arguments_doc.push(build_node(node, ctx));
     }
-    group(array(&documents))
+    match arguments_doc.is_empty() {
+        true => None,
+        false => group(array(&arguments_doc)),
+    }
 }
