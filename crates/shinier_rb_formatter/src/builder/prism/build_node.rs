@@ -2,8 +2,7 @@ use crate::Document;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_main::build_main;
 use crate::builder::prism::build_node_variant::*;
-use crate::builder::prism::comments::Target;
-use crate::builder::prism::comments::TargetType;
+use crate::builder::target::Target;
 use ruby_prism::Node;
 use std::marker::PhantomData;
 
@@ -178,12 +177,12 @@ fn _node_builder<'sh, T>(target: &Target<'sh>, ctx: &mut BuildContext, _: &Phant
         node_doc
     }
     match target {
-        Target::Location(_, _) => None,
-        Target::Node(node, _) => main(node, ctx),
+        Target::Location(_) => None,
+        Target::Node(node) => main(node, ctx),
     }
 }
 
 /// Build a node into a Document
 pub fn build_node<'sh>(node: Node<'sh>, ctx: &mut BuildContext) -> Option<Document> {
-    build_main(_node_builder, (node, TargetType::Regular), &PhantomData::<()>, ctx)
+    build_main(_node_builder, Target::from(&node), &PhantomData::<()>, ctx)
 }

@@ -183,6 +183,10 @@ pub fn string<T: Into<String>>(string: T) -> Option<Document> {
     }
 }
 
+pub fn comma() -> Option<Document> {
+    string(",")
+}
+
 pub fn space() -> Option<Document> {
     string(" ")
 }

@@ -7,6 +7,9 @@ use crate::builder::prism::build_node::build_node;
 use ruby_prism::ArrayPatternNode;
 use ruby_prism::Node;
 
+/// Builds ArrayPatternNode.
+///
+/// Note that the trailing comma is part of the syntax for matching the remaining elements.
 pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let constant = node.constant();
     let requireds = node.requireds();
@@ -16,44 +19,38 @@ pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, ctx: &mut BuildCont
     let closing_loc = node.closing_loc();
 
     // Collects all parameters
-    let mut params = Vec::new();
+    let mut parameters = Vec::new();
     for required in requireds.iter() {
-        params.push(required);
+        parameters.push(required);
     }
     if let Some(rest) = rest {
-        params.push(rest);
+        parameters.push(rest);
     }
     for post in posts.iter() {
-        params.push(post);
+        parameters.push(post);
     }
 
     // Builds parameters with separators
-    let mut built_params = Vec::new();
-    for (i, param) in params.into_iter().enumerate() {
+    let mut parameter_docs = Vec::new();
+    for (i, param) in parameters.into_iter().enumerate() {
         match param {
             Node::ImplicitRestNode { .. } => {}
             _ => {
                 if i > 0 {
-                    built_params.push(string(COMMA));
-                    built_params.push(line());
+                    parameter_docs.push(comma());
+                    parameter_docs.push(line());
                 }
             }
         };
-        built_params.push(build_node(param, ctx));
+        parameter_docs.push(build_node(param, ctx));
     }
 
-    match (constant, opening_loc, closing_loc) {
-        (None, None, None) => group(array(&built_params)),
-        (None, Some(opening_loc), Some(closing_loc)) => group(array(&[
+    match (opening_loc, closing_loc) {
+        (None, None) => group(array(&parameter_docs)),
+        (Some(opening_loc), Some(closing_loc)) => group(array(&[
+            constant.map(|c| build_node(c, ctx)).flatten(),
             build_location(opening_loc, ctx),
-            indent(array(&[softline(), array(&built_params)])),
-            softline(),
-            build_location(closing_loc, ctx),
-        ])),
-        (Some(constant), Some(opening_loc), Some(closing_loc)) => group(array(&[
-            build_node(constant, ctx),
-            build_location(opening_loc, ctx),
-            indent(array(&[softline(), array(&built_params)])),
+            indent(array(&[softline(), array(&parameter_docs)])),
             softline(),
             build_location(closing_loc, ctx),
         ])),

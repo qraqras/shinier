@@ -1,18 +1,17 @@
 use crate::Document;
 use crate::builder::BuildContext;
 use crate::builder::builder::*;
-use crate::builder::prism::comments::Target;
-use crate::builder::prism::helper::build_blank_lines::*;
-use crate::builder::prism::helper::build_comments::*;
+use crate::builder::prism::build_blank_lines::*;
+use crate::builder::prism::build_comments::*;
+use crate::builder::target::Target;
 
 /// Builds the main Document for a given node or location, including comments and blank lines.
-pub fn build_main<'sh, B, V, P>(builder: B, value: V, param: &P, context: &mut BuildContext) -> Option<Document>
+pub fn build_main<'sh, B, P>(builder: B, target: Target<'sh>, param: &P, context: &mut BuildContext) -> Option<Document>
 where
     B: Fn(&Target<'sh>, &mut BuildContext, &P) -> Option<Document>,
-    V: Into<Target<'sh>>,
 {
     // ** TARGET CONVERSION **
-    let target = value.into();
+    // let target = value.into();
 
     // ** GET OFFSETS **
     let start_offset = target.start_offset();

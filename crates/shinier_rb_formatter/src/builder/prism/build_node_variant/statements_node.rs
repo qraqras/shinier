@@ -1,6 +1,5 @@
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::helper::comment_helper::update_dangling_remaining;
 use crate::{Document, array, hardline};
 use ruby_prism::StatementsNode;
 

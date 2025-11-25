@@ -1,9 +1,9 @@
 use crate::Document;
 use crate::builder::builder::*;
+use crate::builder::helper::location_helper::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
-use crate::builder::prism::helper::location_helper::is_end_keyword;
 use ruby_prism::ElseNode;
 
 pub fn build_else_node(node: &ElseNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
@@ -14,9 +14,11 @@ pub fn build_else_node(node: &ElseNode<'_>, ctx: &mut BuildContext) -> Option<Do
     // The end_keyword_loc may point to the next clause keyword (e.g., "ensure")
     // when an else block is followed by ensure. We only output "end" keywords,
     // not other clause keywords, so we filter them out here.
-    if !is_end_keyword(&end_keyword_loc) {
-        end_keyword_loc = None;
-    };
+    if let Some(loc) = &end_keyword_loc {
+        if !equals(&loc, "end") {
+            end_keyword_loc = None;
+        }
+    }
 
     group(array(&[
         build_location(else_keyword_loc, ctx),

@@ -1,0 +1,225 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/assoc_node.rb
+---
+****FORMATTED****
+{ a => b }
+{ foo: :bar }
+{ "foo" => "bar" }
+{ foo: bar }
+
+# Multiple associations
+{ a => b, c => d }
+{ foo: 1, bar: 2 }
+{ "foo" => "1", "bar" => "2" }
+{ foo: 1, bar: 2 }
+
+# Unnecessary line breaks
+{ a => b }
+{ foo: bar }
+{ "foo" => "1", "bar" => "2" }
+
+# Long associations
+{
+  foo1 => bar1,
+  foo2 => bar2,
+  foo3 => bar3,
+  foo4 => bar4,
+  foo5 => bar5,
+  foo6 => bar6
+}
+{
+  very_long_key_name_that_exceeds_line_limit_1 => very_long_value_name_that_exceeds_line_limit_1,
+  very_long_key_name_that_exceeds_line_limit_2 => very_long_value_name_that_exceeds_line_limit_2
+}
+
+# Nested hashes
+{ a => { b => c } }
+{ a => { b: { "c" => "d" } } }
+
+# Complex values
+{ a => [1, 2, 3] }
+{ a: foo.bar.baz }
+{ "a" => method_call(arg1, arg2) }
+
+# Comments
+{ a => b } # trailing comment
+{
+  a => b, # trailing comment 1
+  c => d # trailing comment 2
+}
+{
+  # owning comment
+  a => b
+}
+{
+  a =>
+    # owning comment
+    b
+}
+
+# Multiline values
+{ a => { nested: :value } }
+{ key: [1, 2, 3] }
+
+
+****AST****
+ProgramNode[0-1012]: "{ a => b }\n{:foo => :bar}\n{ \"foo\" => \"bar\", }\n{ foo: bar }\n\n# Multiple associations\n{ a => b, c => d }\n{ :foo => 1, :bar => 2 }\n{ \"foo\" => \"1\", \"bar\" => \"2\" }\n{ foo: 1, bar: 2 }\n\n# Unnecessary line breaks\n{ a =>\n  b }\n{\n  :foo =>\n  bar\n}\n{\n  \"foo\" => \"1\", \"bar\" =>\n  \"2\"\n}\n\n# Long associations\n{ foo1 => bar1, foo2 => bar2, foo3 => bar3, foo4 => bar4, foo5 => bar5, foo6 => bar6 }\n{ very_long_key_name_that_exceeds_line_limit_1 => very_long_value_name_that_exceeds_line_limit_1, very_long_key_name_that_exceeds_line_limit_2 => very_long_value_name_that_exceeds_line_limit_2 }\n\n# Nested hashes\n{ a => { b => c } }\n{ a => { :b => { \"c\" => \"d\" } } }\n\n# Complex values\n{ a => [1, 2, 3] }\n{ :a => foo.bar.baz }\n{ \"a\" => method_call(arg1, arg2) }\n\n# Comments\n{ a => b } # trailing comment\n{\n  a => b, # trailing comment 1\n  c => d # trailing comment 2\n}\n{\n  # owning comment\n  a => b\n}\n{\n  a =>\n  # owning comment\n  b\n}\n\n# Multiline values\n{\n  a => {\n    :nested => :value\n  }\n}\n{\n  :key => [\n    1,\n    2,\n    3\n  ]\n}"
+__StatementsNode[0-1012]: "{ a => b }\n{:foo => :bar}\n{ \"foo\" => \"bar\", }\n{ foo: bar }\n\n# Multiple associations\n{ a => b, c => d }\n{ :foo => 1, :bar => 2 }\n{ \"foo\" => \"1\", \"bar\" => \"2\" }\n{ foo: 1, bar: 2 }\n\n# Unnecessary line breaks\n{ a =>\n  b }\n{\n  :foo =>\n  bar\n}\n{\n  \"foo\" => \"1\", \"bar\" =>\n  \"2\"\n}\n\n# Long associations\n{ foo1 => bar1, foo2 => bar2, foo3 => bar3, foo4 => bar4, foo5 => bar5, foo6 => bar6 }\n{ very_long_key_name_that_exceeds_line_limit_1 => very_long_value_name_that_exceeds_line_limit_1, very_long_key_name_that_exceeds_line_limit_2 => very_long_value_name_that_exceeds_line_limit_2 }\n\n# Nested hashes\n{ a => { b => c } }\n{ a => { :b => { \"c\" => \"d\" } } }\n\n# Complex values\n{ a => [1, 2, 3] }\n{ :a => foo.bar.baz }\n{ \"a\" => method_call(arg1, arg2) }\n\n# Comments\n{ a => b } # trailing comment\n{\n  a => b, # trailing comment 1\n  c => d # trailing comment 2\n}\n{\n  # owning comment\n  a => b\n}\n{\n  a =>\n  # owning comment\n  b\n}\n\n# Multiline values\n{\n  a => {\n    :nested => :value\n  }\n}\n{\n  :key => [\n    1,\n    2,\n    3\n  ]\n}"
+____HashNode[0-10]: "{ a => b }"
+______AssocNode[2-8]: "a => b"
+________CallNode[2-3]: "a"
+________CallNode[7-8]: "b"
+____HashNode[11-25]: "{:foo => :bar}"
+______AssocNode[12-24]: ":foo => :bar"
+________SymbolNode[12-16]: ":foo"
+________SymbolNode[20-24]: ":bar"
+____HashNode[26-45]: "{ \"foo\" => \"bar\", }"
+______AssocNode[28-42]: "\"foo\" => \"bar\""
+________StringNode[28-33]: "\"foo\""
+________StringNode[37-42]: "\"bar\""
+____HashNode[46-58]: "{ foo: bar }"
+______AssocNode[48-56]: "foo: bar"
+________SymbolNode[48-52]: "foo:"
+________CallNode[53-56]: "bar"
+____HashNode[84-102]: "{ a => b, c => d }"
+______AssocNode[86-92]: "a => b"
+________CallNode[86-87]: "a"
+________CallNode[91-92]: "b"
+______AssocNode[94-100]: "c => d"
+________CallNode[94-95]: "c"
+________CallNode[99-100]: "d"
+____HashNode[103-127]: "{ :foo => 1, :bar => 2 }"
+______AssocNode[105-114]: ":foo => 1"
+________SymbolNode[105-109]: ":foo"
+________IntegerNode[113-114]: "1"
+______AssocNode[116-125]: ":bar => 2"
+________SymbolNode[116-120]: ":bar"
+________IntegerNode[124-125]: "2"
+____HashNode[128-158]: "{ \"foo\" => \"1\", \"bar\" => \"2\" }"
+______AssocNode[130-142]: "\"foo\" => \"1\""
+________StringNode[130-135]: "\"foo\""
+________StringNode[139-142]: "\"1\""
+______AssocNode[144-156]: "\"bar\" => \"2\""
+________StringNode[144-149]: "\"bar\""
+________StringNode[153-156]: "\"2\""
+____HashNode[159-177]: "{ foo: 1, bar: 2 }"
+______AssocNode[161-167]: "foo: 1"
+________SymbolNode[161-165]: "foo:"
+________IntegerNode[166-167]: "1"
+______AssocNode[169-175]: "bar: 2"
+________SymbolNode[169-173]: "bar:"
+________IntegerNode[174-175]: "2"
+____HashNode[205-217]: "{ a =>\n  b }"
+______AssocNode[207-215]: "a =>\n  b"
+________CallNode[207-208]: "a"
+________CallNode[214-215]: "b"
+____HashNode[218-237]: "{\n  :foo =>\n  bar\n}"
+______AssocNode[222-235]: ":foo =>\n  bar"
+________SymbolNode[222-226]: ":foo"
+________CallNode[232-235]: "bar"
+____HashNode[238-272]: "{\n  \"foo\" => \"1\", \"bar\" =>\n  \"2\"\n}"
+______AssocNode[242-254]: "\"foo\" => \"1\""
+________StringNode[242-247]: "\"foo\""
+________StringNode[251-254]: "\"1\""
+______AssocNode[256-270]: "\"bar\" =>\n  \"2\""
+________StringNode[256-261]: "\"bar\""
+________StringNode[267-270]: "\"2\""
+____HashNode[294-380]: "{ foo1 => bar1, foo2 => bar2, foo3 => bar3, foo4 => bar4, foo5 => bar5, foo6 => bar6 }"
+______AssocNode[296-308]: "foo1 => bar1"
+________CallNode[296-300]: "foo1"
+________CallNode[304-308]: "bar1"
+______AssocNode[310-322]: "foo2 => bar2"
+________CallNode[310-314]: "foo2"
+________CallNode[318-322]: "bar2"
+______AssocNode[324-336]: "foo3 => bar3"
+________CallNode[324-328]: "foo3"
+________CallNode[332-336]: "bar3"
+______AssocNode[338-350]: "foo4 => bar4"
+________CallNode[338-342]: "foo4"
+________CallNode[346-350]: "bar4"
+______AssocNode[352-364]: "foo5 => bar5"
+________CallNode[352-356]: "foo5"
+________CallNode[360-364]: "bar5"
+______AssocNode[366-378]: "foo6 => bar6"
+________CallNode[366-370]: "foo6"
+________CallNode[374-378]: "bar6"
+____HashNode[381-575]: "{ very_long_key_name_that_exceeds_line_limit_1 => very_long_value_name_that_exceeds_line_limit_1, very_long_key_name_that_exceeds_line_limit_2 => very_long_value_name_that_exceeds_line_limit_2 }"
+______AssocNode[383-477]: "very_long_key_name_that_exceeds_line_limit_1 => very_long_value_name_that_exceeds_line_limit_1"
+________CallNode[383-427]: "very_long_key_name_that_exceeds_line_limit_1"
+________CallNode[431-477]: "very_long_value_name_that_exceeds_line_limit_1"
+______AssocNode[479-573]: "very_long_key_name_that_exceeds_line_limit_2 => very_long_value_name_that_exceeds_line_limit_2"
+________CallNode[479-523]: "very_long_key_name_that_exceeds_line_limit_2"
+________CallNode[527-573]: "very_long_value_name_that_exceeds_line_limit_2"
+____HashNode[593-612]: "{ a => { b => c } }"
+______AssocNode[595-610]: "a => { b => c }"
+________CallNode[595-596]: "a"
+________HashNode[600-610]: "{ b => c }"
+__________AssocNode[602-608]: "b => c"
+____________CallNode[602-603]: "b"
+____________CallNode[607-608]: "c"
+____HashNode[613-646]: "{ a => { :b => { \"c\" => \"d\" } } }"
+______AssocNode[615-644]: "a => { :b => { \"c\" => \"d\" } }"
+________CallNode[615-616]: "a"
+________HashNode[620-644]: "{ :b => { \"c\" => \"d\" } }"
+__________AssocNode[622-642]: ":b => { \"c\" => \"d\" }"
+____________SymbolNode[622-624]: ":b"
+____________HashNode[628-642]: "{ \"c\" => \"d\" }"
+______________AssocNode[630-640]: "\"c\" => \"d\""
+________________StringNode[630-633]: "\"c\""
+________________StringNode[637-640]: "\"d\""
+____HashNode[665-683]: "{ a => [1, 2, 3] }"
+______AssocNode[667-681]: "a => [1, 2, 3]"
+________CallNode[667-668]: "a"
+________ArrayNode[672-681]: "[1, 2, 3]"
+__________IntegerNode[673-674]: "1"
+__________IntegerNode[676-677]: "2"
+__________IntegerNode[679-680]: "3"
+____HashNode[684-705]: "{ :a => foo.bar.baz }"
+______AssocNode[686-703]: ":a => foo.bar.baz"
+________SymbolNode[686-688]: ":a"
+________CallNode[692-703]: "foo.bar.baz"
+__________CallNode[692-699]: "foo.bar"
+____________CallNode[692-695]: "foo"
+____HashNode[706-740]: "{ \"a\" => method_call(arg1, arg2) }"
+______AssocNode[708-738]: "\"a\" => method_call(arg1, arg2)"
+________StringNode[708-711]: "\"a\""
+________CallNode[715-738]: "method_call(arg1, arg2)"
+__________ArgumentsNode[727-737]: "arg1, arg2"
+____________CallNode[727-731]: "arg1"
+____________CallNode[733-737]: "arg2"
+____HashNode[753-763]: "{ a => b }"
+______AssocNode[755-761]: "a => b"
+________CallNode[755-756]: "a"
+________CallNode[760-761]: "b"
+____HashNode[783-847]: "{\n  a => b, # trailing comment 1\n  c => d # trailing comment 2\n}"
+______AssocNode[787-793]: "a => b"
+________CallNode[787-788]: "a"
+________CallNode[792-793]: "b"
+______AssocNode[818-824]: "c => d"
+________CallNode[818-819]: "c"
+________CallNode[823-824]: "d"
+____HashNode[848-879]: "{\n  # owning comment\n  a => b\n}"
+______AssocNode[871-877]: "a => b"
+________CallNode[871-872]: "a"
+________CallNode[876-877]: "b"
+____HashNode[880-913]: "{\n  a =>\n  # owning comment\n  b\n}"
+______AssocNode[884-911]: "a =>\n  # owning comment\n  b"
+________CallNode[884-885]: "a"
+________CallNode[910-911]: "b"
+____HashNode[934-972]: "{\n  a => {\n    :nested => :value\n  }\n}"
+______AssocNode[938-970]: "a => {\n    :nested => :value\n  }"
+________CallNode[938-939]: "a"
+________HashNode[943-970]: "{\n    :nested => :value\n  }"
+__________AssocNode[949-966]: ":nested => :value"
+____________SymbolNode[949-956]: ":nested"
+____________SymbolNode[960-966]: ":value"
+____HashNode[973-1012]: "{\n  :key => [\n    1,\n    2,\n    3\n  ]\n}"
+______AssocNode[977-1010]: ":key => [\n    1,\n    2,\n    3\n  ]"
+________SymbolNode[977-981]: ":key"
+________ArrayNode[985-1010]: "[\n    1,\n    2,\n    3\n  ]"
+__________IntegerNode[991-992]: "1"
+__________IntegerNode[998-999]: "2"
+__________IntegerNode[1005-1006]: "3"
