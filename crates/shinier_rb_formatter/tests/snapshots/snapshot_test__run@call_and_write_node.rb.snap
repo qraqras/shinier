@@ -1,0 +1,45 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/call_and_write_node.rb
+---
+****FORMATTED****
+foo.bar &&= value
+foo.bar &&= value
+
+# long expression
+very_long_receiver_name.very_long_method_name &&=
+  very_long_value_expression
+
+foo.bar &&= value # trailing comment 1
+
+foo.bar &&= # trailing comment 1
+  value # trailing comment 2
+
+foo.bar &&=
+  # leading comment 1
+  value
+
+
+****AST****
+ProgramNode[0-281]: "foo.bar &&= value\nfoo.bar &&=\n  value\n\n# long expression\nvery_long_receiver_name.very_long_method_name &&= very_long_value_expression\n\nfoo.bar &&=\n  value # trailing comment 1\n\nfoo.bar &&= # trailing comment 1\n  value # trailing comment 2\n\nfoo.bar &&=\n  # leading comment 1\n  value"
+__StatementsNode[0-281]: "foo.bar &&= value\nfoo.bar &&=\n  value\n\n# long expression\nvery_long_receiver_name.very_long_method_name &&= very_long_value_expression\n\nfoo.bar &&=\n  value # trailing comment 1\n\nfoo.bar &&= # trailing comment 1\n  value # trailing comment 2\n\nfoo.bar &&=\n  # leading comment 1\n  value"
+____CallAndWriteNode[0-17]: "foo.bar &&= value"
+______CallNode[0-3]: "foo"
+______CallNode[12-17]: "value"
+____CallAndWriteNode[18-37]: "foo.bar &&=\n  value"
+______CallNode[18-21]: "foo"
+______CallNode[32-37]: "value"
+____CallAndWriteNode[57-133]: "very_long_receiver_name.very_long_method_name &&= very_long_value_expression"
+______CallNode[57-80]: "very_long_receiver_name"
+______CallNode[107-133]: "very_long_value_expression"
+____CallAndWriteNode[135-154]: "foo.bar &&=\n  value"
+______CallNode[135-138]: "foo"
+______CallNode[149-154]: "value"
+____CallAndWriteNode[177-217]: "foo.bar &&= # trailing comment 1\n  value"
+______CallNode[177-180]: "foo"
+______CallNode[212-217]: "value"
+____CallAndWriteNode[240-281]: "foo.bar &&=\n  # leading comment 1\n  value"
+______CallNode[240-243]: "foo"
+______CallNode[276-281]: "value"
