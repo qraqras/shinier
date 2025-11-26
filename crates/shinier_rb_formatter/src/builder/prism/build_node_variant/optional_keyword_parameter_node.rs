@@ -11,6 +11,5 @@ pub fn build_optional_keyword_parameter_node(
     node: &OptionalKeywordParameterNode<'_>,
     ctx: &mut BuildContext,
 ) -> Option<Document> {
-    let value = build_node(&node.value(), ctx);
     None
 }

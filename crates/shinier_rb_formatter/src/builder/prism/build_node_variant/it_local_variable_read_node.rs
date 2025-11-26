@@ -7,7 +7,9 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_it_local_variable_read_node(node: &ItLocalVariableReadNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let keyword = Document::String(IT.to_string());
+pub fn build_it_local_variable_read_node(
+    node: &ItLocalVariableReadNode<'_>,
+    ctx: &mut BuildContext,
+) -> Option<Document> {
     None
 }

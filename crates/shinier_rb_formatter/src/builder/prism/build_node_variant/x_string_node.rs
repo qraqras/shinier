@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_x_string_node(node: &XStringNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    // TODO
     None
 }

@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_redo_node(node: &RedoNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let keyword = Document::String(REDO.to_string());
     None
 }

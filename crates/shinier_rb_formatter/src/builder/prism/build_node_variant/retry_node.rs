@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_retry_node(node: &RetryNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let keyword = Document::String(RETRY.to_string());
     None
 }

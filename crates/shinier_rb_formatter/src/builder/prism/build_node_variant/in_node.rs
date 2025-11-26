@@ -8,10 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_in_node(node: &InNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let pattern = build_node(&node.pattern(), ctx);
-    let statements = match node.statements() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
     None
 }

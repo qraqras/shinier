@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_call_target_node(node: &CallTargetNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let receiver = build_node(&node.receiver(), ctx);
     None
 }

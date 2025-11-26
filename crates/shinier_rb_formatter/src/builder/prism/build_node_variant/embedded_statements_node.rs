@@ -8,9 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_embedded_statements_node(node: &EmbeddedStatementsNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let statements = match &node.statements() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
     None
 }

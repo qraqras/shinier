@@ -8,9 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_undef_node(node: &UndefNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let mut names = Vec::new();
-    for node in &node.names() {
-        names.push(build_node(&node, ctx));
-    }
     None
 }

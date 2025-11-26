@@ -17,7 +17,7 @@ pub fn build_hash_node(node: &HashNode<'_>, ctx: &mut BuildContext) -> Option<Do
             parts.push(string(COMMA));
             parts.push(line());
         }
-        parts.push(build_node(&element, ctx));
+        parts.push(build_node(element, ctx));
     }
 
     // If there are no elements, use softline to avoid unnecessary spaces inside the braces.
@@ -27,9 +27,9 @@ pub fn build_hash_node(node: &HashNode<'_>, ctx: &mut BuildContext) -> Option<Do
     };
 
     group(array(&[
-        build_location(&opening_loc, ctx),
+        build_location(opening_loc, ctx),
         indent(array(&[line_or_softline.clone(), array(&parts)])),
         line_or_softline.clone(),
-        build_location(&closing_loc, ctx),
+        build_location(closing_loc, ctx),
     ]))
 }

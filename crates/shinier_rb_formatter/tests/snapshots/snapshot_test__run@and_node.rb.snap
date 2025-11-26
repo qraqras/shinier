@@ -5,12 +5,29 @@ expression: output
 input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/and_node.rb
 ---
 ****FORMATTED****
+left and right
 left && right
 
 # unnecessary line break
+left and right
 left && right
 
 # long expression
+foo and
+  bar and
+  baz and
+  foo and
+  bar and
+  baz and
+  foo and
+  bar and
+  baz and
+  foo and
+  bar and
+  baz and
+  foo and
+  bar and
+  baz
 foo &&
   bar &&
   baz &&
@@ -28,6 +45,21 @@ foo &&
   baz
 
 # long expression with unnecessary line breaks
+foo and
+  bar and
+  baz and
+  foo and
+  bar and
+  baz and
+  foo and
+  bar and
+  baz and
+  foo and
+  bar and
+  baz and
+  foo and
+  bar and
+  baz
 foo &&
   bar &&
   baz &&
@@ -44,78 +76,158 @@ foo &&
   bar &&
   baz
 
-left && # trailing comment 1
-  # owinig comment
-  right # trailing comment 2
+a and
+  b and
+  c and
+  d and # trailing comment 1
+  e
+# leading comment 1
+f && # trailing comment 1
+  # leading comment 2
+  g # trailing comment 2
+  # trailing comment 3
 
 
 ****AST****
-ProgramNode[0-408]: "left and right\n\n# unnecessary line break\nleft and\nright\n\n# long expression\nfoo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz\n\n# long expression with unnecessary line breaks\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz\n\nleft and # trailing comment 1\n# owinig comment\nright"
-__StatementsNode[0-408]: "left and right\n\n# unnecessary line break\nleft and\nright\n\n# long expression\nfoo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz\n\n# long expression with unnecessary line breaks\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz\n\nleft and # trailing comment 1\n# owinig comment\nright"
+ProgramNode[0-706]: "left and right\nleft && right\n\n# unnecessary line break\nleft and\n  right\nleft &&\n  right\n\n# long expression\nfoo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz\nfoo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz\n\n# long expression with unnecessary line breaks\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz\n\na and b and c and\nd and # trailing comment 1\ne\n# leading comment 1\nf && # trailing comment 1\n# leading comment 2\ng"
+__StatementsNode[0-706]: "left and right\nleft && right\n\n# unnecessary line break\nleft and\n  right\nleft &&\n  right\n\n# long expression\nfoo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz\nfoo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz\n\n# long expression with unnecessary line breaks\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz\n\na and b and c and\nd and # trailing comment 1\ne\n# leading comment 1\nf && # trailing comment 1\n# leading comment 2\ng"
 ____AndNode[0-14]: "left and right"
 ______CallNode[0-4]: "left"
 ______CallNode[9-14]: "right"
-____AndNode[41-55]: "left and\nright"
-______CallNode[41-45]: "left"
-______CallNode[50-55]: "right"
-____AndNode[75-190]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz"
-______AndNode[75-182]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar"
-________AndNode[75-174]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo"
-__________AndNode[75-166]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz"
-____________AndNode[75-158]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar"
-______________AndNode[75-150]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo"
-________________AndNode[75-142]: "foo and bar and baz and foo and bar and baz and foo and bar and baz"
-__________________AndNode[75-134]: "foo and bar and baz and foo and bar and baz and foo and bar"
-____________________AndNode[75-126]: "foo and bar and baz and foo and bar and baz and foo"
-______________________AndNode[75-118]: "foo and bar and baz and foo and bar and baz"
-________________________AndNode[75-110]: "foo and bar and baz and foo and bar"
-__________________________AndNode[75-102]: "foo and bar and baz and foo"
-____________________________AndNode[75-94]: "foo and bar and baz"
-______________________________AndNode[75-86]: "foo and bar"
-________________________________CallNode[75-78]: "foo"
-________________________________CallNode[83-86]: "bar"
-______________________________CallNode[91-94]: "baz"
-____________________________CallNode[99-102]: "foo"
-__________________________CallNode[107-110]: "bar"
-________________________CallNode[115-118]: "baz"
-______________________CallNode[123-126]: "foo"
-____________________CallNode[131-134]: "bar"
-__________________CallNode[139-142]: "baz"
-________________CallNode[147-150]: "foo"
-______________CallNode[155-158]: "bar"
-____________CallNode[163-166]: "baz"
-__________CallNode[171-174]: "foo"
-________CallNode[179-182]: "bar"
-______CallNode[187-190]: "baz"
-____AndNode[239-354]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
-______AndNode[239-346]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar"
-________AndNode[239-338]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo"
-__________AndNode[239-330]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
-____________AndNode[239-322]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar"
-______________AndNode[239-314]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo"
-________________AndNode[239-306]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
-__________________AndNode[239-298]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar"
-____________________AndNode[239-290]: "foo and bar and baz and\nfoo and bar and baz and\nfoo"
-______________________AndNode[239-282]: "foo and bar and baz and\nfoo and bar and baz"
-________________________AndNode[239-274]: "foo and bar and baz and\nfoo and bar"
-__________________________AndNode[239-266]: "foo and bar and baz and\nfoo"
-____________________________AndNode[239-258]: "foo and bar and baz"
-______________________________AndNode[239-250]: "foo and bar"
-________________________________CallNode[239-242]: "foo"
-________________________________CallNode[247-250]: "bar"
-______________________________CallNode[255-258]: "baz"
-____________________________CallNode[263-266]: "foo"
-__________________________CallNode[271-274]: "bar"
-________________________CallNode[279-282]: "baz"
-______________________CallNode[287-290]: "foo"
-____________________CallNode[295-298]: "bar"
-__________________CallNode[303-306]: "baz"
-________________CallNode[311-314]: "foo"
-______________CallNode[319-322]: "bar"
-____________CallNode[327-330]: "baz"
-__________CallNode[335-338]: "foo"
-________CallNode[343-346]: "bar"
-______CallNode[351-354]: "baz"
-____AndNode[356-408]: "left and # trailing comment 1\n# owinig comment\nright"
-______CallNode[356-360]: "left"
-______CallNode[403-408]: "right"
+____AndNode[15-28]: "left && right"
+______CallNode[15-19]: "left"
+______CallNode[23-28]: "right"
+____AndNode[55-71]: "left and\n  right"
+______CallNode[55-59]: "left"
+______CallNode[66-71]: "right"
+____AndNode[72-87]: "left &&\n  right"
+______CallNode[72-76]: "left"
+______CallNode[82-87]: "right"
+____AndNode[107-222]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz"
+______AndNode[107-214]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar"
+________AndNode[107-206]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz and foo"
+__________AndNode[107-198]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar and baz"
+____________AndNode[107-190]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo and bar"
+______________AndNode[107-182]: "foo and bar and baz and foo and bar and baz and foo and bar and baz and foo"
+________________AndNode[107-174]: "foo and bar and baz and foo and bar and baz and foo and bar and baz"
+__________________AndNode[107-166]: "foo and bar and baz and foo and bar and baz and foo and bar"
+____________________AndNode[107-158]: "foo and bar and baz and foo and bar and baz and foo"
+______________________AndNode[107-150]: "foo and bar and baz and foo and bar and baz"
+________________________AndNode[107-142]: "foo and bar and baz and foo and bar"
+__________________________AndNode[107-134]: "foo and bar and baz and foo"
+____________________________AndNode[107-126]: "foo and bar and baz"
+______________________________AndNode[107-118]: "foo and bar"
+________________________________CallNode[107-110]: "foo"
+________________________________CallNode[115-118]: "bar"
+______________________________CallNode[123-126]: "baz"
+____________________________CallNode[131-134]: "foo"
+__________________________CallNode[139-142]: "bar"
+________________________CallNode[147-150]: "baz"
+______________________CallNode[155-158]: "foo"
+____________________CallNode[163-166]: "bar"
+__________________CallNode[171-174]: "baz"
+________________CallNode[179-182]: "foo"
+______________CallNode[187-190]: "bar"
+____________CallNode[195-198]: "baz"
+__________CallNode[203-206]: "foo"
+________CallNode[211-214]: "bar"
+______CallNode[219-222]: "baz"
+____AndNode[223-324]: "foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz"
+______AndNode[223-317]: "foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar"
+________AndNode[223-310]: "foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz && foo"
+__________AndNode[223-303]: "foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar && baz"
+____________AndNode[223-296]: "foo && bar && baz && foo && bar && baz && foo && bar && baz && foo && bar"
+______________AndNode[223-289]: "foo && bar && baz && foo && bar && baz && foo && bar && baz && foo"
+________________AndNode[223-282]: "foo && bar && baz && foo && bar && baz && foo && bar && baz"
+__________________AndNode[223-275]: "foo && bar && baz && foo && bar && baz && foo && bar"
+____________________AndNode[223-268]: "foo && bar && baz && foo && bar && baz && foo"
+______________________AndNode[223-261]: "foo && bar && baz && foo && bar && baz"
+________________________AndNode[223-254]: "foo && bar && baz && foo && bar"
+__________________________AndNode[223-247]: "foo && bar && baz && foo"
+____________________________AndNode[223-240]: "foo && bar && baz"
+______________________________AndNode[223-233]: "foo && bar"
+________________________________CallNode[223-226]: "foo"
+________________________________CallNode[230-233]: "bar"
+______________________________CallNode[237-240]: "baz"
+____________________________CallNode[244-247]: "foo"
+__________________________CallNode[251-254]: "bar"
+________________________CallNode[258-261]: "baz"
+______________________CallNode[265-268]: "foo"
+____________________CallNode[272-275]: "bar"
+__________________CallNode[279-282]: "baz"
+________________CallNode[286-289]: "foo"
+______________CallNode[293-296]: "bar"
+____________CallNode[300-303]: "baz"
+__________CallNode[307-310]: "foo"
+________CallNode[314-317]: "bar"
+______CallNode[321-324]: "baz"
+____AndNode[373-488]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
+______AndNode[373-480]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar"
+________AndNode[373-472]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo"
+__________AndNode[373-464]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
+____________AndNode[373-456]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo and bar"
+______________AndNode[373-448]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz and\nfoo"
+________________AndNode[373-440]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar and baz"
+__________________AndNode[373-432]: "foo and bar and baz and\nfoo and bar and baz and\nfoo and bar"
+____________________AndNode[373-424]: "foo and bar and baz and\nfoo and bar and baz and\nfoo"
+______________________AndNode[373-416]: "foo and bar and baz and\nfoo and bar and baz"
+________________________AndNode[373-408]: "foo and bar and baz and\nfoo and bar"
+__________________________AndNode[373-400]: "foo and bar and baz and\nfoo"
+____________________________AndNode[373-392]: "foo and bar and baz"
+______________________________AndNode[373-384]: "foo and bar"
+________________________________CallNode[373-376]: "foo"
+________________________________CallNode[381-384]: "bar"
+______________________________CallNode[389-392]: "baz"
+____________________________CallNode[397-400]: "foo"
+__________________________CallNode[405-408]: "bar"
+________________________CallNode[413-416]: "baz"
+______________________CallNode[421-424]: "foo"
+____________________CallNode[429-432]: "bar"
+__________________CallNode[437-440]: "baz"
+________________CallNode[445-448]: "foo"
+______________CallNode[453-456]: "bar"
+____________CallNode[461-464]: "baz"
+__________CallNode[469-472]: "foo"
+________CallNode[477-480]: "bar"
+______CallNode[485-488]: "baz"
+____AndNode[489-590]: "foo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz"
+______AndNode[489-583]: "foo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar"
+________AndNode[489-576]: "foo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo"
+__________AndNode[489-569]: "foo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz"
+____________AndNode[489-562]: "foo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar"
+______________AndNode[489-555]: "foo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz &&\nfoo"
+________________AndNode[489-548]: "foo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar && baz"
+__________________AndNode[489-541]: "foo && bar && baz &&\nfoo && bar && baz &&\nfoo && bar"
+____________________AndNode[489-534]: "foo && bar && baz &&\nfoo && bar && baz &&\nfoo"
+______________________AndNode[489-527]: "foo && bar && baz &&\nfoo && bar && baz"
+________________________AndNode[489-520]: "foo && bar && baz &&\nfoo && bar"
+__________________________AndNode[489-513]: "foo && bar && baz &&\nfoo"
+____________________________AndNode[489-506]: "foo && bar && baz"
+______________________________AndNode[489-499]: "foo && bar"
+________________________________CallNode[489-492]: "foo"
+________________________________CallNode[496-499]: "bar"
+______________________________CallNode[503-506]: "baz"
+____________________________CallNode[510-513]: "foo"
+__________________________CallNode[517-520]: "bar"
+________________________CallNode[524-527]: "baz"
+______________________CallNode[531-534]: "foo"
+____________________CallNode[538-541]: "bar"
+__________________CallNode[545-548]: "baz"
+________________CallNode[552-555]: "foo"
+______________CallNode[559-562]: "bar"
+____________CallNode[566-569]: "baz"
+__________CallNode[573-576]: "foo"
+________CallNode[580-583]: "bar"
+______CallNode[587-590]: "baz"
+____AndNode[592-638]: "a and b and c and\nd and # trailing comment 1\ne"
+______AndNode[592-611]: "a and b and c and\nd"
+________AndNode[592-605]: "a and b and c"
+__________AndNode[592-599]: "a and b"
+____________CallNode[592-593]: "a"
+____________CallNode[598-599]: "b"
+__________CallNode[604-605]: "c"
+________CallNode[610-611]: "d"
+______CallNode[637-638]: "e"
+____AndNode[659-706]: "f && # trailing comment 1\n# leading comment 2\ng"
+______CallNode[659-660]: "f"
+______CallNode[705-706]: "g"

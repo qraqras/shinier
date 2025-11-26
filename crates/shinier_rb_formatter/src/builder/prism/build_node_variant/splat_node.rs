@@ -9,7 +9,7 @@ pub fn build_splat_node(node: &SplatNode<'_>, ctx: &mut BuildContext) -> Option<
     let operator_loc = node.operator_loc();
     let expression = node.expression();
     group(array(&[
-        build_location(&operator_loc, ctx),
-        expression.as_ref().map(|n| build_node(&n, ctx)).flatten(),
+        build_location(operator_loc, ctx),
+        expression.map(|n| build_node(n, ctx)).flatten(),
     ]))
 }

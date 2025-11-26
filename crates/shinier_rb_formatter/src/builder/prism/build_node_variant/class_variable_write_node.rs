@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_class_variable_write_node(node: &ClassVariableWriteNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let value = build_node(&node.value(), ctx);
     None
 }

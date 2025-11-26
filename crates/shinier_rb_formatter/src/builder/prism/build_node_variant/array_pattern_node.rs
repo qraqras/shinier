@@ -1,12 +1,15 @@
 use crate::Document;
 use crate::builder::builder::*;
-use crate::builder::keyword::COMMA;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::ArrayPatternNode;
 use ruby_prism::Node;
+use ruby_prism::NodeList;
 
+/// Builds ArrayPatternNode.
+///
+/// Note that the trailing comma is part of the syntax for matching the remaining elements.
 pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let constant = node.constant();
     let requireds = node.requireds();
@@ -15,48 +18,48 @@ pub fn build_array_pattern_node(node: &ArrayPatternNode<'_>, ctx: &mut BuildCont
     let opening_loc = node.opening_loc();
     let closing_loc = node.closing_loc();
 
-    // Collects all parameters
-    let mut params = Vec::new();
-    for required in requireds.iter() {
-        params.push(required);
-    }
-    if let Some(rest) = rest {
-        params.push(rest);
-    }
-    for post in posts.iter() {
-        params.push(post);
-    }
+    let params = _collect_parameters(&requireds, rest, &posts);
+    let docs = _build_parameters(params, ctx);
 
-    // Builds parameters with separators
-    let mut built_params = Vec::new();
-    for (i, param) in params.into_iter().enumerate() {
-        match param {
-            Node::ImplicitRestNode { .. } => {}
-            _ => {
-                if i > 0 {
-                    built_params.push(string(COMMA));
-                    built_params.push(line());
-                }
-            }
-        };
-        built_params.push(build_node(&param, ctx));
-    }
-
-    match (&constant, &opening_loc, &closing_loc) {
-        (None, None, None) => group(array(&built_params)),
-        (None, Some(opening_loc), Some(closing_loc)) => group(array(&[
+    match (opening_loc, closing_loc) {
+        (None, None) => group(array(&docs)),
+        (Some(opening_loc), Some(closing_loc)) => group(array(&[
+            constant.map(|c| build_node(c, ctx)).flatten(),
             build_location(opening_loc, ctx),
-            indent(array(&[softline(), array(&built_params)])),
-            softline(),
-            build_location(closing_loc, ctx),
-        ])),
-        (Some(constant), Some(opening_loc), Some(closing_loc)) => group(array(&[
-            build_node(constant, ctx),
-            build_location(opening_loc, ctx),
-            indent(array(&[softline(), array(&built_params)])),
+            indent(array(&[softline(), array(&docs)])),
             softline(),
             build_location(closing_loc, ctx),
         ])),
         _ => unreachable!(),
     }
+}
+
+/// Collects all parameters into a single vector.
+fn _collect_parameters<'sh>(
+    requireds: &NodeList<'sh>,
+    rest: Option<Node<'sh>>,
+    posts: &NodeList<'sh>,
+) -> Vec<Node<'sh>> {
+    let capacity = requireds.iter().count() + rest.is_some() as usize + posts.iter().count();
+    let mut parameters = Vec::with_capacity(capacity);
+    parameters.extend(requireds.iter());
+    if let Some(r) = rest {
+        parameters.push(r);
+    }
+    parameters.extend(posts.iter());
+    parameters
+}
+
+/// Builds documents for parameters with proper separators.
+fn _build_parameters(parameters: Vec<Node<'_>>, ctx: &mut BuildContext) -> Vec<Option<Document>> {
+    let mut docs = Vec::with_capacity(parameters.len() * 3);
+    for (i, param) in parameters.into_iter().enumerate() {
+        // ImplicitRestNode should not be followed by a comma.
+        if i > 0 && !matches!(param, Node::ImplicitRestNode { .. }) {
+            docs.push(comma());
+            docs.push(line());
+        }
+        docs.push(build_node(param, ctx));
+    }
+    docs
 }

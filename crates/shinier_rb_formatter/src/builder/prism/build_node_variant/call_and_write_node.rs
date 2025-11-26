@@ -8,10 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_call_and_write_node(node: &CallAndWriteNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let receiver = match &node.receiver() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
-    let value = build_node(&node.value(), ctx);
     None
 }

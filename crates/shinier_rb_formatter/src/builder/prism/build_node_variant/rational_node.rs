@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_rational_node(node: &RationalNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    // TODO
     None
 }

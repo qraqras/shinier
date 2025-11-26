@@ -1,7 +1,7 @@
 use crate::BuildContext;
 use crate::build_node::build_node;
+use crate::builder::prism::build_blank_lines::LineBreakIndex;
 use crate::builder::prism::comments::attach;
-use crate::builder::prism::helper::build_blank_lines::LineBreakIndex;
 use crate::renderer::print_doc_to_string;
 use ruby_prism::*;
 use std::collections::HashMap;
@@ -41,17 +41,12 @@ impl<'a> Printer<'a> {
             line_break_index: LineBreakIndex::new(self.source.as_bytes()),
             comment_store: &mut attach(&parse_result),
             processed_locations: HashSet::new(),
-            leading_comments: None,
-            trailing_comments: None,
-            dangling_comments: None,
-            remaining_comments: None,
-            comment_indentation: false,
             max_blank_lines: 0usize,
             hash_label_style: false,
             percent_literal: false,
         };
 
-        let mut doc = build_node(&parse_result.node(), &mut context);
+        let mut doc = build_node(parse_result.node(), &mut context);
 
         let mut output = String::new();
         if let Some(doc) = &mut doc {

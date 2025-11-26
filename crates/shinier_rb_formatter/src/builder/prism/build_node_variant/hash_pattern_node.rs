@@ -8,17 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_hash_pattern_node(node: &HashPatternNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let constant = match node.constant() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
-    let mut elements = Vec::new();
-    for node in &node.elements() {
-        elements.push(build_node(&node, ctx));
-    }
-    let rest = match node.rest() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
     None
 }

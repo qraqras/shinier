@@ -8,14 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_index_target_node(node: &IndexTargetNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    build_node(&node.receiver(), ctx);
-    let arguments = match &node.arguments() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
-    let block = match &node.block() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
     None
 }

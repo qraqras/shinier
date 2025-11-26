@@ -25,18 +25,22 @@ foo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000
 foo in [1, 2,]
 
 foo in
-  # owning comment 1
+  # leading comment 1
   1, # trailing comment 1
-  # owning comment 2
+  # leading comment 2
   *bar, # trailing comment 2
-  # owning comment 3
+  # leading comment 3
   3 # trailing comment 3
+  # trailing comment_4
 
-foo in [
-  # owning comment 1
-  1, # trailing comment 1
-  # owning comment 2
-  *bar, # trailing comment 2
-  # owning comment 3
-  3, # trailing comment 3
+foo in Bar # trailing comment 1
+# leading comment 1
+[
+  # leading comment 2
+  1, # trailing comment 2
+  # leading comment 3
+  *bar, # trailing comment 3
+  # leading comment 4
+  3, # trailing comment 4
+  # trailing comment 5
 ]

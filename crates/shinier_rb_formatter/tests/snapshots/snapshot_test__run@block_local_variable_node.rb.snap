@@ -1,0 +1,47 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/block_local_variable_node.rb
+---
+****FORMATTED****
+a { |; b| }
+
+a { |; b| }
+
+a {
+  |
+    ;
+    b # trailing comment 1
+  |
+}
+
+a {
+  |
+    ;
+    # leading comment 1
+    b # traling comment 1
+    # trailing comment 2
+  |
+}
+
+
+****AST****
+ProgramNode[0-142]: "a { |; b| }\n\na { |;\n  b| }\n\na { |; b # trailing comment 1\n| }\n\na { |;\n  # leading comment 1\n  b # traling comment 1\n  # trailing comment 2\n| }"
+__StatementsNode[0-142]: "a { |; b| }\n\na { |;\n  b| }\n\na { |; b # trailing comment 1\n| }\n\na { |;\n  # leading comment 1\n  b # traling comment 1\n  # trailing comment 2\n| }"
+____CallNode[0-11]: "a { |; b| }"
+______BlockNode[2-11]: "{ |; b| }"
+________BlockParametersNode[4-9]: "|; b|"
+__________BlockLocalVariableNode[7-8]: "b"
+____CallNode[13-26]: "a { |;\n  b| }"
+______BlockNode[15-26]: "{ |;\n  b| }"
+________BlockParametersNode[17-24]: "|;\n  b|"
+__________BlockLocalVariableNode[22-23]: "b"
+____CallNode[28-61]: "a { |; b # trailing comment 1\n| }"
+______BlockNode[30-61]: "{ |; b # trailing comment 1\n| }"
+________BlockParametersNode[32-59]: "|; b # trailing comment 1\n|"
+__________BlockLocalVariableNode[35-36]: "b"
+____CallNode[63-142]: "a { |;\n  # leading comment 1\n  b # traling comment 1\n  # trailing comment 2\n| }"
+______BlockNode[65-142]: "{ |;\n  # leading comment 1\n  b # traling comment 1\n  # trailing comment 2\n| }"
+________BlockParametersNode[67-140]: "|;\n  # leading comment 1\n  b # traling comment 1\n  # trailing comment 2\n|"
+__________BlockLocalVariableNode[94-95]: "b"

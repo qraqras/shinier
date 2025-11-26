@@ -7,7 +7,9 @@ use crate::builder::prism::build_node::build_node;
 use crate::keyword::*;
 use ruby_prism::*;
 
-pub fn build_local_variable_or_write_node(node: &LocalVariableOrWriteNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let value = build_node(&node.value(), ctx);
+pub fn build_local_variable_or_write_node(
+    node: &LocalVariableOrWriteNode<'_>,
+    ctx: &mut BuildContext,
+) -> Option<Document> {
     None
 }

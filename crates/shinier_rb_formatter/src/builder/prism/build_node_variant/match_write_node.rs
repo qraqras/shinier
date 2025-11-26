@@ -8,10 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_match_write_node(node: &MatchWriteNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let call = build_node(&node.call().as_node(), ctx);
-    let mut targets = Vec::new();
-    for node in &node.targets() {
-        targets.push(build_node(&node, ctx));
-    }
     None
 }

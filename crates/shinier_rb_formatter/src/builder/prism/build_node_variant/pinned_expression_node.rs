@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_pinned_expression_node(node: &PinnedExpressionNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let expression = build_node(&node.expression(), ctx);
     None
 }

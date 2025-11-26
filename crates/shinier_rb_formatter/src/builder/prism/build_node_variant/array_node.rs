@@ -1,39 +1,53 @@
 use crate::Document;
 use crate::builder::builder::*;
-use crate::builder::keyword::COMMA;
+use crate::builder::helper::location_helper::*;
 use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::ArrayNode;
-use ruby_prism::Location;
 
+/// Builds ArrayNode.
+///
+/// Formats arrays in two styles:
+/// - Basic Array Style: `[a, b, c]`
+/// - Percent Array Style: `%w[a b c]`
+///
+/// Items are separated by commas, except for percent arrays.
 pub fn build_array_node(node: &ArrayNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let elements = node.elements();
     let opening_loc = node.opening_loc();
     let closing_loc = node.closing_loc();
-    let sparator = match is_percent_array(&opening_loc) {
-        true => line(),
-        false => array(&[string(COMMA), line()]),
-    };
+
+    // Checks if the array is a percent array.
+    let is_percent_array = _is_percent_array(node);
+
+    // Builds each item in the array with appropriate separators.
     let mut parts = Vec::new();
     for (i, element) in elements.iter().enumerate() {
         if i > 0 {
-            parts.push(sparator.clone());
+            if is_percent_array {
+                parts.push(space());
+            } else {
+                parts.push(comma());
+                parts.push(line());
+            }
         }
-        parts.push(build_node(&element, ctx));
+        parts.push(build_node(element, ctx));
     }
+
     group(array(&[
-        opening_loc.as_ref().map(|l| build_location(l, ctx)).flatten(),
+        opening_loc.map(|l| build_location(l, ctx)).flatten(),
         indent(array(&[softline(), array(&parts)])),
         softline(),
-        closing_loc.as_ref().map(|l| build_location(l, ctx)).flatten(),
+        closing_loc.map(|l| build_location(l, ctx)).flatten(),
     ]))
 }
 
-fn is_percent_array(opening_loc: &Option<Location>) -> bool {
-    opening_loc
-        .as_ref()
-        .and_then(|loc| loc.as_slice().first())
-        .map(|&f| f == b'%')
-        .unwrap_or(false)
+/// Checks if the array is a percent array (e.g., `%w[]`, `%i[]`, etc.)
+fn _is_percent_array(node: &ArrayNode<'_>) -> bool {
+    let opening_loc = node.opening_loc();
+    match opening_loc {
+        Some(loc) => starts_with(&loc, "%"),
+        None => false,
+    }
 }

@@ -1,16 +1,17 @@
-// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/break_node.rs
-
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
-use crate::keyword::*;
-use ruby_prism::*;
+use ruby_prism::BreakNode;
 
+/// Builds BreakNode.
 pub fn build_break_node(node: &BreakNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let arguments = match &node.arguments() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
-    None
+    let arguments = node.arguments();
+    let keyword_loc = node.keyword_loc();
+    group(array(&[
+        build_location(keyword_loc, ctx),
+        space(),
+        indent(arguments.map(|a| build_node(a.as_node(), ctx)).flatten()),
+    ]))
 }

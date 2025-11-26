@@ -1,0 +1,2968 @@
+warning: virtual workspace defaulting to `resolver = "1"` despite one or more workspace members being on edition 2024 which implies `resolver = "3"`
+note: to keep the current resolver, specify `workspace.resolver = "1"` in the workspace root's manifest
+note: to use the edition 2024 resolver, specify `workspace.resolver = "3"` in the workspace root's manifest
+note: for more details see https://doc.rust-lang.org/cargo/reference/resolver.html#resolver-versions
+   Compiling shinier_rb_formatter v0.1.0 (/workspaces/shinier/crates/shinier_rb_formatter)
+warning: private item shadows public glob re-export
+ --> crates/shinier_rb_formatter/src/lib.rs:1:1
+  |
+1 | mod builder;
+  | ^^^^^^^^^^^^
+  |
+note: the name `builder` in the type namespace is supposed to be publicly re-exported here
+ --> crates/shinier_rb_formatter/src/lib.rs:7:9
+  |
+7 | pub use builder::*;
+  |         ^^^^^^^^^^
+note: but the private item here shadows it
+ --> crates/shinier_rb_formatter/src/lib.rs:1:1
+  |
+1 | mod builder;
+  | ^^^^^^^^^^^^
+  = note: `#[warn(hidden_glob_reexports)]` on by default
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_local_variable_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_local_variable_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_local_variable_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_parameters_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_parameters_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/break_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/break_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_and_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_and_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_operator_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_operator_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_or_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_or_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_target_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_target_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/capture_pattern_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/capture_pattern_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/case_match_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/case_match_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/case_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/case_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_and_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_and_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_operator_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_operator_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_or_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_or_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_read_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_read_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_read_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_target_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_target_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_target_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_and_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_and_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_operator_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_operator_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_or_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_or_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_and_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_and_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_operator_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_operator_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_or_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_or_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_target_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_target_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_target_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_target_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_target_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/def_node.rs:6:5
+  |
+6 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/defined_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/defined_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/embedded_statements_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/embedded_statements_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/embedded_variable_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/embedded_variable_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/false_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/false_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/find_pattern_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/find_pattern_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/flip_flop_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/flip_flop_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/float_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/float_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/float_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/for_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/for_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_arguments_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_arguments_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_parameter_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_parameter_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_super_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_super_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_and_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_and_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_operator_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_operator_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_or_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_or_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_target_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_target_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_target_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_write_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/hash_pattern_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/hash_pattern_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/if_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/if_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/imaginary_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/imaginary_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/implicit_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/implicit_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/in_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/in_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_and_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_and_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_operator_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_operator_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_or_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_or_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_target_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_target_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_and_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_and_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_operator_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_operator_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_or_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_or_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_read_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_read_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_read_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_target_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_target_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_target_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_write_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_match_last_line_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_match_last_line_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_regular_expression_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_regular_expression_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_string_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_string_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_symbol_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_symbol_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_x_string_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/interpolated_x_string_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_local_variable_read_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_local_variable_read_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_parameters_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_parameters_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_parameters_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/keyword_hash_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/keyword_hash_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/keyword_rest_parameter_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/keyword_rest_parameter_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/keyword_rest_parameter_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/lambda_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/lambda_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_and_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_and_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_operator_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_operator_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_or_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_or_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_read_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_read_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_read_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_write_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/match_last_line_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/match_last_line_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/match_last_line_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/match_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/match_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/missing_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/missing_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/missing_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/module_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/module_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/multi_target_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/multi_target_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/multi_write_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/multi_write_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/next_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/next_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/nil_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/nil_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/no_keywords_parameter_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/no_keywords_parameter_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/numbered_parameters_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/numbered_parameters_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/numbered_parameters_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/numbered_reference_read_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/numbered_reference_read_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/optional_keyword_parameter_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/optional_keyword_parameter_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/optional_parameter_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/optional_parameter_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/or_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/or_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/parentheses_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/parentheses_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/pinned_expression_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/pinned_expression_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/pinned_variable_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/pinned_variable_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/post_execution_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/post_execution_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/pre_execution_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/pre_execution_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/range_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/range_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rational_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rational_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rational_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/redo_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/redo_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/regular_expression_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/regular_expression_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/regular_expression_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_keyword_parameter_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_keyword_parameter_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_keyword_parameter_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_parameter_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_parameter_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_parameter_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rescue_modifier_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rescue_modifier_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rest_parameter_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rest_parameter_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rest_parameter_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/retry_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/retry_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/self_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/self_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/shareable_constant_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/shareable_constant_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/singleton_class_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/singleton_class_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_encoding_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_encoding_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_file_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_file_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_line_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_line_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::helper::comment_helper::update_dangling_remaining`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/statements_node.rs:3:5
+  |
+3 | use crate::builder::prism::helper::comment_helper::update_dangling_remaining;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/super_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/super_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/true_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/true_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/undef_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/undef_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/unless_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/unless_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/until_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/until_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/when_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/when_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/while_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/while_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/x_string_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::prism::build_node::build_node`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/x_string_node.rs:6:5
+  |
+6 | use crate::builder::prism::build_node::build_node;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/x_string_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::builder::builder::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/yield_node.rs:4:5
+  |
+4 | use crate::builder::builder::*;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::keyword::*`
+ --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/yield_node.rs:7:5
+  |
+7 | use crate::keyword::*;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/shinier_rb_formatter/src/lib.rs:5:1
+   |
+5  | mod renderer;
+   | ^^^^^^^^^^^^^
+   |
+note: the name `renderer` in the type namespace is supposed to be publicly re-exported here
+  --> crates/shinier_rb_formatter/src/lib.rs:11:9
+   |
+11 | pub use renderer::*;
+   |         ^^^^^^^^^^^
+note: but the private item here shadows it
+  --> crates/shinier_rb_formatter/src/lib.rs:5:1
+   |
+5  | mod renderer;
+   | ^^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/shinier_rb_formatter/src/lib.rs:13:5
+   |
+13 | use builder::BuildContext;
+   |     ^^^^^^^^^^^^^^^^^^^^^
+   |
+note: the name `BuildContext` in the type namespace is supposed to be publicly re-exported here
+  --> crates/shinier_rb_formatter/src/lib.rs:7:9
+   |
+7  | pub use builder::*;
+   |         ^^^^^^^^^^
+note: but the private item here shadows it
+  --> crates/shinier_rb_formatter/src/lib.rs:13:5
+   |
+13 | use builder::BuildContext;
+   |     ^^^^^^^^^^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/shinier_rb_formatter/src/lib.rs:14:5
+   |
+14 | use document::Document;
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+note: the name `Document` in the type namespace is supposed to be publicly re-exported here
+  --> crates/shinier_rb_formatter/src/lib.rs:8:9
+   |
+8  | pub use document::*;
+   |         ^^^^^^^^^^^
+note: but the private item here shadows it
+  --> crates/shinier_rb_formatter/src/lib.rs:14:5
+   |
+14 | use document::Document;
+   |     ^^^^^^^^^^^^^^^^^^
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_local_variable_node.rs:10:40
+   |
+10 | pub fn build_block_local_variable_node(node: &BlockLocalVariableNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                        ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_local_variable_node.rs:10:75
+   |
+10 | pub fn build_block_local_variable_node(node: &BlockLocalVariableNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                           ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `parameters`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_node.rs:11:9
+   |
+11 |     let parameters = match &node.parameters() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_parameters`
+
+warning: unused variable: `body`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_node.rs:15:9
+   |
+15 |     let body = match &node.body() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `parameters`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/block_parameters_node.rs:11:9
+   |
+11 |     let parameters = match &node.parameters() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_parameters`
+
+warning: unused variable: `arguments`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/break_node.rs:11:9
+   |
+11 |     let arguments = match &node.arguments() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_arguments`
+
+warning: unused variable: `receiver`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_and_write_node.rs:11:9
+   |
+11 |     let receiver = match &node.receiver() {
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_receiver`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_and_write_node.rs:15:9
+   |
+15 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `receiver`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_operator_write_node.rs:11:9
+   |
+11 |     let receiver = match &node.receiver() {
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_receiver`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_operator_write_node.rs:15:9
+   |
+15 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `receiver`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_or_write_node.rs:11:9
+   |
+11 |     let receiver = match &node.receiver() {
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_receiver`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_or_write_node.rs:15:9
+   |
+15 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `receiver`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/call_target_node.rs:11:9
+   |
+11 |     let receiver = build_node(&node.receiver(), ctx);
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_receiver`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/capture_pattern_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `target`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/capture_pattern_node.rs:12:9
+   |
+12 |     let target = build_node(&node.target().as_node(), ctx);
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_target`
+
+warning: unused variable: `predicate`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/case_match_node.rs:11:9
+   |
+11 |     let predicate = match &node.predicate() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_predicate`
+
+warning: unused variable: `else_clause`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/case_match_node.rs:19:9
+   |
+19 |     let else_clause = match &node.else_clause() {
+   |         ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_else_clause`
+
+warning: unused variable: `predicate`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/case_node.rs:11:9
+   |
+11 |     let predicate = match &node.predicate() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_predicate`
+
+warning: unused variable: `else_clause`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/case_node.rs:19:9
+   |
+19 |     let else_clause = match &node.else_clause() {
+   |         ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_else_clause`
+
+warning: unused variable: `superclass`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_node.rs:12:9
+   |
+12 |     let superclass = match &node.superclass() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_superclass`
+
+warning: unused variable: `body`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_node.rs:16:9
+   |
+16 |     let body = match &node.body() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_and_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_operator_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_or_write_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_read_node.rs:11:5
+   |
+11 |     node: &ClassVariableReadNode<'_>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_read_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_target_node.rs:11:5
+   |
+11 |     node: &ClassVariableTargetNode<'_>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_target_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/class_variable_write_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_and_write_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_operator_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_or_write_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `target`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_and_write_node.rs:11:9
+   |
+11 |     let target = build_node(&node.target().as_node(), ctx);
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_target`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_and_write_node.rs:12:9
+   |
+12 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `parent`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_node.rs:11:9
+   |
+11 |     let parent = match &node.parent() {
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_parent`
+
+warning: unused variable: `target`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_operator_write_node.rs:14:9
+   |
+14 |     let target = build_node(&node.target().as_node(), ctx);
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_target`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_operator_write_node.rs:15:9
+   |
+15 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `target`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_or_write_node.rs:11:9
+   |
+11 |     let target = build_node(&node.target().as_node(), ctx);
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_target`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_or_write_node.rs:12:9
+   |
+12 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `parent`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_target_node.rs:14:9
+   |
+14 |     let parent = match &node.parent() {
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_parent`
+
+warning: unused variable: `target`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_write_node.rs:11:9
+   |
+11 |     let target = build_node(&node.target().as_node(), ctx);
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_target`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_path_write_node.rs:12:9
+   |
+12 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_target_node.rs:10:35
+   |
+10 | pub fn build_constant_target_node(node: &ConstantTargetNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                   ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_target_node.rs:10:66
+   |
+10 | pub fn build_constant_target_node(node: &ConstantTargetNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                  ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/constant_write_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/defined_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/embedded_statements_node.rs:11:9
+   |
+11 |     let statements = match &node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `variable`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/embedded_variable_node.rs:11:9
+   |
+11 |     let variable = build_node(&node.variable(), ctx);
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_variable`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/false_node.rs:11:9
+   |
+11 |     let keyword = Document::String(FALSE.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/false_node.rs:10:25
+   |
+10 | pub fn build_false_node(node: &FalseNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                         ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/false_node.rs:10:47
+   |
+10 | pub fn build_false_node(node: &FalseNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                               ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `constant`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/find_pattern_node.rs:11:9
+   |
+11 |     let constant = match &node.constant() {
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_constant`
+
+warning: unused variable: `left`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/find_pattern_node.rs:15:9
+   |
+15 |     let left = build_node(&node.left().as_node(), ctx);
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_left`
+
+warning: unused variable: `right`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/find_pattern_node.rs:20:9
+   |
+20 |     let right = build_node(&node.right(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_right`
+
+warning: unused variable: `left`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/flip_flop_node.rs:11:9
+   |
+11 |     let left = match &node.left() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_left`
+
+warning: unused variable: `right`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/flip_flop_node.rs:15:9
+   |
+15 |     let right = match &node.right() {
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_right`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/float_node.rs:10:25
+   |
+10 | pub fn build_float_node(node: &FloatNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                         ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/float_node.rs:10:47
+   |
+10 | pub fn build_float_node(node: &FloatNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                               ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `index`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/for_node.rs:11:9
+   |
+11 |     let index = build_node(&node.index(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_index`
+
+warning: unused variable: `collection`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/for_node.rs:12:9
+   |
+12 |     let collection = build_node(&node.collection(), ctx);
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_collection`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/for_node.rs:13:9
+   |
+13 |     let statements = match node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_arguments_node.rs:11:9
+   |
+11 |     let keyword = Document::String(TRIPLE_DOT.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_arguments_node.rs:10:40
+   |
+10 | pub fn build_forwarding_arguments_node(node: &ForwardingArgumentsNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                        ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_arguments_node.rs:10:76
+   |
+10 | pub fn build_forwarding_arguments_node(node: &ForwardingArgumentsNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                            ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_parameter_node.rs:11:9
+   |
+11 |     let keyword = Document::String(TRIPLE_DOT.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_parameter_node.rs:10:40
+   |
+10 | pub fn build_forwarding_parameter_node(node: &ForwardingParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                        ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_parameter_node.rs:10:76
+   |
+10 | pub fn build_forwarding_parameter_node(node: &ForwardingParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                            ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `block`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/forwarding_super_node.rs:11:9
+   |
+11 |     let block = match node.block() {
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_block`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_and_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_operator_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_or_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_target_node.rs:11:5
+   |
+11 |     node: &GlobalVariableTargetNode<'_>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_target_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_write_node.rs:11:5
+   |
+11 |     node: &GlobalVariableWriteNode<'_>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/global_variable_write_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `constant`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/hash_pattern_node.rs:11:9
+   |
+11 |     let constant = match node.constant() {
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_constant`
+
+warning: unused variable: `rest`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/hash_pattern_node.rs:19:9
+   |
+19 |     let rest = match node.rest() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_rest`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/if_node.rs:12:9
+   |
+12 |     let statements = match &node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `subsequent`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/if_node.rs:16:9
+   |
+16 |     let subsequent = match &node.subsequent() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_subsequent`
+
+warning: unused variable: `numeric`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/imaginary_node.rs:11:9
+   |
+11 |     let numeric = build_node(&node.numeric(), ctx);
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_numeric`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/implicit_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `pattern`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/in_node.rs:11:9
+   |
+11 |     let pattern = build_node(&node.pattern(), ctx);
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_pattern`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/in_node.rs:12:9
+   |
+12 |     let statements = match node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `receiver`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_and_write_node.rs:11:9
+   |
+11 |     let receiver = match &node.receiver() {
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_receiver`
+
+warning: unused variable: `arguments`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_and_write_node.rs:15:9
+   |
+15 |     let arguments = match &node.arguments() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_arguments`
+
+warning: unused variable: `block`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_and_write_node.rs:19:9
+   |
+19 |     let block = match &node.block() {
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_block`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_and_write_node.rs:23:9
+   |
+23 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `receiver`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_operator_write_node.rs:11:9
+   |
+11 |     let receiver = match &node.receiver() {
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_receiver`
+
+warning: unused variable: `arguments`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_operator_write_node.rs:15:9
+   |
+15 |     let arguments = match &node.arguments() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_arguments`
+
+warning: unused variable: `block`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_operator_write_node.rs:19:9
+   |
+19 |     let block = match &node.block() {
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_block`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_operator_write_node.rs:23:9
+   |
+23 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `receiver`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_or_write_node.rs:11:9
+   |
+11 |     let receiver = match &node.receiver() {
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_receiver`
+
+warning: unused variable: `arguments`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_or_write_node.rs:15:9
+   |
+15 |     let arguments = match &node.arguments() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_arguments`
+
+warning: unused variable: `block`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_or_write_node.rs:19:9
+   |
+19 |     let block = match &node.block() {
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_block`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_or_write_node.rs:23:9
+   |
+23 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `arguments`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_target_node.rs:12:9
+   |
+12 |     let arguments = match &node.arguments() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_arguments`
+
+warning: unused variable: `block`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/index_target_node.rs:16:9
+   |
+16 |     let block = match &node.block() {
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_block`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_and_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_operator_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_or_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_read_node.rs:11:5
+   |
+11 |     node: &InstanceVariableReadNode<'_>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_read_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_target_node.rs:11:5
+   |
+11 |     node: &InstanceVariableTargetNode<'_>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_target_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_write_node.rs:11:5
+   |
+11 |     node: &InstanceVariableWriteNode<'_>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/instance_variable_write_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_local_variable_read_node.rs:11:9
+   |
+11 |     let keyword = Document::String(IT.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_local_variable_read_node.rs:10:42
+   |
+10 | pub fn build_it_local_variable_read_node(node: &ItLocalVariableReadNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                          ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_local_variable_read_node.rs:10:78
+   |
+10 | pub fn build_it_local_variable_read_node(node: &ItLocalVariableReadNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                              ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_parameters_node.rs:10:33
+   |
+10 | pub fn build_it_parameters_node(node: &ItParametersNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                 ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/it_parameters_node.rs:10:62
+   |
+10 | pub fn build_it_parameters_node(node: &ItParametersNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                              ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/keyword_rest_parameter_node.rs:11:5
+   |
+11 |     node: &KeywordRestParameterNode<'_>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/keyword_rest_parameter_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `parameters`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/lambda_node.rs:11:9
+   |
+11 |     let parameters = match &node.parameters() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_parameters`
+
+warning: unused variable: `body`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/lambda_node.rs:15:9
+   |
+15 |     let body = match &node.body() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_and_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_operator_write_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_or_write_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_read_node.rs:10:39
+   |
+10 | pub fn build_local_variable_read_node(node: &LocalVariableReadNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                       ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_read_node.rs:10:73
+   |
+10 | pub fn build_local_variable_read_node(node: &LocalVariableReadNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                         ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_write_node.rs:10:40
+   |
+10 | pub fn build_local_variable_write_node(node: &LocalVariableWriteNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                        ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/local_variable_write_node.rs:10:75
+   |
+10 | pub fn build_local_variable_write_node(node: &LocalVariableWriteNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                           ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/match_last_line_node.rs:10:35
+   |
+10 | pub fn build_match_last_line_node(node: &MatchLastLineNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                   ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/match_last_line_node.rs:10:65
+   |
+10 | pub fn build_match_last_line_node(node: &MatchLastLineNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                 ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `call`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/match_write_node.rs:11:9
+   |
+11 |     let call = build_node(&node.call().as_node(), ctx);
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_call`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/missing_node.rs:10:27
+   |
+10 | pub fn build_missing_node(node: &MissingNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                           ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/missing_node.rs:10:51
+   |
+10 | pub fn build_missing_node(node: &MissingNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                   ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `constant_path`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/module_node.rs:11:9
+   |
+11 |     let constant_path = build_node(&node.constant_path(), ctx);
+   |         ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_constant_path`
+
+warning: unused variable: `rest`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/multi_target_node.rs:15:9
+   |
+15 |     let rest = match &node.rest() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_rest`
+
+warning: unused variable: `rest`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/multi_write_node.rs:15:9
+   |
+15 |     let rest = match &node.rest() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_rest`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/multi_write_node.rs:23:9
+   |
+23 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `arguments`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/next_node.rs:11:9
+   |
+11 |     let arguments = match &node.arguments() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_arguments`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/nil_node.rs:11:9
+   |
+11 |     let keyword = Document::String(NIL.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/nil_node.rs:10:23
+   |
+10 | pub fn build_nil_node(node: &NilNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                       ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/nil_node.rs:10:43
+   |
+10 | pub fn build_nil_node(node: &NilNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                           ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/no_keywords_parameter_node.rs:11:9
+   |
+11 |     let keyword = Document::String(format!("{}{}", SPLAT, NIL));
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/no_keywords_parameter_node.rs:10:41
+   |
+10 | pub fn build_no_keywords_parameter_node(node: &NoKeywordsParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                         ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/no_keywords_parameter_node.rs:10:77
+   |
+10 | pub fn build_no_keywords_parameter_node(node: &NoKeywordsParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                             ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `maximum`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/numbered_parameters_node.rs:11:9
+   |
+11 |     let maximum = Document::String(node.maximum().to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_maximum`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/numbered_parameters_node.rs:10:74
+   |
+10 | pub fn build_numbered_parameters_node(node: &NumberedParametersNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                          ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `number`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/numbered_reference_read_node.rs:14:9
+   |
+14 |     let number = Document::String(format!("{}{}", DOLLAR, node.number()));
+   |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_number`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/numbered_reference_read_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/optional_keyword_parameter_node.rs:14:9
+   |
+14 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/optional_parameter_node.rs:11:9
+   |
+11 |     let value = build_node(&node.value(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `left`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/or_node.rs:11:9
+   |
+11 |     let left = build_node(&node.left(), ctx);
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_left`
+
+warning: unused variable: `right`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/or_node.rs:12:9
+   |
+12 |     let right = build_node(&node.right(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_right`
+
+warning: unused variable: `body`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/parentheses_node.rs:11:9
+   |
+11 |     let body = match &node.body() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `expression`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/pinned_expression_node.rs:11:9
+   |
+11 |     let expression = build_node(&node.expression(), ctx);
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_expression`
+
+warning: unused variable: `variable`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/pinned_variable_node.rs:11:9
+   |
+11 |     let variable = build_node(&node.variable(), ctx);
+   |         ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_variable`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/post_execution_node.rs:11:9
+   |
+11 |     let statements = match node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/pre_execution_node.rs:11:9
+   |
+11 |     let statements = match node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `left`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/range_node.rs:11:9
+   |
+11 |     let left = match &node.left() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_left`
+
+warning: unused variable: `right`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/range_node.rs:15:9
+   |
+15 |     let right = match &node.right() {
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_right`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rational_node.rs:10:28
+   |
+10 | pub fn build_rational_node(node: &RationalNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                            ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rational_node.rs:10:53
+   |
+10 | pub fn build_rational_node(node: &RationalNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/redo_node.rs:11:9
+   |
+11 |     let keyword = Document::String(REDO.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/redo_node.rs:10:24
+   |
+10 | pub fn build_redo_node(node: &RedoNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                        ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/redo_node.rs:10:45
+   |
+10 | pub fn build_redo_node(node: &RedoNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                             ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/regular_expression_node.rs:10:38
+   |
+10 | pub fn build_regular_expression_node(node: &RegularExpressionNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                      ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/regular_expression_node.rs:10:72
+   |
+10 | pub fn build_regular_expression_node(node: &RegularExpressionNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                        ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_keyword_parameter_node.rs:11:5
+   |
+11 |     node: &RequiredKeywordParameterNode<'_>,
+   |     ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_keyword_parameter_node.rs:12:5
+   |
+12 |     ctx: &mut BuildContext,
+   |     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_parameter_node.rs:10:38
+   |
+10 | pub fn build_required_parameter_node(node: &RequiredParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                      ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/required_parameter_node.rs:10:72
+   |
+10 | pub fn build_required_parameter_node(node: &RequiredParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                        ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `expression`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rescue_modifier_node.rs:11:9
+   |
+11 |     let expression = build_node(&node.expression(), ctx);
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_expression`
+
+warning: unused variable: `rescue_expression`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rescue_modifier_node.rs:12:9
+   |
+12 |     let rescue_expression = build_node(&node.rescue_expression(), ctx);
+   |         ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_rescue_expression`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rest_parameter_node.rs:10:34
+   |
+10 | pub fn build_rest_parameter_node(node: &RestParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                  ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/rest_parameter_node.rs:10:64
+   |
+10 | pub fn build_rest_parameter_node(node: &RestParameterNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/retry_node.rs:11:9
+   |
+11 |     let keyword = Document::String(RETRY.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/retry_node.rs:10:25
+   |
+10 | pub fn build_retry_node(node: &RetryNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                         ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/retry_node.rs:10:47
+   |
+10 | pub fn build_retry_node(node: &RetryNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                               ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/self_node.rs:11:9
+   |
+11 |     let keyword = Document::String(SELF.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/self_node.rs:10:24
+   |
+10 | pub fn build_self_node(node: &SelfNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                        ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/self_node.rs:10:45
+   |
+10 | pub fn build_self_node(node: &SelfNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                             ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `write`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/shareable_constant_node.rs:11:9
+   |
+11 |     let write = build_node(&node.write(), ctx);
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_write`
+
+warning: unused variable: `expression`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/singleton_class_node.rs:11:9
+   |
+11 |     let expression = build_node(&node.expression(), ctx);
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_expression`
+
+warning: unused variable: `body`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/singleton_class_node.rs:12:9
+   |
+12 |     let body = match &node.body() {
+   |         ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_encoding_node.rs:11:9
+   |
+11 |     let keyword = Document::String(ENCODING.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_encoding_node.rs:10:35
+   |
+10 | pub fn build_source_encoding_node(node: &SourceEncodingNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                   ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_encoding_node.rs:10:66
+   |
+10 | pub fn build_source_encoding_node(node: &SourceEncodingNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                                  ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_file_node.rs:11:9
+   |
+11 |     let keyword = Document::String(FILE.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_file_node.rs:10:31
+   |
+10 | pub fn build_source_file_node(node: &SourceFileNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                               ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_file_node.rs:10:58
+   |
+10 | pub fn build_source_file_node(node: &SourceFileNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                          ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_line_node.rs:11:9
+   |
+11 |     let keyword = Document::String(LINE.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_line_node.rs:10:31
+   |
+10 | pub fn build_source_line_node(node: &SourceLineNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                               ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/source_line_node.rs:10:58
+   |
+10 | pub fn build_source_line_node(node: &SourceLineNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                          ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `arguments`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/super_node.rs:11:9
+   |
+11 |     let arguments = match &node.arguments() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_arguments`
+
+warning: unused variable: `block`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/super_node.rs:15:9
+   |
+15 |     let block = match &node.block() {
+   |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_block`
+
+warning: unused variable: `keyword`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/true_node.rs:11:9
+   |
+11 |     let keyword = Document::String(TRUE.to_string());
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_keyword`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/true_node.rs:10:24
+   |
+10 | pub fn build_true_node(node: &TrueNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                        ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/true_node.rs:10:45
+   |
+10 | pub fn build_true_node(node: &TrueNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                             ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `predicate`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/unless_node.rs:11:9
+   |
+11 |     let predicate = build_node(&node.predicate(), ctx);
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_predicate`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/unless_node.rs:12:9
+   |
+12 |     let statements = match &node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `else_clause`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/unless_node.rs:16:9
+   |
+16 |     let else_clause = match &node.else_clause() {
+   |         ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_else_clause`
+
+warning: unused variable: `predicate`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/until_node.rs:11:9
+   |
+11 |     let predicate = build_node(&node.predicate(), ctx);
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_predicate`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/until_node.rs:12:9
+   |
+12 |     let statements = match node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/when_node.rs:15:9
+   |
+15 |     let statements = match &node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `predicate`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/while_node.rs:11:9
+   |
+11 |     let predicate = build_node(&node.predicate(), ctx);
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_predicate`
+
+warning: unused variable: `statements`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/while_node.rs:12:9
+   |
+12 |     let statements = match node.statements() {
+   |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statements`
+
+warning: unused variable: `node`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/x_string_node.rs:10:28
+   |
+10 | pub fn build_x_string_node(node: &XStringNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                            ^^^^ help: if this is intentional, prefix it with an underscore: `_node`
+
+warning: unused variable: `ctx`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/x_string_node.rs:10:52
+   |
+10 | pub fn build_x_string_node(node: &XStringNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
+   |                                                    ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `arguments`
+  --> crates/shinier_rb_formatter/src/builder/prism/build_node_variant/yield_node.rs:11:9
+   |
+11 |     let arguments = match &node.arguments() {
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_arguments`
+
+warning: value assigned to `pos` is never read
+   --> crates/shinier_rb_formatter/src/renderer/renderer.rs:517:29
+    |
+517 | ...                   pos -= trim(&mut out).max(0);
+    |                       ^^^
+    |
+    = help: maybe it is overwritten before being read?
+    = note: `#[warn(unused_assignments)]` on by default
+
+warning: methods `start_offset` and `end_offset` are never used
+  --> crates/shinier_rb_formatter/src/builder/prism/comments.rs:81:8
+   |
+80 | trait Attach {
+   |       ------ methods in this trait
+81 |     fn start_offset(&self) -> usize;
+   |        ^^^^^^^^^^^^
+82 |     fn end_offset(&self) -> usize;
+   |        ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: fields `parse_result`, `map`, and `option` are never read
+  --> crates/shinier_rb_formatter/src/printer.rs:12:5
+   |
+10 | pub struct Printer<'a> {
+   |            ------- fields in this struct
+11 |     source: String,
+12 |     parse_result: Option<ParseResult<'a>>,
+   |     ^^^^^^^^^^^^
+13 |     map: Option<HashMap<usize, Comment<'a>>>,
+   |     ^^^
+14 |     option: (),
+   |     ^^^^^^
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+  --> crates/shinier_rb_formatter/src/printer.rs:25:18
+   |
+25 |     pub fn print(&self) -> (ParseResult, String) {
+   |                  ^^^^^      ----------- the same lifetime is hidden here
+   |                  |
+   |                  the lifetime is elided here
+   |
+   = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+   = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+   |
+25 |     pub fn print(&self) -> (ParseResult<'_>, String) {
+   |                                        ++++
+
+warning: `shinier_rb_formatter` (lib) generated 471 warnings (run `cargo fix --lib -p shinier_rb_formatter` to apply 261 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.00s
+     Running tests/snapshot_test.rs (/workspaces/shinier/target/debug/deps/snapshot_test-92a737ba34f4fdb1)
+
+running 1 test
+DEBUG: 'dangling comment2' found in REMAINING comments of node at 49-98
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot file: crates/shinier_rb_formatter/tests/snapshots/snapshot_test__run@block_parameter_node.rb.snap
+Snapshot: run@block_parameter_node.rb
+Source: crates/shinier_rb_formatter/tests/snapshot_test.rs:220
+Input file: crates/shinier_rb_formatter/tests/ruby/node_variants/block_parameter_node.rb
+────────────────────────────────────────────────────────────────────────────────
+Expression: output
+────────────────────────────────────────────────────────────────────────────────
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+          1 │+****FORMATTED****
+          2 │+def foo(&bar)
+          3 │+end
+          4 │+
+          5 │+def foo(&bar)
+          6 │+end
+          7 │+
+          8 │+def foo(
+          9 │+  & # trailing comment1
+         10 │+  # dangling comment1
+         11 │+    bar # trailing comment2
+         12 │+# dangling comment2
+         13 │+  )
+         14 │+end
+         15 │+
+         16 │+
+         17 │+****AST****
+         18 │+ProgramNode[0-148]: "def foo(&bar)\nend\n\ndef foo(&\n  bar)\nend\n\ndef foo(& # trailing comment1\n  # dangling comment1\n  bar # trailing comment2\n  # dangling comment2\n  )\nend"
+         19 │+__StatementsNode[0-148]: "def foo(&bar)\nend\n\ndef foo(&\n  bar)\nend\n\ndef foo(& # trailing comment1\n  # dangling comment1\n  bar # trailing comment2\n  # dangling comment2\n  )\nend"
+         20 │+____DefNode[0-17]: "def foo(&bar)\nend"
+         21 │+______ParametersNode[8-12]: "&bar"
+         22 │+________BlockParameterNode[8-12]: "&bar"
+         23 │+____DefNode[19-39]: "def foo(&\n  bar)\nend"
+         24 │+______ParametersNode[27-34]: "&\n  bar"
+         25 │+________BlockParameterNode[27-34]: "&\n  bar"
+         26 │+____DefNode[41-148]: "def foo(& # trailing comment1\n  # dangling comment1\n  bar # trailing comment2\n  # dangling comment2\n  )\nend"
+         27 │+______ParametersNode[49-98]: "& # trailing comment1\n  # dangling comment1\n  bar"
+         28 │+________BlockParameterNode[49-98]: "& # trailing comment1\n  # dangling comment1\n  bar"
+────────────┴───────────────────────────────────────────────────────────────────
+stored new snapshot /workspaces/shinier/crates/shinier_rb_formatter/tests/snapshots/snapshot_test__run@block_parameter_node.rb.snap.new
+snapshot assertion from glob for 'run@block_parameter_node.rb' failed in line 220
+
+To update snapshots run `cargo insta review`
+
+thread 'run' panicked at /usr/local/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/insta-1.43.2/src/glob.rs:137:9:
+glob! resulted in 1 snapshot assertion failure
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test run ... FAILED
+
+failures:
+
+failures:
+    run
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+error: test failed, to rerun pass `--test snapshot_test`

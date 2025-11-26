@@ -8,7 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_rescue_modifier_node(node: &RescueModifierNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let expression = build_node(&node.expression(), ctx);
-    let rescue_expression = build_node(&node.rescue_expression(), ctx);
     None
 }

@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_regular_expression_node(node: &RegularExpressionNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    // TODO
     None
 }

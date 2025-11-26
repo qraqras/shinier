@@ -38,14 +38,19 @@ return foo,
   baz
 
 return foo,
-  # owning comment
+  # leading comment 1
   bar, # trailing comment 1
   baz # trailing comment 2
 
+return foo,
+  # leading comment 1
+  bar,
+  baz
+
 
 ****AST****
-ProgramNode[0-303]: "return foo, bar, baz\n\n# unnecessary line breaks\nreturn foo, bar,\nbaz\nreturn foo,\nbar,\nbaz\n\n# long argument list\nreturn foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz\n\nreturn foo,\n  # owning comment\n  bar, # trailing comment 1\n  baz"
-__StatementsNode[0-303]: "return foo, bar, baz\n\n# unnecessary line breaks\nreturn foo, bar,\nbaz\nreturn foo,\nbar,\nbaz\n\n# long argument list\nreturn foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz\n\nreturn foo,\n  # owning comment\n  bar, # trailing comment 1\n  baz"
+ProgramNode[0-373]: "return foo, bar, baz\n\n# unnecessary line breaks\nreturn foo, bar,\nbaz\nreturn foo,\nbar,\nbaz\n\n# long argument list\nreturn foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz\n\nreturn foo,\n  # leading comment 1\n  bar, # trailing comment 1\n  baz # trailing comment 2\n\nreturn foo,\n  # leading comment 1\n  bar, baz"
+__StatementsNode[0-373]: "return foo, bar, baz\n\n# unnecessary line breaks\nreturn foo, bar,\nbaz\nreturn foo,\nbar,\nbaz\n\n# long argument list\nreturn foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz, foo, bar, baz\n\nreturn foo,\n  # leading comment 1\n  bar, # trailing comment 1\n  baz # trailing comment 2\n\nreturn foo,\n  # leading comment 1\n  bar, baz"
 ____ReturnNode[0-20]: "return foo, bar, baz"
 ______ArgumentsNode[7-20]: "foo, bar, baz"
 ________CallNode[7-10]: "foo"
@@ -87,8 +92,13 @@ ________CallNode[219-222]: "baz"
 ________CallNode[224-227]: "foo"
 ________CallNode[229-232]: "bar"
 ________CallNode[234-237]: "baz"
-____ReturnNode[239-303]: "return foo,\n  # owning comment\n  bar, # trailing comment 1\n  baz"
-______ArgumentsNode[246-303]: "foo,\n  # owning comment\n  bar, # trailing comment 1\n  baz"
+____ReturnNode[239-306]: "return foo,\n  # leading comment 1\n  bar, # trailing comment 1\n  baz"
+______ArgumentsNode[246-306]: "foo,\n  # leading comment 1\n  bar, # trailing comment 1\n  baz"
 ________CallNode[246-249]: "foo"
-________CallNode[272-275]: "bar"
-________CallNode[300-303]: "baz"
+________CallNode[275-278]: "bar"
+________CallNode[303-306]: "baz"
+____ReturnNode[329-373]: "return foo,\n  # leading comment 1\n  bar, baz"
+______ArgumentsNode[336-373]: "foo,\n  # leading comment 1\n  bar, baz"
+________CallNode[336-339]: "foo"
+________CallNode[365-368]: "bar"
+________CallNode[370-373]: "baz"

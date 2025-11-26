@@ -11,9 +11,5 @@ pub fn build_interpolated_regular_expression_node(
     node: &InterpolatedRegularExpressionNode<'_>,
     ctx: &mut BuildContext,
 ) -> Option<Document> {
-    let mut parts = Vec::new();
-    for node in &node.parts() {
-        parts.push(build_node(&node, ctx));
-    }
     None
 }

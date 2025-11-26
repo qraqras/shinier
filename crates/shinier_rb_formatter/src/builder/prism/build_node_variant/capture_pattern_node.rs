@@ -8,7 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_capture_pattern_node(node: &CapturePatternNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let value = build_node(&node.value(), ctx);
-    let target = build_node(&node.target().as_node(), ctx);
     None
 }

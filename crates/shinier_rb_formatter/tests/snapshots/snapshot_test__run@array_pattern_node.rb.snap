@@ -47,27 +47,30 @@ foo in
 foo in [1, 2,]
 
 foo in
-  # owning comment 1
+  # leading comment 1
   1, # trailing comment 1
-  # owning comment 2
+  # leading comment 2
   *bar, # trailing comment 2
-  # owning comment 3
+  # leading comment 3
   3 # trailing comment 3
+# trailing comment_4
 
-foo in
-  [
-    # owning comment 1
-    1, # trailing comment 1
-    # owning comment 2
-    *bar, # trailing comment 2
-    # owning comment 3
-    3, # trailing comment 3
-  ]
+foo in Bar # trailing comment 1
+# leading comment 1
+[
+  # leading comment 2
+  1, # trailing comment 2
+  # leading comment 3
+  *, # trailing comment 3
+  # leading comment 4
+  3 # trailing comment 4
+  # trailing comment 5
+]
 
 
 ****AST****
-ProgramNode[0-707]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3 # trailing comment 3\n\nfoo in [\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
-__StatementsNode[0-707]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3 # trailing comment 3\n\nfoo in [\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
+ProgramNode[0-804]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # leading comment 1\n  1, # trailing comment 1\n  # leading comment 2\n  *bar, # trailing comment 2\n  # leading comment 3\n  3 # trailing comment 3\n  # trailing comment_4\n\nfoo in Bar # trailing comment 1\n# leading comment 1\n[\n  # leading comment 2\n  1, # trailing comment 2\n  # leading comment 3\n  *bar, # trailing comment 3\n  # leading comment 4\n  3, # trailing comment 4\n  # trailing comment 5\n]"
+__StatementsNode[0-804]: "foo in 1, 2\nfoo in [1, 2]\nfoo in *bar\nfoo in Bar[]\nfoo in Bar[1, 2, 3]\n\nfoo in 1, 2, *bar\nfoo in 1, *bar, 3\nfoo in *bar, 2, 3\n\n# unnecessary line breaks\nfoo in\n  1, 2\nfoo in [\n  1,\n  2\n]\nfoo in 1,\n  2\n\n# long array patterns\nfoo in 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000\n\n# implicit rest pattern\nfoo in [1, 2,]\n\nfoo in\n  # leading comment 1\n  1, # trailing comment 1\n  # leading comment 2\n  *bar, # trailing comment 2\n  # leading comment 3\n  3 # trailing comment 3\n  # trailing comment_4\n\nfoo in Bar # trailing comment 1\n# leading comment 1\n[\n  # leading comment 2\n  1, # trailing comment 2\n  # leading comment 3\n  *bar, # trailing comment 3\n  # leading comment 4\n  3, # trailing comment 4\n  # trailing comment 5\n]"
 ____MatchPredicateNode[0-11]: "foo in 1, 2"
 ______CallNode[0-3]: "foo"
 ______ArrayPatternNode[7-11]: "1, 2"
@@ -159,18 +162,18 @@ ______ArrayPatternNode[393-400]: "[1, 2,]"
 ________IntegerNode[394-395]: "1"
 ________IntegerNode[397-398]: "2"
 ________ImplicitRestNode[398-399]: ","
-____MatchPredicateNode[402-530]: "foo in\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3"
+____MatchPredicateNode[402-533]: "foo in\n  # leading comment 1\n  1, # trailing comment 1\n  # leading comment 2\n  *bar, # trailing comment 2\n  # leading comment 3\n  3"
 ______CallNode[402-405]: "foo"
-______ArrayPatternNode[432-530]: "1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3"
-________IntegerNode[432-433]: "1"
-________SplatNode[479-483]: "*bar"
-__________LocalVariableTargetNode[480-483]: "bar"
-________IntegerNode[529-530]: "3"
-____MatchPredicateNode[553-707]: "foo in [\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
-______CallNode[553-556]: "foo"
-______ArrayPatternNode[560-707]: "[\n  # owning comment 1\n  1, # trailing comment 1\n  # owning comment 2\n  *bar, # trailing comment 2\n  # owning comment 3\n  3, # trailing comment 3\n]"
-________IntegerNode[585-586]: "1"
-________SplatNode[632-636]: "*bar"
-__________LocalVariableTargetNode[633-636]: "bar"
-________IntegerNode[682-683]: "3"
-________ImplicitRestNode[683-684]: ","
+______ArrayPatternNode[433-533]: "1, # trailing comment 1\n  # leading comment 2\n  *bar, # trailing comment 2\n  # leading comment 3\n  3"
+________IntegerNode[433-434]: "1"
+________SplatNode[481-485]: "*bar"
+__________LocalVariableTargetNode[482-485]: "bar"
+________IntegerNode[532-533]: "3"
+____MatchPredicateNode[579-589]: "foo in Bar"
+______CallNode[579-582]: "foo"
+______ConstantReadNode[586-589]: "Bar"
+____ArrayNode[631-804]: "[\n  # leading comment 2\n  1, # trailing comment 2\n  # leading comment 3\n  *bar, # trailing comment 3\n  # leading comment 4\n  3, # trailing comment 4\n  # trailing comment 5\n]"
+______IntegerNode[657-658]: "1"
+______SplatNode[705-709]: "*bar"
+________LocalVariableReadNode[706-709]: "bar"
+______IntegerNode[756-757]: "3"

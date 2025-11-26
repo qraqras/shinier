@@ -1,16 +1,25 @@
-// filepath: /workspaces/shinier/crates/shinier_rb_formatter/src/builder/prism/new_build_node_variant/block_argument_node.rs
-
 use crate::Document;
 use crate::builder::builder::*;
 use crate::builder::prism::BuildContext;
+use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
-use crate::keyword::*;
-use ruby_prism::*;
+use crate::builder::prism::builder_helper::*;
+use ruby_prism::BlockArgumentNode;
 
+/// Builds BlockArgumentNode.
 pub fn build_block_argument_node(node: &BlockArgumentNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let expression = match &node.expression() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
-    None
+    let expression = node.expression();
+    let operator_loc = node.operator_loc();
+
+    match expression {
+        Some(e) => {
+            let line_or_none = softline_if_has_comments(operator_loc.end_offset(), e.location().start_offset(), ctx);
+            group(array(&[
+                build_location(operator_loc, ctx),
+                line_or_none,
+                build_node(e, ctx),
+            ]))
+        }
+        None => build_location(operator_loc, ctx),
+    }
 }

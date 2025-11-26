@@ -8,14 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_if_node(node: &IfNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    build_node(&node.predicate(), ctx);
-    let statements = match &node.statements() {
-        Some(node) => Some(build_node(&node.as_node(), ctx)),
-        None => None,
-    };
-    let subsequent = match &node.subsequent() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
     None
 }

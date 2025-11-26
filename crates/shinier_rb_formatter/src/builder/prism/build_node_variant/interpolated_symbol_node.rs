@@ -8,9 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_interpolated_symbol_node(node: &InterpolatedSymbolNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let mut parts = Vec::new();
-    for node in &node.parts() {
-        parts.push(build_node(&node, ctx));
-    }
     None
 }

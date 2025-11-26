@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_imaginary_node(node: &ImaginaryNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let numeric = build_node(&node.numeric(), ctx);
     None
 }

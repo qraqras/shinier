@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_numbered_parameters_node(node: &NumberedParametersNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let maximum = Document::String(node.maximum().to_string());
     None
 }

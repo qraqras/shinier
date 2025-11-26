@@ -8,9 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_parentheses_node(node: &ParenthesesNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let body = match &node.body() {
-        Some(node) => Some(build_node(&node, ctx)),
-        None => None,
-    };
     None
 }

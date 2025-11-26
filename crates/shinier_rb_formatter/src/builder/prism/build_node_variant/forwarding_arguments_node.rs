@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_forwarding_arguments_node(node: &ForwardingArgumentsNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let keyword = Document::String(TRIPLE_DOT.to_string());
     None
 }

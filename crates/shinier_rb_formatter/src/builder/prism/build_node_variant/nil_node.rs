@@ -8,6 +8,5 @@ use crate::keyword::*;
 use ruby_prism::*;
 
 pub fn build_nil_node(node: &NilNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
-    let keyword = Document::String(NIL.to_string());
     None
 }

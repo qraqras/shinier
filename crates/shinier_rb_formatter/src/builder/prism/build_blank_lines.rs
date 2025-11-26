@@ -8,7 +8,6 @@ pub struct LineBreakIndex {
     pub positions: Vec<usize>,
     source: Vec<u8>,
 }
-
 impl LineBreakIndex {
     pub fn new(source: &[u8]) -> Self {
         let positions = source
@@ -17,7 +16,7 @@ impl LineBreakIndex {
             .filter_map(|(i, &b)| if b == b'\n' { Some(i) } else { None })
             .collect();
         Self {
-            positions,
+            positions: positions,
             source: source.to_vec(),
         }
     }

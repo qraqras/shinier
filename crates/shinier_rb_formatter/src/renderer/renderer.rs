@@ -437,9 +437,9 @@ pub fn print_doc_to_string(doc: &mut Document, _options: ()) -> String {
                         cmds.push(next.clone());
                     } else {
                         if let Some(expanded_states) = &group.expanded_states {
-                            assert!(
+                            debug_assert!(
                                 !expanded_states.is_empty(),
-                                "conditional_group requires at least one state"
+                                "conditional-group requires at least one state"
                             );
                             let most_expanded = expanded_states.last().unwrap();
                             if Mode::from(group.r#break) == Mode::Break {
@@ -685,14 +685,6 @@ fn traverse_doc(
                     group_stack,
                 );
             }
-            // traverse_doc(
-            //     &mut if_break.r#break,
-            //     on_enter,
-            //     on_exit,
-            //     should_traverse_conditional_groups,
-            //     already_visited_set,
-            //     group_stack,
-            // );
             if let Some(flat) = &mut if_break.flat {
                 traverse_doc(
                     flat,
@@ -703,14 +695,6 @@ fn traverse_doc(
                     group_stack,
                 );
             }
-            // traverse_doc(
-            //     &mut if_break.flat,
-            //     on_enter,
-            //     on_exit,
-            //     should_traverse_conditional_groups,
-            //     already_visited_set,
-            //     group_stack,
-            // );
         }
         Document::Indent(indent) => {
             traverse_doc(
