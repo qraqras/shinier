@@ -1,0 +1,94 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/break_node.rb
+---
+****FORMATTED****
+while true
+  break
+end
+
+while true
+  break 0
+end
+
+while true
+  break 0, 1
+end
+
+while true
+  break 0, 1
+end
+
+while true
+  break 1000,
+    2000,
+    3000,
+    4000,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000
+end
+
+while true
+  # leading comment 1
+  break 0, # trailing comment 1
+    # leading comment 2
+    1 # trailing comment 2
+  # trailing comment 3
+end
+
+
+****AST****
+ProgramNode[0-340]: "while true\n  break\nend\n\nwhile true\n  break 0\nend\n\nwhile true\n  break 0, 1\nend\n\nwhile true\n  break 0,\n    1\nend\n\nwhile true\n  break 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000\nend\n\nwhile true\n  # leading comment 1\n  break 0, # trailing comment 1\n    # leading comment 2\n    1 # trailing comment 2\n    # trailing comment 3\nend"
+__StatementsNode[0-340]: "while true\n  break\nend\n\nwhile true\n  break 0\nend\n\nwhile true\n  break 0, 1\nend\n\nwhile true\n  break 0,\n    1\nend\n\nwhile true\n  break 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000\nend\n\nwhile true\n  # leading comment 1\n  break 0, # trailing comment 1\n    # leading comment 2\n    1 # trailing comment 2\n    # trailing comment 3\nend"
+____WhileNode[0-22]: "while true\n  break\nend"
+______TrueNode[6-10]: "true"
+______StatementsNode[13-18]: "break"
+________BreakNode[13-18]: "break"
+____WhileNode[24-48]: "while true\n  break 0\nend"
+______TrueNode[30-34]: "true"
+______StatementsNode[37-44]: "break 0"
+________BreakNode[37-44]: "break 0"
+__________ArgumentsNode[43-44]: "0"
+____________IntegerNode[43-44]: "0"
+____WhileNode[50-77]: "while true\n  break 0, 1\nend"
+______TrueNode[56-60]: "true"
+______StatementsNode[63-73]: "break 0, 1"
+________BreakNode[63-73]: "break 0, 1"
+__________ArgumentsNode[69-73]: "0, 1"
+____________IntegerNode[69-70]: "0"
+____________IntegerNode[72-73]: "1"
+____WhileNode[79-110]: "while true\n  break 0,\n    1\nend"
+______TrueNode[85-89]: "true"
+______StatementsNode[92-106]: "break 0,\n    1"
+________BreakNode[92-106]: "break 0,\n    1"
+__________ArgumentsNode[98-106]: "0,\n    1"
+____________IntegerNode[98-99]: "0"
+____________IntegerNode[105-106]: "1"
+____WhileNode[112-194]: "while true\n  break 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000\nend"
+______TrueNode[118-122]: "true"
+______StatementsNode[125-190]: "break 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000"
+________BreakNode[125-190]: "break 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000"
+__________ArgumentsNode[131-190]: "1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000"
+____________IntegerNode[131-135]: "1000"
+____________IntegerNode[137-141]: "2000"
+____________IntegerNode[143-147]: "3000"
+____________IntegerNode[149-153]: "4000"
+____________IntegerNode[155-159]: "5000"
+____________IntegerNode[161-165]: "6000"
+____________IntegerNode[167-171]: "7000"
+____________IntegerNode[173-177]: "8000"
+____________IntegerNode[179-183]: "9000"
+____________IntegerNode[185-190]: "10000"
+____WhileNode[196-340]: "while true\n  # leading comment 1\n  break 0, # trailing comment 1\n    # leading comment 2\n    1 # trailing comment 2\n    # trailing comment 3\nend"
+______TrueNode[202-206]: "true"
+______StatementsNode[231-290]: "break 0, # trailing comment 1\n    # leading comment 2\n    1"
+________BreakNode[231-290]: "break 0, # trailing comment 1\n    # leading comment 2\n    1"
+__________ArgumentsNode[237-290]: "0, # trailing comment 1\n    # leading comment 2\n    1"
+____________IntegerNode[237-238]: "0"
+____________IntegerNode[289-290]: "1"
