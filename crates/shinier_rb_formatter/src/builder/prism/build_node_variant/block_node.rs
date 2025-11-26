@@ -7,6 +7,11 @@ use ruby_prism::*;
 
 /// Builds BlockNode.
 ///
+/// Parameters are kept on a single line when possible,
+/// while the body breaks independently based on its content.
+///
+/// The original block style (`{ }` or `do...end`) is preserved without conversion.
+/// TODO: Consider adding a feature to automatically convert block styles
 pub fn build_block_node(node: &BlockNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let parameters = node.parameters();
     let body = node.body();

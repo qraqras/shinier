@@ -332,6 +332,11 @@ impl<'sh> CommentTarget<'sh> {
         }
     }
 }
+impl<'sh> PartialEq for CommentTarget<'sh> {
+    fn eq(&self, other: &Self) -> bool {
+        self.start_offset() == other.start_offset() && self.end_offset() == other.end_offset()
+    }
+}
 impl<'sh> From<(Location<'sh>, TargetType)> for CommentTarget<'sh> {
     fn from((location, r#type): (Location<'sh>, TargetType)) -> Self {
         CommentTarget::Location(location, r#type)

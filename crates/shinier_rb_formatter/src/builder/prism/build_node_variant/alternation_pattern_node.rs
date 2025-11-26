@@ -7,6 +7,9 @@ use ruby_prism::AlternationPatternNode;
 use ruby_prism::Node;
 
 /// Builds AlternationPatternNode.
+///
+/// Flattens nested alternation patterns into a linear sequence of documents,
+/// formatting them with proper indentation and line breaks.
 pub fn build_alternation_pattern_node(node: &AlternationPatternNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let mut first = None;
     let mut rest = Vec::new();

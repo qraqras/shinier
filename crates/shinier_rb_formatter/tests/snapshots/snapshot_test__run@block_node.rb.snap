@@ -1,0 +1,442 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/block_node.rb
+---
+****FORMATTED****
+[1, 2, 3].each { |i| puts x }
+
+[1, 2, 3].each { |i| puts x }
+
+[1, 2, 3].each { |i| puts x }
+
+[1, 2, 3].each { |i|
+  puts x
+  puts x
+}
+
+[1, 2, 3].each { |i|
+  puts x
+  puts x
+}
+
+[1, 2, 3].each {
+  |a, b, c, d, e, f, g, h, i|
+  puts x
+}
+
+[1, 2, 3].each {
+  |a, b, c, d, e, f, g, h, i|
+  puts x
+}
+
+[1, 2, 3].each {
+  |
+    a,
+    b,
+    c,
+    d,
+    e,
+    f,
+    g,
+    h,
+    i,
+    j,
+    k,
+    l,
+    m,
+    n,
+    o,
+    p,
+    q,
+    r,
+    s,
+    t,
+    u,
+    v,
+    w,
+    x,
+    y,
+    z
+  |
+  puts
+}
+
+[1, 2, 3].each {
+  |
+    a,
+    b,
+    c,
+    d,
+    e,
+    f,
+    g,
+    h,
+    i,
+    j,
+    k,
+    l,
+    m,
+    n,
+    o,
+    p,
+    q,
+    r,
+    s,
+    t,
+    u,
+    v,
+    w,
+    x,
+    y,
+    z
+  |
+  puts
+}
+
+[1, 2, 3].each { |i|
+  puts x
+  puts y
+  puts z
+}
+
+[1, 2, 3].each { |i| # trailing comment 1
+  puts x
+}
+
+[1, 2, 3].each {
+  |i| # trailing comment 1
+  puts x
+}
+
+[1, 2, 3].each { |i|
+  puts x # trailing comment 1
+}
+
+[1, 2, 3].each { # trailing comment 1
+  |i| # trailing comment 2
+  puts x # trailing comment 3
+}
+
+[1, 2, 3].each { |i|
+  # leading comment 1
+  puts x
+}
+
+[1, 2, 3].each { |i|
+  puts x
+  # trailing comment 1
+}
+
+[1, 2, 3].each { # trailing comment 1
+  # leading comment 1
+  |i| # trailing comment 2
+  # leading comment 2
+  puts x # trailing comment 3
+  # trailing comment 4
+}
+
+
+****AST****
+ProgramNode[0-1102]: "[1, 2, 3].each { |i| puts x }\n\n[1, 2, 3].each {\n  |i| puts x\n}\n\n[1, 2, 3].each {\n  |i|\n  puts x\n}\n\n[1, 2, 3].each {\n  |i|\n  puts x\n  puts x\n}\n\n[1, 2, 3].each { |i|\n  puts x\n  puts x\n}\n\n[1, 2, 3].each { |a, b, c, d, e, f, g, h, i| puts x }\n\n[1, 2, 3].each { |a, b, c, d, e, f, g, h, i|\n  puts x\n}\n\n[1, 2, 3].each { |a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z| puts x }\n\n[1, 2, 3].each { |a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z|\n  puts x\n}\n\n[1, 2, 3].each { |i| puts x; puts y; puts z }\n\n[1, 2, 3].each { # trailing comment 1\n  |i|\n  puts x\n}\n\n[1, 2, 3].each {\n  |i| # trailing comment 1\n  puts x\n}\n\n[1, 2, 3].each {\n  |i|\n  puts x # trailing comment 1\n}\n\n[1, 2, 3].each { # trailing comment 1\n  |i| # trailing comment 2\n  puts x # trailing comment 3\n}\n\n[1, 2, 3].each {\n  |i|\n  # leading comment 1\n  puts x\n}\n\n[1, 2, 3].each {\n  |i|\n  puts x\n  # trailing comment 1\n}\n\n[1, 2, 3].each { # trailing comment 1\n  # leading comment 1\n  |i| # trailing comment 2\n  # leading comment 2\n  puts x # trailing comment 3\n  # trailing comment 4\n}"
+__StatementsNode[0-1102]: "[1, 2, 3].each { |i| puts x }\n\n[1, 2, 3].each {\n  |i| puts x\n}\n\n[1, 2, 3].each {\n  |i|\n  puts x\n}\n\n[1, 2, 3].each {\n  |i|\n  puts x\n  puts x\n}\n\n[1, 2, 3].each { |i|\n  puts x\n  puts x\n}\n\n[1, 2, 3].each { |a, b, c, d, e, f, g, h, i| puts x }\n\n[1, 2, 3].each { |a, b, c, d, e, f, g, h, i|\n  puts x\n}\n\n[1, 2, 3].each { |a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z| puts x }\n\n[1, 2, 3].each { |a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z|\n  puts x\n}\n\n[1, 2, 3].each { |i| puts x; puts y; puts z }\n\n[1, 2, 3].each { # trailing comment 1\n  |i|\n  puts x\n}\n\n[1, 2, 3].each {\n  |i| # trailing comment 1\n  puts x\n}\n\n[1, 2, 3].each {\n  |i|\n  puts x # trailing comment 1\n}\n\n[1, 2, 3].each { # trailing comment 1\n  |i| # trailing comment 2\n  puts x # trailing comment 3\n}\n\n[1, 2, 3].each {\n  |i|\n  # leading comment 1\n  puts x\n}\n\n[1, 2, 3].each {\n  |i|\n  puts x\n  # trailing comment 1\n}\n\n[1, 2, 3].each { # trailing comment 1\n  # leading comment 1\n  |i| # trailing comment 2\n  # leading comment 2\n  puts x # trailing comment 3\n  # trailing comment 4\n}"
+____CallNode[0-29]: "[1, 2, 3].each { |i| puts x }"
+______ArrayNode[0-9]: "[1, 2, 3]"
+________IntegerNode[1-2]: "1"
+________IntegerNode[4-5]: "2"
+________IntegerNode[7-8]: "3"
+______BlockNode[15-29]: "{ |i| puts x }"
+________BlockParametersNode[17-20]: "|i|"
+__________ParametersNode[18-19]: "i"
+____________RequiredParameterNode[18-19]: "i"
+________StatementsNode[21-27]: "puts x"
+__________CallNode[21-27]: "puts x"
+____________ArgumentsNode[26-27]: "x"
+______________CallNode[26-27]: "x"
+____CallNode[31-62]: "[1, 2, 3].each {\n  |i| puts x\n}"
+______ArrayNode[31-40]: "[1, 2, 3]"
+________IntegerNode[32-33]: "1"
+________IntegerNode[35-36]: "2"
+________IntegerNode[38-39]: "3"
+______BlockNode[46-62]: "{\n  |i| puts x\n}"
+________BlockParametersNode[50-53]: "|i|"
+__________ParametersNode[51-52]: "i"
+____________RequiredParameterNode[51-52]: "i"
+________StatementsNode[54-60]: "puts x"
+__________CallNode[54-60]: "puts x"
+____________ArgumentsNode[59-60]: "x"
+______________CallNode[59-60]: "x"
+____CallNode[64-97]: "[1, 2, 3].each {\n  |i|\n  puts x\n}"
+______ArrayNode[64-73]: "[1, 2, 3]"
+________IntegerNode[65-66]: "1"
+________IntegerNode[68-69]: "2"
+________IntegerNode[71-72]: "3"
+______BlockNode[79-97]: "{\n  |i|\n  puts x\n}"
+________BlockParametersNode[83-86]: "|i|"
+__________ParametersNode[84-85]: "i"
+____________RequiredParameterNode[84-85]: "i"
+________StatementsNode[89-95]: "puts x"
+__________CallNode[89-95]: "puts x"
+____________ArgumentsNode[94-95]: "x"
+______________CallNode[94-95]: "x"
+____CallNode[99-141]: "[1, 2, 3].each {\n  |i|\n  puts x\n  puts x\n}"
+______ArrayNode[99-108]: "[1, 2, 3]"
+________IntegerNode[100-101]: "1"
+________IntegerNode[103-104]: "2"
+________IntegerNode[106-107]: "3"
+______BlockNode[114-141]: "{\n  |i|\n  puts x\n  puts x\n}"
+________BlockParametersNode[118-121]: "|i|"
+__________ParametersNode[119-120]: "i"
+____________RequiredParameterNode[119-120]: "i"
+________StatementsNode[124-139]: "puts x\n  puts x"
+__________CallNode[124-130]: "puts x"
+____________ArgumentsNode[129-130]: "x"
+______________CallNode[129-130]: "x"
+__________CallNode[133-139]: "puts x"
+____________ArgumentsNode[138-139]: "x"
+______________CallNode[138-139]: "x"
+____CallNode[143-183]: "[1, 2, 3].each { |i|\n  puts x\n  puts x\n}"
+______ArrayNode[143-152]: "[1, 2, 3]"
+________IntegerNode[144-145]: "1"
+________IntegerNode[147-148]: "2"
+________IntegerNode[150-151]: "3"
+______BlockNode[158-183]: "{ |i|\n  puts x\n  puts x\n}"
+________BlockParametersNode[160-163]: "|i|"
+__________ParametersNode[161-162]: "i"
+____________RequiredParameterNode[161-162]: "i"
+________StatementsNode[166-181]: "puts x\n  puts x"
+__________CallNode[166-172]: "puts x"
+____________ArgumentsNode[171-172]: "x"
+______________CallNode[171-172]: "x"
+__________CallNode[175-181]: "puts x"
+____________ArgumentsNode[180-181]: "x"
+______________CallNode[180-181]: "x"
+____CallNode[185-238]: "[1, 2, 3].each { |a, b, c, d, e, f, g, h, i| puts x }"
+______ArrayNode[185-194]: "[1, 2, 3]"
+________IntegerNode[186-187]: "1"
+________IntegerNode[189-190]: "2"
+________IntegerNode[192-193]: "3"
+______BlockNode[200-238]: "{ |a, b, c, d, e, f, g, h, i| puts x }"
+________BlockParametersNode[202-229]: "|a, b, c, d, e, f, g, h, i|"
+__________ParametersNode[203-228]: "a, b, c, d, e, f, g, h, i"
+____________RequiredParameterNode[203-204]: "a"
+____________RequiredParameterNode[206-207]: "b"
+____________RequiredParameterNode[209-210]: "c"
+____________RequiredParameterNode[212-213]: "d"
+____________RequiredParameterNode[215-216]: "e"
+____________RequiredParameterNode[218-219]: "f"
+____________RequiredParameterNode[221-222]: "g"
+____________RequiredParameterNode[224-225]: "h"
+____________RequiredParameterNode[227-228]: "i"
+________StatementsNode[230-236]: "puts x"
+__________CallNode[230-236]: "puts x"
+____________ArgumentsNode[235-236]: "x"
+______________CallNode[235-236]: "x"
+____CallNode[240-295]: "[1, 2, 3].each { |a, b, c, d, e, f, g, h, i|\n  puts x\n}"
+______ArrayNode[240-249]: "[1, 2, 3]"
+________IntegerNode[241-242]: "1"
+________IntegerNode[244-245]: "2"
+________IntegerNode[247-248]: "3"
+______BlockNode[255-295]: "{ |a, b, c, d, e, f, g, h, i|\n  puts x\n}"
+________BlockParametersNode[257-284]: "|a, b, c, d, e, f, g, h, i|"
+__________ParametersNode[258-283]: "a, b, c, d, e, f, g, h, i"
+____________RequiredParameterNode[258-259]: "a"
+____________RequiredParameterNode[261-262]: "b"
+____________RequiredParameterNode[264-265]: "c"
+____________RequiredParameterNode[267-268]: "d"
+____________RequiredParameterNode[270-271]: "e"
+____________RequiredParameterNode[273-274]: "f"
+____________RequiredParameterNode[276-277]: "g"
+____________RequiredParameterNode[279-280]: "h"
+____________RequiredParameterNode[282-283]: "i"
+________StatementsNode[287-293]: "puts x"
+__________CallNode[287-293]: "puts x"
+____________ArgumentsNode[292-293]: "x"
+______________CallNode[292-293]: "x"
+____CallNode[297-401]: "[1, 2, 3].each { |a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z| puts x }"
+______ArrayNode[297-306]: "[1, 2, 3]"
+________IntegerNode[298-299]: "1"
+________IntegerNode[301-302]: "2"
+________IntegerNode[304-305]: "3"
+______BlockNode[312-401]: "{ |a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z| puts x }"
+________BlockParametersNode[314-392]: "|a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z|"
+__________ParametersNode[315-391]: "a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z"
+____________RequiredParameterNode[315-316]: "a"
+____________RequiredParameterNode[318-319]: "b"
+____________RequiredParameterNode[321-322]: "c"
+____________RequiredParameterNode[324-325]: "d"
+____________RequiredParameterNode[327-328]: "e"
+____________RequiredParameterNode[330-331]: "f"
+____________RequiredParameterNode[333-334]: "g"
+____________RequiredParameterNode[336-337]: "h"
+____________RequiredParameterNode[339-340]: "i"
+____________RequiredParameterNode[342-343]: "j"
+____________RequiredParameterNode[345-346]: "k"
+____________RequiredParameterNode[348-349]: "l"
+____________RequiredParameterNode[351-352]: "m"
+____________RequiredParameterNode[354-355]: "n"
+____________RequiredParameterNode[357-358]: "o"
+____________RequiredParameterNode[360-361]: "p"
+____________RequiredParameterNode[363-364]: "q"
+____________RequiredParameterNode[366-367]: "r"
+____________RequiredParameterNode[369-370]: "s"
+____________RequiredParameterNode[372-373]: "t"
+____________RequiredParameterNode[375-376]: "u"
+____________RequiredParameterNode[378-379]: "v"
+____________RequiredParameterNode[381-382]: "w"
+____________RequiredParameterNode[384-385]: "x"
+____________RequiredParameterNode[387-388]: "y"
+____________RequiredParameterNode[390-391]: "z"
+________StatementsNode[393-399]: "puts x"
+__________CallNode[393-399]: "puts x"
+____________ArgumentsNode[398-399]: "x"
+______________LocalVariableReadNode[398-399]: "x"
+____CallNode[403-509]: "[1, 2, 3].each { |a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z|\n  puts x\n}"
+______ArrayNode[403-412]: "[1, 2, 3]"
+________IntegerNode[404-405]: "1"
+________IntegerNode[407-408]: "2"
+________IntegerNode[410-411]: "3"
+______BlockNode[418-509]: "{ |a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z|\n  puts x\n}"
+________BlockParametersNode[420-498]: "|a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z|"
+__________ParametersNode[421-497]: "a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z"
+____________RequiredParameterNode[421-422]: "a"
+____________RequiredParameterNode[424-425]: "b"
+____________RequiredParameterNode[427-428]: "c"
+____________RequiredParameterNode[430-431]: "d"
+____________RequiredParameterNode[433-434]: "e"
+____________RequiredParameterNode[436-437]: "f"
+____________RequiredParameterNode[439-440]: "g"
+____________RequiredParameterNode[442-443]: "h"
+____________RequiredParameterNode[445-446]: "i"
+____________RequiredParameterNode[448-449]: "j"
+____________RequiredParameterNode[451-452]: "k"
+____________RequiredParameterNode[454-455]: "l"
+____________RequiredParameterNode[457-458]: "m"
+____________RequiredParameterNode[460-461]: "n"
+____________RequiredParameterNode[463-464]: "o"
+____________RequiredParameterNode[466-467]: "p"
+____________RequiredParameterNode[469-470]: "q"
+____________RequiredParameterNode[472-473]: "r"
+____________RequiredParameterNode[475-476]: "s"
+____________RequiredParameterNode[478-479]: "t"
+____________RequiredParameterNode[481-482]: "u"
+____________RequiredParameterNode[484-485]: "v"
+____________RequiredParameterNode[487-488]: "w"
+____________RequiredParameterNode[490-491]: "x"
+____________RequiredParameterNode[493-494]: "y"
+____________RequiredParameterNode[496-497]: "z"
+________StatementsNode[501-507]: "puts x"
+__________CallNode[501-507]: "puts x"
+____________ArgumentsNode[506-507]: "x"
+______________LocalVariableReadNode[506-507]: "x"
+____CallNode[511-556]: "[1, 2, 3].each { |i| puts x; puts y; puts z }"
+______ArrayNode[511-520]: "[1, 2, 3]"
+________IntegerNode[512-513]: "1"
+________IntegerNode[515-516]: "2"
+________IntegerNode[518-519]: "3"
+______BlockNode[526-556]: "{ |i| puts x; puts y; puts z }"
+________BlockParametersNode[528-531]: "|i|"
+__________ParametersNode[529-530]: "i"
+____________RequiredParameterNode[529-530]: "i"
+________StatementsNode[532-554]: "puts x; puts y; puts z"
+__________CallNode[532-538]: "puts x"
+____________ArgumentsNode[537-538]: "x"
+______________CallNode[537-538]: "x"
+__________CallNode[540-546]: "puts y"
+____________ArgumentsNode[545-546]: "y"
+______________CallNode[545-546]: "y"
+__________CallNode[548-554]: "puts z"
+____________ArgumentsNode[553-554]: "z"
+______________CallNode[553-554]: "z"
+____CallNode[558-612]: "[1, 2, 3].each { # trailing comment 1\n  |i|\n  puts x\n}"
+______ArrayNode[558-567]: "[1, 2, 3]"
+________IntegerNode[559-560]: "1"
+________IntegerNode[562-563]: "2"
+________IntegerNode[565-566]: "3"
+______BlockNode[573-612]: "{ # trailing comment 1\n  |i|\n  puts x\n}"
+________BlockParametersNode[598-601]: "|i|"
+__________ParametersNode[599-600]: "i"
+____________RequiredParameterNode[599-600]: "i"
+________StatementsNode[604-610]: "puts x"
+__________CallNode[604-610]: "puts x"
+____________ArgumentsNode[609-610]: "x"
+______________CallNode[609-610]: "x"
+____CallNode[614-668]: "[1, 2, 3].each {\n  |i| # trailing comment 1\n  puts x\n}"
+______ArrayNode[614-623]: "[1, 2, 3]"
+________IntegerNode[615-616]: "1"
+________IntegerNode[618-619]: "2"
+________IntegerNode[621-622]: "3"
+______BlockNode[629-668]: "{\n  |i| # trailing comment 1\n  puts x\n}"
+________BlockParametersNode[633-636]: "|i|"
+__________ParametersNode[634-635]: "i"
+____________RequiredParameterNode[634-635]: "i"
+________StatementsNode[660-666]: "puts x"
+__________CallNode[660-666]: "puts x"
+____________ArgumentsNode[665-666]: "x"
+______________CallNode[665-666]: "x"
+____CallNode[670-724]: "[1, 2, 3].each {\n  |i|\n  puts x # trailing comment 1\n}"
+______ArrayNode[670-679]: "[1, 2, 3]"
+________IntegerNode[671-672]: "1"
+________IntegerNode[674-675]: "2"
+________IntegerNode[677-678]: "3"
+______BlockNode[685-724]: "{\n  |i|\n  puts x # trailing comment 1\n}"
+________BlockParametersNode[689-692]: "|i|"
+__________ParametersNode[690-691]: "i"
+____________RequiredParameterNode[690-691]: "i"
+________StatementsNode[695-701]: "puts x"
+__________CallNode[695-701]: "puts x"
+____________ArgumentsNode[700-701]: "x"
+______________CallNode[700-701]: "x"
+____CallNode[726-822]: "[1, 2, 3].each { # trailing comment 1\n  |i| # trailing comment 2\n  puts x # trailing comment 3\n}"
+______ArrayNode[726-735]: "[1, 2, 3]"
+________IntegerNode[727-728]: "1"
+________IntegerNode[730-731]: "2"
+________IntegerNode[733-734]: "3"
+______BlockNode[741-822]: "{ # trailing comment 1\n  |i| # trailing comment 2\n  puts x # trailing comment 3\n}"
+________BlockParametersNode[766-769]: "|i|"
+__________ParametersNode[767-768]: "i"
+____________RequiredParameterNode[767-768]: "i"
+________StatementsNode[793-799]: "puts x"
+__________CallNode[793-799]: "puts x"
+____________ArgumentsNode[798-799]: "x"
+______________CallNode[798-799]: "x"
+____CallNode[824-879]: "[1, 2, 3].each {\n  |i|\n  # leading comment 1\n  puts x\n}"
+______ArrayNode[824-833]: "[1, 2, 3]"
+________IntegerNode[825-826]: "1"
+________IntegerNode[828-829]: "2"
+________IntegerNode[831-832]: "3"
+______BlockNode[839-879]: "{\n  |i|\n  # leading comment 1\n  puts x\n}"
+________BlockParametersNode[843-846]: "|i|"
+__________ParametersNode[844-845]: "i"
+____________RequiredParameterNode[844-845]: "i"
+________StatementsNode[871-877]: "puts x"
+__________CallNode[871-877]: "puts x"
+____________ArgumentsNode[876-877]: "x"
+______________CallNode[876-877]: "x"
+____CallNode[881-937]: "[1, 2, 3].each {\n  |i|\n  puts x\n  # trailing comment 1\n}"
+______ArrayNode[881-890]: "[1, 2, 3]"
+________IntegerNode[882-883]: "1"
+________IntegerNode[885-886]: "2"
+________IntegerNode[888-889]: "3"
+______BlockNode[896-937]: "{\n  |i|\n  puts x\n  # trailing comment 1\n}"
+________BlockParametersNode[900-903]: "|i|"
+__________ParametersNode[901-902]: "i"
+____________RequiredParameterNode[901-902]: "i"
+________StatementsNode[906-912]: "puts x"
+__________CallNode[906-912]: "puts x"
+____________ArgumentsNode[911-912]: "x"
+______________CallNode[911-912]: "x"
+____CallNode[939-1102]: "[1, 2, 3].each { # trailing comment 1\n  # leading comment 1\n  |i| # trailing comment 2\n  # leading comment 2\n  puts x # trailing comment 3\n  # trailing comment 4\n}"
+______ArrayNode[939-948]: "[1, 2, 3]"
+________IntegerNode[940-941]: "1"
+________IntegerNode[943-944]: "2"
+________IntegerNode[946-947]: "3"
+______BlockNode[954-1102]: "{ # trailing comment 1\n  # leading comment 1\n  |i| # trailing comment 2\n  # leading comment 2\n  puts x # trailing comment 3\n  # trailing comment 4\n}"
+________BlockParametersNode[1001-1004]: "|i|"
+__________ParametersNode[1002-1003]: "i"
+____________RequiredParameterNode[1002-1003]: "i"
+________StatementsNode[1050-1056]: "puts x"
+__________CallNode[1050-1056]: "puts x"
+____________ArgumentsNode[1055-1056]: "x"
+______________CallNode[1055-1056]: "x"

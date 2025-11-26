@@ -14,3 +14,7 @@ return foo,
   # leading comment 1
   bar, # trailing comment 1
   baz # trailing comment 2
+
+return foo,
+  # leading comment 1
+  bar, baz

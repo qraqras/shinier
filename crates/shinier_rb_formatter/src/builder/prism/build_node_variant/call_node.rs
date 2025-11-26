@@ -68,6 +68,6 @@ pub fn build_call_node(node: &CallNode<'_>, ctx: &mut BuildContext) -> Option<Do
         call_operator_loc.map(|loc| build_location(loc, ctx)).flatten(),
         message_loc.map(|loc| build_location(loc, ctx)).flatten(),
         args_doc,
-        block_literal.map(|n| build_node(n, ctx)).flatten(),
+        block_literal.map(|n| array(&[space(), build_node(n, ctx)])).flatten(),
     ]))
 }

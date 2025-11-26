@@ -5,8 +5,6 @@ use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::build_node::build_nodelist;
 use ruby_prism::BlockParametersNode;
-use ruby_prism::NodeList;
-use ruby_prism::ParametersNode;
 
 /// Builds BlockParametersNode.
 ///
@@ -17,40 +15,35 @@ pub fn build_block_parameters_node(node: &BlockParametersNode<'_>, ctx: &mut Bui
     let opening_loc = node.opening_loc();
     let closing_loc = node.closing_loc();
 
-    let parameters = _build_parameters(parameters, locals, ctx);
+    // Combines parameters and locals with semicolon separation.
+    let mut parameters_and_locals = Vec::new();
+    match (parameters, locals.iter().next()) {
+        (Some(p), Some(_)) => {
+            parameters_and_locals.push(build_node(p.as_node(), ctx));
+            parameters_and_locals.push(softline());
+            parameters_and_locals.push(string(";"));
+            parameters_and_locals.push(line());
+            parameters_and_locals.extend(build_nodelist(locals, ctx));
+        }
+        (Some(p), None) => {
+            parameters_and_locals.push(build_node(p.as_node(), ctx));
+        }
+        (None, Some(_)) => {
+            parameters_and_locals.push(string(";"));
+            parameters_and_locals.push(line());
+            parameters_and_locals.extend(build_nodelist(locals, ctx));
+        }
+        (None, None) => {}
+    };
+
     match (opening_loc, closing_loc) {
         (Some(o), Some(c)) => group(array(&[
             build_location(o, ctx),
-            indent(array(&[softline(), parameters])),
+            indent(array(&[softline(), group(array(&parameters_and_locals))])),
             softline(),
             build_location(c, ctx),
         ])),
-        (None, None) => group(parameters),
+        (None, None) => group(array(&parameters_and_locals)),
         _ => unreachable!(),
-    }
-}
-
-/// Helper function to build parameters and locals with semicolon separation.
-fn _build_parameters(
-    parameters: Option<ParametersNode<'_>>,
-    locals: NodeList<'_>,
-    ctx: &mut BuildContext,
-) -> Option<Document> {
-    match parameters {
-        Some(p) => {
-            let parameters_doc = build_node(p.as_node(), ctx);
-            let locals_doc = build_nodelist(locals, ctx);
-            match locals_doc.is_empty() {
-                true => parameters_doc,
-                false => {
-                    let mut docs = Vec::new();
-                    docs.push(parameters_doc);
-                    docs.push(string("; "));
-                    docs.extend(locals_doc);
-                    array(&docs)
-                }
-            }
-        }
-        None => array(&build_nodelist(locals, ctx)),
     }
 }

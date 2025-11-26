@@ -1,26 +1,20 @@
 # TODO
-- [ ] コメントのアタッチのロジックを修正(https://github.com/ruby/prism/blob/main/lib/prism/parse_result/comments.rb#L93)
-- [ ] 大規模リファクタリング
-
-
-
-# 再実装
-- [ ] alias_global_variable_node.rs
-- [ ] alias_method_node.rs
-- [ ] alternation_pattern_node.rs
-- [ ] and_node.rs
-- [ ] arguments_node.rs
-- [ ] array_node.rs
-- [ ] array_pattern_node.rs
-- [ ] assoc_node.rs
-- [ ] assoc_splat_node.rs
-- [ ] back_reference_read_node.rs
-- [ ] begin_node.rs
-- [ ] block_argument_node.rs
-- [ ] block_local_variable_node.rs
-- [ ] block_node.rs
-- [ ] block_parameter_node.rs
-- [ ] block_parameters_node.rs
+- [ x ] alias_global_variable_node.rs
+- [ x ] alias_method_node.rs
+- [ x ] alternation_pattern_node.rs
+- [ x ] and_node.rs
+- [ x ] arguments_node.rs
+- [ x ] array_node.rs
+- [ x ] array_pattern_node.rs
+- [ x ] assoc_node.rs
+- [ x ] assoc_splat_node.rs
+- [ x ] back_reference_read_node.rs
+- [ x ] begin_node.rs
+- [ x ] block_argument_node.rs
+- [ x ] block_local_variable_node.rs
+- [ x ] block_node.rs
+- [ x ] block_parameter_node.rs
+- [ x ] block_parameters_node.rs
 - [ ] break_node.rs
 - [ ] call_and_write_node.rs
 - [ ] call_node.rs

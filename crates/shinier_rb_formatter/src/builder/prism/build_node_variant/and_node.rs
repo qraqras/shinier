@@ -5,6 +5,7 @@ use ruby_prism::AndNode;
 
 /// Builds AndNode.
 ///
+/// Formats logical `and` chains using the shared logical chain builder.
 /// Since `and` and `&&` have different operator precedence, do not format them.
 pub fn build_and_node(node: &AndNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     build_logical_chain(node.as_node(), ctx)
