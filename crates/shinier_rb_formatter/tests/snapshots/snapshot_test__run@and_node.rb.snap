@@ -85,7 +85,7 @@ a and
 f && # trailing comment 1
   # leading comment 2
   g # trailing comment 2
-  # trailing comment 3
+# trailing comment 3
 
 
 ****AST****

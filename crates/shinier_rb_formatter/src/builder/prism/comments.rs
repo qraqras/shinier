@@ -164,51 +164,24 @@ impl<'sh> CommentStore<'sh> {
 }
 
 /// Type of target for comment attachment.
-/// - **Opening**: opening location (e.g., `if`, `def`, `(`)
-/// - **OpeningLike**: locations similar to opening (e.g., `then`, function name)
-/// - **Closing**: closing location (e.g., `end`, `)`)
-/// - **ClosingLike**: locations similar to closing (e.g., now unused in Ruby)
-/// - **OpeningAndClosingLike**: locations that serve as both opening and closing-like (e.g., `else`, `rescue`, `ensure`)
-/// - **OpeningLikeAndClosing**: locations that serve as both opening-like and closing (e.g., closing of parameters)
-/// - **Regular**: regular location (e.g., other locations)
 ///
-/// Example 1:
-/// ```ruby
-/// def foo(param)
-///   bar
-/// end
-/// ```
-/// - `def` is an **Opening** location.
-/// - `foo` is an **OpeningLike** location.
-/// - `(param)` is an **OpeningLike** location.
-/// - `(` is an **Opening** location.
-/// - `param` is a **Regular** location.
-/// - `)` is a **OpeningLikeAndClosing** location.
-/// - `bar` is a **Regular** location.
-/// - `end` is a **Closing** location.
+/// These types determine how comments are attached relative to code structures:
 ///
-/// Example 2:
-/// ```ruby
-/// if foo then
-///   bar
-/// else
-///   baz
-/// end
-/// ```
-/// - `if` is an **Opening** location.
-/// - `foo` is an **OpeningLike** location.
-/// - `then` is an **OpeningLike** location.
-/// - `bar` is a **Regular** location.
-/// - `else` is an **OpeningAndClosingLike** location.
-/// - `baz` is a **Regular** location.
-/// - `end` is a **Closing** location.
+/// - **Opening**: Start of a block structure (e.g., `if`, `def`, `begin`, `(`, `{`)
+/// - **OpeningLike**: Follows an opening, but may not start its own line
+///   (e.g., method name after `def`, condition after `if`)
+/// - **OpeningAndClosing**: Acts as closing for previous block and opening for next
+///   (e.g., `else`, `elsif`, `rescue`, `ensure`, `when`, `in`)
+/// - **OpeningLikeAndClosing**: Acts as closing but followed by content on same logical unit
+///   (e.g., `)` in `def foo(param)` - closes params but part of def header)
+/// - **Closing**: End of a block structure (e.g., `end`, `)`, `}`)
+/// - **Regular**: Normal code elements without special block semantics
 pub enum TargetType {
     Opening,
     OpeningLike,
-    Closing,
-    ClosingLike,
-    OpeningAndClosingLike,
+    OpeningAndClosing,
     OpeningLikeAndClosing,
+    Closing,
     Regular,
 }
 
@@ -241,28 +214,30 @@ impl<'sh> CommentTarget<'sh> {
         }
     }
     /// Checks if the target has opening characteristic.
+    #[allow(dead_code)]
     fn has_opening_characteristic(&self) -> bool {
         match self {
             CommentTarget::Location(_, TargetType::Opening) => true,
             CommentTarget::Location(_, TargetType::OpeningLike) => true,
-            CommentTarget::Location(_, TargetType::OpeningAndClosingLike) => true,
+            CommentTarget::Location(_, TargetType::OpeningAndClosing) => true,
             CommentTarget::Location(_, TargetType::OpeningLikeAndClosing) => true,
             CommentTarget::Node(_, TargetType::Opening) => true,
             CommentTarget::Node(_, TargetType::OpeningLike) => true,
-            CommentTarget::Node(_, TargetType::OpeningAndClosingLike) => true,
+            CommentTarget::Node(_, TargetType::OpeningAndClosing) => true,
             CommentTarget::Node(_, TargetType::OpeningLikeAndClosing) => true,
             _ => false,
         }
     }
     /// Checks if the target has closing characteristic.
+    #[allow(dead_code)]
     fn has_closing_characteristic(&self) -> bool {
         match self {
-            CommentTarget::Location(_, TargetType::Closing) => true,
-            CommentTarget::Location(_, TargetType::OpeningAndClosingLike) => true,
+            CommentTarget::Location(_, TargetType::OpeningAndClosing) => true,
             CommentTarget::Location(_, TargetType::OpeningLikeAndClosing) => true,
-            CommentTarget::Node(_, TargetType::Closing) => true,
-            CommentTarget::Node(_, TargetType::OpeningAndClosingLike) => true,
+            CommentTarget::Location(_, TargetType::Closing) => true,
+            CommentTarget::Node(_, TargetType::OpeningAndClosing) => true,
             CommentTarget::Node(_, TargetType::OpeningLikeAndClosing) => true,
+            CommentTarget::Node(_, TargetType::Closing) => true,
             _ => false,
         }
     }
@@ -271,7 +246,9 @@ impl<'sh> CommentTarget<'sh> {
     fn is_opening(&self) -> bool {
         match self {
             CommentTarget::Location(_, TargetType::Opening) => true,
+            CommentTarget::Location(_, TargetType::OpeningAndClosing) => true,
             CommentTarget::Node(_, TargetType::Opening) => true,
+            CommentTarget::Node(_, TargetType::OpeningAndClosing) => true,
             _ => false,
         }
     }
@@ -280,18 +257,18 @@ impl<'sh> CommentTarget<'sh> {
     fn is_opening_like(&self) -> bool {
         match self {
             CommentTarget::Location(_, TargetType::OpeningLike) => true,
-            CommentTarget::Location(_, TargetType::OpeningAndClosingLike) => true,
+            CommentTarget::Location(_, TargetType::OpeningLikeAndClosing) => true,
             CommentTarget::Node(_, TargetType::OpeningLike) => true,
-            CommentTarget::Node(_, TargetType::OpeningAndClosingLike) => true,
+            CommentTarget::Node(_, TargetType::OpeningLikeAndClosing) => true,
             _ => false,
         }
     }
-    /// Checks if the target is `OpeningAndClosingLike`.
+    /// Checks if the target is `OpeningAndClosing`.
     #[allow(dead_code)]
-    fn is_opening_and_closing_like(&self) -> bool {
+    fn is_opening_and_closing(&self) -> bool {
         match self {
-            CommentTarget::Location(_, TargetType::OpeningAndClosingLike) => true,
-            CommentTarget::Node(_, TargetType::OpeningAndClosingLike) => true,
+            CommentTarget::Location(_, TargetType::OpeningAndClosing) => true,
+            CommentTarget::Node(_, TargetType::OpeningAndClosing) => true,
             _ => false,
         }
     }
@@ -309,16 +286,11 @@ impl<'sh> CommentTarget<'sh> {
     fn is_closing(&self) -> bool {
         match self {
             CommentTarget::Location(_, TargetType::Closing) => true,
+            CommentTarget::Location(_, TargetType::OpeningAndClosing) => true,
+            CommentTarget::Location(_, TargetType::OpeningLikeAndClosing) => true,
             CommentTarget::Node(_, TargetType::Closing) => true,
-            _ => false,
-        }
-    }
-    /// Checks if the target is `ClosingLike`.
-    #[allow(dead_code)]
-    fn is_closing_like(&self) -> bool {
-        match self {
-            CommentTarget::Location(_, TargetType::ClosingLike) => true,
-            CommentTarget::Node(_, TargetType::ClosingLike) => true,
+            CommentTarget::Node(_, TargetType::OpeningAndClosing) => true,
+            CommentTarget::Node(_, TargetType::OpeningLikeAndClosing) => true,
             _ => false,
         }
     }
@@ -408,12 +380,13 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 }
             },
             false => match (preceding, enclosing, following) {
-                (Some(p), _, Some(f)) => match (p.has_opening_characteristic(), f.has_closing_characteristic()) {
-                    (true, true) => match f.is_opening_and_closing_like() {
+                (Some(p), _, Some(f)) => match (p.is_opening(), f.is_closing()) {
+                    (true, true) => match f.is_opening_and_closing() {
                         true => {
+                            let preceding_col = col(p.start_offset(), parse_result.source());
                             let following_col = col(f.start_offset(), parse_result.source());
                             let comment_col = col(comment.location().start_offset(), parse_result.source());
-                            if following_col < comment_col
+                            if preceding_col.min(following_col) < comment_col
                                 && !comment_store.has_leadings(f.start_offset(), f.end_offset())
                             {
                                 comment_store
@@ -427,11 +400,12 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                             comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                         }
                     },
-                    (_, true) => match f.is_opening_and_closing_like() {
+                    (_, true) => match f.is_opening_and_closing() {
                         true => {
+                            let preceding_col = col(p.start_offset(), parse_result.source());
                             let following_col = col(f.start_offset(), parse_result.source());
                             let comment_col = col(comment.location().start_offset(), parse_result.source());
-                            if following_col < comment_col
+                            if preceding_col.min(following_col) < comment_col
                                 && !comment_store.has_leadings(f.start_offset(), f.end_offset())
                             {
                                 comment_store
@@ -764,9 +738,9 @@ fn collect_child_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Commen
         match rescue_node {
             None => {}
             Some(rescue_node) => {
-                push_loc_opening_and_closing_like(Some(rescue_node.keyword_loc()), targets);
-                push_nodelist_opning_like(Some(rescue_node.exceptions()), targets);
-                push_loc_regular(rescue_node.operator_loc(), targets);
+                push_loc_opening_and_closing(Some(rescue_node.keyword_loc()), targets);
+                push_nodelist_opening_like(Some(rescue_node.exceptions()), targets);
+                push_loc_opening_like(rescue_node.operator_loc(), targets);
                 push_node_opening_like(rescue_node.reference(), targets);
                 push_loc_opening_like(rescue_node.then_keyword_loc(), targets);
                 push_node_regular(rescue_node.statements().map(|stmts| stmts.as_node()), targets);
@@ -778,12 +752,9 @@ fn collect_child_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Commen
         match else_node {
             None => {}
             Some(else_node) => {
-                push_loc_opening_and_closing_like(Some(else_node.else_keyword_loc()), targets);
+                push_loc_opening_and_closing(Some(else_node.else_keyword_loc()), targets);
                 push_node_regular(else_node.statements().map(|stmts| stmts.as_node()), targets);
-                // instead of closing else, we use end of begin
-                /*
-                 * push_loc_closing(else_node.end_keyword_loc(), targets);
-                 */
+                // push_loc_closing(else_node.end_keyword_loc(), targets);
             }
         }
     }
@@ -791,12 +762,9 @@ fn collect_child_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Commen
         match ensure_node {
             None => {}
             Some(ensure_node) => {
-                push_loc_opening_and_closing_like(Some(ensure_node.ensure_keyword_loc()), targets);
+                push_loc_opening_and_closing(Some(ensure_node.ensure_keyword_loc()), targets);
                 push_node_regular(ensure_node.statements().map(|stmts| stmts.as_node()), targets);
-                // instead of closing ensure, we use end of begin
-                /*
-                 * push_loc_closing(Some(ensure_node.end_keyword_loc()), targets);
-                 */
+                // push_loc_closing(Some(ensure_node.end_keyword_loc()), targets);
             }
         }
     }
@@ -918,13 +886,20 @@ fn collect_child_targets_of_case_match_node<'sh>(node: &CaseMatchNode<'sh>) -> V
             }
         }
     }
+    fn else_clause_targets<'sh>(else_node: &Option<ElseNode<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+        match else_node {
+            None => {}
+            Some(else_node) => {
+                push_loc_opening_and_closing(Some(else_node.else_keyword_loc()), targets);
+                push_node_regular(else_node.statements().map(|stmts| stmts.as_node()), targets);
+                //push_loc_closing(else_node.end_keyword_loc(), targets);
+            }
+        }
+    }
     let mut targets = Vec::new();
     push_node_opening_like(node.predicate(), &mut targets);
     conditions_targets(&node.conditions(), &mut targets);
-    push_node_opening_and_closing_like(
-        node.else_clause().map(|else_clause| else_clause.as_node()),
-        &mut targets,
-    );
+    else_clause_targets(&node.else_clause(), &mut targets);
     push_loc_opening(Some(node.case_keyword_loc()), &mut targets);
     push_loc_closing(Some(node.end_keyword_loc()), &mut targets);
     targets
@@ -942,13 +917,20 @@ fn collect_child_targets_of_case_node<'sh>(node: &CaseNode<'sh>) -> Vec<CommentT
             }
         }
     }
+    fn else_clause_targets<'sh>(else_node: &Option<ElseNode<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+        match else_node {
+            None => {}
+            Some(else_node) => {
+                push_loc_opening_and_closing(Some(else_node.else_keyword_loc()), targets);
+                push_node_regular(else_node.statements().map(|stmts| stmts.as_node()), targets);
+                // push_loc_closing(else_node.end_keyword_loc(), targets);
+            }
+        }
+    }
     let mut targets = Vec::new();
-    push_node_regular(node.predicate(), &mut targets);
+    push_node_opening_like(node.predicate(), &mut targets);
     conditions_targets(&node.conditions(), &mut targets);
-    push_node_opening_and_closing_like(
-        node.else_clause().map(|else_clause| else_clause.as_node()),
-        &mut targets,
-    );
+    else_clause_targets(&node.else_clause(), &mut targets);
     push_loc_opening(Some(node.case_keyword_loc()), &mut targets);
     push_loc_closing(Some(node.end_keyword_loc()), &mut targets);
     targets
@@ -1308,7 +1290,7 @@ fn collect_child_targets_of_in_node<'sh>(node: &InNode<'sh>) -> Vec<CommentTarge
     let mut targets = Vec::new();
     push_node_opening_like(Some(node.pattern()), &mut targets);
     push_nodelist_regular(node.statements().map(|s| s.body()), &mut targets);
-    push_loc_opening_and_closing_like(Some(node.in_loc()), &mut targets);
+    push_loc_opening_and_closing(Some(node.in_loc()), &mut targets);
     push_loc_opening_like(node.then_loc(), &mut targets);
     targets
 }
@@ -1883,8 +1865,8 @@ fn collect_child_targets_of_until_node<'sh>(node: &UntilNode<'sh>) -> Vec<Commen
 fn collect_child_targets_of_when_node<'sh>(node: &WhenNode<'sh>) -> Vec<CommentTarget<'sh>> {
     let mut targets = Vec::new();
     push_loc_opening(Some(node.keyword_loc()), &mut targets);
-    push_nodelist_regular(Some(node.conditions()), &mut targets);
-    push_loc_regular(node.then_keyword_loc(), &mut targets);
+    push_nodelist_opening_like(Some(node.conditions()), &mut targets);
+    push_loc_opening_like(node.then_keyword_loc(), &mut targets);
     push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     targets
 }
@@ -1913,7 +1895,7 @@ fn collect_child_targets_of_yield_node<'sh>(node: &YieldNode<'sh>) -> Vec<Commen
     targets
 }
 
-/// Helper functions to push targets if they are Some.
+#[allow(dead_code)]
 fn push_loc_opening<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match loc {
         Some(loc) => {
@@ -1922,7 +1904,7 @@ fn push_loc_opening<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTa
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
+#[allow(dead_code)]
 fn push_loc_opening_like<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match loc {
         Some(loc) => {
@@ -1931,16 +1913,16 @@ fn push_loc_opening_like<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<Comm
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
-fn push_loc_opening_and_closing_like<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+#[allow(dead_code)]
+fn push_loc_opening_and_closing<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match loc {
         Some(loc) => {
-            targets.push(CommentTarget::from((loc, TargetType::OpeningAndClosingLike)));
+            targets.push(CommentTarget::from((loc, TargetType::OpeningAndClosing)));
         }
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
+#[allow(dead_code)]
 fn push_loc_opening_like_and_closing<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match loc {
         Some(loc) => {
@@ -1949,7 +1931,7 @@ fn push_loc_opening_like_and_closing<'sh>(loc: Option<Location<'sh>>, targets: &
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
+#[allow(dead_code)]
 fn push_loc_closing<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match loc {
         Some(loc) => {
@@ -1958,7 +1940,7 @@ fn push_loc_closing<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTa
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
+#[allow(dead_code)]
 fn push_loc_regular<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match loc {
         Some(loc) => {
@@ -1967,7 +1949,16 @@ fn push_loc_regular<'sh>(loc: Option<Location<'sh>>, targets: &mut Vec<CommentTa
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
+#[allow(dead_code)]
+fn push_node_opening<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+    match node {
+        Some(node) => {
+            targets.push(CommentTarget::from((node, TargetType::Opening)));
+        }
+        None => {}
+    }
+}
+#[allow(dead_code)]
 fn push_node_opening_like<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match node {
         Some(node) => {
@@ -1976,16 +1967,34 @@ fn push_node_opening_like<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<Commen
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
-fn push_node_opening_and_closing_like<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+#[allow(dead_code)]
+fn push_node_opening_and_closing<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match node {
         Some(node) => {
-            targets.push(CommentTarget::from((node, TargetType::OpeningAndClosingLike)));
+            targets.push(CommentTarget::from((node, TargetType::OpeningAndClosing)));
         }
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
+#[allow(dead_code)]
+fn push_node_opening_like_and_closing<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+    match node {
+        Some(node) => {
+            targets.push(CommentTarget::from((node, TargetType::OpeningLikeAndClosing)));
+        }
+        None => {}
+    }
+}
+#[allow(dead_code)]
+fn push_node_closing<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+    match node {
+        Some(node) => {
+            targets.push(CommentTarget::from((node, TargetType::Closing)));
+        }
+        None => {}
+    }
+}
+#[allow(dead_code)]
 fn push_node_regular<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match node {
         Some(node) => {
@@ -1994,8 +2003,8 @@ fn push_node_regular<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<CommentTarg
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
-fn push_nodelist_opning_like<'sh>(nodelist: Option<NodeList<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+#[allow(dead_code)]
+fn push_nodelist_opening_like<'sh>(nodelist: Option<NodeList<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match nodelist {
         Some(nodelist) => {
             for node in nodelist.iter() {
@@ -2005,7 +2014,7 @@ fn push_nodelist_opning_like<'sh>(nodelist: Option<NodeList<'sh>>, targets: &mut
         None => {}
     }
 }
-/// Helper functions to push targets if they are Some.
+#[allow(dead_code)]
 fn push_nodelist_regular<'sh>(nodelist: Option<NodeList<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
     match nodelist {
         Some(nodelist) => {
