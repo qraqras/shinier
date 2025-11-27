@@ -34,7 +34,7 @@ where
     // ** BUILD COMMENTS AND ASSEMBLE FINAL DOCUMENT **
     let leading_comments = build_comments_as_leading(current_leading_comments, context);
     let trailing_comments = build_comments_as_trailing(current_trailing_comments, context);
-    let dangling_comments = indent(build_comments_as_dangling(current_dangling_comments, context));
+    let dangling_comments = build_comments_as_dangling(current_dangling_comments, context);
     array(&[
         leading_comments,
         blank_lines,

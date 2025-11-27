@@ -1,9 +1,4 @@
-use crate::builder::builder::array;
-use crate::builder::builder::break_parent;
-use crate::builder::builder::hardline;
-use crate::builder::builder::line_suffix;
-use crate::builder::builder::space;
-use crate::builder::builder::string;
+use crate::builder::builder::*;
 use crate::builder::context::BuildContext;
 use crate::builder::prism::comments::CommentPosition;
 use crate::builder::prism::comments::CommentWrapper;
@@ -44,11 +39,14 @@ pub fn build_comments_as_leading(
 }
 
 /// Builds comments as trailing comments for a given set of comments.
-pub fn build_comments_as_trailing(comments: Option<Vec<CommentWrapper>>, _ctx: &mut BuildContext) -> Option<Document> {
-    match comments {
-        Some(comments) if !comments.is_empty() => {
+pub fn build_comments_as_trailing(
+    comment_wrappers: Option<Vec<CommentWrapper>>,
+    _ctx: &mut BuildContext,
+) -> Option<Document> {
+    match comment_wrappers {
+        Some(comment_wrappers) if !comment_wrappers.is_empty() => {
             let mut documents = Vec::new();
-            for comment_wrapper in comments {
+            for comment_wrapper in comment_wrappers {
                 let comment = comment_wrapper.comment;
                 let position = comment_wrapper.position;
                 match position {
@@ -70,11 +68,14 @@ pub fn build_comments_as_trailing(comments: Option<Vec<CommentWrapper>>, _ctx: &
 }
 
 /// Builds comments as dangling comments for a given set of comments.
-pub fn build_comments_as_dangling(comments: Option<Vec<CommentWrapper>>, ctx: &mut BuildContext) -> Option<Document> {
-    match comments {
-        Some(comments) if !comments.is_empty() => {
+pub fn build_comments_as_dangling(
+    comment_wrappers: Option<Vec<CommentWrapper>>,
+    ctx: &mut BuildContext,
+) -> Option<Document> {
+    match comment_wrappers {
+        Some(comment_wrappers) if !comment_wrappers.is_empty() => {
             let mut documents = Vec::new();
-            for comment_wrapper in comments {
+            for comment_wrapper in comment_wrappers {
                 let comment = comment_wrapper.comment;
                 documents.push(hardline());
                 // hardlines for blank lines
@@ -87,7 +88,7 @@ pub fn build_comments_as_dangling(comments: Option<Vec<CommentWrapper>>, ctx: &m
                 }
                 documents.push(_build_comment(&comment));
             }
-            array(&documents)
+            indent(array(&documents))
         }
         Some(_comments) => None,
         None => None,

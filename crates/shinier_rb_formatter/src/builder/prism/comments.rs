@@ -411,9 +411,9 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                 (Some(p), _, Some(f)) => match (p.has_opening_characteristic(), f.has_closing_characteristic()) {
                     (true, true) => match f.is_opening_and_closing_like() {
                         true => {
-                            let preceding_col = col(p.start_offset(), parse_result.source());
+                            let following_col = col(f.start_offset(), parse_result.source());
                             let comment_col = col(comment.location().start_offset(), parse_result.source());
-                            if preceding_col < comment_col
+                            if following_col < comment_col
                                 && !comment_store.has_leadings(f.start_offset(), f.end_offset())
                             {
                                 comment_store
@@ -429,9 +429,9 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                     },
                     (_, true) => match f.is_opening_and_closing_like() {
                         true => {
-                            let preceding_col = col(p.start_offset(), parse_result.source());
+                            let following_col = col(f.start_offset(), parse_result.source());
                             let comment_col = col(comment.location().start_offset(), parse_result.source());
-                            if preceding_col <= comment_col
+                            if following_col < comment_col
                                 && !comment_store.has_leadings(f.start_offset(), f.end_offset())
                             {
                                 comment_store
@@ -450,7 +450,7 @@ pub fn attach<'sh>(parse_result: &'sh ParseResult<'sh>) -> CommentStore<'sh> {
                     }
                 },
                 (Some(p), _, None) => {
-                    comment_store.push_dangling(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
+                    comment_store.push_trailing(&p, CommentWrapper::from((comment, CommentPosition::OwnLine)));
                 }
                 (None, _, Some(f)) => {
                     comment_store.push_leading(&f, CommentWrapper::from((comment, CommentPosition::OwnLine)));
@@ -760,7 +760,7 @@ fn collect_child_targets_of_back_reference_read_node<'sh>(
     targets
 }
 fn collect_child_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<CommentTarget<'sh>> {
-    fn rescue_clause_recursively<'sh>(rescue_node: &Option<RescueNode<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+    fn rescue_clause_targets<'sh>(rescue_node: &Option<RescueNode<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
         match rescue_node {
             None => {}
             Some(rescue_node) => {
@@ -770,11 +770,11 @@ fn collect_child_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Commen
                 push_node_opening_like(rescue_node.reference(), targets);
                 push_loc_opening_like(rescue_node.then_keyword_loc(), targets);
                 push_node_regular(rescue_node.statements().map(|stmts| stmts.as_node()), targets);
-                rescue_clause_recursively(&rescue_node.subsequent(), targets);
+                rescue_clause_targets(&rescue_node.subsequent(), targets);
             }
         }
     }
-    fn else_clause<'sh>(else_node: &Option<ElseNode<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+    fn else_clause_targets<'sh>(else_node: &Option<ElseNode<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
         match else_node {
             None => {}
             Some(else_node) => {
@@ -787,7 +787,7 @@ fn collect_child_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Commen
             }
         }
     }
-    fn ensure_clause<'sh>(ensure_node: &Option<EnsureNode<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+    fn ensure_clause_targets<'sh>(ensure_node: &Option<EnsureNode<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
         match ensure_node {
             None => {}
             Some(ensure_node) => {
@@ -803,9 +803,9 @@ fn collect_child_targets_of_begin_node<'sh>(node: &BeginNode<'sh>) -> Vec<Commen
     let mut targets = Vec::new();
     push_loc_opening(node.begin_keyword_loc(), &mut targets);
     push_node_regular(node.statements().map(|stmts| stmts.as_node()), &mut targets);
-    rescue_clause_recursively(&node.rescue_clause(), &mut targets);
-    else_clause(&node.else_clause(), &mut targets);
-    ensure_clause(&node.ensure_clause(), &mut targets);
+    rescue_clause_targets(&node.rescue_clause(), &mut targets);
+    else_clause_targets(&node.else_clause(), &mut targets);
+    ensure_clause_targets(&node.ensure_clause(), &mut targets);
     push_loc_closing(node.end_keyword_loc(), &mut targets);
     targets
 }
@@ -906,10 +906,22 @@ fn collect_child_targets_of_capture_pattern_node<'sh>(node: &CapturePatternNode<
     targets
 }
 fn collect_child_targets_of_case_match_node<'sh>(node: &CaseMatchNode<'sh>) -> Vec<CommentTarget<'sh>> {
+    fn conditions_targets<'sh>(conditions: &NodeList<'sh>, targets: &mut Vec<CommentTarget<'sh>>) {
+        for condition in conditions.iter() {
+            match condition {
+                Node::InNode { .. } => {
+                    collect_child_targets_of_in_node(&condition.as_in_node().unwrap())
+                        .into_iter()
+                        .for_each(|target| targets.push(target));
+                }
+                _ => unreachable!(),
+            }
+        }
+    }
     let mut targets = Vec::new();
-    push_node_regular(node.predicate(), &mut targets);
-    push_nodelist_regular(Some(node.conditions()), &mut targets);
-    push_node_regular(
+    push_node_opening_like(node.predicate(), &mut targets);
+    conditions_targets(&node.conditions(), &mut targets);
+    push_node_opening_and_closing_like(
         node.else_clause().map(|else_clause| else_clause.as_node()),
         &mut targets,
     );
@@ -918,10 +930,22 @@ fn collect_child_targets_of_case_match_node<'sh>(node: &CaseMatchNode<'sh>) -> V
     targets
 }
 fn collect_child_targets_of_case_node<'sh>(node: &CaseNode<'sh>) -> Vec<CommentTarget<'sh>> {
+    fn conditions_targets<'sh>(conditions: &NodeList<'sh>, targets: &mut Vec<CommentTarget<'sh>>) {
+        for condition in conditions.iter() {
+            match condition {
+                Node::WhenNode { .. } => {
+                    collect_child_targets_of_when_node(&condition.as_when_node().unwrap())
+                        .into_iter()
+                        .for_each(|target| targets.push(target));
+                }
+                _ => unreachable!(),
+            }
+        }
+    }
     let mut targets = Vec::new();
     push_node_regular(node.predicate(), &mut targets);
-    push_nodelist_regular(Some(node.conditions()), &mut targets);
-    push_node_regular(
+    conditions_targets(&node.conditions(), &mut targets);
+    push_node_opening_and_closing_like(
         node.else_clause().map(|else_clause| else_clause.as_node()),
         &mut targets,
     );
@@ -1282,10 +1306,10 @@ fn collect_child_targets_of_implicit_rest_node<'sh>(node: &ImplicitRestNode<'sh>
 }
 fn collect_child_targets_of_in_node<'sh>(node: &InNode<'sh>) -> Vec<CommentTarget<'sh>> {
     let mut targets = Vec::new();
-    push_node_regular(Some(node.pattern()), &mut targets);
-    push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
-    push_loc_opening(Some(node.in_loc()), &mut targets);
-    push_loc_regular(node.then_loc(), &mut targets);
+    push_node_opening_like(Some(node.pattern()), &mut targets);
+    push_nodelist_regular(node.statements().map(|s| s.body()), &mut targets);
+    push_loc_opening_and_closing_like(Some(node.in_loc()), &mut targets);
+    push_loc_opening_like(node.then_loc(), &mut targets);
     targets
 }
 fn collect_child_targets_of_index_and_write_node<'sh>(node: &IndexAndWriteNode<'sh>) -> Vec<CommentTarget<'sh>> {
@@ -1948,6 +1972,15 @@ fn push_node_opening_like<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<Commen
     match node {
         Some(node) => {
             targets.push(CommentTarget::from((node, TargetType::OpeningLike)));
+        }
+        None => {}
+    }
+}
+/// Helper functions to push targets if they are Some.
+fn push_node_opening_and_closing_like<'sh>(node: Option<Node<'sh>>, targets: &mut Vec<CommentTarget<'sh>>) {
+    match node {
+        Some(node) => {
+            targets.push(CommentTarget::from((node, TargetType::OpeningAndClosingLike)));
         }
         None => {}
     }
