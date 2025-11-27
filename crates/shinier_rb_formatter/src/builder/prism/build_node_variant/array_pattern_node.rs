@@ -1,6 +1,6 @@
 use crate::Document;
-use crate::builder::builder::*;
 use crate::builder::BuildContext;
+use crate::builder::builder::*;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::ArrayPatternNode;
@@ -43,9 +43,7 @@ fn _collect_parameters<'sh>(
     let capacity = requireds.iter().count() + rest.is_some() as usize + posts.iter().count();
     let mut parameters = Vec::with_capacity(capacity);
     parameters.extend(requireds.iter());
-    if let Some(r) = rest {
-        parameters.push(r);
-    }
+    rest.map(|r| parameters.push(r));
     parameters.extend(posts.iter());
     parameters
 }

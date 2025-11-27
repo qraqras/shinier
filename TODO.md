@@ -19,9 +19,9 @@
 - [ x ] call_and_write_node.rs
 - [ x ] call_node.rs
 - [ x ] call_operator_write_node.rs
-- [ ] call_or_write_node.rs
-- [ ] call_target_node.rs
-- [ ] capture_pattern_node.rs
+- [ x ] call_or_write_node.rs
+- [ x ] call_target_node.rs
+- [ x ] capture_pattern_node.rs
 - [ ] case_match_node.rs
 - [ ] case_node.rs
 - [ ] class_node.rs
