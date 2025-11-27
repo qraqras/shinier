@@ -1,6 +1,6 @@
 use crate::Document;
 use crate::builder::builder::*;
-use crate::builder::prism::BuildContext;
+use crate::builder::BuildContext;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::builder_helper::*;
 use ruby_prism::BlockParameterNode;

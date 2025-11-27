@@ -1,8 +1,8 @@
 use crate::Document;
+use crate::builder::BuildContext;
 use crate::builder::builder::*;
-use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_main::build_main;
-use crate::builder::target::Target;
+use crate::builder::prism::target::Target;
 use ruby_prism::Location;
 use ruby_prism::Node;
 

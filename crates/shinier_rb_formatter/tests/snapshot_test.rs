@@ -2,7 +2,7 @@ use insta::assert_snapshot;
 use insta::glob;
 use ruby_prism::Node;
 use shinier_rb_formatter::Printer;
-use shinier_rb_formatter::VisitAll;
+use shinier_rb_formatter::prism::visit_all::VisitAll;
 
 struct Visitor {
     pub depth: usize,

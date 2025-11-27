@@ -1,6 +1,6 @@
 use crate::BuildContext;
-use crate::build_node::build_node;
 use crate::builder::prism::build_blank_lines::LineBreakIndex;
+use crate::builder::prism::build_node::build_node;
 use crate::builder::prism::comments::attach;
 use crate::renderer::print_doc_to_string;
 use ruby_prism::*;

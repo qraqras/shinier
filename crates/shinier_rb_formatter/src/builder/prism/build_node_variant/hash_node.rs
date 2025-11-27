@@ -1,7 +1,6 @@
 use crate::Document;
-use crate::builder::COMMA;
+use crate::builder::BuildContext;
 use crate::builder::builder::*;
-use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::HashNode;
@@ -14,7 +13,7 @@ pub fn build_hash_node(node: &HashNode<'_>, ctx: &mut BuildContext) -> Option<Do
     let mut parts = Vec::new();
     for (i, element) in elements.iter().enumerate() {
         if i > 0 {
-            parts.push(string(COMMA));
+            parts.push(comma());
             parts.push(line());
         }
         parts.push(build_node(element, ctx));
