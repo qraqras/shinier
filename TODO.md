@@ -22,8 +22,8 @@
 - [ x ] call_or_write_node.rs
 - [ x ] call_target_node.rs
 - [ x ] capture_pattern_node.rs
-- [ ] case_match_node.rs
-- [ ] case_node.rs
+- [ x ] case_match_node.rs
+- [ x ] case_node.rs
 - [ ] class_node.rs
 - [ ] class_variable_and_write_node.rs
 - [ ] class_variable_operator_write_node.rs

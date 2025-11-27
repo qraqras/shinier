@@ -1864,7 +1864,7 @@ fn collect_child_targets_of_until_node<'sh>(node: &UntilNode<'sh>) -> Vec<Commen
 }
 fn collect_child_targets_of_when_node<'sh>(node: &WhenNode<'sh>) -> Vec<CommentTarget<'sh>> {
     let mut targets = Vec::new();
-    push_loc_opening(Some(node.keyword_loc()), &mut targets);
+    push_loc_opening_and_closing(Some(node.keyword_loc()), &mut targets);
     push_nodelist_opening_like(Some(node.conditions()), &mut targets);
     push_loc_opening_like(node.then_keyword_loc(), &mut targets);
     push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
