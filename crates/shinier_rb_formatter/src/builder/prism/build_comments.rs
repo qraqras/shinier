@@ -5,6 +5,7 @@ use crate::builder::prism::comments::CommentWrapper;
 use crate::document::Document;
 use ruby_prism::Comment;
 use ruby_prism::CommentType;
+use ruby_prism::Node;
 
 /// Builds comments as leading comments for a given set of comments.
 pub fn build_comments_as_leading(
@@ -88,11 +89,18 @@ pub fn build_comments_as_dangling(
                 }
                 documents.push(_build_comment(&comment));
             }
-            indent(array(&documents))
+            array(&documents)
         }
         Some(_comments) => None,
         None => None,
     }
+}
+
+pub fn build_dangling(node: &Node<'_>, ctx: &mut BuildContext) -> Option<Document> {
+    let dangling_comments = ctx
+        .comment_store
+        .take_danglings(node.location().start_offset(), node.location().end_offset());
+    build_comments_as_dangling(dangling_comments, ctx)
 }
 
 /// Builds a comment into a Document.

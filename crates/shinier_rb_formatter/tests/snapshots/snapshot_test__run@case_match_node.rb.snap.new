@@ -1,0 +1,89 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/case_match_node.rb
+---
+****FORMATTED****
+case true
+in false
+end
+
+# unnecessary line breaks
+case true
+in false
+end
+
+# long expressions
+case
+  very_long_expression_name_very_long_expression_name
+in
+  another_very_long_expression_name_another_very_long_expression_name
+end
+
+case foo
+in 1
+end
+
+case
+  foo # trailing comment 1
+in 1
+end
+
+case # trailing comment 1
+  foo # trailing comment 2
+# leading comment 1
+in 1 # trailing comment 4
+# leading comment 2
+in
+  2 # trailing comment 6
+  # leading comment 3
+  put 2 # trailing comment 7
+# leading comment 4
+else # trailing comment 9
+  # leading comment 5
+  puts bar # trailing comment 10
+  # trailing comment 11
+# leading comment 12
+end
+
+
+
+****AST****
+ProgramNode[0-749]: "case true\nin false\nend\n\n# unnecessary line breaks\ncase\n  true\nin\n  false\nend\n\n# long expressions\ncase very_long_expression_name_very_long_expression_name\nin another_very_long_expression_name_another_very_long_expression_name\nend\n\ncase foo\n  # trailing comment 1\nin 1\n  # dangling comment 1\nend\n\ncase foo # trailing comment 1\nin 1\nend\n\ncase # trailing comment 1\n  foo # trailing comment 2\n  # trailing comment 3\n# leading comment 1\nin 1 # trailing comment 4\n  # trailing comment 5\n# leading comment 2\nin 2 # trailing comment 6\n  # leading comment 3\n  put 2 # trailing comment 7\n  # trailing comment 8\n# leading comment 4\nelse # trailing comment 9\n  # leading comment 5\n  puts bar # trailing comment 10\n  # trailing comment 11\n# leading comment 12\nend"
+__StatementsNode[0-749]: "case true\nin false\nend\n\n# unnecessary line breaks\ncase\n  true\nin\n  false\nend\n\n# long expressions\ncase very_long_expression_name_very_long_expression_name\nin another_very_long_expression_name_another_very_long_expression_name\nend\n\ncase foo\n  # trailing comment 1\nin 1\n  # dangling comment 1\nend\n\ncase foo # trailing comment 1\nin 1\nend\n\ncase # trailing comment 1\n  foo # trailing comment 2\n  # trailing comment 3\n# leading comment 1\nin 1 # trailing comment 4\n  # trailing comment 5\n# leading comment 2\nin 2 # trailing comment 6\n  # leading comment 3\n  put 2 # trailing comment 7\n  # trailing comment 8\n# leading comment 4\nelse # trailing comment 9\n  # leading comment 5\n  puts bar # trailing comment 10\n  # trailing comment 11\n# leading comment 12\nend"
+____CaseMatchNode[0-22]: "case true\nin false\nend"
+______TrueNode[5-9]: "true"
+______InNode[10-18]: "in false"
+________FalseNode[13-18]: "false"
+____CaseMatchNode[50-76]: "case\n  true\nin\n  false\nend"
+______TrueNode[57-61]: "true"
+______InNode[62-72]: "in\n  false"
+________FalseNode[67-72]: "false"
+____CaseMatchNode[97-228]: "case very_long_expression_name_very_long_expression_name\nin another_very_long_expression_name_another_very_long_expression_name\nend"
+______CallNode[102-153]: "very_long_expression_name_very_long_expression_name"
+______InNode[154-224]: "in another_very_long_expression_name_another_very_long_expression_name"
+________LocalVariableTargetNode[157-224]: "another_very_long_expression_name_another_very_long_expression_name"
+____CaseMatchNode[230-293]: "case foo\n  # trailing comment 1\nin 1\n  # dangling comment 1\nend"
+______CallNode[235-238]: "foo"
+______InNode[262-266]: "in 1"
+________IntegerNode[265-266]: "1"
+____CaseMatchNode[295-333]: "case foo # trailing comment 1\nin 1\nend"
+______CallNode[300-303]: "foo"
+______InNode[325-329]: "in 1"
+________IntegerNode[328-329]: "1"
+____CaseMatchNode[335-749]: "case # trailing comment 1\n  foo # trailing comment 2\n  # trailing comment 3\n# leading comment 1\nin 1 # trailing comment 4\n  # trailing comment 5\n# leading comment 2\nin 2 # trailing comment 6\n  # leading comment 3\n  put 2 # trailing comment 7\n  # trailing comment 8\n# leading comment 4\nelse # trailing comment 9\n  # leading comment 5\n  puts bar # trailing comment 10\n  # trailing comment 11\n# leading comment 12\nend"
+______CallNode[363-366]: "foo"
+______InNode[431-435]: "in 1"
+________IntegerNode[434-435]: "1"
+______InNode[500-555]: "in 2 # trailing comment 6\n  # leading comment 3\n  put 2"
+________IntegerNode[503-504]: "2"
+________StatementsNode[550-555]: "put 2"
+__________CallNode[550-555]: "put 2"
+____________ArgumentsNode[554-555]: "2"
+______________IntegerNode[554-555]: "2"
+______ElseNode[620-749]: "else # trailing comment 9\n  # leading comment 5\n  puts bar # trailing comment 10\n  # trailing comment 11\n# leading comment 12\nend"
+________StatementsNode[670-678]: "puts bar"
+__________CallNode[670-678]: "puts bar"
+____________ArgumentsNode[675-678]: "bar"
+______________CallNode[675-678]: "bar"

@@ -1,0 +1,115 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/class_node.rb
+---
+****FORMATTED****
+class Foo
+end
+class Foo < Bar
+end
+class Foo
+end
+class Foo < Bar
+end
+
+class Foo
+  puts 0
+end
+class Foo < Bar
+  puts 0
+end
+class Foo
+  puts 0
+end
+class Foo < Bar
+  puts 0
+end
+
+# unnecessary line breaks
+class Foo
+end
+class Foo < Bar
+end
+
+# long expression
+class
+  FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo <
+    BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar
+end
+
+class Foo # traling comment 1
+end
+class
+  # leading comment 1
+  Foo
+end
+class
+  Foo # traling comment 1
+end
+class Foo
+end
+
+class Foo < Bar
+end
+
+
+****AST****
+ProgramNode[0-561]: "class Foo; end\nclass Foo < Bar; end\nclass Foo\nend\nclass Foo < Bar\nend\n\nclass Foo; puts 0; end\nclass Foo < Bar; puts 0; end\nclass Foo\n  puts 0\nend\nclass Foo < Bar\n  puts 0\nend\n\n# unnecessary line breaks\nclass\n  Foo\nend\nclass\n  Foo <\n    Bar\nend\n\n# long expression\nclass FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo < BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar; end\n\nclass # traling comment 1\n  Foo\nend\nclass\n  # leading comment 1\n  Foo\nend\nclass Foo # traling comment 1\nend\nclass Foo\n  # tlailing comment\nend\n\nclass Foo < Bar\n  # trailing comment 1\nend"
+__StatementsNode[0-561]: "class Foo; end\nclass Foo < Bar; end\nclass Foo\nend\nclass Foo < Bar\nend\n\nclass Foo; puts 0; end\nclass Foo < Bar; puts 0; end\nclass Foo\n  puts 0\nend\nclass Foo < Bar\n  puts 0\nend\n\n# unnecessary line breaks\nclass\n  Foo\nend\nclass\n  Foo <\n    Bar\nend\n\n# long expression\nclass FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo < BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar; end\n\nclass # traling comment 1\n  Foo\nend\nclass\n  # leading comment 1\n  Foo\nend\nclass Foo # traling comment 1\nend\nclass Foo\n  # tlailing comment\nend\n\nclass Foo < Bar\n  # trailing comment 1\nend"
+____ClassNode[0-14]: "class Foo; end"
+______ConstantReadNode[6-9]: "Foo"
+____ClassNode[15-35]: "class Foo < Bar; end"
+______ConstantReadNode[21-24]: "Foo"
+______ConstantReadNode[27-30]: "Bar"
+____ClassNode[36-49]: "class Foo\nend"
+______ConstantReadNode[42-45]: "Foo"
+____ClassNode[50-69]: "class Foo < Bar\nend"
+______ConstantReadNode[56-59]: "Foo"
+______ConstantReadNode[62-65]: "Bar"
+____ClassNode[71-93]: "class Foo; puts 0; end"
+______ConstantReadNode[77-80]: "Foo"
+______StatementsNode[82-88]: "puts 0"
+________CallNode[82-88]: "puts 0"
+__________ArgumentsNode[87-88]: "0"
+____________IntegerNode[87-88]: "0"
+____ClassNode[94-122]: "class Foo < Bar; puts 0; end"
+______ConstantReadNode[100-103]: "Foo"
+______ConstantReadNode[106-109]: "Bar"
+______StatementsNode[111-117]: "puts 0"
+________CallNode[111-117]: "puts 0"
+__________ArgumentsNode[116-117]: "0"
+____________IntegerNode[116-117]: "0"
+____ClassNode[123-145]: "class Foo\n  puts 0\nend"
+______ConstantReadNode[129-132]: "Foo"
+______StatementsNode[135-141]: "puts 0"
+________CallNode[135-141]: "puts 0"
+__________ArgumentsNode[140-141]: "0"
+____________IntegerNode[140-141]: "0"
+____ClassNode[146-174]: "class Foo < Bar\n  puts 0\nend"
+______ConstantReadNode[152-155]: "Foo"
+______ConstantReadNode[158-161]: "Bar"
+______StatementsNode[164-170]: "puts 0"
+________CallNode[164-170]: "puts 0"
+__________ArgumentsNode[169-170]: "0"
+____________IntegerNode[169-170]: "0"
+____ClassNode[202-217]: "class\n  Foo\nend"
+______ConstantReadNode[210-213]: "Foo"
+____ClassNode[218-243]: "class\n  Foo <\n    Bar\nend"
+______ConstantReadNode[226-229]: "Foo"
+______ConstantReadNode[236-239]: "Bar"
+____ClassNode[263-373]: "class FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo < BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar; end"
+______ConstantReadNode[269-317]: "FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo"
+______ConstantReadNode[320-368]: "BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar"
+____ClassNode[375-410]: "class # traling comment 1\n  Foo\nend"
+______ConstantReadNode[403-406]: "Foo"
+____ClassNode[411-448]: "class\n  # leading comment 1\n  Foo\nend"
+______ConstantReadNode[441-444]: "Foo"
+____ClassNode[449-482]: "class Foo # traling comment 1\nend"
+______ConstantReadNode[455-458]: "Foo"
+____ClassNode[483-517]: "class Foo\n  # tlailing comment\nend"
+______ConstantReadNode[489-492]: "Foo"
+____ClassNode[519-561]: "class Foo < Bar\n  # trailing comment 1\nend"
+______ConstantReadNode[525-528]: "Foo"
+______ConstantReadNode[531-534]: "Bar"

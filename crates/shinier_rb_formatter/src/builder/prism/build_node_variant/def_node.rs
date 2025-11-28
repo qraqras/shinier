@@ -3,9 +3,12 @@ use crate::builder::BuildContext;
 use crate::builder::builder::*;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
-use crate::keyword::*;
-use ruby_prism::*;
+use ruby_prism::DefNode;
 
+/// Builds DefNode.
+///
+/// Avoid single-line methods.
+/// https://github.com/rubocop/ruby-style-guide?tab=readme-ov-file#no-single-line-methods
 pub fn build_def_node(node: &DefNode<'_>, ctx: &mut BuildContext) -> Option<Document> {
     let name_loc = node.name_loc();
     let receiver = node.receiver();

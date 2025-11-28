@@ -14,6 +14,16 @@ case very_long_expression_name_very_long_expression_name
 in another_very_long_expression_name_another_very_long_expression_name
 end
 
+case foo
+  # trailing comment 1
+in 1
+  # dangling comment 1
+end
+
+case foo # trailing comment 1
+in 1
+end
+
 case # trailing comment 1
   foo # trailing comment 2
   # trailing comment 3

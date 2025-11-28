@@ -190,3 +190,17 @@ pub fn comma() -> Option<Document> {
 pub fn space() -> Option<Document> {
     string(" ")
 }
+
+
+
+
+
+pub fn hardline_without_break() -> Option<Document> {
+    array(&[
+        Some(Document::Line(Line {
+            hard: true,
+            literal: false,
+            soft: false,
+        })),
+    ])
+}

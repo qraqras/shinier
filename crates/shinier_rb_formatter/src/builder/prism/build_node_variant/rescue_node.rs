@@ -1,6 +1,7 @@
 use crate::Document;
 use crate::builder::BuildContext;
 use crate::builder::builder::*;
+use crate::builder::prism::build_comments::build_dangling;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::RescueNode;
@@ -27,6 +28,8 @@ pub fn build_rescue_node(node: &RescueNode<'_>, ctx: &mut BuildContext) -> Optio
         exceptions_document.push(build_node(exception, ctx));
     }
 
+    let dangling = build_dangling(&node.as_node(), ctx);
+
     group(array(&[
         build_location(keyword_loc, ctx),
         array(&exceptions_document),
@@ -37,9 +40,13 @@ pub fn build_rescue_node(node: &RescueNode<'_>, ctx: &mut BuildContext) -> Optio
         then_keyword_loc
             .map(|l| array(&[space(), build_location(l, ctx)]))
             .flatten(),
-        statements
-            .map(|n| indent(array(&[hardline(), build_node(n.as_node(), ctx)])))
-            .flatten(),
+        indent(array(&[
+            statements
+                .map(|n| array(&[hardline(), build_node(n.as_node(), ctx)]))
+                .flatten(),
+            hardline(),
+            dangling,
+        ])),
         subsequent
             .map(|n| array(&[hardline(), build_node(n.as_node(), ctx)]))
             .flatten(),
