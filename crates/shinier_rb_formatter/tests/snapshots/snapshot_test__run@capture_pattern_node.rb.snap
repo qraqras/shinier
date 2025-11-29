@@ -1,0 +1,97 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/capture_pattern_node.rb
+---
+****FORMATTED****
+foo => [bar => baz]
+
+# unneccesary line breaks
+foo => [bar => baz]
+
+# long expression
+very_long_variable_name =>
+  [
+    very_long_key_name =>
+      very_long_value_expression
+  ]
+
+foo =>
+  [
+    # leading comment 1
+    bar => baz
+  ]
+foo =>
+  [
+    bar => # trailing comment 1
+      baz
+  ]
+foo =>
+  [
+    bar =>
+      # leading comment 1
+      baz
+  ]
+foo =>
+  [
+    bar => baz # trailing comment 1
+  ]
+foo =>
+  [
+    bar => baz
+    # trailing comment 1
+  ]
+
+
+****AST****
+ProgramNode[0-392]: "foo => [bar => baz]\n\n# unneccesary line breaks\nfoo => [bar =>\n  baz\n]\n\n# long expression\nvery_long_variable_name => [very_long_key_name => very_long_value_expression]\n\nfoo => [\n  # leading comment 1\n  bar => baz\n]\nfoo => [bar => # trailing comment 1\n  baz\n]\nfoo => [bar =>\n  # leading comment 1\n  baz\n]\nfoo => [bar =>\n  baz # trailing comment 1\n]\nfoo => [bar =>\n  baz\n  # trailing comment 1\n]"
+__StatementsNode[0-392]: "foo => [bar => baz]\n\n# unneccesary line breaks\nfoo => [bar =>\n  baz\n]\n\n# long expression\nvery_long_variable_name => [very_long_key_name => very_long_value_expression]\n\nfoo => [\n  # leading comment 1\n  bar => baz\n]\nfoo => [bar => # trailing comment 1\n  baz\n]\nfoo => [bar =>\n  # leading comment 1\n  baz\n]\nfoo => [bar =>\n  baz # trailing comment 1\n]\nfoo => [bar =>\n  baz\n  # trailing comment 1\n]"
+____MatchRequiredNode[0-19]: "foo => [bar => baz]"
+______CallNode[0-3]: "foo"
+______ArrayPatternNode[7-19]: "[bar => baz]"
+________CapturePatternNode[8-18]: "bar => baz"
+__________LocalVariableTargetNode[8-11]: "bar"
+__________LocalVariableTargetNode[15-18]: "baz"
+____MatchRequiredNode[47-69]: "foo => [bar =>\n  baz\n]"
+______CallNode[47-50]: "foo"
+______ArrayPatternNode[54-69]: "[bar =>\n  baz\n]"
+________CapturePatternNode[55-67]: "bar =>\n  baz"
+__________LocalVariableTargetNode[55-58]: "bar"
+__________LocalVariableTargetNode[64-67]: "baz"
+____MatchRequiredNode[89-166]: "very_long_variable_name => [very_long_key_name => very_long_value_expression]"
+______CallNode[89-112]: "very_long_variable_name"
+______ArrayPatternNode[116-166]: "[very_long_key_name => very_long_value_expression]"
+________CapturePatternNode[117-165]: "very_long_key_name => very_long_value_expression"
+__________LocalVariableTargetNode[117-135]: "very_long_key_name"
+__________LocalVariableTargetNode[139-165]: "very_long_value_expression"
+____MatchRequiredNode[168-213]: "foo => [\n  # leading comment 1\n  bar => baz\n]"
+______CallNode[168-171]: "foo"
+______ArrayPatternNode[175-213]: "[\n  # leading comment 1\n  bar => baz\n]"
+________CapturePatternNode[201-211]: "bar => baz"
+__________LocalVariableTargetNode[201-204]: "bar"
+__________LocalVariableTargetNode[208-211]: "baz"
+____MatchRequiredNode[214-257]: "foo => [bar => # trailing comment 1\n  baz\n]"
+______CallNode[214-217]: "foo"
+______ArrayPatternNode[221-257]: "[bar => # trailing comment 1\n  baz\n]"
+________CapturePatternNode[222-255]: "bar => # trailing comment 1\n  baz"
+__________LocalVariableTargetNode[222-225]: "bar"
+__________LocalVariableTargetNode[252-255]: "baz"
+____MatchRequiredNode[258-302]: "foo => [bar =>\n  # leading comment 1\n  baz\n]"
+______CallNode[258-261]: "foo"
+______ArrayPatternNode[265-302]: "[bar =>\n  # leading comment 1\n  baz\n]"
+________CapturePatternNode[266-300]: "bar =>\n  # leading comment 1\n  baz"
+__________LocalVariableTargetNode[266-269]: "bar"
+__________LocalVariableTargetNode[297-300]: "baz"
+____MatchRequiredNode[303-346]: "foo => [bar =>\n  baz # trailing comment 1\n]"
+______CallNode[303-306]: "foo"
+______ArrayPatternNode[310-346]: "[bar =>\n  baz # trailing comment 1\n]"
+________CapturePatternNode[311-323]: "bar =>\n  baz"
+__________LocalVariableTargetNode[311-314]: "bar"
+__________LocalVariableTargetNode[320-323]: "baz"
+____MatchRequiredNode[347-392]: "foo => [bar =>\n  baz\n  # trailing comment 1\n]"
+______CallNode[347-350]: "foo"
+______ArrayPatternNode[354-392]: "[bar =>\n  baz\n  # trailing comment 1\n]"
+________CapturePatternNode[355-367]: "bar =>\n  baz"
+__________LocalVariableTargetNode[355-358]: "bar"
+__________LocalVariableTargetNode[364-367]: "baz"

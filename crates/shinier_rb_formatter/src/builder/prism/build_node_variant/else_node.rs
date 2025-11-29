@@ -1,9 +1,9 @@
 use crate::Document;
+use crate::builder::BuildContext;
 use crate::builder::builder::*;
-use crate::builder::helper::location_helper::*;
-use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
+use crate::builder::prism::helper::location_helper::*;
 use ruby_prism::ElseNode;
 
 pub fn build_else_node(node: &ElseNode<'_>, ctx: &mut BuildContext) -> Option<Document> {

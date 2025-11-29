@@ -1,9 +1,9 @@
 use crate::Document;
+use crate::builder::BuildContext;
 use crate::builder::builder::*;
-use crate::builder::helper::location_helper::*;
-use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
+use crate::builder::prism::helper::location_helper::*;
 use ruby_prism::ArrayNode;
 
 /// Builds ArrayNode.
@@ -24,6 +24,9 @@ pub fn build_array_node(node: &ArrayNode<'_>, ctx: &mut BuildContext) -> Option<
     // Builds each item in the array with appropriate separators.
     let mut parts = Vec::new();
     for (i, element) in elements.iter().enumerate() {
+        if i == 0 {
+            parts.push(softline()); // Softline before the first element
+        }
         if i > 0 {
             if is_percent_array {
                 parts.push(space());
@@ -37,7 +40,7 @@ pub fn build_array_node(node: &ArrayNode<'_>, ctx: &mut BuildContext) -> Option<
 
     group(array(&[
         opening_loc.map(|l| build_location(l, ctx)).flatten(),
-        indent(array(&[softline(), array(&parts)])),
+        indent(array(&parts)),
         softline(),
         closing_loc.map(|l| build_location(l, ctx)).flatten(),
     ]))

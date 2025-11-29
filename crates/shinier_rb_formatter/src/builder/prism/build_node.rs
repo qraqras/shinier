@@ -1,8 +1,8 @@
 use crate::Document;
-use crate::builder::prism::BuildContext;
+use crate::builder::BuildContext;
 use crate::builder::prism::build_main::build_main;
 use crate::builder::prism::build_node_variant::*;
-use crate::builder::target::Target;
+use crate::builder::prism::target::Target;
 use ruby_prism::Node;
 use ruby_prism::NodeList;
 use std::marker::PhantomData;

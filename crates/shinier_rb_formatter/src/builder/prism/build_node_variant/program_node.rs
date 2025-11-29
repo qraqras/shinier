@@ -1,5 +1,5 @@
 use crate::Document;
-use crate::builder::prism::BuildContext;
+use crate::builder::BuildContext;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::ProgramNode;
 

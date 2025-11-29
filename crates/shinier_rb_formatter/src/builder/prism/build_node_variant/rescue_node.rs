@@ -1,7 +1,6 @@
 use crate::Document;
-use crate::builder::COMMA;
+use crate::builder::BuildContext;
 use crate::builder::builder::*;
-use crate::builder::prism::BuildContext;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::RescueNode;
@@ -22,7 +21,8 @@ pub fn build_rescue_node(node: &RescueNode<'_>, ctx: &mut BuildContext) -> Optio
             exceptions_document.push(space());
         }
         if i > 0 {
-            exceptions_document.push(array(&[string(COMMA), line()]));
+            exceptions_document.push(comma());
+            exceptions_document.push(line());
         }
         exceptions_document.push(build_node(exception, ctx));
     }
@@ -37,9 +37,9 @@ pub fn build_rescue_node(node: &RescueNode<'_>, ctx: &mut BuildContext) -> Optio
         then_keyword_loc
             .map(|l| array(&[space(), build_location(l, ctx)]))
             .flatten(),
-        statements
-            .map(|n| indent(array(&[hardline(), build_node(n.as_node(), ctx)])))
-            .flatten(),
+        indent(array(&[statements
+            .map(|n| array(&[hardline(), build_node(n.as_node(), ctx)]))
+            .flatten()])),
         subsequent
             .map(|n| array(&[hardline(), build_node(n.as_node(), ctx)]))
             .flatten(),

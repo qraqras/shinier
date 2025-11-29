@@ -1,6 +1,6 @@
 use crate::Document;
-use crate::builder::prism::BuildContext;
-use crate::helper::build_logical_chain::build_logical_chain;
+use crate::builder::BuildContext;
+use crate::builder::prism::helper::build_logical_chain::build_logical_chain;
 use ruby_prism::AndNode;
 
 /// Builds AndNode.

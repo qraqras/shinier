@@ -1,8 +1,8 @@
 use crate::builder::prism::build_blank_lines::LineBreakIndex;
-use crate::comments::CommentStore;
+use crate::builder::prism::comments::CommentStore;
 use std::collections::HashSet;
 
-/// build context during building process
+/// Build context during building process.
 pub struct BuildContext<'sh> {
     pub previous_start_offset: usize,
     pub line_break_index: LineBreakIndex,

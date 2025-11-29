@@ -1,5 +1,5 @@
 use crate::Document;
-use crate::builder::prism::BuildContext;
+use crate::builder::BuildContext;
 use crate::builder::prism::build_location::build_node_as_custom_location;
 use crate::builder::prism::build_location::build_node_as_location;
 use ruby_prism::SymbolNode;

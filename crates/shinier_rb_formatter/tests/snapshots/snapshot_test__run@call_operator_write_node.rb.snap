@@ -1,0 +1,45 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/call_operator_write_node.rb
+---
+****FORMATTED****
+foo.bar += baz
+
+# unnecessary line break
+foo.bar += baz
+
+# long expression
+very_long_receiver_name.very_long_method_name +=
+  very_long_value_expression
+
+foo.bar += # trailing comment 1
+  baz
+foo.bar +=
+  # leading comment 1
+  baz
+foo.bar += baz # trailing comment 1
+
+
+****AST****
+ProgramNode[0-247]: "foo.bar += baz\n\n# unnecessary line break\nfoo.bar +=\n  baz\n\n# long expression\nvery_long_receiver_name.very_long_method_name += very_long_value_expression\n\nfoo.bar += # trailing comment 1\n  baz\nfoo.bar +=\n  # leading comment 1\n  baz\nfoo.bar +=\n  baz"
+__StatementsNode[0-247]: "foo.bar += baz\n\n# unnecessary line break\nfoo.bar +=\n  baz\n\n# long expression\nvery_long_receiver_name.very_long_method_name += very_long_value_expression\n\nfoo.bar += # trailing comment 1\n  baz\nfoo.bar +=\n  # leading comment 1\n  baz\nfoo.bar +=\n  baz"
+____CallOperatorWriteNode[0-14]: "foo.bar += baz"
+______CallNode[0-3]: "foo"
+______CallNode[11-14]: "baz"
+____CallOperatorWriteNode[41-57]: "foo.bar +=\n  baz"
+______CallNode[41-44]: "foo"
+______CallNode[54-57]: "baz"
+____CallOperatorWriteNode[77-152]: "very_long_receiver_name.very_long_method_name += very_long_value_expression"
+______CallNode[77-100]: "very_long_receiver_name"
+______CallNode[126-152]: "very_long_value_expression"
+____CallOperatorWriteNode[154-191]: "foo.bar += # trailing comment 1\n  baz"
+______CallNode[154-157]: "foo"
+______CallNode[188-191]: "baz"
+____CallOperatorWriteNode[192-230]: "foo.bar +=\n  # leading comment 1\n  baz"
+______CallNode[192-195]: "foo"
+______CallNode[227-230]: "baz"
+____CallOperatorWriteNode[231-247]: "foo.bar +=\n  baz"
+______CallNode[231-234]: "foo"
+______CallNode[244-247]: "baz"
