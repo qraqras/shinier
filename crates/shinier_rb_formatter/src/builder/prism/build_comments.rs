@@ -46,14 +46,22 @@ pub fn build_comments_as_trailing(
     match comment_wrappers {
         Some(comment_wrappers) if !comment_wrappers.is_empty() => {
             let mut documents = Vec::new();
+            let mut found_end_of_line = false;
             for comment_wrapper in comment_wrappers {
                 let comment = comment_wrapper.comment;
                 let position = comment_wrapper.position;
                 match position {
-                    CommentPosition::EndOfLine => {
-                        documents.push(line_suffix(array(&[space(), _build_comment(&comment)])));
-                        documents.push(break_parent());
-                    }
+                    CommentPosition::EndOfLine => match found_end_of_line {
+                        true => {
+                            documents.push(hardline());
+                            documents.push(_build_comment(&comment));
+                        }
+                        false => {
+                            found_end_of_line = true;
+                            documents.push(line_suffix(array(&[space(), _build_comment(&comment)])));
+                            documents.push(break_parent());
+                        }
+                    },
                     CommentPosition::OwnLine => {
                         documents.push(hardline());
                         documents.push(_build_comment(&comment));

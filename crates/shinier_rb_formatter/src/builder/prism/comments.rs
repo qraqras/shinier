@@ -128,29 +128,39 @@ impl<'sh> CommentStore<'sh> {
             .get_mut(&(target_start_offset, target_end_offset))
             .and_then(|placement| placement.dangling.take())
     }
+    /// Checks if there are any comments for a given target.
+    #[allow(dead_code)]
+    pub fn has_any(&self, target_start_offset: usize, target_end_offset: usize) -> bool {
+        self.placements
+            .get(&(target_start_offset, target_end_offset))
+            .map(|placement| {
+                placement.leading.is_some() || placement.trailing.is_some() || placement.dangling.is_some()
+            })
+            .unwrap_or(false)
+    }
     /// Checks if there are leading comments for a given target.
     #[allow(dead_code)]
     pub fn has_leadings(&self, target_start_offset: usize, target_end_offset: usize) -> bool {
         self.placements
             .get(&(target_start_offset, target_end_offset))
-            .and_then(|placement| placement.leading.as_ref())
-            .is_some()
+            .map(|placement| placement.leading.is_some())
+            .unwrap_or(false)
     }
     /// Checks if there are trailing comments for a given target.
     #[allow(dead_code)]
     pub fn has_trailings(&self, target_start_offset: usize, target_end_offset: usize) -> bool {
         self.placements
             .get(&(target_start_offset, target_end_offset))
-            .and_then(|placement| placement.trailing.as_ref())
-            .is_some()
+            .map(|placement| placement.trailing.is_some())
+            .unwrap_or(false)
     }
     /// Checks if there are dangling comments for a given target.
     #[allow(dead_code)]
     pub fn has_danglings(&self, target_start_offset: usize, target_end_offset: usize) -> bool {
         self.placements
             .get(&(target_start_offset, target_end_offset))
-            .and_then(|placement| placement.dangling.as_ref())
-            .is_some()
+            .map(|placement| placement.dangling.is_some())
+            .unwrap_or(false)
     }
     pub fn has_comments_between(&self, target_start_offset: usize, target_end_offset: usize) -> bool {
         let start_idx = self
@@ -1222,7 +1232,8 @@ fn collect_child_targets_of_in_node<'sh>(node: &InNode<'sh>) -> Vec<CommentTarge
     push_node_opening_like(Some(node.pattern()), &mut targets);
     push_nodelist_regular(node.statements().map(|s| s.body()), &mut targets);
     push_loc_opening_and_closing(Some(node.in_loc()), &mut targets);
-    push_loc_opening_like(node.then_loc(), &mut targets);
+    // `then_loc` is always omitted during formatting, so we don't attach comments to it.
+    // push_loc_opening_like(node.then_loc(), &mut targets);
     targets
 }
 fn collect_child_targets_of_index_and_write_node<'sh>(node: &IndexAndWriteNode<'sh>) -> Vec<CommentTarget<'sh>> {
@@ -1798,7 +1809,8 @@ fn collect_child_targets_of_when_node<'sh>(node: &WhenNode<'sh>) -> Vec<CommentT
     let mut targets = Vec::new();
     push_loc_opening_and_closing(Some(node.keyword_loc()), &mut targets);
     push_nodelist_opening_like(Some(node.conditions()), &mut targets);
-    push_loc_opening_like(node.then_keyword_loc(), &mut targets);
+    // `then_loc` is always omitted during formatting, so we don't attach comments to it.
+    // push_loc_opening_like(node.then_keyword_loc(), &mut targets);
     push_node_regular(node.statements().map(|s| s.as_node()), &mut targets);
     targets
 }

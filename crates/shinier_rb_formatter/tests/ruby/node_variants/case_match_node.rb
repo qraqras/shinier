@@ -15,13 +15,76 @@ in another_very_long_expression_name_another_very_long_expression_name
 end
 
 case foo
-  # trailing comment 1
+  # comment 1
+# comment 2
 in 1
-  # dangling comment 1
+  # comment 3
+# comment 4
+in 2 then
+  # comment 5
+# comment 6
+in 3
+  puts 3
+  # comment 7
+# comment 8
+in 4 then
+  puts 4
+  # comment 9
+# comment 10
+else
+  # comment 11
+# comment 12
 end
 
-case foo # trailing comment 1
-in 1
+case foo # comment 1
+in 1 # comment 2
+in 2 # comment 3
+  puts 2
+in 3 then # comment 4
+in 4 then # comment 5
+  puts 4
+else # comment 6
+end
+
+case
+  foo # comment
+in
+  1 # comment
+end
+
+case # comment
+  foo
+in # comment
+  1
+end
+
+case
+  # comment
+  foo
+in
+  # comment
+  1
+end
+
+case foo
+in 1 then # comment
+  puts 1
+in 2
+  then # comment
+  puts 2
+in
+  3 then # comment
+  puts 3
+in # comment
+  4 then # comment
+  puts 4
+in 5 # comment
+  then # comment
+  puts 5
+in 6
+  # comment
+  then
+  puts 6
 end
 
 case # trailing comment 1
