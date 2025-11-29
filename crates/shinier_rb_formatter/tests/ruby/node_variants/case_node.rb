@@ -1,12 +1,12 @@
 case true
-when true
+when false
 end
 
 # unnecessary line breaks
 case
   true
 when
-  true
+  false
 end
 
 # long expressions
@@ -14,10 +14,81 @@ case very_long_expression_name_very_long_expression_name
 when another_very_long_expression_name_another_very_long_expression_name
 end
 
+case very_long_expression_name_very_long_expression_name
+when 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+end
+
 case foo
-  # trailing comment 1
+  # comment 1
+# comment 2
 when 1
-  # dangling comment 1
+  # comment 3
+# comment 4
+when 2 then
+  # comment 5
+# comment 6
+when 3
+  puts 3
+  # comment 7
+# comment 8
+when 4 then
+  puts 4
+  # comment 9
+# comment 10
+else
+  # comment 11
+# comment 12
+end
+
+case foo # comment 1
+when 1 # comment 2
+when 2 # comment 3
+  puts 2
+when 3 then # comment 4
+when 4 then # comment 5
+  puts 4
+else # comment 6
+end
+
+case
+  foo # comment
+when
+  1 # comment
+end
+
+case # comment
+  foo
+when # comment
+  1
+end
+
+case
+  # comment
+  foo
+when
+  # comment
+  1
+end
+
+case foo
+when 1 then # comment
+  puts 1
+when 2
+  then # comment
+  puts 2
+when
+  3 then # comment
+  puts 3
+when # comment
+  4 then # comment
+  puts 4
+when 5 # comment
+  then # comment
+  puts 5
+when 6
+  # comment
+  then
+  puts 6
 end
 
 case # trailing comment 1
@@ -37,4 +108,35 @@ else # trailing comment 9
   puts bar # trailing comment 10
   # trailing comment 11
 # leading comment 12
+end
+
+
+case foo
+when 1, 2 # comment
+  puts 0
+end
+
+case foo
+when 1,
+  2 # comment
+  puts 0
+end
+
+case foo
+when 1, 2
+  # comment
+  puts 0
+end
+
+case foo
+when 1, # comment
+  2
+  puts 0
+end
+
+case foo
+when
+  # comment
+  1, 2
+  puts 0
 end

@@ -12,36 +12,11 @@ pub fn build_in_node(node: &InNode<'_>, ctx: &mut BuildContext) -> Option<Docume
     let in_loc = node.in_loc();
     let _then_loc = node.then_loc();
 
-    let in_loc_end_offset = in_loc.end_offset();
-    let pattern_start_offset = pattern.location().start_offset();
-    let in_loc_doc = build_location(in_loc, ctx);
-    let pattern_doc = build_node(pattern, ctx);
-    let after_in = |t: Option<Document>, f: Option<Document>, ctx: &mut BuildContext<'_>| {
-        if_has_comments_beween(t, f, in_loc_end_offset, pattern_start_offset, ctx)
-    };
-
-    let in_header = conditional_group(&[
-        array(&[
-            //
-            in_loc_doc.clone(),
-            indent(array(&[
-                //
-                after_in(hardline(), space(), ctx),
-                pattern_doc.clone(),
-            ])),
-        ]),
-        array(&[
-            in_loc_doc.clone(),
-            indent(array(&[
-                //
-                after_in(hardline(), hardline(), ctx),
-                pattern_doc.clone(),
-            ])),
-        ]),
-    ]);
+    let break_if_comments = line_if_has_comments(in_loc.end_offset(), pattern.location().start_offset(), ctx);
 
     group(array(&[
-        in_header,
+        build_location(in_loc, ctx),
+        indent(array(&[break_if_comments, build_node(pattern, ctx)])),
         statements
             .map(|s| indent(array(&[hardline(), build_node(s.as_node(), ctx)])))
             .flatten(),

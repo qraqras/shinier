@@ -14,38 +14,10 @@ pub fn build_case_node(node: &CaseNode<'_>, ctx: &mut BuildContext) -> Option<Do
     let case_keyword_loc = node.case_keyword_loc();
     let end_keyword_loc = node.end_keyword_loc();
 
-    let case_keyword_end_offset = case_keyword_loc.end_offset();
-    let predicate_start_offset = predicate.as_ref().map(|p| p.location().start_offset());
-
-    let case_keyword_loc_doc = build_location(case_keyword_loc, ctx);
-    let preddicate_doc = predicate.map(|p| build_node(p, ctx)).flatten();
-
-    let after_case_keyword =
-        |t: Option<Document>, f: Option<Document>, ctx: &mut BuildContext<'_>| match predicate_start_offset {
-            Some(p) => if_has_comments_beween(t, f, case_keyword_end_offset, p, ctx),
-            None => None,
-        };
-
-    let case_header = conditional_group(&[
-        array(&[
-            //
-            case_keyword_loc_doc.clone(),
-            indent(array(&[
-                //
-                after_case_keyword(hardline(), space(), ctx),
-                preddicate_doc.clone(),
-            ])),
-        ]),
-        array(&[
-            //
-            case_keyword_loc_doc.clone(),
-            space(),
-            indent(array(&[
-                after_case_keyword(hardline(), hardline(), ctx),
-                preddicate_doc.clone(),
-            ])),
-        ]),
-    ]);
+    let break_if_comments = match &predicate {
+        Some(p) => line_if_has_comments(case_keyword_loc.end_offset(), p.location().start_offset(), ctx),
+        None => None,
+    };
 
     let mut condition_docs = Vec::new();
     for condition in conditions.iter() {
@@ -54,7 +26,10 @@ pub fn build_case_node(node: &CaseNode<'_>, ctx: &mut BuildContext) -> Option<Do
     }
 
     group(array(&[
-        case_header,
+        build_location(case_keyword_loc, ctx),
+        predicate
+            .map(|p| indent(array(&[break_if_comments, build_node(p, ctx)])))
+            .flatten(),
         array(&condition_docs),
         else_clause
             .map(|e| array(&[hardline(), build_node(e.as_node(), ctx)]))

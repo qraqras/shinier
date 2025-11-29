@@ -15,10 +15,8 @@ in false
 end
 
 # long expressions
-case
-  very_long_expression_name_very_long_expression_name
-in
-  another_very_long_expression_name_another_very_long_expression_name
+case very_long_expression_name_very_long_expression_name
+in another_very_long_expression_name_another_very_long_expression_name
 end
 
 case foo
