@@ -21,10 +21,9 @@ where
     };
 
     // ** GET CURRENT COMMENTS **
+    let current_dangling_comments = context.comment_store.take_danglings(start_offset, end_offset);
     let current_leading_comments = context.comment_store.take_leadings(start_offset, end_offset);
     let current_trailing_comments = context.comment_store.take_trailings(start_offset, end_offset);
-    // Note: Dangling comments are handled by each node's builder explicitly (e.g., build_dangling)
-    // let current_dangling_comments = context.comment_store.take_danglings(start_offset, end_offset);
 
     // ** UPDATE PREVIOUS START OFFSET **
     context.previous_start_offset = start_offset.max(context.previous_start_offset);
@@ -33,14 +32,14 @@ where
     let built = builder(&target, context, param);
 
     // ** BUILD COMMENTS AND ASSEMBLE FINAL DOCUMENT **
+    let dangling_comments = build_comments_as_dangling(current_dangling_comments, context);
     let leading_comments = build_comments_as_leading(current_leading_comments, context);
     let trailing_comments = build_comments_as_trailing(current_trailing_comments, context);
-    // let dangling_comments = build_comments_as_dangling(current_dangling_comments, context);
     array(&[
+        dangling_comments,
         leading_comments,
         blank_lines,
         built,
         trailing_comments,
-        // dangling_comments,
     ])
 }

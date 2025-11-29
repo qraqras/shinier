@@ -1,7 +1,6 @@
 use crate::Document;
 use crate::builder::BuildContext;
 use crate::builder::builder::*;
-use crate::builder::prism::build_comments::build_dangling;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
 use ruby_prism::BeginNode;
@@ -20,9 +19,6 @@ pub fn build_begin_node(node: &BeginNode<'_>, ctx: &mut BuildContext) -> Option<
         statements
             .map(|n| indent(array(&[hardline(), build_node(n.as_node(), ctx)])))
             .flatten(),
-        //
-        build_dangling(&node.as_node(), ctx),
-        //
         rescue_clause
             .map(|n| array(&[hardline(), build_node(n.as_node(), ctx)]))
             .flatten(),

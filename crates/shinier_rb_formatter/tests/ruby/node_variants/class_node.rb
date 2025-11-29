@@ -42,3 +42,14 @@ end
 class Foo < Bar
   # trailing comment 1
 end
+
+class Foo < # trailing comment 1euaoeuauao
+  Bar
+end
+
+class
+  # leading comment 1
+  # leading comment 2
+  Foo <
+    Bar
+end

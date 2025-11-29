@@ -39,25 +39,37 @@ class
     BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar
 end
 
-class Foo # traling comment 1
+class # traling comment 1
+  Foo
 end
 class
   # leading comment 1
   Foo
 end
-class
-  Foo # traling comment 1
+class Foo # traling comment 1
 end
 class Foo
+  # tlailing comment
 end
 
 class Foo < Bar
+  # trailing comment 1
+end
+
+class Foo < # trailing comment 1euaoeuauao
+    Bar
+end
+
+class
+  # leading comment 1
+  # leading comment 2
+  Foo < Bar
 end
 
 
 ****AST****
-ProgramNode[0-561]: "class Foo; end\nclass Foo < Bar; end\nclass Foo\nend\nclass Foo < Bar\nend\n\nclass Foo; puts 0; end\nclass Foo < Bar; puts 0; end\nclass Foo\n  puts 0\nend\nclass Foo < Bar\n  puts 0\nend\n\n# unnecessary line breaks\nclass\n  Foo\nend\nclass\n  Foo <\n    Bar\nend\n\n# long expression\nclass FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo < BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar; end\n\nclass # traling comment 1\n  Foo\nend\nclass\n  # leading comment 1\n  Foo\nend\nclass Foo # traling comment 1\nend\nclass Foo\n  # tlailing comment\nend\n\nclass Foo < Bar\n  # trailing comment 1\nend"
-__StatementsNode[0-561]: "class Foo; end\nclass Foo < Bar; end\nclass Foo\nend\nclass Foo < Bar\nend\n\nclass Foo; puts 0; end\nclass Foo < Bar; puts 0; end\nclass Foo\n  puts 0\nend\nclass Foo < Bar\n  puts 0\nend\n\n# unnecessary line breaks\nclass\n  Foo\nend\nclass\n  Foo <\n    Bar\nend\n\n# long expression\nclass FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo < BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar; end\n\nclass # traling comment 1\n  Foo\nend\nclass\n  # leading comment 1\n  Foo\nend\nclass Foo # traling comment 1\nend\nclass Foo\n  # tlailing comment\nend\n\nclass Foo < Bar\n  # trailing comment 1\nend"
+ProgramNode[0-686]: "class Foo; end\nclass Foo < Bar; end\nclass Foo\nend\nclass Foo < Bar\nend\n\nclass Foo; puts 0; end\nclass Foo < Bar; puts 0; end\nclass Foo\n  puts 0\nend\nclass Foo < Bar\n  puts 0\nend\n\n# unnecessary line breaks\nclass\n  Foo\nend\nclass\n  Foo <\n    Bar\nend\n\n# long expression\nclass FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo < BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar; end\n\nclass # traling comment 1\n  Foo\nend\nclass\n  # leading comment 1\n  Foo\nend\nclass Foo # traling comment 1\nend\nclass Foo\n  # tlailing comment\nend\n\nclass Foo < Bar\n  # trailing comment 1\nend\n\nclass Foo < # trailing comment 1euaoeuauao\n  Bar\nend\n\nclass\n  # leading comment 1\n  # leading comment 2\n  Foo <\n    Bar\nend"
+__StatementsNode[0-686]: "class Foo; end\nclass Foo < Bar; end\nclass Foo\nend\nclass Foo < Bar\nend\n\nclass Foo; puts 0; end\nclass Foo < Bar; puts 0; end\nclass Foo\n  puts 0\nend\nclass Foo < Bar\n  puts 0\nend\n\n# unnecessary line breaks\nclass\n  Foo\nend\nclass\n  Foo <\n    Bar\nend\n\n# long expression\nclass FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo < BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar; end\n\nclass # traling comment 1\n  Foo\nend\nclass\n  # leading comment 1\n  Foo\nend\nclass Foo # traling comment 1\nend\nclass Foo\n  # tlailing comment\nend\n\nclass Foo < Bar\n  # trailing comment 1\nend\n\nclass Foo < # trailing comment 1euaoeuauao\n  Bar\nend\n\nclass\n  # leading comment 1\n  # leading comment 2\n  Foo <\n    Bar\nend"
 ____ClassNode[0-14]: "class Foo; end"
 ______ConstantReadNode[6-9]: "Foo"
 ____ClassNode[15-35]: "class Foo < Bar; end"
@@ -113,3 +125,9 @@ ______ConstantReadNode[489-492]: "Foo"
 ____ClassNode[519-561]: "class Foo < Bar\n  # trailing comment 1\nend"
 ______ConstantReadNode[525-528]: "Foo"
 ______ConstantReadNode[531-534]: "Bar"
+____ClassNode[563-615]: "class Foo < # trailing comment 1euaoeuauao\n  Bar\nend"
+______ConstantReadNode[569-572]: "Foo"
+______ConstantReadNode[608-611]: "Bar"
+____ClassNode[617-686]: "class\n  # leading comment 1\n  # leading comment 2\n  Foo <\n    Bar\nend"
+______ConstantReadNode[669-672]: "Foo"
+______ConstantReadNode[679-682]: "Bar"
