@@ -1,0 +1,65 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/class_variable_operator_write_node.rb
+---
+****FORMATTED****
+@@target += value
+
+# unnecessary line breaks
+@@target += value
+
+# long expressions
+@@target +=
+  very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length
+
+@@target += # comment
+  value
+
+@@target +=
+  # comment
+  value
+
+@@target += value # comment
+
+@@target += # comment
+  # comment
+  value
+
+@@target += # comment
+  value # comment
+
+@@target +=
+  # comment
+  value # comment
+
+@@target += # comment
+  # comment
+  value # comment
+# comment
+
+
+****AST****
+ProgramNode[0-453]: "@@target += value\n\n# unnecessary line breaks\n@@target +=\n  value\n\n# long expressions\n@@target += very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length\n\n@@target += # comment\n  value\n\n@@target +=\n  # comment\n  value\n\n@@target +=\n  value # comment\n\n@@target += # comment\n  # comment\n  value\n\n@@target += # comment\n  value # comment\n\n@@target +=\n  # comment\n  value # comment\n\n@@target += # comment\n  # comment\n  value"
+__StatementsNode[0-453]: "@@target += value\n\n# unnecessary line breaks\n@@target +=\n  value\n\n# long expressions\n@@target += very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length\n\n@@target += # comment\n  value\n\n@@target +=\n  # comment\n  value\n\n@@target +=\n  value # comment\n\n@@target += # comment\n  # comment\n  value\n\n@@target += # comment\n  value # comment\n\n@@target +=\n  # comment\n  value # comment\n\n@@target += # comment\n  # comment\n  value"
+____ClassVariableOperatorWriteNode[0-17]: "@@target += value"
+______CallNode[12-17]: "value"
+____ClassVariableOperatorWriteNode[45-64]: "@@target +=\n  value"
+______CallNode[59-64]: "value"
+____ClassVariableOperatorWriteNode[85-188]: "@@target += very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length"
+______CallNode[97-188]: "very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length"
+____ClassVariableOperatorWriteNode[190-219]: "@@target += # comment\n  value"
+______CallNode[214-219]: "value"
+____ClassVariableOperatorWriteNode[221-252]: "@@target +=\n  # comment\n  value"
+______CallNode[247-252]: "value"
+____ClassVariableOperatorWriteNode[254-273]: "@@target +=\n  value"
+______CallNode[268-273]: "value"
+____ClassVariableOperatorWriteNode[285-326]: "@@target += # comment\n  # comment\n  value"
+______CallNode[321-326]: "value"
+____ClassVariableOperatorWriteNode[328-357]: "@@target += # comment\n  value"
+______CallNode[352-357]: "value"
+____ClassVariableOperatorWriteNode[369-400]: "@@target +=\n  # comment\n  value"
+______CallNode[395-400]: "value"
+____ClassVariableOperatorWriteNode[412-453]: "@@target += # comment\n  # comment\n  value"
+______CallNode[448-453]: "value"
