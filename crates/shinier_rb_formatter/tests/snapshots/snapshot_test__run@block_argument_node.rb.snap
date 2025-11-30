@@ -32,14 +32,14 @@ bar(
 
 bar(
   & # trailing comment 1
-  args # trailing comment 2
+    args # trailing comment 2
 )
 
 bar(
   # leading comment 1
   & # trailing comment 1
-  # leading comment 2
-  args # trailing comment 2
+    # leading comment 2
+    args # trailing comment 2
   # trailing comment 3
 )
 
