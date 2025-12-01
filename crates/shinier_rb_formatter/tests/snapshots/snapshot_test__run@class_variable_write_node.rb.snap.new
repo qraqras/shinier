@@ -1,0 +1,80 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/class_variable_write_node.rb
+---
+****FORMATTED****
+@@foo = 1
+
+@@foo =
+  case x
+  when 1
+    2
+  else
+    3
+  end
+
+
+@@foo =
+  [
+    a,
+    b,
+    c,
+    d,
+    e,
+    f,
+    g,
+    h,
+    i,
+    j,
+    k,
+    l,
+    m,
+    n,
+    o,
+    p,
+    q,
+    r,
+    s,
+    t
+  ]
+
+
+****AST****
+ProgramNode[0-119]: "@@foo = 1\n\n@@foo = case x\nwhen 1\n  2\nelse\n  3\nend\n\n@@foo = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t]"
+__StatementsNode[0-119]: "@@foo = 1\n\n@@foo = case x\nwhen 1\n  2\nelse\n  3\nend\n\n@@foo = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t]"
+____ClassVariableWriteNode[0-9]: "@@foo = 1"
+______IntegerNode[8-9]: "1"
+____ClassVariableWriteNode[11-49]: "@@foo = case x\nwhen 1\n  2\nelse\n  3\nend"
+______CaseNode[19-49]: "case x\nwhen 1\n  2\nelse\n  3\nend"
+________CallNode[24-25]: "x"
+________WhenNode[26-36]: "when 1\n  2"
+__________IntegerNode[31-32]: "1"
+__________StatementsNode[35-36]: "2"
+____________IntegerNode[35-36]: "2"
+________ElseNode[37-49]: "else\n  3\nend"
+__________StatementsNode[44-45]: "3"
+____________IntegerNode[44-45]: "3"
+____ClassVariableWriteNode[51-119]: "@@foo = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t]"
+______ArrayNode[59-119]: "[a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t]"
+________CallNode[60-61]: "a"
+________CallNode[63-64]: "b"
+________CallNode[66-67]: "c"
+________CallNode[69-70]: "d"
+________CallNode[72-73]: "e"
+________CallNode[75-76]: "f"
+________CallNode[78-79]: "g"
+________CallNode[81-82]: "h"
+________CallNode[84-85]: "i"
+________CallNode[87-88]: "j"
+________CallNode[90-91]: "k"
+________CallNode[93-94]: "l"
+________CallNode[96-97]: "m"
+________CallNode[99-100]: "n"
+________CallNode[102-103]: "o"
+________CallNode[105-106]: "p"
+________CallNode[108-109]: "q"
+________CallNode[111-112]: "r"
+________CallNode[114-115]: "s"
+________CallNode[117-118]: "t"

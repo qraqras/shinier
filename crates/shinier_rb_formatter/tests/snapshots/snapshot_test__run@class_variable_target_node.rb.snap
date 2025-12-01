@@ -1,0 +1,26 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/class_variable_target_node.rb
+---
+****FORMATTED****
+@@foo, @@bar = baz
+
+# comment
+@@foo, # comment
+# comment
+@@bar = baz
+
+
+****AST****
+ProgramNode[0-68]: "@@foo, @@bar = baz\n\n# comment\n@@foo, # comment\n# comment\n@@bar = baz"
+__StatementsNode[0-68]: "@@foo, @@bar = baz\n\n# comment\n@@foo, # comment\n# comment\n@@bar = baz"
+____MultiWriteNode[0-18]: "@@foo, @@bar = baz"
+______ClassVariableTargetNode[0-5]: "@@foo"
+______ClassVariableTargetNode[7-12]: "@@bar"
+______CallNode[15-18]: "baz"
+____MultiWriteNode[30-68]: "@@foo, # comment\n# comment\n@@bar = baz"
+______ClassVariableTargetNode[30-35]: "@@foo"
+______ClassVariableTargetNode[57-62]: "@@bar"
+______CallNode[65-68]: "baz"
