@@ -19,87 +19,31 @@ pub fn build_class_node(node: &ClassNode<'_>, ctx: &mut BuildContext) -> Option<
     let end_keyword_loc = node.end_keyword_loc();
 
     let class_keyword_end_offset = class_keyword_loc.end_offset();
-    let constant_path_start_offset = constant_path.location().start_offset();
     let constant_path_end_offset = constant_path.location().end_offset();
-    let inheritance_operator_start_offset = inheritance_operator_loc.as_ref().map(|loc| loc.start_offset());
-    let inheritance_operator_end_offset = inheritance_operator_loc.as_ref().map(|loc| loc.end_offset());
-    let superclass_start_offset = superclass.as_ref().map(|s| s.location().start_offset());
 
-    let after_class_keyword = |t: Option<Document>, f: Option<Document>, ctx: &mut BuildContext<'_>| {
-        if_has_comments_beween(t, f, class_keyword_end_offset, constant_path_start_offset, ctx)
-    };
-    let after_constant_path = |t: Option<Document>, f: Option<Document>, ctx: &mut BuildContext<'_>| {
-        match inheritance_operator_start_offset {
-            Some(i) => if_has_comments_beween(t, f, constant_path_end_offset, i, ctx),
-            None => None,
+    let inheritance_part = match (inheritance_operator_loc, superclass) {
+        (Some(i), Some(s)) => {
+            let inheritance_operator_loc_end_offset = i.end_offset();
+            array(&[
+                line_if_has_comments(constant_path_end_offset, i.end_offset(), ctx),
+                build_location(i, ctx),
+                indent(array(&[
+                    line_if_has_comments(inheritance_operator_loc_end_offset, s.location().start_offset(), ctx),
+                    build_node(s, ctx),
+                ])),
+            ])
         }
+        (None, None) => None,
+        _ => unreachable!("inheritance_operator_loc and superclass should be both Some or None"),
     };
-    let after_inheritance_operator = |t: Option<Document>, f: Option<Document>, ctx: &mut BuildContext<'_>| match (
-        inheritance_operator_end_offset,
-        superclass_start_offset,
-    ) {
-        (Some(i), Some(s)) => if_has_comments_beween(t, f, i, s, ctx),
-        _ => None,
-    };
-
-    let class_keyword_loc_doc = build_location(class_keyword_loc, ctx);
-    let constant_path_doc = build_node(constant_path, ctx);
-    let inheritance_operator_loc_doc = inheritance_operator_loc.map(|loc| build_location(loc, ctx)).flatten();
-    let superclass_doc = superclass.map(|s| build_node(s, ctx)).flatten();
-
-    let opening = conditional_group(&[
-        group(array(&[
-            //
-            class_keyword_loc_doc.clone(),
-            indent(array(&[
-                after_class_keyword(hardline(), space(), ctx),
-                constant_path_doc.clone(),
-                indent(array(&[
-                    after_constant_path(hardline(), space(), ctx),
-                    inheritance_operator_loc_doc.clone(),
-                ])),
-                indent(array(&[
-                    after_inheritance_operator(hardline(), space(), ctx),
-                    superclass_doc.clone(),
-                ])),
-            ])),
-        ])),
-        group(array(&[
-            //
-            class_keyword_loc_doc.clone(),
-            indent(array(&[
-                after_class_keyword(hardline(), space(), ctx),
-                constant_path_doc.clone(),
-                indent(array(&[
-                    after_constant_path(hardline(), space(), ctx),
-                    inheritance_operator_loc_doc.clone(),
-                ])),
-                indent(array(&[
-                    after_inheritance_operator(hardline(), hardline(), ctx),
-                    superclass_doc.clone(),
-                ])),
-            ])),
-        ])),
-        group(array(&[
-            //
-            class_keyword_loc_doc.clone(),
-            indent(array(&[
-                after_class_keyword(hardline(), hardline(), ctx),
-                constant_path_doc.clone(),
-                indent(array(&[
-                    after_constant_path(hardline(), space(), ctx),
-                    inheritance_operator_loc_doc.clone(),
-                ])),
-                indent(array(&[
-                    after_inheritance_operator(hardline(), hardline(), ctx),
-                    superclass_doc.clone(),
-                ])),
-            ])),
-        ])),
-    ]);
 
     group(array(&[
-        opening,
+        build_location(class_keyword_loc, ctx),
+        indent(array(&[
+            line_if_has_comments(class_keyword_end_offset, constant_path.location().start_offset(), ctx),
+            build_node(constant_path, ctx),
+            inheritance_part,
+        ])),
         indent(body.map(|b| group(array(&[hardline(), build_node(b, ctx)]))).flatten()),
         hardline(),
         build_location(end_keyword_loc, ctx),

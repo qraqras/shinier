@@ -34,9 +34,7 @@ class Foo < Bar
 end
 
 # long expression
-class
-  FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo <
-    BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar
+class FooFooFooFooFooFooFooFooFooFooFooFooFooFooFooFoo < BarBarBarBarBarBarBarBarBarBarBarBarBarBarBarBar
 end
 
 class # traling comment 1

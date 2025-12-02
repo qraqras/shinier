@@ -191,20 +191,20 @@ fn run() {
         // first formatting
         let printer = Printer::new(contents, ());
         let (parse_result, formatted) = printer.print();
-        // // second formatting
-        // let printer = Printer::new(formatted.clone(), ());
-        // let (reparsed_result, reformatted) = printer.print();
-        // // parse result should have no errors
-        // assert!(reparsed_result.errors().next().is_none(), "parsing errors");
-        // formatting should be idempotent
         /*
-        assert!(
-            formatted == reformatted,
-            "formatting idempotence: first:\n{}----second:\n{}----",
-            formatted,
-            reformatted
-        );
-        */
+         * // second formatting
+         * let printer = Printer::new(formatted.clone(), ());
+         * let (reparsed_result, reformatted) = printer.print();
+         * // parse result should have no errors
+         * assert!(reparsed_result.errors().next().is_none(), "parsing errors");
+         * // formatting should be idempotent
+         * assert!(
+         *     formatted == reformatted,
+         *     "formatting idempotence: first:\n{}----second:\n{}----",
+         *     formatted,
+         *     reformatted
+         * );
+         */
         // build AST debug string
         let mut visitor = Visitor {
             depth: 0,

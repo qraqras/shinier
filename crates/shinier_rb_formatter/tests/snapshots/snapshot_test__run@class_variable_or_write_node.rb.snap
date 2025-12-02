@@ -1,0 +1,65 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/class_variable_or_write_node.rb
+---
+****FORMATTED****
+@@target ||= value
+
+# unnecessary line breaks
+@@target ||= value
+
+# long expressions
+@@target ||=
+  very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length
+
+@@target ||= # comment
+  value
+
+@@target ||=
+  # comment
+  value
+
+@@target ||= value # comment
+
+@@target ||= # comment
+  # comment
+  value
+
+@@target ||= # comment
+  value # comment
+
+@@target ||=
+  # comment
+  value # comment
+
+@@target ||= # comment
+  # comment
+  value # comment
+# comment
+
+
+****AST****
+ProgramNode[0-463]: "@@target ||= value\n\n# unnecessary line breaks\n@@target ||=\n  value\n\n# long expressions\n@@target ||= very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length\n\n@@target ||= # comment\n  value\n\n@@target ||=\n  # comment\n  value\n\n@@target ||=\n  value # comment\n\n@@target ||= # comment\n  # comment\n  value\n\n@@target ||= # comment\n  value # comment\n\n@@target ||=\n  # comment\n  value # comment\n\n@@target ||= # comment\n  # comment\n  value"
+__StatementsNode[0-463]: "@@target ||= value\n\n# unnecessary line breaks\n@@target ||=\n  value\n\n# long expressions\n@@target ||= very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length\n\n@@target ||= # comment\n  value\n\n@@target ||=\n  # comment\n  value\n\n@@target ||=\n  value # comment\n\n@@target ||= # comment\n  # comment\n  value\n\n@@target ||= # comment\n  value # comment\n\n@@target ||=\n  # comment\n  value # comment\n\n@@target ||= # comment\n  # comment\n  value"
+____ClassVariableOrWriteNode[0-18]: "@@target ||= value"
+______CallNode[13-18]: "value"
+____ClassVariableOrWriteNode[46-66]: "@@target ||=\n  value"
+______CallNode[61-66]: "value"
+____ClassVariableOrWriteNode[87-191]: "@@target ||= very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length"
+______CallNode[100-191]: "very_long_expression_that_exceeds_line_length_very_long_expression_that_exceeds_line_length"
+____ClassVariableOrWriteNode[193-223]: "@@target ||= # comment\n  value"
+______CallNode[218-223]: "value"
+____ClassVariableOrWriteNode[225-257]: "@@target ||=\n  # comment\n  value"
+______CallNode[252-257]: "value"
+____ClassVariableOrWriteNode[259-279]: "@@target ||=\n  value"
+______CallNode[274-279]: "value"
+____ClassVariableOrWriteNode[291-333]: "@@target ||= # comment\n  # comment\n  value"
+______CallNode[328-333]: "value"
+____ClassVariableOrWriteNode[335-365]: "@@target ||= # comment\n  value"
+______CallNode[360-365]: "value"
+____ClassVariableOrWriteNode[377-409]: "@@target ||=\n  # comment\n  value"
+______CallNode[404-409]: "value"
+____ClassVariableOrWriteNode[421-463]: "@@target ||= # comment\n  # comment\n  value"
+______CallNode[458-463]: "value"

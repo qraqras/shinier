@@ -16,8 +16,7 @@ pub fn build_block_argument_node(node: &BlockArgumentNode<'_>, ctx: &mut BuildCo
             let line_or_none = softline_if_has_comments(operator_loc.end_offset(), e.location().start_offset(), ctx);
             group(array(&[
                 build_location(operator_loc, ctx),
-                line_or_none,
-                build_node(e, ctx),
+                indent(array(&[line_or_none, build_node(e, ctx)])),
             ]))
         }
         None => build_location(operator_loc, ctx),

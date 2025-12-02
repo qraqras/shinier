@@ -1,0 +1,19 @@
+---
+source: crates/shinier_rb_formatter/tests/snapshot_test.rs
+assertion_line: 220
+expression: output
+input_file: crates/shinier_rb_formatter/tests/ruby/node_variants/class_variable_read_node.rb
+---
+****FORMATTED****
+@@foo
+
+# comment
+@@foo # comment
+# comment
+
+
+****AST****
+ProgramNode[0-22]: "@@foo\n\n# comment\n@@foo"
+__StatementsNode[0-22]: "@@foo\n\n# comment\n@@foo"
+____ClassVariableReadNode[0-5]: "@@foo"
+____ClassVariableReadNode[17-22]: "@@foo"

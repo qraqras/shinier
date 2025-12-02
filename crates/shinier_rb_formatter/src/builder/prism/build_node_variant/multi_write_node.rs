@@ -3,6 +3,7 @@ use crate::builder::BuildContext;
 use crate::builder::builder::*;
 use crate::builder::prism::build_location::build_location;
 use crate::builder::prism::build_node::build_node;
+use crate::builder::prism::builder_helper::*;
 use ruby_prism::MultiWriteNode;
 use ruby_prism::Node;
 
@@ -15,6 +16,8 @@ pub fn build_multi_write_node(node: &MultiWriteNode<'_>, ctx: &mut BuildContext)
     let rparen_loc = node.rparen_loc();
     let operator_loc = node.operator_loc();
     let value = node.value();
+
+    let break_if_comment = line_if_has_comments(operator_loc.end_offset(), value.location().start_offset(), ctx);
 
     // Collects parameters.
     let mut params = Vec::new();
@@ -40,14 +43,14 @@ pub fn build_multi_write_node(node: &MultiWriteNode<'_>, ctx: &mut BuildContext)
             build_location(rparen, ctx),
             space(),
             build_location(operator_loc, ctx),
-            line(),
+            break_if_comment.clone(),
             build_node(value, ctx),
         ])),
         (None, None) => group(array(&[
             array(&parameters_doc),
             space(),
             build_location(operator_loc, ctx),
-            line(),
+            break_if_comment.clone(),
             build_node(value, ctx),
         ])),
         _ => unreachable!(),
